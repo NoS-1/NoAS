@@ -1,4 +1,4 @@
-# NoAS 20261120-36ff42cd rule-provider payload
+# NoAS 20261120-1ba6c3e1 rule-provider payload
 payload:
   - DOMAIN-SUFFIX,00000.uno
   - DOMAIN-SUFFIX,0012565165165.aimeshive.com
@@ -2498,6 +2498,7 @@ payload:
   - DOMAIN-SUFFIX,adservice.google.co.in
   - DOMAIN-SUFFIX,adservice.google.co.jp
   - DOMAIN-SUFFIX,adservice.google.co.za
+  - DOMAIN-SUFFIX,adservice.google.com
   - DOMAIN-SUFFIX,adservice.google.com.au
   - DOMAIN-SUFFIX,adservice.google.com.mt
   - DOMAIN-SUFFIX,adservice.google.com.vn
@@ -3605,6 +3606,7 @@ payload:
   - DOMAIN-SUFFIX,amylewindesigns.blogspot.com
   - DOMAIN-SUFFIX,an.avast.com
   - DOMAIN-SUFFIX,an.dongphim.net
+  - DOMAIN-SUFFIX,an.facebook.com
   - DOMAIN-SUFFIX,an.media-active.ru
   - DOMAIN-SUFFIX,an.mlb.com
   - DOMAIN-SUFFIX,an.worldbaseballclassic.com
@@ -3929,6 +3931,7 @@ payload:
   - DOMAIN-SUFFIX,analytics.trutv.com
   - DOMAIN-SUFFIX,analytics.turk.pro
   - DOMAIN-SUFFIX,analytics.tver.jp
+  - DOMAIN-SUFFIX,analytics.twitter.com
   - DOMAIN-SUFFIX,analytics.ubs.com
   - DOMAIN-SUFFIX,analytics.uhhospitals.org
   - DOMAIN-SUFFIX,analytics.underarmour.com
@@ -7550,6 +7553,8 @@ payload:
   - DOMAIN-SUFFIX,cpm.adspine.com
   - DOMAIN-SUFFIX,cpmadvisors.com
   - DOMAIN-SUFFIX,cpmstar.com
+  - DOMAIN-SUFFIX,cpro.baidu.com
+  - DOMAIN-SUFFIX,cpro.baidustatic.com
   - DOMAIN-SUFFIX,cpu-api.infor.pl
   - DOMAIN-SUFFIX,cpu.samsungelectronics.com
   - DOMAIN-SUFFIX,cpv.popxml.com
@@ -9400,6 +9405,7 @@ payload:
   - DOMAIN-SUFFIX,e.email.simon.com
   - DOMAIN-SUFFIX,e.imguol.com
   - DOMAIN-SUFFIX,e.kde.cz
+  - DOMAIN-SUFFIX,e.qq.com
   - DOMAIN-SUFFIX,e.truedata.co
   - DOMAIN-SUFFIX,e.viously.com
   - DOMAIN-SUFFIX,e.zg-api.com
@@ -11879,6 +11885,7 @@ payload:
   - DOMAIN-SUFFIX,gdhomefashion.com
   - DOMAIN-SUFFIX,gdl.i9dhjx.ru
   - DOMAIN-SUFFIX,gdry35geos.eu.cc
+  - DOMAIN-SUFFIX,gdt.qq.com
   - DOMAIN-SUFFIX,gdyn.cnngo.com
   - DOMAIN-SUFFIX,gdyn.nba.com
   - DOMAIN-SUFFIX,gdyn.veryfunnyads.com
@@ -16660,6 +16667,7 @@ payload:
   - DOMAIN-SUFFIX,moatads.com.edgekey.net
   - DOMAIN-SUFFIX,moatpixel1.edgekey.net
   - DOMAIN-SUFFIX,mobad.ijinshan.com
+  - DOMAIN-SUFFIX,mobads.baidu.com
   - DOMAIN-SUFFIX,mobclix.com
   - DOMAIN-SUFFIX,mobfox.com
   - DOMAIN-SUFFIX,mobgames.mobi
@@ -18784,6 +18792,7 @@ payload:
   - DOMAIN-SUFFIX,page.bsigroup.com
   - DOMAIN-SUFFIX,page.widget.zalo.me
   - DOMAIN-SUFFIX,pagead.topobiavi.com
+  - DOMAIN-SUFFIX,pagead2.googlesyndication.com
   - DOMAIN-SUFFIX,pagemaster.net
   - DOMAIN-SUFFIX,pagerank.jklir.net
   - DOMAIN-SUFFIX,pages-stats.rbl.ms
@@ -19864,6 +19873,7 @@ payload:
   - DOMAIN-SUFFIX,portaorendanca.com
   - DOMAIN-SUFFIX,portesca-ai.com
   - DOMAIN-SUFFIX,portocaminhoes-am.com.br
+  - DOMAIN-SUFFIX,pos.baidu.com
   - DOMAIN-SUFFIX,poscenter.net
   - DOMAIN-SUFFIX,poshmark.dlhpmy.com
   - DOMAIN-SUFFIX,posicionamientonatural.es
@@ -26922,6 +26932,7 @@ payload:
   - DOMAIN-SUFFIX,uninttremo.store
   - DOMAIN-SUFFIX,union.56.com
   - DOMAIN-SUFFIX,union.6.cn
+  - DOMAIN-SUFFIX,union.baidu.com
   - DOMAIN-SUFFIX,union.china.com.cn
   - DOMAIN-SUFFIX,unionfxtradingpro.com
   - DOMAIN-SUFFIX,unisound.cdnvideo.ru
