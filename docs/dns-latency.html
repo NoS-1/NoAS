@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NoAS · DNS 延迟实测与最优方案</title>
+<style>
+:root{--bg:#0f1115;--card:#171a21;--fg:#e6e8ee;--mut:#98a2b3;--ok:#34d399;--bad:#f87171;--wr:#fbbf24;--acc:#60a5fa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 -apple-system,"Segoe UI","PingFang SC",sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:32px 20px 80px}
+h1{font-size:26px;margin:0 0 6px}
+h2{font-size:18px;margin:34px 0 12px;padding-left:10px;border-left:3px solid var(--acc)}
+.sub{color:var(--mut);font-size:13px;margin-bottom:24px}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;font-size:14px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #232733}
+th{color:var(--mut);font-weight:600;font-size:13px}
+tr:last-child td{border-bottom:none}
+.g{color:var(--ok)}.r{color:var(--bad)}.y{color:var(--wr)}
+.card{background:var(--card);border-radius:10px;padding:16px 18px;margin:12px 0}
+code{background:#0b0d11;padding:2px 6px;border-radius:5px;font-size:13px}
+pre{background:#0b0d11;padding:14px;border-radius:8px;overflow:auto;font-size:13px}
+li{margin:6px 0}
+.note{border-left:3px solid var(--wr);padding-left:12px;color:var(--mut);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>DNS 延迟实测与最优方案</h1>
+<div class="sub">数据来源：本机直连实测（绕开代理），2026-11-21 凌晨。测量脚本 <code>tools/bench_dns.py</code>，可复现。</div>
+
+<h2>一、实测：每条通道到底多快</h2>
+<table>
+<tr><th>通道</th><th>首包（含 TLS 握手）</th><th>复用连接后</th><th>判断</th></tr>
+<tr><td>阿里 DoH</td><td class="g">31–38 ms</td><td class="g">9.4 ms</td><td>主力</td></tr>
+<tr><td>腾讯 DoH</td><td class="y">58–61 ms</td><td class="g">16 ms</td><td>备用</td></tr>
+<tr><td>360 DoH</td><td class="y">121 ms</td><td>—</td><td>不推荐</td></tr>
+<tr><td>阿里 DoT</td><td class="y">90 ms</td><td>长连接后更低</td><td>次主力</td></tr>
+<tr><td>腾讯 DoT</td><td class="g">60 ms</td><td>长连接后更低</td><td>次主力</td></tr>
+<tr><td>CF 公共 DoH</td><td class="r">失败</td><td>—</td><td>不可用</td></tr>
+<tr><td>自建 Worker DoH</td><td class="r">失败</td><td>—</td><td>不可用（本网络）</td></tr>
+<tr><td>CF DoT</td><td class="r">432 ms</td><td>—</td><td>只做兜底</td></tr>
+<tr><td>自建 Gateway DoT</td><td class="r">477 ms</td><td>—</td><td>只做兜底</td></tr>
+</table>
+
+<div class="card">
+<b>最关键的发现</b><br>
+阿里 DoH：首包 38 ms → 复用后 <b class="g">9.4 ms</b>，快了 4 倍。<br>
+也就是说延迟的大头不是“哪家 DNS”，而是 <b>每次重新做 TLS 握手</b>。
+换服务商最多省 20 ms，把连接复用做对能省 28 ms。
+</div>
+
+<h2>二、结论：延迟结构是这样的</h2>
+<ul>
+<li><b>0 ms</b>：本地规则命中（广告域直接返回 0.0.0.0）+ 缓存命中（TTL 内不查上游）</li>
+<li><b>9–16 ms</b>：国内 DoH/DoT 长连接复用（这是真实可达的底数）</li>
+<li><b>430–500 ms</b>：CF 系通道（本网络下），只配当兜底，不能当入口</li>
+</ul>
+<div class="note">所以“最低延迟”的实现顺序是：先本地短路，再缓存，再复用连接，最后才是选哪家。选服务商是最后一步，不是第一步。</div>
+
+<h2>三、落地配置</h2>
+<h2 style="font-size:15px;border:none;padding:0">1. 本机 / 路由器（aiodns，仓库已改好）</h2>
+<pre>aiodns \
+  --upstream tls://dns.alidns.com:853 --upstream tls://dot.pub:853 \
+  --timeout 1 \
+  --http3 \
+  --cache \
+  --refuse-any</pre>
+<ul>
+<li><code>--timeout 1</code>：上游卡住 1 秒就切下一个。原来 3 秒，一次抖动就拖垮整页加载</li>
+<li><code>--http3</code>：DoH 走 QUIC，少一个往返；上游不支持会自动降级 HTTP/2</li>
+<li>两个 DoT 上游常驻长连接，比每次新建快一个数量级</li>
+</ul>
+
+<h2 style="font-size:15px;border:none;padding:0">2. Android（系统级 Private DNS，最省事）</h2>
+<pre>dns.alidns.com</pre>
+<p>系统级 DoT，常驻连接，实测 20 ms 内。不要填 CF 的地址，国内会 400 ms 以上。</p>
+
+<h2 style="font-size:15px;border:none;padding:0">3. AdGuard Home / 软路由</h2>
+<ul>
+<li>上游填 <code>https://dns.alidns.com/dns-query</code> 或 <code>tls://dns.alidns.com:853</code></li>
+<li>开启 <b>缓存</b>，并把 <b>乐观缓存</b>（如果有）打开：TTL 过期先返回旧值再后台刷新</li>
+<li>规则加载 <code>subs/lite/adguard.txt</code> 或 <code>subs/mid/adguard.txt</code>，命中即本地返回，0 ms</li>
+</ul>
+
+<h2 style="font-size:15px;border:none;padding:0">4. 什么时候才用 CF</h2>
+<ul>
+<li><b>不要</b>把 CF DoH/DoT 当查询入口——本网络 430–500 ms，是主力的 30 倍</li>
+<li>CF 只做两件事：规则分发（raw / Pages / CDN）和 <b>备用兜底</b></li>
+<li>自建 Worker 的作用是“国内 DoH 全挂时还能解析”，不是“更快”</li>
+</ul>
+
+<h2>四、为什么 CF 在这条网络上就是慢</h2>
+<p>CF 的 anycast 节点对国内用户经常落到境外或拥塞节点，TLS 握手 + 首包就要 400 ms 以上；workers.dev 域名还会被网关干扰。这不是配置问题，是链路拓扑问题，优化不动，只能降级为兜底。</p>
+
+<h2>五、还能再压的余量</h2>
+<ul>
+<li><b>预热</b>：仓库已加 <code>keepalive.yml</code>，每 10 分钟打一次自建 DoH，避免冷启动（CF Worker 空闲后会回收 isolate）</li>
+<li><b>TTL 调大</b>：被拦截域返回较长 TTL，客户端不会反复问同一个域</li>
+<li><b>EDNS 不带</b>：少一次策略分支，也少泄露信息</li>
+<li><b>并发竞速</b>：客户端同时向阿里+腾讯发首包，谁先回用谁（dnsproxy 的 parallel 模式）</li>
+</ul>
+
+<div class="note" style="margin-top:28px">复现方法：<code>python3 tools/bench_dns.py --rounds 5</code>；连接复用测试见同目录脚本内的 keep-alive 段。</div>
+</div>
+</body>
+</html>
