@@ -42,14 +42,18 @@ def main():
         allow += [l.split("#", 1)[0].strip().lower() for l in open(tp, encoding="utf-8") if "." in l]
     allow = sorted(set(allow))
 
+    wild = sorted({
+        l.strip().lower()
+        for t in ("mid", "full")
+        for l in open(os.path.join(SUBS, t, "wildcards.txt"), encoding="utf-8")
+        if l.strip().startswith("*.")
+    })
     ver = time.strftime("%Y%m%d-%H%M")
     js = (open(TPL, encoding="utf-8").read()
           .replace("__TIER1__", json.dumps(sorted(set(lite)), ensure_ascii=False))
           .replace("__TIER2__", json.dumps(sorted(set(mid)), ensure_ascii=False))
           .replace("__ALLOW__", json.dumps(allow, ensure_ascii=False))
-          .replace("__WILD__", json.dumps(sorted({
-              l.strip().lower() for l in open(os.path.join(ROOT, "subs", "full", "domains.txt"), encoding="utf-8")
-              if l.strip().startswith("*.")}), ensure_ascii=False))
+          .replace("__WILD__", json.dumps(wild, ensure_ascii=False))
           .replace("__ENDPOINTS__", json.dumps(sorted({
               l.split("#", 1)[0].strip().lower()
               for l in open(os.path.join(ROOT, "lists", "ad_endpoints.txt"), encoding="utf-8")

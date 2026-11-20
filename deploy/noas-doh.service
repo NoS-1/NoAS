@@ -1,0 +1,22 @@
+# systemd 单元：把 NoAS 自建 DoH 常驻在 8053（可改 PORT）
+# 安装：sudo cp deploy/noas-doh.service /etc/systemd/system/ && sudo systemctl enable --now noas-doh
+[Unit]
+Description=NoAS 自建 DoH 服务
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/noas
+Environment=PORT=8053
+ExecStart=/usr/bin/node /opt/noas/serve/standalone.mjs
+Restart=always
+RestartSec=5
+LimitNOFILE=65535
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/noas
+
+[Install]
+WantedBy=multi-user.target

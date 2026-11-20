@@ -1,4 +1,4 @@
-# NoAS 20261120-fdf9c27a rule-provider payload
+# NoAS 20261120-4435ffda rule-provider payload
 payload:
   - DOMAIN-SUFFIX,0i0i0i0.com
   - DOMAIN-SUFFIX,0n.click

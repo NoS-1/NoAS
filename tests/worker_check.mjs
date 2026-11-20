@@ -39,6 +39,12 @@ if (cnj.cname_blocked !== true) { miss.push('cname:doubleclick.net'); }
 const cn2 = await handler(new Request('https://x.dev/check?q=stats.someblog.org&cname=api.someblog.org&tier=1'), {}, ctx);
 if ((await cn2.json()).cname_blocked !== false) { fp.push('cname-benign'); }
 
+// 通配回归：纯广告网根域的深层子域必须拦；白名单父域下的子域必须放
+const wc = await handler(new Request('https://x.dev/check?q=a.b.c.doubleclick.net&tier=1'), {}, ctx);
+if (!(await wc.json()).blocked) miss.push('wild:deep-subdomain');
+const wok = await handler(new Request('https://x.dev/check?q=a.b.taobao.com&tier=1'), {}, ctx);
+if ((await wok.json()).blocked) fp.push('wild:benign-subdomain');
+
 console.log(`lite ${lite.length} 全量｜mid 抽样 ${sample.length}｜良性 ${benign.length}`);
 console.log(`漏放 ${miss.length}｜误拦 ${fp.length}`);
 if (miss.length) console.log('漏放示例', miss.slice(0, 6));
