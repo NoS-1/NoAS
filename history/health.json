@@ -1,0 +1,68 @@
+{
+ "ts": "2026-11-20T08:25:16Z",
+ "round": 1,
+ "sources": [
+  {
+   "name": "StevenBlack-all",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "antiAD-cn",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "KADhosts",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "AdGuard-CN-adservers",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "AdGuard-tracking",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "DandelionSprout-malware",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "1Hosts-Lite",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "notracking",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "AdAway",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "urlhaus",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "PhishingArmy",
+   "fails": 1,
+   "seen_days": 1
+  },
+  {
+   "name": "Spam404",
+   "fails": 1,
+   "seen_days": 1
+  }
+ ],
+ "adopted": 0,
+ "dropped": 0
+}
