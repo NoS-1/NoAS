@@ -54,6 +54,11 @@ jobs:
       - name: 3 · 编译三档（lite / mid / full）
         run: python3 tools/compile.py
 
+      - name: 3.5 · 自动晋级（单源但名字就是广告的域并入 lite）
+        run: |
+          python3 tools/promote.py
+          python3 tools/compile.py
+
       - name: 4 · 发布前硬校验
         run: python3 tools/guard.py
 
