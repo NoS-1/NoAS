@@ -102,10 +102,26 @@ def read_roots():
     return out
 
 
+def retired_set():
+    """观察池退役名单：连续 30 天没复现的低置信域，发现器不再采它，避免无限堆积。"""
+    out = set()
+    p = os.path.join(LISTS, "watch_retired.txt")
+    if not os.path.exists(p):
+        return out
+    for line in open(p, encoding="utf-8"):
+        if line.startswith("#") or not line.strip():
+            continue
+        d = line.split("\t")[0].strip().lower()
+        if d and "." in d:
+            out.add(d)
+    return out
+
+
 def benign_set():
     out = set()
     for p in (os.path.join(LISTS, "whitelist.txt"),
               os.path.join(LISTS, "benign_top.txt"),
+              os.path.join(LISTS, "service_allow.txt"),
               os.path.join(ROOT, "tests", "benign_baseline.txt")):
         if not os.path.exists(p):
             continue
@@ -272,7 +288,8 @@ def main():
         for host, tok in brute_candidates(root):
             if not protected(host, allow):
                 cands.append((host, tok))
-    cands = sorted(set(cands))
+    retired = retired_set()
+    cands = sorted({c for c in cands if c[0] not in retired})
 
     # 3 · 泛解析识别（把"什么都解析得出来"的根域整批丢掉）
     probe_roots = sorted({r for r in roots})

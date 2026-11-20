@@ -81,6 +81,27 @@ def add_endpoint(d):
     return True
 
 
+COOLDOWN = os.path.join(ROOT, "lists", "cooldown.txt")
+
+
+def cooldown_add(d):
+    """误伤域进冷却池：即使有人把它从白名单里手滑删掉，编译期依然豁免，不会复发。
+
+    格式纪律：cooldown.txt 一行一个纯域名。compile.py 用 load_list_file 读整行，
+    任何 tab 列都会让整串当成域名，冷却就失效——所以元数据另记 history/cooldown_log.jsonl。
+    """
+    lines = ""
+    if os.path.exists(COOLDOWN):
+        lines = open(COOLDOWN, encoding="utf-8").read()
+    if any(l.split("#", 1)[0].strip().lower() == d for l in lines.splitlines()):
+        return False
+    if not lines.endswith("\n"):
+        lines += "\n"
+    lines += d + "\n"
+    open(COOLDOWN, "w", encoding="utf-8").write(lines)
+    return True
+
+
 def add_miss(d, note):
     lines = []
     if os.path.exists(MISS):
@@ -119,8 +140,10 @@ def main():
         try:
             if "误伤" in labels:
                 whitelist.add(d, "误伤反馈 issue #%d" % num, "incident")
-                log_event("fp_fix", {"domain": d, "issue": num})
-                msg = "已学习：`%s` 进入白名单台账，下一轮编译立刻放行。（误伤优先，宁放不误拦）" % d
+                cd = cooldown_add(d)
+                log_event("fp_fix", {"domain": d, "issue": num, "cooldown": cd})
+                msg = ("已学习：`%s` 进入白名单台账 **并加入冷却池**，下一轮编译立刻放行，"
+                       "且以后即使白名单被误删也不会复发。（误伤优先，宁放不误拦）" % d)
             else:
                 if AD_LIKE.match(d):
                     new = add_endpoint(d)

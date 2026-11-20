@@ -1,4 +1,4 @@
-# NoAS 通配（20261120-4739def8）
+# NoAS 通配（20261120-73172e8a）
 *.0i0i0i0.com
 *.1187531871.rsc.cdn77.org
 *.12112336.pix-cdn.org
@@ -4454,7 +4454,6 @@
 *.applog.zijieapi.com
 *.applovin.com
 *.applvn.com
-*.appnext-a.akamaihd.net
 *.appnext.hs.llnwd.net
 *.appodeal.com
 *.appollo-plus.com
@@ -5986,7 +5985,6 @@
 *.drkness.net
 *.drsbf.hannaandersson.com
 *.drulilqe8wg66.cloudfront.net
-*.ds-aksb-a.akamaihd.net
 *.ds88pc0kw6cvc.cloudfront.net
 *.dsb6jelx4yhln.cloudfront.net
 *.dscex7u1h4a9a.cloudfront.net
@@ -6669,7 +6667,6 @@
 *.inmobi.cn
 *.inmobi.com
 *.inmobicdn.net
-*.inmobisdk-a.akamaihd.net
 *.inner-active.mobi
 *.innity.com
 *.innity.net
@@ -7190,15 +7187,18 @@
 *.metrics.foxnews.com
 *.metrics.foxsports.com.au
 *.metrics.fressnapf.de
+*.metrics.galicia.ar
 *.metrics.gap.com
 *.metrics.gcimetrics.com
 *.metrics.geelongadvertiser.com.au
+*.metrics.giftcards.com
 *.metrics.gnc.com
 *.metrics.govexec.com
 *.metrics.harley-davidson.com
 *.metrics.hbogo.com
 *.metrics.health.com
 *.metrics.heraldsun.com.au
+*.metrics.hkexpress.com
 *.metrics.hrblock.com
 *.metrics.iconfitness.com
 *.metrics.iij.ad.jp
@@ -7222,10 +7222,12 @@
 *.metrics.mcafee.com
 *.metrics.mein-jahnreisen.de
 *.metrics.morganstanley.com
+*.metrics.mycardwallet.com
 *.metrics.myprime.com
 *.metrics.natmags.co.uk
 *.metrics.nba.com
 *.metrics.news.com.au
+*.metrics.news24.com.au
 *.metrics.nextgov.com
 *.metrics.nfm.com
 *.metrics.nissanusa.com
@@ -7746,7 +7748,6 @@
 *.qnsr.com
 *.qqdflf.lpga.or.jp
 *.qriqiz.lifeisgood.com
-*.qsearch-a.akamaihd.net
 *.quangcao.24h.com.vn
 *.quangcao.tuoitre.vn
 *.quantcount.com
@@ -9335,7 +9336,6 @@
 *.sumome.com
 *.suncanny.marvel.com
 *.superfastcdn.com
-*.supersonicads-a.akamaihd.net
 *.supersonicads.com
 *.supply.upjers.com
 *.support.tenten.vn

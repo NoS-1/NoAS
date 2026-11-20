@@ -4453,7 +4453,6 @@ DOMAIN-SUFFIX,applog.uc.cn
 DOMAIN-SUFFIX,applog.zijieapi.com
 DOMAIN-SUFFIX,applovin.com
 DOMAIN-SUFFIX,applvn.com
-DOMAIN-SUFFIX,appnext-a.akamaihd.net
 DOMAIN-SUFFIX,appnext.hs.llnwd.net
 DOMAIN-SUFFIX,appodeal.com
 DOMAIN-SUFFIX,appollo-plus.com
@@ -5985,7 +5984,6 @@ DOMAIN-SUFFIX,drjzh.loveinfaith.life
 DOMAIN-SUFFIX,drkness.net
 DOMAIN-SUFFIX,drsbf.hannaandersson.com
 DOMAIN-SUFFIX,drulilqe8wg66.cloudfront.net
-DOMAIN-SUFFIX,ds-aksb-a.akamaihd.net
 DOMAIN-SUFFIX,ds88pc0kw6cvc.cloudfront.net
 DOMAIN-SUFFIX,dsb6jelx4yhln.cloudfront.net
 DOMAIN-SUFFIX,dscex7u1h4a9a.cloudfront.net
@@ -6668,7 +6666,6 @@ DOMAIN-SUFFIX,ingameads.gameloft.com
 DOMAIN-SUFFIX,inmobi.cn
 DOMAIN-SUFFIX,inmobi.com
 DOMAIN-SUFFIX,inmobicdn.net
-DOMAIN-SUFFIX,inmobisdk-a.akamaihd.net
 DOMAIN-SUFFIX,inner-active.mobi
 DOMAIN-SUFFIX,innity.com
 DOMAIN-SUFFIX,innity.net
@@ -7189,15 +7186,18 @@ DOMAIN-SUFFIX,metrics.fortinet.com
 DOMAIN-SUFFIX,metrics.foxnews.com
 DOMAIN-SUFFIX,metrics.foxsports.com.au
 DOMAIN-SUFFIX,metrics.fressnapf.de
+DOMAIN-SUFFIX,metrics.galicia.ar
 DOMAIN-SUFFIX,metrics.gap.com
 DOMAIN-SUFFIX,metrics.gcimetrics.com
 DOMAIN-SUFFIX,metrics.geelongadvertiser.com.au
+DOMAIN-SUFFIX,metrics.giftcards.com
 DOMAIN-SUFFIX,metrics.gnc.com
 DOMAIN-SUFFIX,metrics.govexec.com
 DOMAIN-SUFFIX,metrics.harley-davidson.com
 DOMAIN-SUFFIX,metrics.hbogo.com
 DOMAIN-SUFFIX,metrics.health.com
 DOMAIN-SUFFIX,metrics.heraldsun.com.au
+DOMAIN-SUFFIX,metrics.hkexpress.com
 DOMAIN-SUFFIX,metrics.hrblock.com
 DOMAIN-SUFFIX,metrics.iconfitness.com
 DOMAIN-SUFFIX,metrics.iij.ad.jp
@@ -7221,10 +7221,12 @@ DOMAIN-SUFFIX,metrics.mars.com
 DOMAIN-SUFFIX,metrics.mcafee.com
 DOMAIN-SUFFIX,metrics.mein-jahnreisen.de
 DOMAIN-SUFFIX,metrics.morganstanley.com
+DOMAIN-SUFFIX,metrics.mycardwallet.com
 DOMAIN-SUFFIX,metrics.myprime.com
 DOMAIN-SUFFIX,metrics.natmags.co.uk
 DOMAIN-SUFFIX,metrics.nba.com
 DOMAIN-SUFFIX,metrics.news.com.au
+DOMAIN-SUFFIX,metrics.news24.com.au
 DOMAIN-SUFFIX,metrics.nextgov.com
 DOMAIN-SUFFIX,metrics.nfm.com
 DOMAIN-SUFFIX,metrics.nissanusa.com
@@ -7745,7 +7747,6 @@ DOMAIN-SUFFIX,qevia.doubleclick.bond
 DOMAIN-SUFFIX,qnsr.com
 DOMAIN-SUFFIX,qqdflf.lpga.or.jp
 DOMAIN-SUFFIX,qriqiz.lifeisgood.com
-DOMAIN-SUFFIX,qsearch-a.akamaihd.net
 DOMAIN-SUFFIX,quangcao.24h.com.vn
 DOMAIN-SUFFIX,quangcao.tuoitre.vn
 DOMAIN-SUFFIX,quantcount.com
@@ -9334,7 +9335,6 @@ DOMAIN-SUFFIX,sucmetrics.unicreditgroup.eu
 DOMAIN-SUFFIX,sumome.com
 DOMAIN-SUFFIX,suncanny.marvel.com
 DOMAIN-SUFFIX,superfastcdn.com
-DOMAIN-SUFFIX,supersonicads-a.akamaihd.net
 DOMAIN-SUFFIX,supersonicads.com
 DOMAIN-SUFFIX,supply.upjers.com
 DOMAIN-SUFFIX,support.tenten.vn

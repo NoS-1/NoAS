@@ -1,0 +1,5 @@
+# NoAS 自建带规则端点（Zero Trust Gateway）
+# DoH 与 DoT 均带 7 条档位规则；额度按用户数计算，远高于 Worker 的 10 万/天
+# 标注「已实测」的才可信；未标注的需自行试通（本机代理会伪造响应）
+https://oxyacq0a4t.cloudflare-gateway.com/dns-query   # 待验证
+tls://oxyacq0a4t.cloudflare-gateway.com:853   # 待验证

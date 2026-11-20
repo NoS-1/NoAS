@@ -1,0 +1,68 @@
+{
+ "checked_at": "2026-11-20T14:25:16Z",
+ "probe": "www.baidu.com",
+ "elapsed_ms": 10024,
+ "env": "suspect",
+ "channels": {
+  "ali-doh": {
+   "status": "unknown",
+   "proto": "ndoh",
+   "endpoint": "https://dns.alidns.com/dns-query",
+   "rtt_ms": 46,
+   "detail": "疑似本机代理劫持，未计入通道死亡：HTTPError: HTTP Error 500: Internal Server Error"
+  },
+  "tencent-doh": {
+   "status": "unknown",
+   "proto": "ndoh",
+   "endpoint": "https://doh.pub/dns-query",
+   "rtt_ms": 58,
+   "detail": "疑似本机代理劫持，未计入通道死亡：HTTPError: HTTP Error 502: Bad Gateway"
+  },
+  "ali-dot": {
+   "status": "unknown",
+   "proto": "dot",
+   "endpoint": "tls://dns.alidns.com:853",
+   "rtt_ms": 141,
+   "rcode": -5,
+   "detail": "疑似本机代理劫持，未计入通道死亡：解析未通过（rcode=-5）"
+  },
+  "tencent-dot": {
+   "status": "unknown",
+   "proto": "dot",
+   "endpoint": "tls://dot.pub:853",
+   "rtt_ms": 278,
+   "rcode": 5,
+   "detail": "疑似本机代理劫持，未计入通道死亡：解析未通过（rcode=5）"
+  },
+  "aiodns-local": {
+   "status": "absent",
+   "proto": "aiodns",
+   "endpoint": "127.0.0.1:5300",
+   "rtt_ms": 0,
+   "detail": "本机未部署（可选方案）"
+  },
+  "cf-doh": {
+   "status": "unknown",
+   "proto": "doh",
+   "endpoint": "https://noas-doh.199999510.workers.dev/dns-query",
+   "rtt_ms": 10015,
+   "detail": "疑似本机代理劫持，未计入通道死亡：URLError: <urlopen error [Errno 101] Network is unreachable>"
+  },
+  "gateway-doh": {
+   "status": "unknown",
+   "proto": "doh",
+   "endpoint": "https://oxyacq0a4t.cloudflare-gateway.com/dns-query",
+   "rtt_ms": 493,
+   "rcode": 4,
+   "detail": "疑似本机代理劫持，未计入通道死亡：解析未通过（rcode=4）"
+  },
+  "gateway-dot": {
+   "status": "unknown",
+   "proto": "dot",
+   "endpoint": "tls://oxyacq0a4t.cloudflare-gateway.com:853",
+   "rtt_ms": 1171,
+   "rcode": 4,
+   "detail": "疑似本机代理劫持，未计入通道死亡：解析未通过（rcode=4）"
+  }
+ }
+}

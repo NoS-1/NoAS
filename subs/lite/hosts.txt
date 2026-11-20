@@ -1,4 +1,4 @@
-# NoAS 20261120-4739def8（9962 条）
+# NoAS 20261120-73172e8a（9962 条）
 0.0.0.0 0i0i0i0.com
 0.0.0.0 1187531871.rsc.cdn77.org
 0.0.0.0 12112336.pix-cdn.org
@@ -4454,7 +4454,6 @@
 0.0.0.0 applog.zijieapi.com
 0.0.0.0 applovin.com
 0.0.0.0 applvn.com
-0.0.0.0 appnext-a.akamaihd.net
 0.0.0.0 appnext.hs.llnwd.net
 0.0.0.0 appodeal.com
 0.0.0.0 appollo-plus.com
@@ -5986,7 +5985,6 @@
 0.0.0.0 drkness.net
 0.0.0.0 drsbf.hannaandersson.com
 0.0.0.0 drulilqe8wg66.cloudfront.net
-0.0.0.0 ds-aksb-a.akamaihd.net
 0.0.0.0 ds88pc0kw6cvc.cloudfront.net
 0.0.0.0 dsb6jelx4yhln.cloudfront.net
 0.0.0.0 dscex7u1h4a9a.cloudfront.net
@@ -6669,7 +6667,6 @@
 0.0.0.0 inmobi.cn
 0.0.0.0 inmobi.com
 0.0.0.0 inmobicdn.net
-0.0.0.0 inmobisdk-a.akamaihd.net
 0.0.0.0 inner-active.mobi
 0.0.0.0 innity.com
 0.0.0.0 innity.net
@@ -7190,15 +7187,18 @@
 0.0.0.0 metrics.foxnews.com
 0.0.0.0 metrics.foxsports.com.au
 0.0.0.0 metrics.fressnapf.de
+0.0.0.0 metrics.galicia.ar
 0.0.0.0 metrics.gap.com
 0.0.0.0 metrics.gcimetrics.com
 0.0.0.0 metrics.geelongadvertiser.com.au
+0.0.0.0 metrics.giftcards.com
 0.0.0.0 metrics.gnc.com
 0.0.0.0 metrics.govexec.com
 0.0.0.0 metrics.harley-davidson.com
 0.0.0.0 metrics.hbogo.com
 0.0.0.0 metrics.health.com
 0.0.0.0 metrics.heraldsun.com.au
+0.0.0.0 metrics.hkexpress.com
 0.0.0.0 metrics.hrblock.com
 0.0.0.0 metrics.iconfitness.com
 0.0.0.0 metrics.iij.ad.jp
@@ -7222,10 +7222,12 @@
 0.0.0.0 metrics.mcafee.com
 0.0.0.0 metrics.mein-jahnreisen.de
 0.0.0.0 metrics.morganstanley.com
+0.0.0.0 metrics.mycardwallet.com
 0.0.0.0 metrics.myprime.com
 0.0.0.0 metrics.natmags.co.uk
 0.0.0.0 metrics.nba.com
 0.0.0.0 metrics.news.com.au
+0.0.0.0 metrics.news24.com.au
 0.0.0.0 metrics.nextgov.com
 0.0.0.0 metrics.nfm.com
 0.0.0.0 metrics.nissanusa.com
@@ -7746,7 +7748,6 @@
 0.0.0.0 qnsr.com
 0.0.0.0 qqdflf.lpga.or.jp
 0.0.0.0 qriqiz.lifeisgood.com
-0.0.0.0 qsearch-a.akamaihd.net
 0.0.0.0 quangcao.24h.com.vn
 0.0.0.0 quangcao.tuoitre.vn
 0.0.0.0 quantcount.com
@@ -9335,7 +9336,6 @@
 0.0.0.0 sumome.com
 0.0.0.0 suncanny.marvel.com
 0.0.0.0 superfastcdn.com
-0.0.0.0 supersonicads-a.akamaihd.net
 0.0.0.0 supersonicads.com
 0.0.0.0 supply.upjers.com
 0.0.0.0 support.tenten.vn

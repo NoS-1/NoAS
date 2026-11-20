@@ -46,11 +46,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 tools/feedback.py
 
-      - name: 3 · 重新编译三档
-        run: python3 tools/compile.py
+      - name: 3 · 重新编译三档（误伤域已在冷却池，编译期强制豁免）
+        run: |
+          python3 tools/compile.py
+          python3 tools/watch_pool.py
+          python3 tools/reputation.py
 
       - name: 4 · 发布前硬校验（含误伤审计必须为 0）
-        run: python3 tools/guard.py
+        run: |
+          python3 tools/guard.py
+          python3 tools/snapshot.py
 
       - name: 5 · DoH 产物 + 回归
         run: |
@@ -73,7 +78,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A subs/lite docs history lists tests
+          git add -A subs/lite docs history lists tests state
           if git diff --cached --quiet; then
             echo "无变化，跳过提交"; exit 0
           fi
