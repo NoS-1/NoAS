@@ -1,0 +1,16 @@
+# 路径层纯文本清单（便于自查与二次转换）
+# 字段：动作 <TAB> App <TAB> 用途 <TAB> 正则
+reject-dict	美团	开屏配置接口	^https?:\/\/www\.meituan\.com/api/v[0-9]+/appstatus
+reject-dict	猫眼	广告位详情	^https?:\/\/ad\.maoyan\.com/api/position/detail
+reject-dict	星巴克	小程序横幅与弹窗	^https?:\/\/3pp\.starbucks\.com\.cn/wxmem/(index/banner|popup)
+reject-dict	华住	会员横幅	^https?:\/\/api-fouth-mem\.huazhu\.com/api/rights/bannerList
+reject-dict	哔哩哔哩	开屏广告	^https?:\/\/app\.bilibili\.com/x/v2/splash
+reject	小爱同学	广告下发	^https?:\/\/info\.mina\.xiaoaisound\.com/advertise/
+reject	Zepp	首页广告卡	^https?:\/\/api-mifit-cn2\.zepp\.com/discovery/mi/cards/(startpage_ad|homepage_ad)
+reject	招商银行	广告预热	^https?:\/\/mbasecc\.bas\.cmbchina\.com/Edge/api/mlife\.clientface\.clientservice\.api\.advertiseService/preCacheAdvertiseSec
+reject-dict	百度地图	首页运营位	^https?:\/\/newclient\.map\.baidu\.com/client/(crossmarketing|usersystem/home/dynamic)
+reject	高德地图	广告图	^https?:\/\/optimus-ads\.amap\.com/uploadimg/[a-zA-Z0-9]+\.gif
+reject	人民日报	开屏	^https?:\/\/pdapis\.pdnews\.cn/api/rmrb-bff-display-zh/display/zh/c/launchPage
+reject-dict	极氪	广告列表	^https?:\/\/superapp\.kiwa-tech\.com/app/ads/selectList
+reject-dict	肯德基	首页弹窗	^https?:\/\/dynamicad\.kfc\.com\.cn/api/app5/homepage/ai/popup
+reject-dict	编程猫	广告投放	^https?:\/\/advertise\.bczeducation\.cn/rpc/advertise

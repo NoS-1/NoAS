@@ -1,0 +1,23 @@
+# NoAS 路径层（L2）规则源：host<TAB>path_regex<TAB>action<TAB>app<TAB>note<TAB>tier
+# host 写 * 表示不锚定主机（仅 full 档，靠 MITM 主机白名单约束范围）
+# action 只用 reject / reject-dict（三端通用；reject-dict 返回 {}，JSON 接口不崩）
+# tier: core=只打已验证的单主机端点；full=core + 通用开屏/广告路径
+www.meituan.com	/api/v[0-9]+/appstatus	reject-dict	美团	开屏配置接口	core
+ad.maoyan.com	/api/position/detail	reject-dict	猫眼	广告位详情	core
+3pp.starbucks.com.cn	/wxmem/(index/banner|popup)	reject-dict	星巴克	小程序横幅与弹窗	core
+api-fouth-mem.huazhu.com	/api/rights/bannerList	reject-dict	华住	会员横幅	core
+app.bilibili.com	/x/v2/splash	reject-dict	哔哩哔哩	开屏广告	core
+info.mina.xiaoaisound.com	/advertise/	reject	小爱同学	广告下发	core
+api-mifit-cn2.zepp.com	/discovery/mi/cards/(startpage_ad|homepage_ad)	reject	Zepp	首页广告卡	core
+mbasecc.bas.cmbchina.com	/Edge/api/mlife\.clientface\.clientservice\.api\.advertiseService/preCacheAdvertiseSec	reject	招商银行	广告预热	core
+newclient.map.baidu.com	/client/(crossmarketing|usersystem/home/dynamic)	reject-dict	百度地图	首页运营位	core
+optimus-ads.amap.com	/uploadimg/[a-zA-Z0-9]+\.gif	reject	高德地图	广告图	core
+pdapis.pdnews.cn	/api/rmrb-bff-display-zh/display/zh/c/launchPage	reject	人民日报	开屏	core
+superapp.kiwa-tech.com	/app/ads/selectList	reject-dict	极氪	广告列表	core
+dynamicad.kfc.com.cn	/api/app5/homepage/ai/popup	reject-dict	肯德基	首页弹窗	core
+advertise.bczeducation.cn	/rpc/advertise	reject-dict	编程猫	广告投放	core
+	/splash	reject-dict	通用	开屏接口	full
+	/splashAd	reject-dict	通用	开屏广告	full
+	/openScreen	reject-dict	通用	开屏	full
+	/advert	reject-dict	通用	广告投放	full
+	/advertisement	reject-dict	通用	广告	full
