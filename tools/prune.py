@@ -4,7 +4,7 @@
 
 安全边界（保证误伤仍为 0）：
   · 抽样而非全量：按域名 hash 分成 30 个桶，每天轮一个桶，单次 ≤ 4000 条，避免打爆 DNS；
-  · 只记录不直接删：dead.txt 仅作候选；compile 只会丢弃"共识=1"的条目，多源背书的永不删；
+  · 判定用 DoH 直查权威，不用本地 socket：本地 DNS 被代理/污染时会误判 NXDOMAIN，一旦误判就等于误删；
   · 白名单/本地 allow 一律跳过；
   · 解析超时/网络错误不算死亡，只有明确的 NXDOMAIN（EAI_NONAME）才记录。
 """
@@ -16,9 +16,12 @@ import os
 import socket
 import sys
 import urllib.error
+import struct
+import random
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEAD = os.path.join(ROOT, "lists", "dead.txt")
+DOH = "https://dns.alidns.com/dns-query"
 SUBS = os.path.join(ROOT, "subs")
 CAP = 4000
 
@@ -38,7 +41,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--list", default=os.path.join(SUBS, "full", "domains.txt"))
     args = ap.parse_args()
-    day = datetime.datetime.utcnow().timetuple().tm_yday
+    day = datetime.datetime.now(datetime.timezone.utc).timetuple().tm_yday
     doms = read_lines(args.list)
     wl = set(read_lines(os.path.join(ROOT, "lists", "whitelist.txt")))
     wl |= set(read_lines(os.path.join(ROOT, "allowlist.txt")))
@@ -47,17 +50,22 @@ def main():
     print("死域抽样：%d 条（全量 %d）" % (len(sample), len(doms)))
 
     dead = []
+
     def probe(d):
-        try:
-            socket.setdefaulttimeout(3)
-            socket.getaddrinfo(d, 443, proto=socket.IPPROTO_TCP)
-            return None
-        except socket.gaierror as e:
-            if e.errno in (socket.EAI_NONAME, -2, 8):
-                return d
-            return None
-        except Exception:
-            return None
+        """只有权威明确返回 NXDOMAIN 才算死；超时/网络错误一律不算。"""
+        qn = b"".join(len(x).to_bytes(1, "big") + x.encode() for x in d.split(".")) + b"\x00"
+        msg = struct.pack(">HHHHHH", random.randint(0, 65535), 0x0100, 1, 0, 0, 0) + qn + struct.pack(">HH", 1, 1)
+        for _ in range(2):
+            try:
+                req = urllib.request.Request(DOH, data=msg, method="POST", headers={
+                    "Content-Type": "application/dns-message", "Accept": "application/dns-message"})
+                with urllib.request.urlopen(req, timeout=5) as r:
+                    b = r.read(12)
+                if len(b) >= 4:
+                    return d if (b[3] & 0x0f) == 3 else None
+            except Exception:
+                continue
+        return None
 
     with cf.ThreadPoolExecutor(max_workers=48) as ex:
         for r in ex.map(probe, sample):
@@ -65,11 +73,12 @@ def main():
                 dead.append(r)
 
     old = set(read_lines(DEAD))
-    new = sorted((old | set(dead)) - set(sample) | set(dead))
+    new = sorted(old | set(dead))
     new = new[-20000:]
     os.makedirs(os.path.dirname(DEAD), exist_ok=True)
     with open(DEAD, "w", encoding="utf-8") as f:
-        f.write("# NoAS 死域候选（仅单源背书才会被剔除；多源背书永不删）\n")
+        f.write("# NoAS 死域名单：解析探测确认不存在（NXDOMAIN）的域名，一律不进产物。\n")
+        f.write("# 探测口径：阿里 DoH 直查权威；超时/网络错误不算死。白名单与端点永不剪。\n")
         for d in new:
             f.write(d + "\n")
     print("死域扫描：本轮 NXDOMAIN %d 条｜候选池 %d 条" % (len(dead), len(new)))

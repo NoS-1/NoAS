@@ -1,4 +1,4 @@
-# NoAS 20261120-9feeb90b（9903 条 + 通配 21）
+# NoAS 20261121-286aeb9a（9903 条 + 通配 21）
 host-suffix, 0017c6c37c.com, reject
 host-suffix, 00a39e6dfd.com, reject
 host-suffix, 01168nl.com, reject
@@ -5320,7 +5320,6 @@ host-suffix, an.mlb.com, reject
 host-suffix, analysis.polarisoffice.com, reject
 host-suffix, analysys.cn, reject
 host-suffix, analytics-ad-eyu9u2md.kgslb.com, reject
-host-suffix, analytics-adv.ozon.ru, reject
 host-suffix, analytics-api.gemcommerce.com, reject
 host-suffix, analytics-beacon.p.uliza.jp, reject
 host-suffix, analytics-fe.digital-cloud.medallia.eu, reject
@@ -5898,7 +5897,6 @@ host-suffix, cash-ads.com, reject
 host-suffix, cbjs.baidu.com, reject
 host-suffix, cbzxy.com, reject
 host-suffix, cc.swiftype.com, reject
-host-suffix, ccb.uncle-ad.com, reject
 host-suffix, ccgateway.net, reject
 host-suffix, ccpd.jet2.com, reject
 host-suffix, ccpd.jet2holidays.com, reject
@@ -7151,7 +7149,6 @@ host-suffix, loopme.me, reject
 host-suffix, losangeles-ads.com, reject
 host-suffix, love-banner.com, reject
 host-suffix, lovelydrum.com, reject
-host-suffix, loyalnost-adv.ozon.ru, reject
 host-suffix, lp4.io, reject
 host-suffix, lpbhnv.nbcboston.com, reject
 host-suffix, lpbhnv.nbcchicago.com, reject
@@ -7425,7 +7422,6 @@ host-suffix, mon.tiktokv.com, reject
 host-suffix, mon.zijieapi.com, reject
 host-suffix, monetization-ad-tracking.prod-eu-c.az.vidaahub.com, reject
 host-suffix, monetizer101.com, reject
-host-suffix, monitor-ads-test.huan.tv, reject
 host-suffix, monitor-ads.huan.tv, reject
 host-suffix, mookie1.com, reject
 host-suffix, motionspots.com, reject
@@ -7562,7 +7558,6 @@ host-suffix, op-ads-sg8-sg10-11.dr-wan.shopeemobile.com, reject
 host-suffix, op-ads-sg8-sg10-12.dr-wan.shopeemobile.com, reject
 host-suffix, op-ads-sg8-sg10-14.dr-wan.shopeemobile.com, reject
 host-suffix, op-ads-sg8-sg10-8.dr-wan.shopeemobile.com, reject
-host-suffix, open-ad.vivo.com.cn, reject
 host-suffix, open.e.kuaishou.com, reject
 host-suffix, open.isnssdk.com, reject
 host-suffix, open.oneplus.net, reject
@@ -7717,7 +7712,6 @@ host-suffix, prod-do-dsp-mp-microsoft.global.ssl.fastly.net, reject
 host-suffix, prod-sponsoredads.mkt.zappos.com, reject
 host-suffix, prod.us-east-1.cxm-bcn.publisher-services.amazon.dev, reject
 host-suffix, products.gobankingrates.com, reject
-host-suffix, prodvizhenie-adv.ozon.ru, reject
 host-suffix, profiling.avandor.com, reject
 host-suffix, profusesupport.com, reject
 host-suffix, projectwonderful.com, reject
@@ -9481,7 +9475,6 @@ host-suffix, toiletpaper.life, reject
 host-suffix, tongji.meizu.com, reject
 host-suffix, top-free-ad.com, reject
 host-suffix, topqualitylink.com, reject
-host-suffix, torimochi-ad.net, reject
 host-suffix, tourism.visitorlando.com, reject
 host-suffix, tp.otto.de, reject
 host-suffix, tp88trk.com, reject
@@ -9850,7 +9843,6 @@ host-suffix, y.one.impact-ad.com, reject
 host-suffix, yadro.ru, reject
 host-suffix, yads.c.yimg.jp, reject
 host-suffix, yandexadexchange.net, reject
-host-suffix, yango-ads.com, reject
 host-suffix, ybswii.swarovski.com, reject
 host-suffix, ycembr.net-a-porter.com, reject
 host-suffix, ydpushserver.youdao.com, reject

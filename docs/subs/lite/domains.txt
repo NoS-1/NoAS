@@ -5319,7 +5319,6 @@ an.mlb.com
 analysis.polarisoffice.com
 analysys.cn
 analytics-ad-eyu9u2md.kgslb.com
-analytics-adv.ozon.ru
 analytics-api.gemcommerce.com
 analytics-beacon.p.uliza.jp
 analytics-fe.digital-cloud.medallia.eu
@@ -5897,7 +5896,6 @@ cash-ads.com
 cbjs.baidu.com
 cbzxy.com
 cc.swiftype.com
-ccb.uncle-ad.com
 ccgateway.net
 ccpd.jet2.com
 ccpd.jet2holidays.com
@@ -7150,7 +7148,6 @@ loopme.me
 losangeles-ads.com
 love-banner.com
 lovelydrum.com
-loyalnost-adv.ozon.ru
 lp4.io
 lpbhnv.nbcboston.com
 lpbhnv.nbcchicago.com
@@ -7424,7 +7421,6 @@ mon.tiktokv.com
 mon.zijieapi.com
 monetization-ad-tracking.prod-eu-c.az.vidaahub.com
 monetizer101.com
-monitor-ads-test.huan.tv
 monitor-ads.huan.tv
 mookie1.com
 motionspots.com
@@ -7561,7 +7557,6 @@ op-ads-sg8-sg10-11.dr-wan.shopeemobile.com
 op-ads-sg8-sg10-12.dr-wan.shopeemobile.com
 op-ads-sg8-sg10-14.dr-wan.shopeemobile.com
 op-ads-sg8-sg10-8.dr-wan.shopeemobile.com
-open-ad.vivo.com.cn
 open.e.kuaishou.com
 open.isnssdk.com
 open.oneplus.net
@@ -7716,7 +7711,6 @@ prod-do-dsp-mp-microsoft.global.ssl.fastly.net
 prod-sponsoredads.mkt.zappos.com
 prod.us-east-1.cxm-bcn.publisher-services.amazon.dev
 products.gobankingrates.com
-prodvizhenie-adv.ozon.ru
 profiling.avandor.com
 profusesupport.com
 projectwonderful.com
@@ -9480,7 +9474,6 @@ toiletpaper.life
 tongji.meizu.com
 top-free-ad.com
 topqualitylink.com
-torimochi-ad.net
 tourism.visitorlando.com
 tp.otto.de
 tp88trk.com
@@ -9849,7 +9842,6 @@ y.one.impact-ad.com
 yadro.ru
 yads.c.yimg.jp
 yandexadexchange.net
-yango-ads.com
 ybswii.swarovski.com
 ycembr.net-a-porter.com
 ydpushserver.youdao.com
