@@ -3,93 +3,108 @@
   "StevenBlack-all": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "antiAD-cn": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "KADhosts": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "AdGuard-CN-adservers": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "AdGuard-tracking": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "DandelionSprout-malware": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "1Hosts-Lite": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "notracking": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "AdAway": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "urlhaus": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "PhishingArmy": {
-   "fails": 1,
+   "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "Spam404": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "AdGuardDNS-filter": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "AdGuard-CNAME-disguised": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   },
   "AdGuard-CNAME-original": {
    "fails": 0,
    "hits": [
+    "2026-11-20",
     "2026-11-20"
    ]
   }
  },
- "rounds": 1
+ "rounds": 2
 }
