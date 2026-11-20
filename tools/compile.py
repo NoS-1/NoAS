@@ -152,6 +152,21 @@ def load_list_file(name):
     return out
 
 
+def load_first_col(name):
+    """读取 lists/<name> 的首列（tab 分隔的发现产物用）。"""
+    out = set()
+    p = os.path.join(LISTS, name)
+    if os.path.exists(p):
+        for line in open(p, encoding="utf-8"):
+            line = line.split("#", 1)[0]
+            if not line.strip():
+                continue
+            d = line.split("\t")[0].strip().lower()
+            if d and "." in d and not d.startswith("."):
+                out.add(d)
+    return out
+
+
 def load_whitelist():
     wl = set()
     p = os.path.join(LISTS, "whitelist.txt")
@@ -376,7 +391,10 @@ def main():
 
     exact, wild, per_source, _, consensus, hitn = collect()
     wl = load_whitelist()
-    ep = load_list_file("ad_endpoints.txt")
+    # 端点表 = 人工审计的国内广告端点 + 自动发现的高置信首方广告子域（解析链落在广告网络）
+    ep = load_list_file("ad_endpoints.txt") | load_first_col("cn_ad_endpoints.txt")
+    # 观察池：只靠前缀命中、链上无广告落点，仅进 mid/full，绝不进 lite
+    watch = load_first_col("cn_ad_watch.txt")
     blocked_wl = [d for d in exact if protected(d, wl) and d not in ep]
     exact = {d for d in exact if not protected(d, wl) or d in ep}
     wild = {w for w in wild if not protected(w, wl)}
@@ -405,6 +423,9 @@ def main():
                 core.add(line)
     benign = load_list_file("benign_top.txt") | wl
     wild = {w for w in wild if registrable(w) not in benign and w not in benign}
+    # 观察池过滤：不碰白名单父子域，也不碰良性大盘父域（除非它已经在端点表里）
+    watch = {w for w in watch if w not in benign and w not in ep
+             and not protected(w, wl) and registrable(w) not in benign}
     exact, benign_dropped = drop_benign_parent(exact, benign, ep)
     dead = load_list_file("dead.txt")
     dropped_dead = {d for d in exact if d in dead and hitn.get(d, 0) <= 1}
@@ -426,7 +447,9 @@ def main():
     slots -= len(promoted_keep)
     consensus_keep = set(ordered[:max(0, slots)])
     lite = drop_children(forced | promoted_keep | consensus_keep)
-    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted) | ep | (lblock - lallow)
+    # 观察池只进 mid / full：这些是自动发现的"前缀像广告、但链上没有广告落点"的域
+    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted) | ep | watch | (lblock - lallow)
+    full = exact | watch
 
     # 安全通配：核心广告网根域 + "注册域恰好是广告结构子域的父域"，绝不碰白名单/良性大盘
     wild_safe = {c for c in core
@@ -445,12 +468,14 @@ def main():
               open(os.path.join(ROOT, "out", "lite_provenance.json"), "w", encoding="utf-8"),
               ensure_ascii=False)
 
-    report = {"sources": per_source, "full": len(exact), "lite": len(lite), "mid": len(mid),
+    report = {"sources": per_source, "full": len(full), "lite": len(lite), "mid": len(mid),
+              "cn_discovered": len(ep - load_list_file("ad_endpoints.txt")), "cn_watch": len(watch),
               "lite_cap": LITE_CAP, "lite_pool": len(promoted) + len(consensus_pool),
               "wildcards": len(wild), "whitelist_blocked": len(blocked_wl),
               "ad_endpoints": len(ep), "promoted": len(promoted), "benign_dropped": len(benign_dropped)}
-    print("编译完成：full %d ／mid %d ／lite %d 条（通配 %d）｜白名单剔除 %d｜源 %d 个" % (
-        len(exact), len(mid), len(lite), len(wild | wild_safe), len(blocked_wl), len(per_source)))
+    print("编译完成：full %d ／mid %d ／lite %d 条（通配 %d）｜白名单剔除 %d｜源 %d 个｜国内发现端点 %d＋观察 %d" % (
+        len(full), len(mid), len(lite), len(wild | wild_safe), len(blocked_wl), len(per_source),
+        len(ep - load_list_file("ad_endpoints.txt")), len(watch)))
 
     os.makedirs(LISTS, exist_ok=True)
     json.dump(report, open(os.path.join(ROOT, "out_compile.json"), "w", encoding="utf-8"),
@@ -466,7 +491,7 @@ def main():
         ver, changed, meta = write_formats(mid, wild_safe, os.path.join(SUBS, "mid"), "mid")
         results["mid"] = {"version": ver, "changed": changed, "count": meta["count"]}
     if args.only in (None, "full"):
-        ver, changed, meta = write_formats(exact, wild | wild_safe, os.path.join(SUBS, "full"), "full")
+        ver, changed, meta = write_formats(full, wild | wild_safe, os.path.join(SUBS, "full"), "full")
         results["full"] = {"version": ver, "changed": changed, "count": meta["count"]}
     for k, v in results.items():
         print("  %s：%d 条，版本 %s，变更 %d 个文件" % (k, v["count"], v["version"], len(v["changed"])))

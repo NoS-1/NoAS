@@ -1,0 +1,24 @@
+# NoAS 国内广告子域观察池（低置信：词元命中、链上无广告落点）
+# 仅 mid/full 引入，lite 不用；构建日期 2026-11-20
+ad.alimama.com	ad
+ad.jdcloud.com	ad
+ad.kuaidi100.com	ad
+ad.kugou.com	ad
+ad.sf-express.com	ad
+ad.tencentmusic.com	ad
+ad.xiaojukeji.com	ad
+ads.cainiao.com	ads
+ads.uc.cn	ads
+ads.wps.cn	ads
+ads.xiaojukeji.com	ads
+adservice.kugou.com	adservice
+adservice.kuwo.cn	adservice
+adv.kuwo.cn	adv
+adx.hupu.com	adx
+adx.ke.com	adx
+adx.xiaojukeji.com	adx
+union.jdcloud.com	union
+union.tuniu.com	union
+union.uc.cn	union
+union.vip.com	union
+union.wps.cn	union
