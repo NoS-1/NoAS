@@ -1,24 +1,76 @@
 /**
  * NoAS DoH 网关模板（构建时注入规则，纯标准 Web API，可跑在 Worker / Node 任意环境）
  *
- * 注入占位：
- *   __TIER1__ 小档（跨源共识 ≥3，约 3.4k）
- *   __TIER2__ 中档（跨源共识 ≥2，约 29k）
- *   __ALLOW__ 白名单（含父域保护）
- *   __VERSION__ 构建版本
+ * 规则以换行分隔纯文本内嵌，模块级同步切分成 Set。
+ * 不解压、不用顶层 await（CF 禁止全局作用域做异步 I/O）。
  */
-const TIER1 = new Set(__TIER1__.map((x) => x.toLowerCase()));
-const TIER2 = new Set(__TIER2__.map((x) => x.toLowerCase()));
-const ALLOW = new Set(__ALLOW__.map((x) => x.toLowerCase()));
-const ENDPOINTS = new Set(__ENDPOINTS__.map((x) => x.toLowerCase()));
-const WILD = (__WILD__ || []).map((x) => x.toLowerCase());
+const T1_TEXT = __T1__;
+const T2_TEXT = __T2__;
+const ALLOW_TEXT = __ALLOW_TEXT__;
+const EP_TEXT = __EP_TEXT__;
+const WILD_TEXT = __WILD_TEXT__;
 const VERSION = __VERSION__;
+
+const splitLines = (t) => (t ? t.split("\n") : []);
+const TIER1 = new Set(splitLines(T1_TEXT));
+const TIER2 = new Set(splitLines(T2_TEXT));
+const ALLOW = new Set(splitLines(ALLOW_TEXT));
+const ENDPOINTS = new Set(splitLines(EP_TEXT));
+const WILD = splitLines(WILD_TEXT);
 
 const UPSTREAM = [
   "https://dns.alidns.com/dns-query",
   "https://doh.pub/dns-query",
   "https://dns.360.cn/dns-query",
 ];
+
+
+// ── 额度熔断（防止免费额度被超）──────────────────────────────────────────
+// Workers Free：10 万请求/天（UTC 0 点＝北京 08:00 重置）。到 90% 主动熔断，
+// 把请求推回国内公共 DoH；计数只放 isolate 内存，绝不碰 D1/KV
+// （用 KV 计数反而会把 KV 的 1000 写/天额度瞬间打爆）。
+const FREE_DAILY = 100000;
+const SOFT_RATIO = 0.9;
+const PER_IP_PER_MIN = 120;
+let dayKey = "";
+let dayCount = 0;
+const ipWindow = new Map();
+
+const utcDay = () => new Date().toISOString().slice(0, 10);
+
+function takeQuota() {
+  const d = utcDay();
+  if (d !== dayKey) {
+    dayKey = d;
+    dayCount = 0;
+    if (ipWindow.size > 2000) ipWindow.clear();
+  }
+  dayCount += 1;
+  return dayCount <= FREE_DAILY * SOFT_RATIO;
+}
+
+function ipBurst(ip) {
+  if (ipWindow.size > 2000) ipWindow.clear();
+  const minute = Math.floor(Date.now() / 60000);
+  const rec = ipWindow.get(ip);
+  if (!rec || rec.m !== minute) {
+    ipWindow.set(ip, { m: minute, n: 1 });
+    return false;
+  }
+  rec.n += 1;
+  return rec.n > PER_IP_PER_MIN;
+}
+
+function quotaStop(reason) {
+  return json({
+    error: reason,
+    action: "已熔断，保护 CF 免费额度",
+    fallback: ["https://dns.alidns.com/dns-query", "https://doh.pub/dns-query"],
+    note: "UTC 0 点（北京 08:00）自动恢复",
+    used: dayCount,
+    limit: FREE_DAILY,
+  }, 503);
+}
 
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj, null, 2), {
@@ -187,11 +239,13 @@ async function handle(request, env, ctx) {
 
   if (url.pathname === "/health") {
     return json({ ok: true, version: VERSION, tier1: TIER1.size, tier2: TIER2.size,
-                  allowlist: ALLOW.size, endpoints: ENDPOINTS.size, upstream: UPSTREAM.length });
+                  allowlist: ALLOW.size, endpoints: ENDPOINTS.size, upstream: UPSTREAM.length,
+                  quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
+                           soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
   }
   if (url.pathname === "/check") {
     const q = (url.searchParams.get("q") || "").toLowerCase();
-    const tier = Number(url.searchParams.get("tier") || 1);
+    const tier = Number(url.searchParams.get("tier") || 2);   // 默认走 mid：lite 只是零误伤最小集
     const cn = (url.searchParams.get("cname") || "").toLowerCase();
     const viaCname = cn ? blocked(cn, tier) : false;
     return json({ domain: q, blocked: blocked(q, tier), cname: cn || null,
@@ -202,6 +256,11 @@ async function handle(request, env, ctx) {
       status: 404, headers: { "content-type": "text/plain; charset=utf-8" },
     });
   }
+
+  // 熔断优先：先卡额度，再解包，省 CPU（Free 每请求只有 10ms CPU）
+  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  if (ipBurst(ip)) return quotaStop("单 IP 每分钟超过 " + PER_IP_PER_MIN + " 次");
+  if (!takeQuota()) return quotaStop("当日请求达免费额度 90%");
 
   let bytes;
   if (request.method === "POST") {
@@ -214,7 +273,7 @@ async function handle(request, env, ctx) {
   if (bytes.byteLength < 17) return json({ error: "报文过短" }, 400);
 
   const { name, qtype, end } = parseQuery(bytes);
-  const tier = Number(url.searchParams.get("tier") || 1);
+  const tier = Number(url.searchParams.get("tier") || 2);   // 默认走 mid：lite 只是零误伤最小集
   if (!name) return new Response("bad query", { status: 400 });
 
   if (blocked(name, tier)) {

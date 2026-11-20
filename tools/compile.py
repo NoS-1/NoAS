@@ -400,7 +400,9 @@ def main():
     wild = {w for w in wild if not protected(w, wl)}
     lallow = load_local("allowlist.txt")
     lblock = load_local("blocklist.txt")
-    wl = wl | lallow
+    # 冷却池：被反馈误伤、进入观察期的域，编译期强制豁免（等同白名单级别）
+    cooldown = load_list_file("cooldown.txt")
+    wl = wl | lallow | cooldown
     exact = drop_children(exact) | ep
 
     if len(per_source) < 8:
@@ -427,6 +429,19 @@ def main():
     watch = {w for w in watch if w not in benign and w not in ep
              and not protected(w, wl) and registrable(w) not in benign}
     exact, benign_dropped = drop_benign_parent(exact, benign, ep)
+    # 分类长尾：挖矿 / 返利跳转 / 系统遥测。只进 full，不进 lite/mid；
+    # 同样受白名单、良性大盘、端点表约束，避免误伤。
+    miner = load_list_file("miner.txt")
+    affiliate = load_list_file("affiliate.txt")
+    telemetry = load_list_file("telemetry.txt")
+    # 广告 SDK 与长视频贴片：高置信、低误伤，进 mid（不进 lite，避免挤占 1 万名额）
+    sdk = load_list_file("sdk_ads.txt")
+    video = load_list_file("video_ads.txt")
+    sdk_video = {d for d in (sdk | video)
+                 if not protected(d, wl) and d not in benign and d not in ep}
+    threat_all = miner | affiliate | telemetry
+    threat_extra = {d for d in threat_all
+                    if not protected(d, wl) and d not in benign and d not in ep}
     dead = load_list_file("dead.txt")
     dropped_dead = {d for d in exact if d in dead and hitn.get(d, 0) <= 1}
     exact = exact - dropped_dead
@@ -446,10 +461,12 @@ def main():
     promoted_keep = set(sorted(promoted_keep)[:max(0, slots)])
     slots -= len(promoted_keep)
     consensus_keep = set(ordered[:max(0, slots)])
-    lite = drop_children(forced | promoted_keep | consensus_keep)
+    # 威胁分类（挖矿/返利/遥测）严禁出现在 lite/mid：即便上游源带了也强制剔除
+    lite = drop_children(forced | promoted_keep | consensus_keep) - threat_all
     # 观察池只进 mid / full：这些是自动发现的"前缀像广告、但链上没有广告落点"的域
-    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted) | ep | watch | (lblock - lallow)
-    full = exact | watch
+    mid = (drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted)
+           | ep | watch | sdk_video | (lblock - lallow)) - threat_all
+    full = exact | watch | sdk_video | threat_extra
 
     # 安全通配：核心广告网根域 + "注册域恰好是广告结构子域的父域"，绝不碰白名单/良性大盘
     wild_safe = {c for c in core

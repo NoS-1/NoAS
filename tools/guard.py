@@ -121,8 +121,191 @@ def domains_of(tier, name):
     return out
 
 
+
+def read_first_col(rel):
+    p = os.path.join(ROOT, "lists", rel)
+    out = set()
+    if not os.path.exists(p):
+        return out
+    for line in open(p, encoding="utf-8"):
+        x = line.split("#", 1)[0].split("\t")[0].strip().lower()
+        if x and "." in x and "/" not in x:
+            out.add(x)
+    return out
+
+
+def check_cooldown():
+    """冷却池里的域一律不许出现在任何档位（误伤复发防线）。"""
+    fails = []
+    cooldown = read_first_col("cooldown.txt")
+    if not cooldown:
+        return fails
+    for tier in TIERS:
+        base = domains_of(tier, "domains.txt") or set()
+        hit = sorted(set(base) & cooldown)
+        if hit:
+            fails.append("%s：混入冷却池域 %d 条：%s" % (tier, len(hit), ", ".join(hit[:5])))
+    return fails
+
+
+def check_threat_isolation():
+    """挖矿/联盟/遥测分类只许进 full，绝不许漏进 lite/mid。"""
+    fails = []
+    cats = read_first_col("miner.txt") | read_first_col("affiliate.txt") | read_first_col("telemetry.txt")
+    if not cats:
+        return fails
+    for tier in ("lite", "mid"):
+        base = domains_of(tier, "domains.txt") or set()
+        hit = sorted(set(base) & cats)
+        if hit:
+            fails.append("%s：混入威胁分类域 %d 条：%s" % (tier, len(hit), ", ".join(hit[:5])))
+    full = set(domains_of("full", "domains.txt") or [])
+    missing = sorted(set(cats) - set(full))
+    if missing:
+        fails.append("full：分类域缺失 %d 条（应全部强制进 full）：%s"
+                     % (len(missing), ", ".join(missing[:5])))
+    return fails
+
+
+def check_sdk_video():
+    """SDK / 贴片域必须在 mid 里真实存在：写了却因良性剔除而消失，就是假规则。"""
+    fails = []
+    cats = read_first_col("sdk_ads.txt") | read_first_col("video_ads.txt")
+    if not cats:
+        return fails
+    mid = set(domains_of("mid", "domains.txt") or [])
+    def covered(d):
+        # 精确命中，或其父域在档（drop_children 会用父域覆盖子域，拦截同样生效）
+        if d in mid:
+            return True
+        parts = d.split(".")
+        return any(".".join(parts[i:]) in mid for i in range(1, len(parts) - 1))
+    missing = sorted(d for d in cats if not covered(d))
+    if missing:
+        fails.append("mid 缺少 SDK/贴片域 %d 条（规则写了不生效）：%s"
+                     % (len(missing), ", ".join(missing[:6])))
+    return fails
+
+
+def check_tags():
+    """标签台账必须与当前规则对齐：条数一致、每条标签非空、被标记的域确实在规则里。"""
+    fails = []
+    tp = os.path.join(ROOT, "lists", "tags.tsv")
+    if not os.path.exists(tp):
+        return ["缺少 tags.tsv（标签台账）"]
+    rows = 0
+    bad = []
+    for line in open(tp, encoding="utf-8"):
+        if line.startswith("#") or not line.strip():
+            continue
+        cols = line.rstrip("\n").split("\t")
+        if len(cols) != 2 or not cols[1].strip():
+            bad.append(line.strip()[:40])
+            continue
+        rows += 1
+    if bad:
+        fails.append("tags.tsv 有 %d 行格式不对：%s" % (len(bad), "; ".join(bad[:3])))
+    full = set(domains_of("full", "domains.txt") or [])
+    lite = set(domains_of("lite", "domains.txt") or [])
+    tagged = {l.split("\t")[0].strip().lower() for l in open(tp, encoding="utf-8")
+              if not l.startswith("#") and "\t" in l}
+    orphan = sorted(d for d in tagged if d not in full and d not in lite
+                    and d not in (domains_of("mid", "domains.txt") or set()))
+    if orphan:
+        fails.append("tags.tsv 有 %d 条域名不在任何档位：%s" % (len(orphan), ", ".join(orphan[:5])))
+    if rows < 1000:
+        fails.append("tags.tsv 条数过少 %d" % rows)
+    return fails
+
+
+
+def check_channel_artifacts():
+    """通道产物硬校验：空清单、bootstrap 用域名（鸡生蛋）、参数重复、yaml 缺键，一律 fail。"""
+    fails = []
+    base = os.path.join(SUBS, "channels")
+    if not os.path.isdir(base):
+        return ["缺少 subs/channels（通道产物未生成）"]
+
+    def read_lines(name):
+        fp = os.path.join(base, name)
+        if not os.path.exists(fp):
+            fails.append("缺少 %s" % name)
+            return []
+        return [l.strip() for l in open(fp, encoding="utf-8")
+                if l.strip() and not l.lstrip().startswith("#")]
+
+    doh = read_lines("doh.txt")
+    dot = read_lines("dot.txt")
+    if len(doh) < 1:
+        fails.append("doh.txt 为空（主通道必须至少 1 条）")
+    if len(dot) < 1:
+        fails.append("dot.txt 为空（DoT 备用必须至少 1 条）")
+    for u in doh:
+        if not u.startswith("https://"):
+            fails.append("doh.txt 非法条目：%s" % u)
+    for d in dot:
+        if not d.startswith("tls://"):
+            fails.append("dot.txt 非法条目：%s" % d)
+
+    sh = os.path.join(base, "aiodns.sh")
+    if not os.path.exists(sh):
+        fails.append("缺少 aiodns.sh")
+    else:
+        body = open(sh, encoding="utf-8").read()
+        # bootstrap 必须是明文 IP：用域名会鸡生蛋，用 tls://IP 又可能证书不匹配
+        boots = [l.split("--bootstrap")[1].split()[0]
+                 for l in body.splitlines() if "--bootstrap" in l]
+        for b in boots:
+            if not re.match(r"^[0-9]{1,3}(\.(?:[0-9]{1,3})){3}", b.strip()):
+                fails.append("aiodns.sh 的 --bootstrap 不是 IP：%s" % b.strip())
+        if not boots:
+            fails.append("aiodns.sh 缺少 --bootstrap（DoH/DoT 域名将无法解析）")
+        # 参数不得重复（重复多半是模板拼接 bug）
+        for flag in ("--upstream", "--special-upstream", "--fallback"):
+            vals = [l.split(flag)[1].strip() for l in body.splitlines() if flag in l]
+            for v in vals:
+                if v.count("--upstream ") + v.count("--fallback ") + v.count("--bootstrap ") > 1:
+                    fails.append("aiodns.sh 的 %s 一行写了多个值：%s" % (flag, v[:50]))
+        if "--special-list" not in body:
+            fails.append("aiodns.sh 缺少 --special-list（国内分流会失效）")
+
+    sp = os.path.join(base, "aiodns.special.txt")
+    if not os.path.exists(sp):
+        fails.append("缺少 aiodns.special.txt")
+    else:
+        n = len([l for l in open(sp, encoding="utf-8")
+                 if l.strip() and not l.lstrip().startswith("#")])
+        if n < 50:
+            fails.append("aiodns.special.txt 只有 %d 条国内域（应 >=50）" % n)
+
+    yml = os.path.join(base, "adguardhome-upstream.yaml")
+    if not os.path.exists(yml):
+        fails.append("缺少 adguardhome-upstream.yaml")
+    else:
+        y = open(yml, encoding="utf-8").read()
+        for key in ("upstream_dns:", "bootstrap_dns:"):
+            if key not in y:
+                fails.append("adguardhome-upstream.yaml 缺少 %s" % key)
+        # 防止模板拼接出重复行
+        ups = [l.strip() for l in y.splitlines() if l.strip().startswith("- http")]
+        if len(ups) != len(set(ups)):
+            fails.append("adguardhome-upstream.yaml 有重复上游条目")
+
+    h = os.path.join(base, "health.json")
+    if not os.path.exists(h):
+        fails.append("缺少 health.json")
+    else:
+        try:
+            hd = json.load(open(h, encoding="utf-8"))
+            if hd.get("env") not in ("clean", "suspect"):
+                fails.append("health.json env 非法：%s" % hd.get("env"))
+        except Exception as e:
+            fails.append("health.json 解析失败：%s" % e)
+    return fails
+
+
 def main():
-    fails = check_ledger() + check_precision()
+    fails = check_ledger() + check_precision() + check_cooldown() + check_threat_isolation() + check_tags() + check_channel_artifacts() + check_sdk_video()
     allow = load_allow()
     summary = {}
 

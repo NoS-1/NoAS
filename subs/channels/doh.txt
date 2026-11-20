@@ -1,0 +1,4 @@
+# NoAS 国内 DoH 上游（可直接填入 AdGuard Home / sing-box / 浏览器）
+# 顺序即优先级；均为国内直连，无调用额度
+https://dns.alidns.com/dns-query
+https://doh.pub/dns-query

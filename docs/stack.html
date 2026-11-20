@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NoAS · 四层叠加去广告</title>
+<title>NoAS · 三层叠加去广告</title>
 <style>
   :root{--bg:#0c0f0e;--panel:#141917;--line:#243029;--fg:#e8efe9;--dim:#93a49a;
         --accent:#3ddc84;--warn:#f5c15c;--bad:#ff6b6b}
@@ -35,15 +35,15 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>四层叠加去广告</h1>
-  <p class="sub">先说结论：任何单层都做不到 100%。能做到"接近全场景"的只有四层叠加，且每层上限不同。</p>
+  <h1>三层叠加去广告</h1>
+  <p class="sub">先说结论：任何单层都做不到 100%。能做到"接近全场景"的只有三层叠加，且每层上限不同。</p>
 
   <div class="layer">
     <span class="tag">L1 · DNS</span><br><b>域名层</b>
     <p>拦第三方广告/追踪域名。覆盖所有 App 与设备，但拦不住同域广告与服务端注入。</p>
     <a class="link" href="https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt">lite · adguard.txt</a>
     <a class="link" href="https://nos-1.github.io/NoAS/">Pages 镜像入口</a>
-    <p class="note">真实上限：App 内广告约 70%–85%。</p>
+    <p class="note">真实上限：App 内广告约 70%–85%。安卓系统级还可用 AdAway（F-Droid 免费，无需 root 走本地 VPN），源填本站 hosts.txt。</p>
   </div>
 
   <div class="layer">
@@ -70,44 +70,36 @@
     <p class="note">真实上限：网页横幅/追踪约 98%，YouTube 网页端会反复"失效—修复"。</p>
   </div>
 
-  <div class="layer">
-    <span class="tag">L4 · 交互</span><br><b>点击层（Android）</b>
-    <p>网络层拦不到的 App 开屏，用无障碍自动点"跳过"。这是唯一能对付"同域广告"的免费办法。</p>
-    <a class="link" href="https://nos-1.github.io/NoAS/subs/gkd/noas-gkd.json5">NoAS GKD 订阅 · noas-gkd.json5</a>
-    <p class="note">规则来源 @gkd-kit/subscription（MIT），每日随流水线重建；GKD → 订阅 → 添加订阅，粘贴上面地址即可。</p>
-    <p class="note wn">GKD 需要无障碍权限，只从官方仓库装。iOS 没有对应方案：苹果不允许第三方点击 App 界面，别信"快捷指令跳过开屏"的教程。</p>
-    <p class="note">补充：安卓系统级还可用 AdAway（F-Droid 免费，无需 root 走本地 VPN），源填本站 hosts.txt。</p>
-  </div>
 
 
   <h2>客户端对照</h2>
   <table>
     <tr><th>客户端</th><th>L1 用哪个文件</th><th>L2 路径层</th><th>L3 内容层</th></tr>
-    <tr><td>AdGuard Home / AdGuard DNS</td><td><code>adguard.txt</code>（或 hosts.txt）</td><td>—</td><td>—</td></tr>
-    <tr><td>AdGuard App（iOS/Android/桌面）</td><td><code>adguard.txt</code></td><td>—</td><td>内置过滤规则</td></tr>
-    <tr><td>Pi-hole</td><td><code>hosts.txt</code></td><td>—</td><td>—</td></tr>
-    <tr><td>AdAway（安卓）</td><td><code>hosts.txt</code></td><td>—</td><td>—</td></tr>
-    <tr><td>NextDNS</td><td><code>domains.txt</code></td><td>—</td><td>—</td></tr>
-    <tr><td>dnscrypt-proxy</td><td><code>domains.txt</code></td><td>—</td><td>—</td></tr>
-    <tr><td>Clash / mihomo / FlClash / Stash</td><td><code>clash.yaml</code></td><td>—</td><td>—</td></tr>
-    <tr><td>sing-box / Karing</td><td><code>singbox.json</code></td><td>—</td><td>—</td></tr>
-    <tr><td>Surge / Shadowrocket</td><td><code>surge.list</code></td><td><code>noas-path.sgmodule</code></td><td>—</td></tr>
-    <tr><td>Loon</td><td><code>surge.list</code>（规则集策略选 REJECT）</td><td><code>noas-path.plugin</code></td><td>—</td></tr>
-    <tr><td>QuantumultX</td><td><code>qx.list</code></td><td><code>noas-path.conf</code></td><td>—</td></tr>
+    <tr><td>AdGuard Home / AdGuard DNS</td><td><code>adguard.txt</code>（或 hosts.txt）</td><td>—</td></tr>
+    <tr><td>AdGuard App（iOS/Android/桌面）</td><td><code>adguard.txt</code></td><td>—</td></tr>
+    <tr><td>Pi-hole</td><td><code>hosts.txt</code></td><td>—</td></tr>
+    <tr><td>AdAway（安卓）</td><td><code>hosts.txt</code></td><td>—</td></tr>
+    <tr><td>NextDNS</td><td><code>domains.txt</code></td><td>—</td></tr>
+    <tr><td>dnscrypt-proxy</td><td><code>domains.txt</code></td><td>—</td></tr>
+    <tr><td>Clash / mihomo / FlClash / Stash</td><td><code>clash.yaml</code></td><td>—</td></tr>
+    <tr><td>sing-box / Karing</td><td><code>singbox.json</code></td><td>—</td></tr>
+    <tr><td>Surge / Shadowrocket</td><td><code>surge.list</code></td><td><code>noas-path.sgmodule</code></td></tr>
+    <tr><td>Loon</td><td><code>surge.list</code>（规则集策略选 REJECT）</td><td><code>noas-path.plugin</code></td></tr>
+    <tr><td>QuantumultX</td><td><code>qx.list</code></td><td><code>noas-path.conf</code></td></tr>
     <tr><td>Firefox + uBO / Brave</td><td><code>adguard.txt</code>（当普通过滤器订阅）</td><td>—</td><td><code>noas-ubo.txt</code></td></tr>
-    <tr><td>BIND / Unbound / PowerDNS</td><td><code>rpz.zone</code> / <code>unbound.conf</code></td><td>—</td><td>—</td></tr>
+    <tr><td>BIND / Unbound / PowerDNS</td><td><code>rpz.zone</code> / <code>unbound.conf</code></td><td>—</td></tr>
   </table>
   <p class="note">L2 只有能改写 HTTPS 并装证书的客户端才支持；Clash 系、sing-box、AdGuard Home、Pi-hole 都不具备 MITM 改写能力，别指望它们能治开屏。</p>
 
-  <h2>四层的真实覆盖</h2>
+  <h2>三层的真实覆盖</h2>
   <table>
-    <tr><th>场景</th><th>L1 DNS</th><th>+L2 路径</th><th>+L3 内容</th><th>+L4 点击</th></tr>
-    <tr><td>网页横幅/弹窗</td><td class="wn">部分</td><td class="wn">部分</td><td class="ok">基本全</td><td>—</td></tr>
+    <tr><th>场景</th><th>L1 DNS</th><th>+L2 路径</th><th>+L3 内容</th></tr>
+    <tr><td>网页横幅/弹窗</td><td class="wn">部分</td><td class="wn">部分</td><td class="ok">基本全</td></tr>
     <tr><td>国内 App 开屏</td><td class="wn">部分</td><td class="ok">大部分</td><td>—</td><td class="ok">剩余也能点掉</td></tr>
     <tr><td>信息流广告</td><td class="no">少</td><td class="wn">部分</td><td>—</td><td class="wn">可点掉</td></tr>
-    <tr><td>视频贴片（国内）</td><td class="no">几乎无效</td><td class="wn">部分</td><td class="wn">部分</td><td>—</td></tr>
-    <tr><td>YouTube / Twitch</td><td class="no">无效</td><td class="no">无效</td><td class="wn">网页端可</td><td>—</td></tr>
-    <tr><td>社交平台赞助帖</td><td class="no">无效</td><td class="no">无效</td><td class="wn">网页端可</td><td>—</td></tr>
+    <tr><td>视频贴片（国内）</td><td class="no">几乎无效</td><td class="wn">部分</td><td class="wn">部分</td></tr>
+    <tr><td>YouTube / Twitch</td><td class="no">无效</td><td class="no">无效</td><td class="wn">网页端可</td></tr>
+    <tr><td>社交平台赞助帖</td><td class="no">无效</td><td class="no">无效</td><td class="wn">网页端可</td></tr>
   </table>
   <p class="note">表格是结构性的，不是配置问题：同域广告、服务端注入（SSAI）、App 沙箱 + 全站 HTTPS、证书固定、反广告检测，这五件事决定了"100%"不存在。</p>
 
@@ -115,23 +107,23 @@
   <h2>绕过与排障</h2>
   <table>
     <tr><th>现象</th><th>原因</th><th>处理</th></tr>
-    <tr><td>DNS 层明明拦了，Chrome 还是出广告</td><td>Chrome 自带"安全 DNS"走了自己的 DoH，绕过你的解析</td><td>Chrome → 设置 → 隐私与安全 → 安全 DNS → 改回"使用当前服务商"</td></tr>
-    <tr><td>iPhone 部分请求不走你的 DNS</td><td>iCloud 私密转发（Private Relay）自带加密解析</td><td>Apple ID → iCloud → 私密转发 关闭</td></tr>
-    <tr><td>安卓在酒店/公司 Wi-Fi 上突然失效</td><td>网络封了 DoT（853），私有 DNS 掉线后回落明文</td><td>改用 AdGuard/RethinkDNS 这类本地 VPN 走 DoH；或换网络</td></tr>
+    <tr><td>DNS 层明明拦了，Chrome 还是出广告</td><td>Chrome 自带"安全 DNS"走了自己的 DoH，绕过你的解析</td></tr>
+    <tr><td>iPhone 部分请求不走你的 DNS</td><td>iCloud 私密转发（Private Relay）自带加密解析</td></tr>
+    <tr><td>安卓在酒店/公司 Wi-Fi 上突然失效</td><td>网络封了 DoT（853），私有 DNS 掉线后回落明文</td></tr>
     <tr><td>开了 L2 某个 App 白屏/登录失败</td><td>MITM 撞上证书固定，或规则命中过宽</td><td>把该主机从 <code>mitm.txt</code> 删除；或退回 core 档；必要时删掉对应规则行</td></tr>
-    <tr><td>App 完全不遵守系统 DNS</td><td>App 内置 DoH 端点（自家解析）</td><td>只能靠 L2 路径层或路由器防火墙封 DoH 端点，DNS 层无解</td></tr>
-    <tr><td>想确认 L2 到底生效没</td><td>—</td><td>Loon/Surge 开请求日志，打开目标 App，看广告接口是否显示 reject；或对比开关前后的开屏时长</td></tr>
+    <tr><td>App 完全不遵守系统 DNS</td><td>App 内置 DoH 端点（自家解析）</td></tr>
+    <tr><td>想确认 L2 到底生效没</td><td>—</td></tr>
   </table>
 
   <h2>怎么用</h2>
   <ul>
     <li><b>只想要省事</b>：L1 订阅 + 浏览器装上 uBO（L3）即可，不折腾证书。</li>
     <li><b>要治开屏</b>：L1 + L2 core（Surge/Loon/QX 任一），先只开 core，确认没有 App 异常再换 full。</li>
-    <li><b>要拉满</b>：L1 + L2 full + L3 + 安卓 L4。</li>
+    <li><b>要拉满</b>：L1 + L2 full + L3。</li>
     <li><b>出现 App 白屏/登录失败</b>：先关 L2，确认是否 MITM 引起；是的话把对应主机从 <code>mitm.txt</code> 移除，或只用 core。</li>
   </ul>
 
-  <footer>规则每日随主仓重建；路径层条目全部写在 <code>lists/ad_paths.tsv</code>，逐条带 App 与用途，可自行删改。</footer>
+  <footer>规则每日随主仓重建；路径层条目全部写在 <code>lists/ad_paths.tsv</code>，逐条带 App 与用途，可自行删改。<br>通道怎么选、免费额度怎么守：<a href="dns-channels.html">DNS 通道与额度 →</a></footer>
 </div>
 </body>
 </html>

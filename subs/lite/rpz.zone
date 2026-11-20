@@ -1,4 +1,4 @@
-# NoAS RPZ（20261120-97d30172）
+# NoAS RPZ（20261120-4739def8）
 ; $TTL 300
 0i0i0i0.com CNAME .
 1187531871.rsc.cdn77.org CNAME .
@@ -1181,7 +1181,6 @@ adingo.jp CNAME .
 adition.com CNAME .
 adition.de CNAME .
 adition.net CNAME .
-adjust.com CNAME .
 adkit-advertising.amazon CNAME .
 adl.national-lottery.co.uk CNAME .
 adlc-exchange.toast.com CNAME .
@@ -2374,6 +2373,7 @@ ads.metromanager.com CNAME .
 ads.metropolis.co.jp CNAME .
 ads.mezimedia.com CNAME .
 ads.mgnetwork.com CNAME .
+ads.mgtv.com CNAME .
 ads.mic.com CNAME .
 ads.midwayusa.com CNAME .
 ads.millionairemate.com CNAME .
@@ -4441,7 +4441,6 @@ apilogduration.mytvnet.vn CNAME .
 apinas.nct.vn CNAME .
 apiv2.moengage.com CNAME .
 app-ads-services.com CNAME .
-app-measurement.com CNAME .
 app.advertisingsolutions.att-mail.com CNAME .
 app.f2trk.com CNAME .
 app.hstatic.net CNAME .
@@ -4461,7 +4460,6 @@ appnext.hs.llnwd.net CNAME .
 appodeal.com CNAME .
 appollo-plus.com CNAME .
 appsdt.com CNAME .
-appsflyer.com CNAME .
 apptornado.com CNAME .
 apptracer.ru CNAME .
 aptoide-rtb.aptoide.com CNAME .
@@ -4510,6 +4508,7 @@ atbjh.getcasely.com CNAME .
 athena-ads.wikia.com CNAME .
 athwartwhoafat.com CNAME .
 atlas-adv.pages.dev CNAME .
+atm.youku.com CNAME .
 atomictrackercollector-i5adxi4wfq-uc.a.run.app CNAME .
 attn.tv CNAME .
 attribution.airbridge.io CNAME .
@@ -4945,7 +4944,6 @@ bqjco.simon.com CNAME .
 br-ad-lgsmartad-com.aws-prd.net CNAME .
 br.fling.com CNAME .
 brainient.com CNAME .
-branch.io CNAME .
 brand-display.com CNAME .
 brand.zing.vn CNAME .
 brandreachsys.com CNAME .
@@ -5265,6 +5263,7 @@ ctxcollect.com CNAME .
 ctyjsf.cellphones.com.vn CNAME .
 cu-ad.tbs.co.jp CNAME .
 culturaltracking.ru CNAME .
+cupid.iqiyi.com CNAME .
 custom.shop.avispl.com CNAME .
 customads.co CNAME .
 cvgbl.consumeraffairs.com CNAME .
@@ -6801,7 +6800,6 @@ knfkd.revzilla.com CNAME .
 knorzj.wearfigs.com CNAME .
 knymhv.ariat.com CNAME .
 kobel.services CNAME .
-kochava.com CNAME .
 kohlermetricssecure.kohler.com CNAME .
 kpdgj.adanola.com CNAME .
 kpqgh.directmeds.com CNAME .
@@ -7193,18 +7191,15 @@ metrics.fortinet.com CNAME .
 metrics.foxnews.com CNAME .
 metrics.foxsports.com.au CNAME .
 metrics.fressnapf.de CNAME .
-metrics.galicia.ar CNAME .
 metrics.gap.com CNAME .
 metrics.gcimetrics.com CNAME .
 metrics.geelongadvertiser.com.au CNAME .
-metrics.giftcards.com CNAME .
 metrics.gnc.com CNAME .
 metrics.govexec.com CNAME .
 metrics.harley-davidson.com CNAME .
 metrics.hbogo.com CNAME .
 metrics.health.com CNAME .
 metrics.heraldsun.com.au CNAME .
-metrics.hkexpress.com CNAME .
 metrics.hrblock.com CNAME .
 metrics.iconfitness.com CNAME .
 metrics.iij.ad.jp CNAME .
@@ -9687,8 +9682,6 @@ uimserv.net CNAME .
 ujm.hansel.io CNAME .
 uk.ads.hexus.net CNAME .
 ukoffzeh.com CNAME .
-umeng.com CNAME .
-umengcloud.com CNAME .
 umommy.cyou CNAME .
 unid.go.com CNAME .
 union.6.cn CNAME .

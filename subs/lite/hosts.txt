@@ -1,4 +1,4 @@
-# NoAS 20261120-97d30172（9969 条）
+# NoAS 20261120-4739def8（9962 条）
 0.0.0.0 0i0i0i0.com
 0.0.0.0 1187531871.rsc.cdn77.org
 0.0.0.0 12112336.pix-cdn.org
@@ -1180,7 +1180,6 @@
 0.0.0.0 adition.com
 0.0.0.0 adition.de
 0.0.0.0 adition.net
-0.0.0.0 adjust.com
 0.0.0.0 adkit-advertising.amazon
 0.0.0.0 adl.national-lottery.co.uk
 0.0.0.0 adlc-exchange.toast.com
@@ -2373,6 +2372,7 @@
 0.0.0.0 ads.metropolis.co.jp
 0.0.0.0 ads.mezimedia.com
 0.0.0.0 ads.mgnetwork.com
+0.0.0.0 ads.mgtv.com
 0.0.0.0 ads.mic.com
 0.0.0.0 ads.midwayusa.com
 0.0.0.0 ads.millionairemate.com
@@ -4440,7 +4440,6 @@
 0.0.0.0 apinas.nct.vn
 0.0.0.0 apiv2.moengage.com
 0.0.0.0 app-ads-services.com
-0.0.0.0 app-measurement.com
 0.0.0.0 app.advertisingsolutions.att-mail.com
 0.0.0.0 app.f2trk.com
 0.0.0.0 app.hstatic.net
@@ -4460,7 +4459,6 @@
 0.0.0.0 appodeal.com
 0.0.0.0 appollo-plus.com
 0.0.0.0 appsdt.com
-0.0.0.0 appsflyer.com
 0.0.0.0 apptornado.com
 0.0.0.0 apptracer.ru
 0.0.0.0 aptoide-rtb.aptoide.com
@@ -4509,6 +4507,7 @@
 0.0.0.0 athena-ads.wikia.com
 0.0.0.0 athwartwhoafat.com
 0.0.0.0 atlas-adv.pages.dev
+0.0.0.0 atm.youku.com
 0.0.0.0 atomictrackercollector-i5adxi4wfq-uc.a.run.app
 0.0.0.0 attn.tv
 0.0.0.0 attribution.airbridge.io
@@ -4944,7 +4943,6 @@
 0.0.0.0 br-ad-lgsmartad-com.aws-prd.net
 0.0.0.0 br.fling.com
 0.0.0.0 brainient.com
-0.0.0.0 branch.io
 0.0.0.0 brand-display.com
 0.0.0.0 brand.zing.vn
 0.0.0.0 brandreachsys.com
@@ -5264,6 +5262,7 @@
 0.0.0.0 ctyjsf.cellphones.com.vn
 0.0.0.0 cu-ad.tbs.co.jp
 0.0.0.0 culturaltracking.ru
+0.0.0.0 cupid.iqiyi.com
 0.0.0.0 custom.shop.avispl.com
 0.0.0.0 customads.co
 0.0.0.0 cvgbl.consumeraffairs.com
@@ -6800,7 +6799,6 @@
 0.0.0.0 knorzj.wearfigs.com
 0.0.0.0 knymhv.ariat.com
 0.0.0.0 kobel.services
-0.0.0.0 kochava.com
 0.0.0.0 kohlermetricssecure.kohler.com
 0.0.0.0 kpdgj.adanola.com
 0.0.0.0 kpqgh.directmeds.com
@@ -7192,18 +7190,15 @@
 0.0.0.0 metrics.foxnews.com
 0.0.0.0 metrics.foxsports.com.au
 0.0.0.0 metrics.fressnapf.de
-0.0.0.0 metrics.galicia.ar
 0.0.0.0 metrics.gap.com
 0.0.0.0 metrics.gcimetrics.com
 0.0.0.0 metrics.geelongadvertiser.com.au
-0.0.0.0 metrics.giftcards.com
 0.0.0.0 metrics.gnc.com
 0.0.0.0 metrics.govexec.com
 0.0.0.0 metrics.harley-davidson.com
 0.0.0.0 metrics.hbogo.com
 0.0.0.0 metrics.health.com
 0.0.0.0 metrics.heraldsun.com.au
-0.0.0.0 metrics.hkexpress.com
 0.0.0.0 metrics.hrblock.com
 0.0.0.0 metrics.iconfitness.com
 0.0.0.0 metrics.iij.ad.jp
@@ -9686,8 +9681,6 @@
 0.0.0.0 ujm.hansel.io
 0.0.0.0 uk.ads.hexus.net
 0.0.0.0 ukoffzeh.com
-0.0.0.0 umeng.com
-0.0.0.0 umengcloud.com
 0.0.0.0 umommy.cyou
 0.0.0.0 unid.go.com
 0.0.0.0 union.6.cn

@@ -34,6 +34,5 @@ jobs:
           check "https://nos-1.github.io/NoAS/data.json"
           check "https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt"
           check "https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/hosts.txt"
-          check "https://nos-1.github.io/NoAS/subs/gkd/noas-gkd.version.json5"
           check "https://github.com/NoS-1/NoAS/releases/latest/download/noas-snapshot.zip"
           exit $fail

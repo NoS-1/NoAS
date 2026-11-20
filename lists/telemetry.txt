@@ -1,0 +1,22 @@
+# NoAS 统计埋点 / 归因域（只进 full，不进 lite/mid）
+# 为什么单独成表：这些域是"上报"而非"广告素材"，拦掉可能影响 App 记账、
+# 推送归因、崩溃上报。默认不进 lite/mid，只在 full 提供，给愿意彻底清理的用户。
+# 只收高置信、域名即业务本身的；不确定的一律不写。
+# 厂商设备级系统遥测仍不收录（与主功能耦合太深，误伤风险高）。
+
+# 友盟（阿里系，国内 App 最常见）
+umeng.com
+umengcloud.com
+
+# Firebase Analytics / Google 归因
+app-measurement.com
+
+# 归因与广告效果衡量 SDK
+appsflyer.com
+adjust.com
+kochava.com
+branch.io
+
+# 国内行为分析
+growingio.com
+sensorsdata.cn
