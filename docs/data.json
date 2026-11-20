@@ -112,8 +112,8 @@
   }
  },
  "sources": {
-  "count": 14,
-  "whitelist_blocked": 3720,
+  "count": 15,
+  "whitelist_blocked": 4359,
   "ad_endpoints": 11,
   "per_source": {
    "StevenBlack-all": 76101,
@@ -126,6 +126,7 @@
    "notracking": 500138,
    "AdAway": 6540,
    "urlhaus": 2112,
+   "PhishingArmy": 146883,
    "Spam404": 8140,
    "AdGuardDNS-filter": 191090,
    "AdGuard-CNAME-disguised": 306552,
@@ -133,8 +134,8 @@
   }
  },
  "health": {
-  "ts": "2026-11-20T08:40:54Z",
-  "round": 1,
+  "ts": "2026-11-20T08:43:05Z",
+  "round": 2,
   "sources": [
    {
     "name": "StevenBlack-all",
@@ -188,7 +189,7 @@
    },
    {
     "name": "PhishingArmy",
-    "fails": 1,
+    "fails": 0,
     "seen_days": 1
    },
    {
@@ -292,6 +293,12 @@
   {
    "ts": "2026-11-20T08:40:54Z",
    "round": 1,
+   "events": [],
+   "sources": 15
+  },
+  {
+   "ts": "2026-11-20T08:43:05Z",
+   "round": 2,
    "events": [],
    "sources": 15
   }
