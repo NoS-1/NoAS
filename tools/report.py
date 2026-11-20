@@ -37,6 +37,11 @@ def main():
     if os.path.isdir(src):
         shutil.copytree(src, dst, dirs_exist_ok=True)
 
+    # 路径层与 uBO 规则同样镜像进站点，国内访问 Pages 比 raw 稳
+    p_src = os.path.join(SUBS, "paths")
+    if os.path.isdir(p_src):
+        shutil.copytree(p_src, os.path.join(DOCS, "subs", "paths"), dirs_exist_ok=True)
+
     tiers = {}
     for t in TIERS:
         meta = read_json(os.path.join(SUBS, t, "meta.json"), {})

@@ -50,14 +50,14 @@
     <span class="tag">L2 · 路径</span><br><b>接口层（本页新增）</b>
     <p>对 HTTPS 解密后按 URL 正则拦开屏/广告接口。国内 App 开屏广告的主力解法。</p>
     <h3>Surge / Shadowrocket（模块）</h3>
-    <a class="link" href="https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/paths/core/noas-path.sgmodule">core · noas-path.sgmodule（保守，14 条）</a>
-    <a class="link" href="https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/paths/full/noas-path.sgmodule">full · noas-path.sgmodule（19 条 + 37 主机）</a>
+    <a class="link" href="https://nos-1.github.io/NoAS/subs/paths/core/noas-path.sgmodule">core · noas-path.sgmodule（保守，14 条）</a>
+    <a class="link" href="https://nos-1.github.io/NoAS/subs/paths/full/noas-path.sgmodule">full · noas-path.sgmodule（19 条 + 37 主机）</a>
     <h3>Loon（插件）</h3>
-    <a class="link" href="https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/paths/core/noas-path.plugin">core · noas-path.plugin</a>
-    <a class="link" href="https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/paths/full/noas-path.plugin">full · noas-path.plugin</a>
+    <a class="link" href="https://nos-1.github.io/NoAS/subs/paths/core/noas-path.plugin">core · noas-path.plugin</a>
+    <a class="link" href="https://nos-1.github.io/NoAS/subs/paths/full/noas-path.plugin">full · noas-path.plugin</a>
     <h3>QuantumultX（重写）</h3>
-    <a class="link" href="https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/paths/core/noas-path.conf">core · noas-path.conf</a>
-    <a class="link" href="https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/paths/full/noas-path.conf">full · noas-path.conf</a>
+    <a class="link" href="https://nos-1.github.io/NoAS/subs/paths/core/noas-path.conf">core · noas-path.conf</a>
+    <a class="link" href="https://nos-1.github.io/NoAS/subs/paths/full/noas-path.conf">full · noas-path.conf</a>
     <p class="note wn">需要 MITM 并信任证书；证书固定的 App 会直接断连，此时把该主机从 MITM 列表里删掉即可。core 每条都锚定具体主机，不会波及其他 App。</p>
     <p class="note">真实上限：国内 App 开屏/信息流约 90%–95%。</p>
   </div>
@@ -65,7 +65,7 @@
   <div class="layer">
     <span class="tag">L3 · 内容</span><br><b>页内层（本页新增）</b>
     <p>浏览器扩展用，隐藏广告位、拦广告脚本。DNS 拿不到的页面级广告由这层兜。</p>
-    <a class="link" href="https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/paths/ubo/noas-ubo.txt">uBO 自定义规则 · noas-ubo.txt</a>
+    <a class="link" href="https://nos-1.github.io/NoAS/subs/paths/ubo/noas-ubo.txt">uBO 自定义规则 · noas-ubo.txt</a>
     <p class="note">用法：uBO → 过滤器列表 → 导入自定义列表，粘贴上面地址。Chrome/Edge 因 MV3 只剩 uBOL，能力明显缩水；要满血请用 Firefox + 经典 uBO。一个浏览器只装一个拦截器，别叠两个。</p>
     <p class="note">真实上限：网页横幅/追踪约 98%，YouTube 网页端会反复"失效—修复"。</p>
   </div>
