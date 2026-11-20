@@ -7,9 +7,9 @@
 
 | 档位 | 条数 | 说明 | 地址 |
 |---|---|---|---|
-| lite | 9,961（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断；**零误伤最小集**，设备算力很弱时用这档 | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
-| mid | 211,158 | 跨 2 源共识 + 广告 SDK/贴片专项；**日常默认就用这档**，覆盖与误伤的平衡点 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
-| full | ≈53 万（530,692） | 21 源并集，最激进 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/adguard.txt` |
+| lite | 9,903（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断；**零误伤最小集**，设备算力很弱时用这档 | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
+| mid | 210,265 | 跨 2 源共识 + 广告 SDK/贴片专项；**日常默认就用这档**，覆盖与误伤的平衡点 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
+| full | ≈53 万（529,385） | 21 源并集，最激进 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/adguard.txt` |
 
 > 上面三个数字取自 CI 每日重建后的**线上实际产物**（`main` 分支 lite、`data` 分支 mid/full）。CI 出网能拉到 21 个源，本机受限网络只到 19 个，所以本地复跑会比线上小 20% 左右——这不是丢规则，是源可达性差异。任何时刻以 `precision.html` 上的实时数字为准。
 
