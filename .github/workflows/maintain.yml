@@ -72,7 +72,7 @@ jobs:
           if git diff --cached --quiet; then echo "无变化"; exit 0; fi
           git commit -m "maintain: 死域周扫 $(date -u +%Y%m%d)"
           for i in 1 2 3 4 5; do
-            if git pull -q -X ours --rebase origin main && git push -q; then exit 0; fi
+            if git pull -q -X theirs --rebase origin main && git push -q; then exit 0; fi
             echo "重试 $i/5"; sleep $((i*3))
           done
           exit 1
