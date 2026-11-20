@@ -124,12 +124,15 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A subs/lite subs/channels subs/paths docs history tools doh/worker.tpl.js sources.tsv lists tests state
+          git add -A subs/lite subs/mixed subs/channels subs/paths docs history tools doh/worker.tpl.js sources.tsv lists tests state
           if git diff --cached --quiet; then
             echo "无变化，跳过提交"
             exit 0
           fi
           git commit -m "build: 每日重建 $(date -u +%Y%m%d-%H%M)"
+          # 兜底：本地还有未暂存改动时 rebase 会直接拒绝（"cannot pull with rebase: You have unstaged changes"），
+          # 先 stash 掉。已提交的产物不受影响，这一步只是清场。
+          git stash -u -q || true
           # 自愈：并发推送被拒时，最多重试 5 次（拉取用 ours，避免产物互相覆盖）
           for i in 1 2 3 4 5; do
             if git pull -q -X ours --rebase origin main && git push -q; then
