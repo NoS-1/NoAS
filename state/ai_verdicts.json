@@ -148,5 +148,55 @@
   "v": "unknown",
   "c": 80,
   "ts": "2026-11-21"
+ },
+ "ad-admin.immomo.com": {
+  "v": "unknown",
+  "c": 0,
+  "ts": "2026-11-20"
+ },
+ "ad-advertiser.soulapp.cn": {
+  "v": "unknown",
+  "c": 0,
+  "ts": "2026-11-20"
+ },
+ "ad-h5-cdn.soulapp.cn": {
+  "v": "unknown",
+  "c": 0,
+  "ts": "2026-11-20"
+ },
+ "ad-r.soulapp.cn": {
+  "v": "unknown",
+  "c": 0,
+  "ts": "2026-11-20"
+ },
+ "ad-www.guazi.com": {
+  "v": "unknown",
+  "c": 0,
+  "ts": "2026-11-20"
+ },
+ "shop-op.guazi.com": {
+  "v": "benign",
+  "c": 100,
+  "ts": "2026-11-20"
+ },
+ "stat.myzaker.com": {
+  "v": "ad",
+  "c": 0,
+  "ts": "2026-11-20"
+ },
+ "tracking.ib24384.news.my.luckincoffee.com": {
+  "v": "tracker",
+  "c": 50,
+  "ts": "2026-11-20"
+ },
+ "tracking.ib71536.user.my.luckincoffee.com": {
+  "v": "tracker",
+  "c": 50,
+  "ts": "2026-11-20"
+ },
+ "tracking.ib85264.order.my.luckincoffee.com": {
+  "v": "tracker",
+  "c": 50,
+  "ts": "2026-11-20"
  }
 }

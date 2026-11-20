@@ -4,34 +4,59 @@
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "ad",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 0,
+   "ts": "2026-11-20"
+  }
  },
  "ad-advertiser.soulapp.cn": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "ad",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 0,
+   "ts": "2026-11-20"
+  }
  },
  "ad-h5-cdn.soulapp.cn": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "ad",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 0,
+   "ts": "2026-11-20"
+  }
  },
  "ad-r.soulapp.cn": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 1,
-  "token": "ad"
+  "token": "ad",
+  "ai": {
+   "v": "unknown",
+   "c": 0,
+   "ts": "2026-11-20"
+  }
  },
  "ad-www.guazi.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "ad",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 0,
+   "ts": "2026-11-20"
+  }
  },
  "ads.st.maoyan.com": {
   "first_seen": "2026-11-20",
@@ -278,35 +303,60 @@
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "op",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "benign",
+   "c": 100,
+   "ts": "2026-11-20"
+  }
  },
  "stat.myzaker.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "stat",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-20"
+  }
  },
  "tracking.ib24384.news.my.luckincoffee.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "tracking",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "tracker",
+   "c": 50,
+   "ts": "2026-11-20"
+  }
  },
  "tracking.ib71536.user.my.luckincoffee.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "tracking",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "tracker",
+   "c": 50,
+   "ts": "2026-11-20"
+  }
  },
  "tracking.ib85264.order.my.luckincoffee.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "tracking",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "tracker",
+   "c": 50,
+   "ts": "2026-11-20"
+  }
  },
  "tracking.news.sg.luckincoffee.com": {
   "first_seen": "2026-11-20",
