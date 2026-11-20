@@ -114,7 +114,6 @@ ad-image.val.jp
 ad-img.diyidan.net
 ad-img.ebaykorea.com
 ad-img.ve.vc
-ad-incentive.ximalaya.com
 ad-indicator.com
 ad-info.val.jp
 ad-insight.sellermill.com
@@ -222,7 +221,6 @@ ad-tech.nbcuni.com
 ad-tech.nbcuni.com.edgesuite.net
 ad-tech.ru
 ad-tech.scmp.com
-ad-tj-gorgon.ntes53.netease.com
 ad-track.de
 ad-track.jp
 ad-track.paravi.jp
@@ -358,8 +356,6 @@ ad.bullguard.com
 ad.burstdirectads.com
 ad.bwise.ch
 ad.byfuh.com
-ad.c.ximalaya.com
-ad.c4.ximalaya.com
 ad.cacafly.com
 ad.caiyunapp.com
 ad.candybar.co.kr
@@ -370,7 +366,6 @@ ad.cashwalklabs.io
 ad.cbonds.info
 ad.ccement.com
 ad.ccmbg.com
-ad.cctv.com
 ad.cdnjm.cn
 ad.cene.tokyo
 ad.centrum.cz
@@ -382,7 +377,6 @@ ad.choicy.org
 ad.choiric.vip
 ad.ciokorea.com
 ad.citynews.it
-ad.cj.sina.cn
 ad.clickotmedia.com
 ad.clicrbs.com.br
 ad.clok.creative.com
@@ -599,7 +593,6 @@ ad.jetsoftware.com
 ad.jeune-independant.net
 ad.jia.360.cn
 ad.jibunde-esute.com
-ad.jiemian.com
 ad.jiemoselect.com
 ad.jokeroo.com
 ad.jooancloud.com
@@ -665,7 +658,6 @@ ad.m-adx.com
 ad.m5prod.net
 ad.mackolikfeeds.com
 ad.magokoro-care-shoku.com
-ad.mail.ru
 ad.mailo.com
 ad.mamastar.jp
 ad.mangareader.net
@@ -693,7 +685,6 @@ ad.migalhas.com.br
 ad.minecraft-mods.ru
 ad.mingruidata.com
 ad.mirror.co.uk
-ad.miui.com
 ad.mmbiz.oa.com
 ad.mobiuspace.net
 ad.mojisead.co.kr
@@ -718,7 +709,6 @@ ad.mytimeline-news.com
 ad.n-bridge.io
 ad.nachtagenten.de
 ad.napilapcsoport.hu
-ad.naver.com
 ad.ne.com
 ad.net
 ad.net-c.com
@@ -764,7 +754,6 @@ ad.parkvv.com
 ad.parom.hu
 ad.particlenews.com
 ad.partis.si
-ad.partner.gifshow.com
 ad.passport.weibo.cn
 ad.paytm.com
 ad.pchome.com.tw
@@ -890,7 +879,6 @@ ad.tjtune.com
 ad.tom.com
 ad.topwar.ru
 ad.touchwise.co.kr
-ad.toutiao.com
 ad.track1v.com
 ad.trackedblds.com
 ad.tradertimerz.media
@@ -961,7 +949,6 @@ ad.xaxis.co.kr
 ad.xdomain.ne.jp
 ad.xhey.top
 ad.xiaomi.com.edgesuite.net
-ad.ximalaya.com
 ad.xmmnsl.com
 ad.xmovies8.si
 ad.xn--o9jem5iv41o982db8k.jp
@@ -1063,7 +1050,6 @@ ads-delivery-cdn.gunosy.com
 ads-delivery.b-cdn.net
 ads-delivery.gameforge.com
 ads-delivery.gunosy.com
-ads-dev.pinterest.com
 ads-dmp-collect.kr.karrotmarket.com
 ads-dmp-services.mercadolibre.com.ar
 ads-dmp-services.mercadolibre.com.co
@@ -1076,7 +1062,6 @@ ads-dre.platform.hihonorcloud.com
 ads-drru.platform.hihonorcloud.com
 ads-east.bilinmedia.net
 ads-eu-qh88it.rtb-pinklion.io
-ads-events.mercadolibre.com
 ads-feedback.yahoo.co.jp
 ads-flipp.com
 ads-fs22.giants-software.com
@@ -1093,7 +1078,6 @@ ads-i2i.jp
 ads-i3.xhscdn.com
 ads-i4.xhscdn.com
 ads-i8.xhscdn.com
-ads-icl.googleusercontent.com
 ads-ie.tiktokw.eu
 ads-image.production-public.tubi.io
 ads-img-al.xhscdn.com
@@ -1132,7 +1116,6 @@ ads-partners.coupang.com.edgekey.net
 ads-pd.nbcuni.com
 ads-pd.universalsports.com
 ads-pixiv.net
-ads-platform.zalo.me
 ads-portal-cdn.vidaatv.net
 ads-privacy-api.prd.mz.internal.unity3d.com
 ads-privacy.vidaahub.com
@@ -1155,9 +1138,6 @@ ads-segment-profile-noneu.truecaller.com
 ads-server.mxplay.com
 ads-service-65663778556.us-central1.run.app
 ads-service.api.linkme.global
-ads-setu-proxy-eu.amazon.com
-ads-setu-proxy-fe.amazon.com
-ads-setu-proxy.amazon.com
 ads-sg.business-tiktok.com
 ads-sg.tiktok.com
 ads-shopping.shouqianba.com
@@ -1435,7 +1415,6 @@ ads.blog.com
 ads.blogdrive.com
 ads.blogtalkradio.com
 ads.bloodhorse.com
-ads.bloomberg.com
 ads.bluefishnetwork.com
 ads.bluemongoose.com
 ads.bluemountain.com
@@ -1526,7 +1505,6 @@ ads.chattyradio.com
 ads.chaturbate.com
 ads.cheabit.com
 ads.chickclick.com
-ads.china.com
 ads.chinaums.com
 ads.chipcenter.com
 ads.chrbanner.com
@@ -1728,7 +1706,6 @@ ads.erotism.net
 ads.ersamedia.ch
 ads.espaciolatino.com
 ads.esportesdasorte.bet.br
-ads.eu.msn.com
 ads.eumaisviagens.com.br
 ads.eurozet.pl
 ads.everquote.com
@@ -1903,7 +1880,6 @@ ads.hecklers.org
 ads.hentaiheart.com
 ads.heraldnet.com
 ads.heroldonline.com
-ads.hexun.com
 ads.heytapmobi.com
 ads.heytapmobile.com
 ads.hicomm.bg
@@ -2010,7 +1986,6 @@ ads.jacksonsun.com
 ads.javtit.com
 ads.jeded.com
 ads.jenite.bg
-ads.jetpackdigital.com.akamaized.net
 ads.jewcy.com
 ads.jewishfriendfinder.com
 ads.jianchiapp.com
@@ -2200,7 +2175,6 @@ ads.mrskin.com
 ads.mrtones.com
 ads.msdigital.vn
 ads.msn.co.il
-ads.msn.com
 ads.mssb.cloud
 ads.mtv.uol.com.br
 ads.mucunki.com
@@ -2289,7 +2263,6 @@ ads.nyatider.nu
 ads.nyi.net
 ads.nyootv.com
 ads.nypost.com
-ads.nytimes.com
 ads.nyx.cz
 ads.nzcity.co.nz
 ads.o-networkaffiliates.com
@@ -2302,7 +2275,6 @@ ads.ogdenpubs.com
 ads.ok.ru
 ads.okcimg.com
 ads.ole.com
-ads.olx.com
 ads.omaha.com
 ads.one.co.il
 ads.one.lt
@@ -2353,7 +2325,6 @@ ads.peel.com
 ads.pennlive.com
 ads.pennnet.com
 ads.people-group.net
-ads.people.com.cn
 ads.peoplespharmacy.com
 ads.perchance.org
 ads.performanceracing.com
@@ -2375,7 +2346,6 @@ ads.phunuvagiadinh.vn
 ads.pimdesign.org
 ads.pinger.com
 ads.pinger.com.cdn.cloudflare.net
-ads.pinterest.com
 ads.pipaffiliates.com
 ads.pirateden.com
 ads.pitchforkmedia.com
@@ -2387,7 +2357,6 @@ ads.planet.nl
 ads.planetamd64.com
 ads.planetwin365affiliate.com
 ads.planqk.com
-ads.platform.zalo.me
 ads.playboy.bg
 ads.playboy.com
 ads.playnet.nl
@@ -2585,7 +2554,6 @@ ads.smartshoppingads.de
 ads.smn.rs
 ads.smowtion.com
 ads.smrtbid.com
-ads.snapchat.com
 ads.snowball.com
 ads.socialbakers.com
 ads.socialdisplay.com
@@ -2772,7 +2740,6 @@ ads.tvmnews.mt
 ads.tvp.pl
 ads.tvpl.vn
 ads.twdcgrid.com
-ads.twitch.tv
 ads.twojatv.info
 ads.ty4stroke.com
 ads.ubook.com
@@ -2947,7 +2914,6 @@ ads.yimg.com.edgesuite.net
 ads.ynot.com
 ads.yupimsn.com
 ads.z-quest.com
-ads.zalo.me
 ads.zaloapp.com
 ads.zamunda.net
 ads.zamunda.se
@@ -3268,7 +3234,6 @@ adserver.xpanama.net
 adserver.yanosik.pl
 adserver.zylom.com
 adserver1.adtech.com.tr
-adservice.aliexpress.com
 adservice.google
 adservice.google.ad
 adservice.google.ae
@@ -3499,7 +3464,6 @@ adv-mydarkness.ggcorp.me
 adv-op2.joygames.me
 adv-sv-show.focus.cn
 adv-sv-stat.focus.cn
-adv-web-tracking-logs.azurewebsites.net
 adv.0tub.com
 adv.440network.com
 adv.abv.bg
@@ -3580,8 +3544,6 @@ adv.r7.com
 adv.red
 adv.rocks
 adv.rustore.ru
-adv.sec.intl.miui.com
-adv.sec.miui.com
 adv.skinbodysaude.com
 adv.so
 adv.sozcu.com.tr
@@ -3706,12 +3668,10 @@ advertising-cdn.samsclub.com.akadns.net
 advertising-cdn.target.dpgmedia.cloud
 advertising-content-copyright-review.netlify.app
 advertising-copyright-support.netlify.app
-advertising-eu.amazon.com
 advertising-module.api.dpgmedia.cloud
 advertising-server.amadeus.net
 advertising.a2z.com
 advertising.amazon.co.uk
-advertising.amazon.com
 advertising.amazon.de
 advertising.amazon.dev
 advertising.amazon.in
@@ -3724,7 +3684,6 @@ advertising.christiansunite.com
 advertising.civitai
 advertising.civitai.com
 advertising.com
-advertising.dailymotion.com
 advertising.dclux.com
 advertising.embarcaderopublishing.com
 advertising.entensity.net
@@ -3736,7 +3695,6 @@ advertising.illinimedia.com
 advertising.ingame.de
 advertising.jdn.co.il
 advertising.jp
-advertising.jp.msn.com
 advertising.justusboys.net
 advertising.lycos.com
 advertising.media-solutions.aaas.amadeus.com
@@ -3750,11 +3708,9 @@ advertising.ru
 advertising.samsclub.com
 advertising.thediabetesnetwork.com
 advertising.thefader.com
-advertising.theguardian.com
 advertising.valuedrugco.com
 advertising.webapi.gc.eflservices.co.uk
 advertising.wellpack.fr
-advertising.yandex.ru
 advertising365.com
 advertisingbanners.com
 advertisingbay.com
@@ -3804,7 +3760,6 @@ adx-id-ads.realmemobile.com
 adzerk.com
 adzerk.net
 af-ad.co.uk
-agency.ad.kakao.com
 agrimondo-ad.com
 ahoy-internal-ads-hv.b-cdn.net
 aid-ad.jp
@@ -3814,7 +3769,6 @@ al-ad.com
 al-adtech.com
 al.adv.gr.jp
 ali-ad.a.yximgs.com
-alt-ad.mail.ru
 alternativos.iw-advertising.com
 ams-ads.op-mobile.opera.com
 analytics-ad-eyu9u2md.kgslb.com
@@ -4154,7 +4108,6 @@ blockchain-ads.com
 bm-ads.io
 bok.ad-zahnzentrum-dortmund-karriere.de
 bolakami-banner-tracker.bolakami.workers.dev
-borsvarlden-banners.azurewebsites.net
 bounce-ads.de
 br-ad-lgsmartad-com.aws-prd.net
 bs-adserver.b-cdn.net
@@ -4443,7 +4396,6 @@ ldserv01.adtech.fr
 ldserv01.adtech.us
 ldserv02.adtech.fr
 ldserv02.adtech.us
-learn.advertising.snapchat.com
 leiki-doubleclick-proxy.appspot.com
 lf3-ad.searchpstatp.com
 linear-ad-segments.frequency.stream
@@ -4474,7 +4426,6 @@ matsui-ad.cfd
 max-adserv.com
 meazy-ads.com
 media-ads.zaloapp.com
-media-adv.market.yandex.ru
 media-adv.vs.market.yandex.net
 media-adv.yandex.com
 media-adv.yango.com
@@ -4582,7 +4533,6 @@ pix521.adtech.fr
 pix521.adtech.us
 pix522.adtech.fr
 pix522.adtech.us
-pixel.ad.akamaized.net
 pixels.dsp.theadtech.com
 pmp-ad.cdn.bcebos.com
 pooye-ads.com
@@ -4991,7 +4941,6 @@ sokmil-ad.com
 sokrates.adtech.fr
 sokrates.adtech.us
 soul-ad.soulapp.cn
-speee-ad.akamaized.net
 speee-ad.jp
 splash-ad.classting.com
 splash-screen.voodoo-ads.io
@@ -5005,7 +4954,6 @@ sponsored-ads-eu.amazon.sa
 sponsored-ads.amazon.ca
 sponsored-ads.amazon.co.jp
 sponsored-ads.amazon.co.uk
-sponsored-ads.amazon.com
 sponsored-ads.amazon.com.au
 sponsored-ads.amazon.com.br
 sponsored-ads.amazon.com.mx
