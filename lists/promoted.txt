@@ -668,7 +668,6 @@ ad.mdmd.info
 ad.mds.lv
 ad.media-servers.net
 ad.mediabong.com
-ad.mediafarm.co.kr
 ad.mediahead.com
 ad.mediamixer.co.kr
 ad.mediaprecision.net
@@ -838,11 +837,9 @@ ad.smartgroups.com
 ad.smartinmedia.co.kr
 ad.snappea.com
 ad.snaptube.app
-ad.snaptube.app.eo.dnse3.com
 ad.softcatala.org
 ad.solverlabs.com
 ad.sp.mbga.jp
-ad.spot200.com
 ad.spreaker.com
 ad.spreamedia.it
 ad.srv-monitoring.com
@@ -884,7 +881,6 @@ ad.trackedblds.com
 ad.tradertimerz.media
 ad.trafanalyzer.com
 ad.trafficmp.com
-ad.traffique.net
 ad.transferapp.navitime.jp
 ad.trident.net
 ad.triplemind.com
@@ -1302,7 +1298,6 @@ ads.androworks.org
 ads.anese.co
 ads.anilos.com
 ads.annabac.com
-ads.annonsbladet.com
 ads.antaranews.com
 ads.anura.io
 ads.aol.co.uk
@@ -1447,7 +1442,6 @@ ads.broadsolutionsgroup.com
 ads.bsplayer.com
 ads.bstage.in
 ads.bta.bg
-ads.bttbgroup.com
 ads.buddypic.com
 ads.bugnet.com
 ads.buljobs.bg
@@ -1974,7 +1968,6 @@ ads.iosappsworld.com
 ads.ipfighter.com
 ads.ipowerweb.com
 ads.ireport.com
-ads.isoftmarketing.com
 ads.itarea.org
 ads.itv.com
 ads.itzdigital.com
@@ -2103,7 +2096,6 @@ ads.maxabout.com
 ads.mcafee.com
 ads.mdchoice.com
 ads.meazy.co
-ads.mediacapital.pt
 ads.mediamayhemcorp.com
 ads.mediaodyssey.com
 ads.mediaturf.net
@@ -2196,7 +2188,6 @@ ads.mygrocerydeals.com
 ads.myplace4parts.com
 ads.mysimon.com
 ads.mytelus.com
-ads.naftemporiki.gr
 ads.naga11capi.com
 ads.naga33capi.com
 ads.nagawincapi.com
@@ -2438,7 +2429,6 @@ ads.recoletos.es
 ads.rediff.com
 ads.reduxmediagroup.com
 ads.reembed.com
-ads.referlocal.com
 ads.reformer.com
 ads.regiedepub.com
 ads.register.com
@@ -2514,7 +2504,6 @@ ads.sf.net
 ads.sfo2.cdn.digitaloceanspaces.com
 ads.sfomedia.com
 ads.sfusion.com
-ads.sg.hu
 ads.shasha.ps
 ads.shiftdelete.net
 ads.shinigami.io
@@ -3505,7 +3494,6 @@ adv.ettoday.net
 adv.famous.bg
 adv.forpsi.hu
 adv.freeonline.it
-adv.freepornvs.com
 adv.gazeta.pl
 adv.gepime.com
 adv.gratuito.st
@@ -4173,7 +4161,6 @@ cu-ad.tbs.co.jp
 d-o-ads.com
 d.image-ad.jp
 da-ads.com
-dailyradar.ads.imaginemedia.net
 data-cba0c1fee3.ad-magazin.de
 data-ero-advertising.com
 data-id-ads.realmemobile.com
