@@ -8,8 +8,8 @@
 | 档位 | 条数 | 说明 | 地址 |
 |---|---|---|---|
 | lite | 9,962（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断；**零误伤最小集**，设备算力很弱时用这档 | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
-| mid | 184,941 | 跨 2 源共识 + 广告 SDK/贴片专项；**日常默认就用这档**，覆盖与误伤的平衡点 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
-| full | ≈41 万 | 14 源并集，最激进 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/adguard.txt` |
+| mid | 184,926 | 跨 2 源共识 + 广告 SDK/贴片专项；**日常默认就用这档**，覆盖与误伤的平衡点 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
+| full | ≈41.6 万 | 14 源并集，最激进 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/adguard.txt` |
 
 每档都有 7 种格式，把上表地址里的文件名换掉即可：
 
@@ -47,11 +47,18 @@
 发布前有一道硬闸，任一项不过就不出包（`tools/guard.py`）：
 
 1. 七个格式条数必须完全一致（渲染漏一条就红）
-2. 干扰名单硬过滤：命中 `tests/benign_baseline.txt` 或 `lists/whitelist.txt` 的域**连同父域**全部剔除
+2. 干扰名单硬过滤：命中 `lists/whitelist.txt`、`lists/service_allow.txt` 或 `tests/benign_baseline.txt` 的域**连同父域**全部剔除
 3. 重复 / 非法字符 / 超长域检查
 4. `meta.json` 里的 sha256 必须与真实文件一致（改了文件没重算直接红）
 5. 抽查：已知广告网络必须拦、已知正常站必须放
 6. **规模突变护栏**：比上一轮少 15% 以上直接判红停发（多半是上游集体挂掉，宁可停一天也不发残包）
+7. **黄金回归**：`tests/golden_set.txt` 里 2,151 条正常站点，lite 档命中必须为 0，出现一条就判红（实测三档误拦率见 [precision.html](https://nos-1.github.io/NoAS/precision.html)）
+8. **基础服务护栏**：`lists/service_allow.txt`（登录/支付/推送/地图/验证码/崩溃上报）三档都不许出现——这条挂了，用户是登不上微信、付不了款，比误拦广告严重得多
+9. **影子期**：观察池里的低置信域必须先看够 14 天且复现 2 轮才准晋级，30 天不复现直接退役；没满期的绝不许进 lite（`tools/watch_pool.py`）
+10. **信誉评分**：多信号加权打分，≥70 才够格进 lite；命中白名单/良性大盘/黄金集的域直接清零，不给翻盘机会（`tools/reputation.py`）
+
+误伤走自动闭环：Issue 打 `误伤` 标签 → 进白名单台账 + **进冷却池**（以后白名单被误删也不会复发）→ 重编译 → 硬校验 → 发布，4 小时内生效。
+每轮校验通过后自动拍 known-good 快照，出问题 `python3 tools/rollback.py` 一键退回上一版可用产物。
 
 ## 自己跑（一条命令）
 
