@@ -1,4 +1,4 @@
-# NoAS 通配清单（20261120-30e4a13d）：*.域 = 该域任意多级子域
+# NoAS 通配清单（20261121-877b6d7c）：*.域 = 该域任意多级子域
 *.adchina.cn
 *.adcolony.com
 *.adjust.com
