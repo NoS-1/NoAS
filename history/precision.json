@@ -1,19 +1,19 @@
 {
- "ts": "2026-11-20T11:09:00Z",
+ "ts": "2026-11-20T11:48:39Z",
  "benign_size": 345,
  "tiers": {
   "lite": {
-   "count": 9971,
+   "count": 9970,
    "risky": 0,
    "samples": []
   },
   "mid": {
-   "count": 211055,
+   "count": 211056,
    "risky": 0,
    "samples": []
   },
   "full": {
-   "count": 530636,
+   "count": 530647,
    "risky": 0,
    "samples": []
   }
