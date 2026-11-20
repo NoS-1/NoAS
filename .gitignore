@@ -1,0 +1,10 @@
+cache/
+node_modules/
+doh/worker.js
+out/
+docs/subs/
+subs/mid/
+subs/full/
+__pycache__/
+*.pyc
+state/known_good/

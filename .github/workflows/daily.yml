@@ -105,6 +105,7 @@ jobs:
           NOAS_VER: ${{ github.run_id }}
         run: |
           if [ -z "$CF_TOKEN" ]; then echo "无 CF_API_TOKEN，跳过 CDN 同步"; exit 0; fi
+          pip install -q requests
           python3 tools/cdn_deploy.py
 
       - name: 7 · 发布 mid/full 到 data 分支
@@ -132,7 +133,7 @@ jobs:
           git commit -m "build: 每日重建 $(date -u +%Y%m%d-%H%M)"
           # 兜底：本地还有未暂存改动时 rebase 会直接拒绝（"cannot pull with rebase: You have unstaged changes"），
           # 先 stash 掉。已提交的产物不受影响，这一步只是清场。
-          git stash -u -q || true
+          git stash -q || true
           # 自愈：并发推送被拒时，最多重试 5 次（拉取用 ours，避免产物互相覆盖）
           for i in 1 2 3 4 5; do
             if git pull -q -X ours --rebase origin main && git push -q; then
@@ -147,6 +148,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           rm -rf /tmp/noas-pkg && mkdir -p /tmp/noas-pkg
+          # worker.js 是 gitignore 产物，任何清理工作区的动作都可能带走它，打包前重新生成一次最稳
+          python3 tools/build_doh.py
           cp -r subs/* /tmp/noas-pkg/
           mkdir -p /tmp/noas-pkg/doh && cp doh/worker.js serve/standalone.mjs /tmp/noas-pkg/doh/
           cp README.md /tmp/noas-pkg/
