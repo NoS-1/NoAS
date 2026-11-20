@@ -3,11 +3,11 @@
  "version": "20261120-f613a4cd",
  "count": 35358,
  "wildcards": 59,
- "generated_utc": "Fri, 20 Nov 2026 09:31:08 GMT",
+ "generated_utc": "Fri, 20 Nov 2026 09:32:56 GMT",
  "files": {
   "adguard.txt": {
-   "bytes": 588530,
-   "sha256": "1020dcc292d0402b7e22af4a8501d9b0bb77e65adc2f96c150e667b617ccae54"
+   "bytes": 840496,
+   "sha256": "2f5ca8e849a7a839e1320ac0d22bd7e6e41e318442f50bb666b377fc1e6931d2"
   },
   "allow.txt": {
    "bytes": 1657,
@@ -30,8 +30,8 @@
    "sha256": "a87ae34a7cc52652fc50aa8a1fecbadaa417ad50833ea59a4c20274dccf48b64"
   },
   "rpz.zone": {
-   "bytes": 707694,
-   "sha256": "6446f205867f3ebc3e537409eee13db2af2a1fe4f48af9055e6a6c6cf46e4b72"
+   "bytes": 1017325,
+   "sha256": "52adb37d76920d77aefd11cd915ccffcd079707281ac546e76338e90b33f6efc"
   },
   "singbox.json": {
    "bytes": 980556,
@@ -42,12 +42,12 @@
    "sha256": "e46a0101abe3b00444f088716829038bf0f92a4116b8b92a2c3635305f467c4d"
   },
   "unbound.conf": {
-   "bytes": 1230403,
-   "sha256": "9c8b84b4e5372966fdf25791908d7433d8ee88f15c03cada360a91856cb4ece4"
+   "bytes": 1793760,
+   "sha256": "bdea223a9c167e20e4d957af55c612c6a9a98ecbb19cbd1bd52a45e22662a876"
   },
   "wildcard.txt": {
-   "bytes": 563302,
-   "sha256": "d8982da4b490cf701dace5bd3ac03d339a6deccb848bb5549b01f93604dc0599"
+   "bytes": 803735,
+   "sha256": "244215bbb9b971423503c5dc353737cb148998d07578c32eb4b38b0c64e5c482"
   },
   "wildcards.txt": {
    "bytes": 1040,
