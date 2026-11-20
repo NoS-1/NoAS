@@ -86,9 +86,6 @@ jobs:
       - name: 4 · 发布前硬校验
         run: python3 tools/guard.py
 
-      - name: 4.5 · 拍 known-good 快照（校验通过即视为可用版本，供 rollback 回退）
-        run: python3 tools/snapshot.py
-
       - name: 5 · DoH 产物
         run: |
           python3 tools/build_doh.py

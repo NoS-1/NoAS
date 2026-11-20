@@ -53,9 +53,7 @@ jobs:
           python3 tools/reputation.py
 
       - name: 4 · 发布前硬校验（含误伤审计必须为 0）
-        run: |
-          python3 tools/guard.py
-          python3 tools/snapshot.py
+        run: python3 tools/guard.py
 
       - name: 5 · DoH 产物 + 回归
         run: |
