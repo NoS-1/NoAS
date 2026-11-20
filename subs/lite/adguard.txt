@@ -1,10 +1,10 @@
 ! Title: NoAS 拦截订阅（lite）
 ! Description: 免费公开源并集，白名单硬闸过滤后发布；每日自动重建
-! Version: 20261120-e7fdc872
-! Last modified: Fri, 20 Nov 2026 10:23:40 GMT
+! Version: 20261120-622a988e
+! Last modified: Fri, 20 Nov 2026 10:34:39 GMT
 ! Expires: 12 hours
 ! Homepage: https://github.com/NoS-1/NoAS
-! 条数: 74292（含通配 56）
+! 条数: 74298（含通配 56）
 
 ||0.net.easyjet.com^
 ||000491b06a.com^
@@ -3565,6 +3565,7 @@
 ||ad.walkgame.com^
 ||ad.weplayer.cc^
 ||ad.woman.mynavi.jp^
+||ad.wretch.cc^
 ||ad.wurangxian.top^
 ||ad.wynk.in^
 ||ad.xdomain.ne.jp^
@@ -7526,6 +7527,7 @@
 ||arcticattention.com^
 ||arctiumplunger.com^
 ||arctwjodckpyz.site^
+||ard.yahoo.co.jp^
 ||ardacxtirzki.in^
 ||ardassobtuse.com^
 ||ardentlydrivablepagan.com^
@@ -9714,6 +9716,7 @@
 ||biz.coface.com^
 ||biz.gexing.com^
 ||biz1.kddi.com^
+||biz5.kankan.com^
 ||bizibgjvenyhc.space^
 ||bizible.com^
 ||bizlog-gateway.myrealtrip.com^
@@ -23841,6 +23844,7 @@
 ||flnfeuesmzmzy.online^
 ||flnkmj.hometogo.fr^
 ||flnqxpirffyqt.online^
+||float.kankan.com^
 ||floatingpresentedshopping.com^
 ||floejjeohkn.com^
 ||flonlazaret.com^
@@ -33903,6 +33907,7 @@
 ||l.ti-da.net^
 ||l.training-page.worldvision.ca^
 ||l.typesquare.com^
+||l.ykimg.com^
 ||l0cpto94.xyz^
 ||l0nrjph1.xyz^
 ||l1native.com^
@@ -59300,6 +59305,7 @@
 ||stat.his-j.com^
 ||stat.hitosara.com^
 ||stat.interestfree.com.au^
+||stat.it168.com^
 ||stat.juridicas.com^
 ||stat.kaago.com^
 ||stat.kakaku.com^
