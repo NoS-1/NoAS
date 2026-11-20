@@ -307,6 +307,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", choices=["lite", "mid", "full"])
     args = ap.parse_args()
+    os.makedirs(os.path.join(ROOT, "out"), exist_ok=True)
 
     exact, wild, per_source, _, consensus = collect()
     wl = load_whitelist()
