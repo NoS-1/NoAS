@@ -1,4 +1,4 @@
-# NoAS 通配清单（20261120-a0dff889）：*.域 = 该域任意多级子域
+# NoAS 通配清单（20261120-88ed9e3a）：*.域 = 该域任意多级子域
 *.adchina.cn
 *.adcolony.com
 *.adjust.com
@@ -55,4 +55,3 @@
 *.umeng.com
 *.umengcloud.com
 *.vungle.com
-*.wifi.com
