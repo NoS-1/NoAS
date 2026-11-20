@@ -1,20 +1,20 @@
 {
  "repo": "NoS-1/NoAS",
- "updated": "2026-11-20T15:51:49Z",
+ "updated": "2026-11-20T15:59:38Z",
  "tiers": {
   "lite": {
    "count": 9961,
    "version": "20261120-52f89103",
    "wildcards": 57,
-   "generated_utc": "Fri, 20 Nov 2026 15:49:52 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 15:58:14 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 227244,
-     "sha256": "4449d879e57ec5519f25232eebdf98cf51a9b4657f0572a32c1255ed3baf98cd"
+     "sha256": "8c77a085fc87095acf01a116c0bd5b0d796d1b56a16184fb9869214eada4136f"
     },
     "allow.txt": {
-     "bytes": 2162,
-     "sha256": "22e7b3f3ec2dee589bda2aa636a805a986538cdd52ea4bd6238ad331ae40cbd1"
+     "bytes": 2225,
+     "sha256": "dbf30b7bbb0fdbd168d79ca50b1d3deecd2e92f415794213787b483f49e0be06"
     },
     "clash.yaml": {
      "bytes": 375323,
@@ -66,15 +66,15 @@
    "count": 211158,
    "version": "20261120-db20ad5c",
    "wildcards": 57,
-   "generated_utc": "Fri, 20 Nov 2026 15:49:53 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 15:58:14 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 5032155,
-     "sha256": "ed301011afceb7e3b9177db84f656a147a7534412b9d37dadf4f3891e44bf89d"
+     "sha256": "3e4b70072c5c24e907d68f6c0bf325e3cabb48595819fa3ce6f6f75d4a69d7f3"
     },
     "allow.txt": {
-     "bytes": 2162,
-     "sha256": "0c4177a806f879d603cc57548ba5ce7a86bd62ca4ec27ba9a460a6f5b9936a8a"
+     "bytes": 2225,
+     "sha256": "06ac40f3e43dedecf3f8e4c534f3f31b7bd0db95cf36f2e488d737161f87b1de"
     },
     "clash.yaml": {
      "bytes": 8198188,
@@ -123,69 +123,69 @@
    }
   },
   "full": {
-   "count": 530695,
-   "version": "20261120-a713a6ad",
-   "wildcards": 399708,
-   "generated_utc": "Fri, 20 Nov 2026 15:49:54 GMT",
+   "count": 530692,
+   "version": "20261120-2d5e7539",
+   "wildcards": 399683,
+   "generated_utc": "Fri, 20 Nov 2026 15:58:15 GMT",
    "files": {
     "adguard.txt": {
-     "bytes": 22503593,
-     "sha256": "442aba82cf354d86e2346db37bf15079e63ccdd1755a18523131fa0105269fc1"
+     "bytes": 22502930,
+     "sha256": "3c9636a160cacb88977f811f459d9898c62eb5ce641831bb4ae903c980385168"
     },
     "allow.txt": {
-     "bytes": 2162,
-     "sha256": "6341e699d24f0e86984eb8d51f6e3f967ead461419e7ce61c56d3d86a6074bbe"
+     "bytes": 2225,
+     "sha256": "c38c1b4557eab297b0eb0599840f11b46213577d52d3ca67e5a9a8156be08487"
     },
     "clash.yaml": {
-     "bytes": 20493604,
-     "sha256": "a0525d3b031dbf2425cf14ecdfea582ad1659f743fbb3ca6b3e0a4804d227d5e"
+     "bytes": 20493531,
+     "sha256": "1bc605de75049fba48ff428b7bec087ea3e8c3d7ea80f762985e8cff1484a409"
     },
     "dnsmasq.conf": {
-     "bytes": 19962894,
-     "sha256": "b3b5500712408bba9e2af9977f53eed93cf6a8328e25d314d33af3a7529086ef"
+     "bytes": 19962824,
+     "sha256": "0bd55f3bba4f42150f83cdb2fe6d7cfe6fc0a8d8e343796de59389c281422628"
     },
     "domains.txt": {
-     "bytes": 10941038,
-     "sha256": "026007428a3c02ed018d027ac4632649e47b4e5c46d8b3e082a855c7a08b60c9"
+     "bytes": 10941019,
+     "sha256": "42da1345c5d98c774a70cb9dd4db0cd3d30598604b709bc3bee3d127102a8bfb"
     },
     "hosts.txt": {
-     "bytes": 15186639,
-     "sha256": "3fc3e853a313154396b03d323f60a49ed4af5cf0f7e0673ed6382a90f7dfe67e"
+     "bytes": 15186596,
+     "sha256": "4e055bf266c4d4ce56158e374f8da05113f90416f39b7c733c201c1b8b29ba1b"
     },
     "qx.list": {
-     "bytes": 29958840,
-     "sha256": "e67b7b11a2fa6f7a1e9b27ec6174029491e0774f51e3ffe6cb57244a0ac7923b"
+     "bytes": 29957790,
+     "sha256": "5327d7e2691aacbb6eb5cffc38e6e200c6920318caadc3e622c2a954610f9d4a"
     },
     "rpz.zone": {
-     "bytes": 27155347,
-     "sha256": "7c0a9ad73cbd3dcf80034736a26021bf674422c96433fabc65d696165cf12c96"
+     "bytes": 27154544,
+     "sha256": "bf9b104a329f0dfe6518f2d5c051db3582dd57d5e40017c6f9e23a77c0a6ae32"
     },
     "singbox.json": {
-     "bytes": 14655971,
-     "sha256": "ec195e4acabf24d54cd3b147c9851f7812600a02497daa816ce38b8ef6462be2"
+     "bytes": 14655931,
+     "sha256": "fc832ced308594280067c678708c3544a95b07db8ff4a2cd6f37ec6ba8d4f342"
     },
     "surge.list": {
-     "bytes": 18370768,
-     "sha256": "92cfdba224876c77cd8eb077c6dd88de8609cb6f99404bac06718a235966d50d"
+     "bytes": 18370707,
+     "sha256": "ef069bc18c8215685886f5877ed52ac7c877589ac7486f0867b132cad36af5a1"
     },
     "unbound.conf": {
-     "bytes": 26861926,
-     "sha256": "1a1c8db06da0fec2b5882e2e5f6bd09048eac167061202b7f39f051744801e1d"
+     "bytes": 26861817,
+     "sha256": "6a73a69bc2f98a5c203e47327678afc1039c2e9fb319153db74dc457c95fc48d"
     },
     "wildcard.txt": {
-     "bytes": 12002465,
-     "sha256": "a15b491de9d19129f6a8ba9c69d09ffe39f8a8bbf562c957552a062d43fcd88e"
+     "bytes": 12002440,
+     "sha256": "b02fe6d7fa5ff8cad2dd167d96cfa236cc9233cd877342c6cf320a7d241dcf18"
     },
     "wildcards.txt": {
-     "bytes": 8771118,
-     "sha256": "2b5d0bd8f897ff5e90646bc7defc81a3b8d8481d769d16df9f8fc6545b8e7e4d"
+     "bytes": 8770558,
+     "sha256": "454837792e772093e31fc3acb449dabb1253815b0b3981b026e337a1a9aa0b9c"
     }
    }
   }
  },
  "sources": {
   "count": 21,
-  "whitelist_blocked": 5156,
+  "whitelist_blocked": 5225,
   "ad_endpoints": 112,
   "per_source": {
    "StevenBlack-all": 76101,
@@ -206,14 +206,14 @@
    "OISD-Big": 0,
    "HaGeZi-Pro": 0,
    "HaGeZi-ProPlus": 0,
-   "EasyList": 47659,
+   "EasyList": 47661,
    "NoS-antiAD": 110355,
    "ACL4SSR-BanProgramAD": 995
   }
  },
  "health": {
-  "ts": "2026-11-20T15:49:01Z",
-  "round": 13,
+  "ts": "2026-11-20T15:57:42Z",
+  "round": 14,
   "sources": [
    {
     "name": "StevenBlack-all",
@@ -326,12 +326,6 @@
  },
  "evolution": [
   {
-   "ts": "2026-11-20T10:23:01Z",
-   "round": 8,
-   "events": [],
-   "sources": 21
-  },
-  {
    "ts": "2026-11-20T10:33:45Z",
    "round": 9,
    "events": [],
@@ -360,12 +354,19 @@
    "round": 13,
    "events": [],
    "sources": 21
+  },
+  {
+   "ts": "2026-11-20T15:57:42Z",
+   "round": 14,
+   "events": [],
+   "sources": 21
   }
  ],
  "scale": {
   "lite": 9961,
   "mid": 211158,
-  "full": 530695
+  "full": 530692,
+  "_sources": 21
  },
  "channels": [
   {
