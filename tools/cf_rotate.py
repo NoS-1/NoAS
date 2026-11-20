@@ -26,6 +26,7 @@ import datetime as dt
 import json
 import os
 import pathlib
+import subprocess
 import sys
 import time
 import urllib.error
@@ -190,12 +191,43 @@ def doctor(c: dict, acc: str) -> int:
     return 0
 
 
+BACKUP = pathlib.Path("/home/user/.noas/backup")
+
+
+def sync_vault() -> bool:
+    """把 creds.env 编码后写进私有仓库副本并推送。
+
+    目的只有一个：这台 VM 没了也拿得回来。任何失败都只告警，绝不阻断轮换。
+    """
+    if not BACKUP.exists():
+        print("· 无备份仓库 /home/user/.noas/backup，跳过")
+        return False
+
+    def run(*args):
+        return subprocess.run(["git", "-C", str(BACKUP), *args], capture_output=True, text=True)
+
+    b64 = base64.b64encode(CREDS.read_bytes()).decode()
+    (BACKUP / "creds.b64").write_text(b64, encoding="utf-8")
+    run("add", "creds.b64")
+    if not run("status", "--porcelain").stdout.strip():
+        print("· 备份已是最新")
+        return True
+    run("-c", "user.name=NoAS", "-c", "user.email=noas@local", "commit", "-q", "-m", "sync: creds.b64")
+    p = run("push", "-q", "origin", "HEAD:main")
+    if p.returncode != 0:
+        print(f"! 备份推送失败（不影响轮换）：{p.stderr.strip()[:120]}")
+        return False
+    print("✓ 备份已同步到私有仓库")
+    return True
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="只体检不轮换")
     ap.add_argument("--doctor", action="store_true", help="根令牌故障诊断：逐段点亮并给出下一步")
     ap.add_argument("--force", action="store_true", help="忽略间隔强制轮换")
     ap.add_argument("--keep-old", action="store_true", help="保留旧令牌不删除")
+    ap.add_argument("--backup-only", action="store_true", help="只把 creds.env 同步到私有备份仓库")
     a = ap.parse_args()
 
     c = load_creds()
@@ -204,6 +236,8 @@ def main() -> int:
     root, pat = c.get("CF_USER_TOKEN", ""), c.get("GH_PAT", "")
     if a.doctor:
         return doctor(c, acc)
+    if a.backup_only:
+        return 0 if sync_vault() else 1
     if not cur:
         print("· 无 CF_API_TOKEN（CI 未配置 / 本地没凭据），跳过轮换")
         return 0
@@ -302,6 +336,7 @@ def main() -> int:
         "new_id": new_id, "old_id": cur_id, "dropped_groups": dropped,
         "policies": len(pols),
     }, ensure_ascii=False, indent=1), encoding="utf-8")
+    sync_vault()
     print("✓ 轮换完成")
     return 0
 

@@ -6,7 +6,7 @@
 
 | 名称 | 级别 | 作用 | 在哪看 | 能自动轮换吗 |
 |---|---|---|---|---|
-| `GH_PAT` | GitHub 个人令牌 | 本机推送、写 Actions secret | [github.com/settings/tokens](https://github.com/settings/tokens) | 否（手工重建） |
+| `GH_PAT` | GitHub 个人令牌 | 本机推送、写 Actions secret、备份同步 | [github.com/settings/tokens](https://github.com/settings/tokens) | 否（手工重建） |
 | `CF_USER_TOKEN` | CF **user 级**根令牌 | 签发/删除 account token | [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens) | 否（它是根） |
 | `CF_API_TOKEN` | CF **account 级**令牌 | 部署 Pages / Worker / D1 | [dash.cloudflare.com/?to=/:account/api-tokens](https://dash.cloudflare.com/?to=/:account/api-tokens) | 是，每 30 天 |
 | `GH_APP_*`（未启用） | GitHub App | 推送双保险的备用路 | [github.com/settings/apps](https://github.com/settings/apps) | 每次现签，1 小时失效 |
@@ -22,7 +22,7 @@
 - CF Pages 部署历史：[dash.cloudflare.com/?to=/:account/pages/view/noas-cdn](https://dash.cloudflare.com/?to=/:account/pages/view/noas-cdn)
 - CF Worker（DoH）：[dash.cloudflare.com/?to=/:account/workers-and-pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages)
 
-## 三、本机三条命令
+## 三、本机命令
 
 ```bash
 cd /home/user/NoAS
@@ -30,10 +30,26 @@ python3 tools/cf_rotate.py --doctor   # 根令牌故障第一站：四段链路�
 cat /home/user/.noas/creds.env       # 看当前值（600，不入库）
 python3 tools/token_check.py         # GitHub PAT + CF 令牌双体检
 python3 tools/cf_rotate.py --check    # 轮换链路体检，不动手
+python3 tools/cf_rotate.py --backup-only  # 把 creds.env 同步到私有备份仓库
 cat state/cf_rotation.json           # 上次轮换时间 / 新旧令牌 id
 ```
 
-`--doctor` 只读，随时可跑，输出会直接写成"去点哪里、跑哪条命令"；`--check` 判断能不能轮换；`--force` 才真轮换；`--keep-old` 保留旧令牌便于回滚。
+`--doctor` 只读，输出直接写成"去点哪里、跑哪条命令"；`--check` 判断能不能轮换；`--force` 才真轮换；`--keep-old` 保留旧令牌便于回滚。
+
+## 四、轮换节奏
+
+- 触发条件：`state/cf_rotation.json` 里 `last_rotated` 超过 30 天
+- 执行环境：必须在有 `creds.env` 的机器上（CI 里没有 `GH_PAT`，内置 `GITHUB_TOKEN` 无权写 secret）
+- 流程：签新令牌 → verify → 写 GitHub secret → 回写 `creds.env` → 自动同步私有备份 → 删旧令牌
+- 失败回滚：任一步失败即删掉新令牌，旧值不动，两端不会对不上
+- 首次自举已完成（`NoAS-Root` 根令牌已建）
+
+## 五、凭据泄露怎么办
+
+1. CF：删掉对应的 user / account 令牌，重跑 `python3 tools/cf_rotate.py --force`（会重新签发并回写 secret）
+2. GitHub：撤销 PAT，重建后写回 `creds.env` 的 `GH_PAT`，再跑 `--backup-only`
+3. 检查是否已被使用：CF 看令牌 `上次使用` 时间，GitHub 看设置页 `Last used within`
+4. 私有备份仓库 `noas-secrets` 里是编码后的同一份内容，泄露处置后记得同步覆盖
 
 ## 六、根令牌出问题时的四条路径
 
@@ -48,16 +64,18 @@ cat state/cf_rotation.json           # 上次轮换时间 / 新旧令牌 id
 
 最底的一条：**根令牌本身不能自助重建**，它只能由已登录的人在 CF 后台建一次。所以根令牌一旦删掉，必须人工重建；其余三段都能由一行命令自愈。
 
-## 四、轮换节奏
+## 七、持久副本（VM 没了也拿得回来）
 
-- 触发条件：`state/cf_rotation.json` 里 `last_rotated` 超过 30 天
-- 执行环境：必须在有 `creds.env` 的机器上（CI 里没有 `GH_PAT`，内置 `GITHUB_TOKEN` 无权写 secret）
-- 流程：签新令牌 → verify → 写 GitHub secret → 回写 `creds.env` → 删旧令牌
-- 失败回滚：任一步失败即删掉新令牌，旧值不动，两端不会对不上
-- 首次自举已完成（`NoAS-Root` 根令牌已建）
+- 位置：私有仓库 `NoS-1/noas-secrets`，文件 `creds.b64`（base64 编码，非明文）
+- 本机镜像：`/home/user/.noas/backup`（700，凭据经 credential helper 取，命令里不含令牌）
+- 何时同步：每次 `--force` 轮换成功后自动同步；也可手动 `--backup-only`
+- 还原（新机器上）：
 
-## 五、凭据泄露怎么办
+```bash
+mkdir -p /home/user/.noas
+base64 -d creds.b64 > /home/user/.noas/creds.env
+chmod 600 /home/user/.noas/creds.env
+cd /home/user/NoAS && python3 tools/cf_rotate.py --doctor
+```
 
-1. CF：删掉对应的 user / account 令牌，重跑 `python3 tools/cf_rotate.py --force`（会重新签发并回写 secret）
-2. GitHub：撤销 PAT，重建后写回 `creds.env` 的 `GH_PAT`
-3. 检查是否已被使用：CF 看令牌 `上次使用` 时间，GitHub 看设置页 `Last used within`
+- 边界：私有仓库只对本账号可见，但仓库权限不等于加密——账号被盗即副本被盗。建议给 GitHub 账号开 2FA。
