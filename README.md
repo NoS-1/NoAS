@@ -7,7 +7,7 @@
 
 | 档位 | 条数 | 说明 | 地址 |
 |---|---|---|---|
-| lite | ≈28k | 跨 3 源共识 + 广告结构自动晋级 + AdGuard DNS 过滤器，误拦率最低，**日常用这档** | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
+| lite | ≤1 万（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断，误拦率最低，**日常用这档**；被截断的条目留在 mid/full | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
 | mid | ≈162k | 跨 2 源共识，覆盖更广 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
 | full | ≈41 万 | 14 源并集，最激进 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/adguard.txt` |
 

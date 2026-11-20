@@ -207,6 +207,9 @@ PARSERS = {"hosts": parse_hosts, "adblock": parse_adblock, "domains": parse_doma
            "domainswild": parse_wildcard, "clash": parse_domains}
 
 
+# lite 档硬上限：日常默认订阅控制在 1 万条以内，超出部分按共识分排序截断，留在 mid/full
+LITE_CAP = 10000
+
 HEAVY_HINTS = ("AdGuard", "HaGeZi", "hagezi", "OISD", "oisd", "1Hosts", "KADhosts", "antiAD")
 # 小而准、单源也必须进中档的清单：CNAME 落点表（反第一方伪装）与国内 App 去广告清单
 FORCE_MID_HINTS = ("CNAME-original", "ACL4SSR")
@@ -410,9 +413,19 @@ def main():
     exact = drop_children(exact) | ep | (lblock - lallow)
     # 精度优先：lite 只保留"多源共识 + 核心广告网 + 审计端点"，自动晋级只进 mid
     promoted = {d for d in load_list_file("promoted.txt") if d not in wl and d in exact}
-    lite = drop_children({d for d in exact
-                          if (consensus.get(d, 0) >= 4.0 and hitn.get(d, 0) >= 3)}
-                         | (core & exact)) | ep | (lblock - lallow)
+    # lite 硬上限 1 万条：强制条目（端点/核心广告网/本地拦截）永远保留；
+    # 其次放入强结构晋级条目；剩余名额按共识分、命中源数排序取最高的共识域。
+    forced = (core & exact) | ep | (lblock - lallow)
+    promoted_keep = promoted - forced
+    consensus_pool = {d for d in exact
+                      if consensus.get(d, 0) >= 4.0 and hitn.get(d, 0) >= 3} - forced - promoted_keep
+    ordered = sorted(consensus_pool,
+                     key=lambda d: (-consensus.get(d, 0), -hitn.get(d, 0), d))
+    slots = LITE_CAP - len(forced)
+    promoted_keep = set(sorted(promoted_keep)[:max(0, slots)])
+    slots -= len(promoted_keep)
+    consensus_keep = set(ordered[:max(0, slots)])
+    lite = drop_children(forced | promoted_keep | consensus_keep)
     mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted) | ep | (lblock - lallow)
 
     # 安全通配：核心广告网根域 + "注册域恰好是广告结构子域的父域"，绝不碰白名单/良性大盘
@@ -433,6 +446,7 @@ def main():
               ensure_ascii=False)
 
     report = {"sources": per_source, "full": len(exact), "lite": len(lite), "mid": len(mid),
+              "lite_cap": LITE_CAP, "lite_pool": len(promoted) + len(consensus_pool),
               "wildcards": len(wild), "whitelist_blocked": len(blocked_wl),
               "ad_endpoints": len(ep), "promoted": len(promoted), "benign_dropped": len(benign_dropped)}
     print("编译完成：full %d ／mid %d ／lite %d 条（通配 %d）｜白名单剔除 %d｜源 %d 个" % (

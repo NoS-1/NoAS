@@ -3,7 +3,7 @@
  "benign_size": 345,
  "tiers": {
   "lite": {
-   "count": 74298,
+   "count": 9971,
    "risky": 0,
    "samples": []
   },

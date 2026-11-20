@@ -19,6 +19,8 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SUBS = os.path.join(ROOT, "subs")
 TIERS = ("lite", "mid", "full")
+# 与 compile.py 的 LITE_CAP 对齐：lite 处于硬上限内时，规模回落属于策略性截断，不判骤降
+LITE_CAP = 10000
 FILES = ["adguard.txt", "domains.txt", "hosts.txt", "dnsmasq.conf",
          "clash.yaml", "surge.list", "singbox.json", "qx.list",
          "rpz.zone", "wildcard.txt", "unbound.conf"]
@@ -204,7 +206,7 @@ def main():
             prev = {}
     for tier, n in summary.items():
         old = prev.get(tier)
-        if old and n < old * 0.85:
+        if old and n < old * 0.85 and not (tier == "lite" and n <= LITE_CAP):
             fails.append("%s 规模骤降：%d → %d（超过 15%%，疑似上游失效）" % (tier, old, n))
     os.makedirs(os.path.dirname(hist), exist_ok=True)
     json.dump(summary, open(hist, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
