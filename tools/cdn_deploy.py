@@ -76,10 +76,11 @@ full 档（415,758 条）体积超过本节点单文件上限，请走 GitHub da
 def collect():
     files = {}
     files["/index.html"] = INDEX.encode()
-    # 实时任务看板（前端直连 GitHub API，无需 token）
-    tp = ROOT / "docs" / "tasks.html"
-    if tp.exists():
-        files["/tasks.html"] = tp.read_bytes()
+    # 站点页：实时任务看板（前端直连 GitHub API，无需 token）+ 零误拦闭环页
+    for name in ("tasks.html", "precision.html"):
+        p = ROOT / "docs" / name
+        if p.exists():
+            files["/" + name] = p.read_bytes()
     for tier in ("lite", "mid"):
         d = ROOT / "subs" / tier
         for f in sorted(d.iterdir()):
