@@ -1,6 +1,6 @@
 {
- "ts": "2026-11-20T18:52:52Z",
- "round": 19,
+ "ts": "2026-11-20T19:03:01Z",
+ "round": 20,
  "sources": [
   {
    "name": "StevenBlack-all",
@@ -99,7 +99,7 @@
   },
   {
    "name": "NoS-antiAD",
-   "fails": 0,
+   "fails": 1,
    "seen_days": 1
   },
   {
