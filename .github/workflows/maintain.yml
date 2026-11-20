@@ -1,0 +1,83 @@
+name: Maintain (死域周扫 · 自维护)
+
+# 每周一次：抽样解析 → 记录死域候选（仅单源背书会被剔除）→ 重编译 → 硬闸 → 发布。
+# 抽样按 hash 分 30 桶轮换，单次 ≤ 4000 条，不打爆 DNS、不误伤多源背书域名。
+on:
+  schedule:
+    - cron: "10 21 * * 0"   # 北京 周一 05:10
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: maintain
+  cancel-in-progress: false
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 1 · 取云端 full 清单（data 分支）
+        run: |
+          git fetch -q origin data
+          git show origin/data:subs/full/domains.txt > /tmp/full.txt
+          wc -l /tmp/full.txt
+
+      - name: 2 · 拉源 + 体检 + 死域抽样
+        run: |
+          python3 tools/fetch.py
+          python3 tools/evolve.py
+          python3 tools/prune.py --list /tmp/full.txt
+
+      - name: 3 · 重编译 + 硬闸
+        run: |
+          python3 tools/compile.py
+          python3 tools/guard.py
+
+      - name: 4 · DoH 产物与回归
+        run: |
+          python3 tools/build_doh.py
+          node tests/worker_check.mjs
+          node tests/standalone_check.mjs
+
+      - name: 5 · 发布 data 分支 + 站点数据 + 成长账本
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 tools/publish.py --token "$GITHUB_TOKEN"
+          python3 tools/report.py
+          python3 tools/growth.py
+
+      - name: 6 · 提交（带推送自愈）
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A subs/lite docs history lists
+          if git diff --cached --quiet; then echo "无变化"; exit 0; fi
+          git commit -m "maintain: 死域周扫 $(date -u +%Y%m%d)"
+          for i in 1 2 3 4 5; do
+            if git pull -q -X ours --rebase origin main && git push -q; then exit 0; fi
+            echo "重试 $i/5"; sleep $((i*3))
+          done
+          exit 1
+
+      - name: 7 · Pages 部署
+        uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - uses: actions/deploy-pages@v4

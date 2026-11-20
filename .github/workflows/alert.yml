@@ -1,0 +1,48 @@
+name: Build Alert (失败自动开 Issue)
+
+# 任何自动流水线失败/取消/超时 → 立刻在本仓库开一条滚动 Issue（或追加评论），并附运行链接。
+# 恢复成功后自动评论并关闭。全程 GitHub 站内，不接任何第三方通知。
+on:
+  workflow_run:
+    workflows:
+      - "Daily Build (每日重建 · 发布 · 站点)"
+      - "Feedback Learn (反馈学习 · 自我成长闭环)"
+      - "Discover (自动发现新规则源)"
+      - "Maintain (死域周扫 · 自维护)"
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 报警或销警
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          CONC: ${{ github.event.workflow_run.conclusion }}
+          WF: ${{ github.event.workflow_run.name }}
+          URL: ${{ github.event.workflow_run.html_url }}
+          HEAD: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          TITLE="自动构建失败告警（滚动）"
+          NUM=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
+          if [ "$CONC" != "success" ]; then
+            BODY="流水线 **$WF** 在分支 \`$HEAD\` 上的结果为 \`$CONC\`。
+          运行详情：$URL
+          > 本 Issue 由 repo 内 Actions 自动维护：恢复成功后会收到评论并自动关闭。"
+            if [ -n "$NUM" ]; then
+              gh issue comment "$NUM" --body "$BODY"
+            else
+              gh issue create --title "$TITLE" --body "$BODY"
+            fi
+          else
+            if [ -n "$NUM" ]; then
+              gh issue comment "$NUM" --body "流水线 **$WF** 已恢复成功：$URL"
+              gh issue close "$NUM"
+            fi
+          fi
