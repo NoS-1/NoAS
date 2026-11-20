@@ -3,11 +3,11 @@
  "version": "20261120-6637fcdc",
  "count": 9971,
  "wildcards": 56,
- "generated_utc": "Fri, 20 Nov 2026 11:08:41 GMT",
+ "generated_utc": "Fri, 20 Nov 2026 11:48:44 GMT",
  "files": {
   "adguard.txt": {
-   "bytes": 1717961,
-   "sha256": "4b4a0e55720eeced4e8295bd83c737975ffc5bb3f3d7db7bc1499930c3436dd8"
+   "bytes": 232558,
+   "sha256": "1bd45f65c2cf75fcfb42484974d3bebae3ce317b7487f9ff69048642eff714f1"
   },
   "allow.txt": {
    "bytes": 1657,
@@ -32,10 +32,6 @@
   "qx.list": {
    "bytes": 410914,
    "sha256": "e93b93a41070a747ea1082de48e41248c72220b3c1549bdf5bff14a88268188b"
-  },
-  "qx.list": {
-   "bytes": 3054203,
-   "sha256": "4e6378af61e92162dfaf9cd247dd1c81a486f447bef35d1153df4f0ed8fdcaa6"
   },
   "rpz.zone": {
    "bytes": 282438,
