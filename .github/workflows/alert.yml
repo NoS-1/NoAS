@@ -31,7 +31,9 @@ jobs:
         run: |
           TITLE="自动构建失败告警（滚动）"
           NUM=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
-          if [ "$CONC" != "success" ]; then
+          # cancelled / skipped 不是故障：并发替换、人为取消、以及 workflow_run 在 push 与 dispatch
+          # 撞车时都会产生 cancelled，按失败报警会制造假告警，让真故障淹没在噪音里。
+          if [ "$CONC" = "failure" ] || [ "$CONC" = "timed_out" ] || [ "$CONC" = "action_required" ]; then
             BODY="流水线 **$WF** 在分支 \`$HEAD\` 上的结果为 \`$CONC\`。
           运行详情：$URL
           > 本 Issue 由 repo 内 Actions 自动维护：恢复成功后会收到评论并自动关闭。"
@@ -40,9 +42,11 @@ jobs:
             else
               gh issue create --title "$TITLE" --body "$BODY"
             fi
-          else
+          elif [ "$CONC" = "success" ]; then
             if [ -n "$NUM" ]; then
               gh issue comment "$NUM" --body "流水线 **$WF** 已恢复成功：$URL"
               gh issue close "$NUM"
             fi
+          else
+            echo "结论为 $CONC（取消/跳过），按非故障处理，不告警"
           fi
