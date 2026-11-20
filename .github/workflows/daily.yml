@@ -61,6 +61,11 @@ jobs:
           python3 tools/promote.py
           python3 tools/compile.py
 
+      - name: 3.55 · 标签台账重建（必须紧跟 compile，否则 guard 会判"标签域不在档位"）
+        run: |
+          python3 tools/build_tags.py
+          python3 tools/build_mixed.py
+
       - name: 3.6 · DNS 通道体检与产物（国内 DoH/DoT + aiodns）
         run: |
           python3 tools/check_channels.py || true   # 体检恒返回 0，环境异常只标注不阻断
