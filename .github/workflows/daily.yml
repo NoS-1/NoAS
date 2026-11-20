@@ -66,6 +66,12 @@ jobs:
           python3 tools/build_tags.py
           python3 tools/build_mixed.py
 
+      - name: 3.58 · D1 状态同步（可选层，额度耗尽自动跳过）
+        continue-on-error: true
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: python3 tools/d1_init.py
+
       - name: 3.56 · 观察池影子计时 + 域名信誉评分
         run: |
           # 影子计时器：新发现的低置信域必须先观察够久（14 天 + 复现 2 轮）才准晋级，
