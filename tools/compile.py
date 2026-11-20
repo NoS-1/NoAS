@@ -527,17 +527,6 @@ def main():
                       if consensus.get(d, 0) >= 4.0 and hitn.get(d, 0) >= 3} - forced - promoted_keep
     ordered = sorted(consensus_pool,
                      key=lambda d: (-consensus.get(d, 0), -hitn.get(d, 0), d))
-    slots = LITE_CAP - len(forced)
-    promoted_keep = set(sorted(promoted_keep)[:max(0, slots)])
-    slots -= len(promoted_keep)
-    consensus_keep = set(ordered[:max(0, slots)])
-    # 威胁分类（挖矿/返利/遥测）严禁出现在 lite/mid：即便上游源带了也强制剔除
-    lite = drop_children(forced | promoted_keep | consensus_keep) - threat_all
-    # 观察池只进 mid / full：这些是自动发现的"前缀像广告、但链上没有广告落点"的域
-    mid = (drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted)
-           | ep | watch | sdk_video | (lblock - lallow)) - threat_all
-    full = exact | watch | sdk_video | threat_extra
-
     # 安全通配：核心广告网根域 + "注册域恰好是广告结构子域的父域"，绝不碰白名单/良性大盘
     wild_safe = {c for c in core
                  if not protected(c, wl) and c not in benign and c not in ep}
@@ -549,6 +538,18 @@ def main():
                     and r not in benign and r not in ep):
                 wild_safe.add(r)
     wild_safe = set(sorted(wild_safe)[:500])
+
+    # 名额要连通配一起算：lite 产物 = 域名行 + 通配行，合计不得越 LITE_CAP
+    slots = LITE_CAP - len(forced) - len(wild_safe)
+    promoted_keep = set(sorted(promoted_keep)[:max(0, slots)])
+    slots -= len(promoted_keep)
+    consensus_keep = set(ordered[:max(0, slots)])
+    # 威胁分类（挖矿/返利/遥测）严禁出现在 lite/mid：即便上游源带了也强制剔除
+    lite = drop_children(forced | promoted_keep | consensus_keep) - threat_all
+    # 观察池只进 mid / full：这些是自动发现的"前缀像广告、但链上没有广告落点"的域
+    mid = (drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted)
+           | ep | watch | sdk_video | (lblock - lallow)) - threat_all
+    full = exact | watch | sdk_video | threat_extra
 
     prov = {d: round(consensus.get(d, 0), 2) for d in lite}
     json.dump({"lite": prov, "core": sorted(core & lite), "endpoints": sorted(ep & lite)},
