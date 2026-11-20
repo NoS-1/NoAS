@@ -1,0 +1,92 @@
+name: Daily Build (每日重建 + 发布)
+
+# 这条流水线不读任何 secrets，也不需要任何平台账号：
+#   拉公开源 → 编译 → 白名单硬闸 → 三档订阅 → Worker 产物 → 回归 → 提交 / 发布 data 分支
+# 高频写入走 git（不消耗 API 配额）；大文件走 data 分支（强制单 commit，历史不膨胀）。
+
+on:
+  schedule:
+    - cron: "17 19 * * *"   # 北京 03:17，避开整点高峰
+    - cron: "17 7 * * *"    # 北京 15:17，白天补一轮（源更新更快）
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths-ignore:
+      - "subs/**"
+      - "docs/**"
+      - "**/*.md"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 拉取公开规则源
+        run: python3 tools/fetch.py
+
+      - name: 编译三档（lite/mid/full）
+        run: python3 tools/compile.py
+
+      - name: 发布前硬校验（白名单/格式/一致性/规模突变）
+        run: python3 tools/guard.py
+
+      - name: 构建 DoH 产物
+        run: |
+          python3 tools/build_doh.py
+          node --check doh/worker.js
+
+      - name: 产物回归（真拦截 / 真放行）
+        run: |
+          node tests/worker_check.mjs
+          node tests/standalone_check.mjs
+
+      - name: 发布 mid/full 到 data 分支（不占 API 配额、历史不膨胀）
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tools/publish.py --token "$GITHUB_TOKEN"
+
+      - name: 归档当天快照
+        run: |
+          mkdir -p history
+          python3 -c "import json,time,pathlib; p=pathlib.Path('history/last_run.json'); c=json.load(open('out/compile.json',encoding='utf-8')); json.dump({'ts':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'compile':c}, open(p,'w',encoding='utf-8'), ensure_ascii=False, indent=1); print(str(c)[:300])"
+
+      - name: 提交 lite 与代码（内容没变就零提交）
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A subs/lite history tools doh/worker.tpl.js sources.tsv lists tests
+          if git diff --cached --quiet; then
+            echo "无变化，跳过提交"
+          else
+            git commit -m "build: 每日规则重建 $(date -u +%Y%m%d-%H%M)"
+            git push
+          fi
+
+      - name: 留档
+        uses: actions/upload-artifact@v4
+        with:
+          name: noas-subs-and-reports
+          path: |
+            subs/
+            out/compile.json
+            history/last_run.json
+          retention-days: 14
