@@ -67,13 +67,22 @@ def parse_domains(text):
             if m:
                 yield m.group(1)
             continue
+        m = re.match(r"^(?:- +)?(?:DOMAIN-SUFFIX|DOMAIN),(\S+)$", line)
+        if m:
+            yield m.group(1)
+            continue
         yield line.split()[0]
 
 
 def parse_wildcard(text):
+    """兼容两种通配写法：adblock 的 ||*.x^ 和纯文本的 *.x（OISD / HaGeZi）。"""
     for line in text.splitlines():
         line = line.strip()
         m = re.match(r"^\|\|\*\.([^\^/$|]+)\^", line)
+        if m:
+            yield "W:" + m.group(1)
+            continue
+        m = re.match(r"^\*\.([a-z0-9][a-z0-9._-]*)$", line, re.I)
         if m:
             yield "W:" + m.group(1)
 
@@ -188,7 +197,15 @@ def slug(name):
 
 
 PARSERS = {"hosts": parse_hosts, "adblock": parse_adblock, "domains": parse_domains,
-           "dnsmasq": parse_domains, "wildcard": parse_wildcard}
+           "dnsmasq": parse_domains, "wildcard": parse_wildcard,
+           "domainswild": parse_wildcard, "clash": parse_domains}
+
+
+HEAVY_HINTS = ("AdGuard", "HaGeZi", "hagezi", "OISD", "oisd", "1Hosts", "KADhosts", "antiAD")
+AD_LABELS = {"ad", "ads", "adserver", "adservice", "advert", "advertising", "adclick",
+             "adtech", "banner", "banners", "click", "clicks", "track", "tracker",
+             "tracking", "beacon", "pixel", "impression", "promo", "sponsor", "sponsored",
+             "doubleclick", "pagead", "prebid", "adnxs", "adform", "adsrv", "dsp", "ssp"}
 
 
 def load_local(name):
@@ -207,7 +224,8 @@ def collect():
     srcs, meta = sources_by_kind()
     exact, wild = set(), set()
     per_source = {}
-    consensus = {}   # 域 → 命中它的独立源数量（跨源共识，比单源更可信）
+    consensus = {}   # 域 → 加权共识分（高质量源权重更高）
+    hitn = {}        # 域 → 命中的独立源个数
     for s in srcs:
         fp = os.path.join(CACHE, slug(s["name"]) + ".txt")
         if not os.path.exists(fp):
@@ -230,10 +248,12 @@ def collect():
                 exact.add(d)
                 seen.add(d)
                 n += 1
+        w = 1.5 if any(k in s["name"] for k in HEAVY_HINTS) else 1.0
         for d in seen:
-            consensus[d] = consensus.get(d, 0) + 1
+            consensus[d] = consensus.get(d, 0) + w
+            hitn[d] = hitn.get(d, 0) + 1
         per_source[s["name"]] = n
-    return exact, wild, per_source, meta, consensus
+    return exact, wild, per_source, meta, consensus, hitn
 
 
 def drop_children(exact):
@@ -332,7 +352,7 @@ def main():
     args = ap.parse_args()
     os.makedirs(os.path.join(ROOT, "out"), exist_ok=True)
 
-    exact, wild, per_source, _, consensus = collect()
+    exact, wild, per_source, _, consensus, hitn = collect()
     wl = load_whitelist()
     ep = load_list_file("ad_endpoints.txt")
     blocked_wl = [d for d in exact if protected(d, wl) and d not in ep]
@@ -362,22 +382,33 @@ def main():
             if line and "." in line:
                 core.add(line)
     benign = load_list_file("benign_top.txt") | wl
+    wild = {w for w in wild if registrable(w) not in benign and w not in benign}
     exact, benign_dropped = drop_benign_parent(exact, benign, ep)
     dead = load_list_file("dead.txt")
-    dropped_dead = {d for d in exact if d in dead and consensus.get(d, 0) <= 1}
+    dropped_dead = {d for d in exact if d in dead and hitn.get(d, 0) <= 1}
     exact = exact - dropped_dead
     # 本地 blocklist：用户显式要求必拦，优先于良性大盘判断（仍让本地 allow 压过）
     exact = drop_children(exact) | ep | (lblock - lallow)
     # 精度优先：lite 只保留"多源共识 + 核心广告网 + 审计端点"，自动晋级只进 mid
     promoted = {d for d in load_list_file("promoted.txt") if d not in wl and d in exact}
-    lite = drop_children({d for d in exact if consensus.get(d, 0) >= 3} | (core & exact)) | ep | (lblock - lallow)
-    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2} | promoted) | ep | (lblock - lallow)
+    lite = drop_children({d for d in exact
+                          if (consensus.get(d, 0) >= 4.0 and hitn.get(d, 0) >= 3)}
+                         | (core & exact)) | ep | (lblock - lallow)
+    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted) | ep | (lblock - lallow)
 
-    # 安全通配：只给"纯广告网根域"开通配，绝不碰白名单/良性大盘，误伤面为零
+    # 安全通配：核心广告网根域 + "注册域恰好是广告结构子域的父域"，绝不碰白名单/良性大盘
     wild_safe = {c for c in core
                  if not protected(c, wl) and c not in benign and c not in ep}
+    for d in exact:
+        parts = d.split(".")
+        if len(parts) >= 3 and any(p in AD_LABELS for p in parts[:-2]):
+            r = registrable(d)
+            if (r and r in exact and r != d and not protected(r, wl)
+                    and r not in benign and r not in ep):
+                wild_safe.add(r)
+    wild_safe = set(sorted(wild_safe)[:500])
 
-    prov = {d: consensus.get(d, 0) for d in lite}
+    prov = {d: round(consensus.get(d, 0), 2) for d in lite}
     json.dump({"lite": prov, "core": sorted(core & lite), "endpoints": sorted(ep & lite)},
               open(os.path.join(ROOT, "out", "lite_provenance.json"), "w", encoding="utf-8"),
               ensure_ascii=False)
