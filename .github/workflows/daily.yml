@@ -76,7 +76,9 @@ jobs:
 
       - name: 3.6 · DNS 通道体检与产物（国内 DoH/DoT + aiodns）
         run: |
-          python3 tools/check_channels.py || true   # 体检恒返回 0，环境异常只标注不阻断
+          # 体检是 best-effort：CI 出网被 DROP 时 TCP 会挂到超时，必须给硬上限，
+          # 否则一条通道能吃掉十几分钟，把整轮构建拖死。
+          timeout 180 python3 tools/check_channels.py || true   # 恒返回 0，环境异常只标注不阻断
           python3 tools/gen_channels.py
       - name: 4 · 路径层（L2）重建与体检
         run: |

@@ -462,7 +462,9 @@ def main():
     # 端点表 = 人工审计的国内广告端点 + 自动发现的高置信首方广告子域（解析链落在广告网络）
     ep = load_list_file("ad_endpoints.txt") | load_first_col("cn_ad_endpoints.txt")
     # 观察池：只靠前缀命中、链上无广告落点，仅进 mid/full，绝不进 lite
-    watch = load_first_col("cn_ad_watch.txt")
+    # 观察池两条来源：① 自动发现的低置信首方广告子域；② 用户报的漏拦域（misses.txt）。
+    # 两者都只进 mid/full：单条反馈不足以进默认档，但也不该石沉大海。
+    watch = load_first_col("cn_ad_watch.txt") | load_first_col("misses.txt")
     blocked_wl = [d for d in exact if protected(d, wl) and d not in ep]
     exact = {d for d in exact if not protected(d, wl) or d in ep}
     wild = {w for w in wild if not protected(w, wl)}
