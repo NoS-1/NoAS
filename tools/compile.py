@@ -416,6 +416,14 @@ def input_fingerprint():
             if os.path.isfile(fp) and (name.endswith(".txt") or name.endswith(".tsv")):
                 files.append(fp)
     files.append(os.path.join(ROOT, "sources.tsv"))
+    # 源本体在 cache/（每轮 fetch 重新拉到），lists/ 只是上一次的产物。
+    # 只盯 lists 会漏掉"源更新了但还没来得及反映到 lists"的情况，必须把源本身算进指纹。
+    cdir = os.path.join(ROOT, "cache")
+    if os.path.isdir(cdir):
+        for name in sorted(os.listdir(cdir)):
+            fp = os.path.join(cdir, name)
+            if os.path.isfile(fp) and fp.endswith((".txt", ".json", ".list", ".domains")):
+                files.append(fp)
     for fp in files:
         if not os.path.isfile(fp):
             continue

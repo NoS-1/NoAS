@@ -48,7 +48,7 @@ jobs:
 
       - name: 3 · 重新编译三档（误伤域已在冷却池，编译期强制豁免）
         run: |
-          python3 tools/compile.py
+          python3 tools/compile.py --force
           python3 tools/watch_pool.py
           python3 tools/reputation.py
 

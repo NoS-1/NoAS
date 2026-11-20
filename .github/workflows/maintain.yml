@@ -47,7 +47,7 @@ jobs:
 
       - name: 3 · 重编译 + 硬闸
         run: |
-          python3 tools/compile.py
+          python3 tools/compile.py --force
           python3 tools/guard.py
 
       - name: 4 · DoH 产物与回归
