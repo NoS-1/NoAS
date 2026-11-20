@@ -35,7 +35,7 @@ li{margin:4px 0}
 <h2>1 · 结论先行</h2>
 <table>
 <tr><th>档位</th><th>本期规则条数</th><th>黄金集命中（误拦）</th><th>实测误拦率</th></tr>
-<tr><td>lite · 手机默认档</td><td>9962</td><td>0</td><td><span class="pill ok">0.00% 零误拦</span></td></tr><tr><td>mid · 平衡档</td><td>184911</td><td>0</td><td><span class="pill ok">0.00% 零误拦</span></td></tr><tr><td>full · 高召回档</td><td>415688</td><td>0</td><td><span class="pill ok">0.00% 零误拦</span></td></tr>
+<tr><td>lite · 手机默认档</td><td>9961</td><td>0</td><td><span class="pill ok">0.00% 零误拦</span></td></tr><tr><td>mid · 平衡档</td><td>211158</td><td>0</td><td><span class="pill ok">0.00% 零误拦</span></td></tr><tr><td>full · 高召回档</td><td>530692</td><td>0</td><td><span class="pill ok">0.00% 零误拦</span></td></tr>
 </table>
 <div class="card">
 黄金回归集共 <b>2227</b> 条正常站点，每轮构建都用它跑一遍：lite 命中必须为 <b>0</b>，出现一条就判红、不发版。
@@ -45,7 +45,7 @@ mid/full 是高召回档，只记录误拦率，不阻断。
 <h2>2 · 五道防线</h2>
 <table>
 <tr><th>防线</th><th>怎么挡</th><th>本期规模</th></tr>
-<tr><td>白名单（一票否决）</td><td>人工台账 + 回归基线 + 基础服务表，编译期整体剔除，连父域一起保护</td><td>剔除 4223 条</td></tr>
+<tr><td>白名单（一票否决）</td><td>人工台账 + 回归基线 + 基础服务表，编译期整体剔除，连父域一起保护</td><td>剔除 5225 条</td></tr>
 <tr><td>良性母域剔除</td><td>一个平台主体域在正常大盘里，就不拦它下面整片子域</td><td>297 条母域</td></tr>
 <tr><td>基础服务表</td><td>登录/支付/推送/地图/验证码/崩溃上报，拦了 App 就废</td><td>37 条</td></tr>
 <tr><td>影子期（观察池）</td><td>低置信域先观察 14 天且复现 2 轮才准晋级，30 天不复现直接退役</td><td>在池 46 条</td></tr>
@@ -56,10 +56,10 @@ mid/full 是高召回档，只记录误拦率，不阻断。
 <div class="sub">谁够格进 lite 不看"几个清单都收了"，看多信号合起来的分数。</div>
 <table>
 <tr><th>分数段</th><th>条数</th><th>档位含义</th></tr>
-<tr><td>≥70 分 · 够格进 lite</td><td>8027</td></td><td><span class="pill ok">—</span></td></tr><tr><td>40–69 分 · 只进 mid</td><td>1194</td></td><td><span class="pill ">—</span></td></tr><tr><td><40 分 · 留 full 或观察</td><td>10904</td></td><td><span class="pill ">—</span></td></tr>
+<tr><td>≥70 分 · 够格进 lite</td><td>8096</td></td><td><span class="pill ok">—</span></td></tr><tr><td>40–69 分 · 只进 mid</td><td>1196</td></td><td><span class="pill ">—</span></td></tr><tr><td><40 分 · 留 full 或观察</td><td>11058</td></td><td><span class="pill ">—</span></td></tr>
 </table>
 <div class="card">
-共评 <b>21244</b> 条，其中 <b>1119</b> 条因命中白名单/良性大盘/黄金集被<b>一票否决</b>（直接清零，不给翻盘机会）。
+共评 <b>21428</b> 条，其中 <b>1078</b> 条因命中白名单/良性大盘/黄金集被<b>一票否决</b>（直接清零，不给翻盘机会）。
 评分维度：是否已在 lite 实证、跨源共识分、父域是否广告网络、子域词元、是否品牌域下的首方伪装、是否 SDK/贴片/遥测、是否机器生成子域。
 </div>
 
