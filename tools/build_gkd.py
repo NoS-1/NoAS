@@ -112,7 +112,8 @@ def main():
         "apps": apps,
     }
 
-    body = json5.dumps(out, ensure_ascii=False, indent=2, quote_keys=False)
+    body = json5.dumps(out, ensure_ascii=False, indent=None,
+                       quote_keys=False, separators=(",", ":"))
     header = ("// NoAS GKD 订阅 · 每日随流水线重建\n"
               "// 规则来源 @gkd-kit/subscription（MIT），NoAS 未改写选择器\n")
     text = header + body + "\n"
