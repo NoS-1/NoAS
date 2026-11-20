@@ -1,31 +1,20 @@
 {
  "lite": {
-  "total": 2257,
+  "total": 2227,
   "hit": 0,
   "rate": 0.0,
   "samples": []
  },
  "mid": {
-  "total": 2257,
+  "total": 2227,
   "hit": 0,
   "rate": 0.0,
   "samples": []
  },
  "full": {
-  "total": 2257,
-  "hit": 30,
-  "rate": 1.33,
-  "samples": [
-   "angsrvr.com",
-   "beanstock.com",
-   "cbox.ws",
-   "edigitalsurvey.com",
-   "honcode.ch",
-   "ixiaa.com",
-   "jasmin.com",
-   "mdotm.com",
-   "newrelic.com",
-   "nexage.com"
-  ]
+  "total": 2227,
+  "hit": 0,
+  "rate": 0.0,
+  "samples": []
  }
 }

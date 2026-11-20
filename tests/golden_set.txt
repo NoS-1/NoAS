@@ -103,7 +103,6 @@ americanexpress.com
 amxdt.com
 amzn.to
 ancestry.com
-angsrvr.com
 answcdn.com
 answers.com
 anyclip.com
@@ -179,7 +178,6 @@ bbcimg.co.uk
 bdimg.com
 bdnsrt.org
 beanstock.co
-beanstock.com
 beautybar.com
 beeg.com
 beenverified.com
@@ -279,7 +277,6 @@ castaclip.net
 catsupagedwelcome.com
 cb-cdn.com
 cbc.ca
-cbox.ws
 cbs.com
 cbsi.com
 cbsimg.net
@@ -504,7 +501,6 @@ edgefcs.net
 edgefonts.net
 edgekey.net
 edgesuite.net
-edigitalsurvey.com
 editmysite.com
 eepurl.com
 efe.com
@@ -784,7 +780,6 @@ hobwelt.com
 hola.org
 hollywoodreporter.com
 homedepot.com
-honcode.ch
 hootsuite.com
 horsered.com
 hotels.com
@@ -900,13 +895,11 @@ istockphoto.com
 itau.com.br
 itools.info
 itunes.com
-ixiaa.com
 ixxx.com
 j2inter.com
 jalopnik.com
 janrain.com
 janrainbackplane.com
-jasmin.com
 java.com
 javafx.com
 jccjd.com
@@ -1047,7 +1040,6 @@ mbamupdates.com
 mcafeesecure.com
 mcclatchydc.com
 mdotlabs.com
-mdotm.com
 me.com
 media-imdb.com
 mediafire.com
@@ -1180,13 +1172,11 @@ neulion.com
 neverblue.com
 newinfoclientstack.com
 newnext.me
-newrelic.com
 newshunt.com
 newsinc.com
 newsvine.com
 newsweek.com
 newyorker.com
-nexage.com
 nfl.com
 nflcdn.com
 nflxext.com
@@ -1268,7 +1258,6 @@ opera-mini.net
 opera.com
 oppo.com
 optimatic.com
-optorb.com
 oracle.com
 oregonlive.com
 origin.com
@@ -1322,7 +1311,6 @@ photobucket.com
 phpbb.com
 pickmeup-ltd.com
 pinduoduo.com
-pingdom.net
 pinger.com
 pinimg.com
 pinterest.com
@@ -1354,7 +1342,6 @@ ppjol.net
 pravda.ru
 pressroomvip.com
 preyproject.com
-prfct.co
 pricedetect.com
 pricegrabber.com
 primelocation.com
@@ -1377,12 +1364,9 @@ ptvcdn.net
 public-trust.com
 publicbt.com
 publichd.eu
-pubnub.com
 pubsqrd.com
 pushbullet.com
 pusher.com
-pusherapp.com
-pushwoosh.com
 pypi.org
 qcloud.com
 qhimg.com
@@ -1438,10 +1422,7 @@ reklamz.com
 remat.ca
 reponets.com
 repubblica.it
-res-x.com
-responsys.net
 resultspage.com
-returnpath.net
 reuters.com
 reviewed.com
 riotgames.com
@@ -1515,7 +1496,6 @@ sgiggle.com
 sh.st
 shape.com
 shareth.ru
-sharethis.com
 shbdn.com
 shebudgets.com
 sheknows.com
@@ -1560,7 +1540,6 @@ soap.com
 sogou.com
 soha.vn
 sohu.com
-sojern.com
 solo-launcher.com
 solvemedia.com
 somo.vn
@@ -1582,7 +1561,6 @@ spiceworks.com
 spiegel.de
 spilgames.com
 spinr.in
-splash-screen.net
 sportscenter.com
 sporx.com
 squarespace.com
@@ -1614,7 +1592,6 @@ suning.com
 sunset.com
 suntimes.com
 supercell.net
-superfish.com
 superuser.com
 suproo.com
 surveymonkey.com
@@ -1733,7 +1710,6 @@ travel-assets.com
 travelandleisure.com
 travelzoo.com
 trb.com
-trbas.com
 trbimg.com
 trib.al
 tribdss.com
@@ -1801,7 +1777,6 @@ usatoday.com
 usatoday.net
 userapi.com
 userdmp.com
-userreport.com
 usertrust.com
 uservoice.com
 usmagazine.com
@@ -1866,7 +1841,6 @@ vivo.com
 vizejs.info
 vk.com
 vk.me
-vkontakte.ru
 vlingo.com
 vnecdn.net
 vnexpress.net
@@ -1897,14 +1871,12 @@ weather.com
 weather.gov
 weatherbug.com
 webcollage.net
-webengage.com
 webmd.com
 webovernet.com
 webrootcloudav.com
 webscorebox.com
 websosanh.vn
 webssearches.com
-webtrends.com
 weebly.com
 weeklystandard.com
 weheartit.com
@@ -1952,7 +1924,6 @@ wordpress.com
 wordpress.org
 worldcat.org
 worldnow.com
-worldssl.net
 worthly.com
 wp.com
 wp.me
@@ -2006,7 +1977,6 @@ yelp.com
 yelpcdn.com
 yenibiris.com
 yes.my
-yieldmanager.com
 yify-torrents.com
 yimg.com
 yimgr.com

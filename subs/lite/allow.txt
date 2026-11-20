@@ -1,4 +1,4 @@
-# NoAS 允许清单（20261120-52f89103）：这些域禁止拦截
+# NoAS 允许清单（20261120-15617f40）：这些域禁止拦截
 12306.cn
 126.com
 163.com
@@ -62,6 +62,7 @@ googleapis.com
 graph.qq.com
 gstatic.com
 hellobike.com
+honcode.ch
 honor.com
 huawei.com
 huggingface.co
@@ -107,8 +108,11 @@ paypal.com
 pdd.net
 pinduoduo.com
 playstation.com
+pubnub.com
 push-api.cloud.huawei.com
 push.hicloud.com
+pusherapp.com
+pushwoosh.com
 pypi.org
 python.org
 qcloud.com
@@ -149,6 +153,7 @@ upyun.com
 v2ex.com
 visa.com
 vivo.com
+vkontakte.ru
 webapi.amap.com
 wechat.com
 wechatpay.cn
