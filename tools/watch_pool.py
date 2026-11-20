@@ -50,7 +50,8 @@ def load_watch():
             continue
         cols = line.rstrip("\n").split("\t")
         if len(cols) >= 1 and "." in cols[0]:
-            out[cols[0].lower()] = cols[1] if len(cols) > 1 else ""
+            out[cols[0].lower()] = (cols[1] if len(cols) > 1 else "",
+                                    cols[2] if len(cols) > 2 else "prev")
     return out
 
 
@@ -103,19 +104,21 @@ def main():
             pool = {}
 
     promoted, retired, fresh, kept = [], [], 0, 0
-    for dom, token in watch.items():
+    for dom, (token, mark) in watch.items():
         rec = pool.get(dom)
         if not rec:
-            pool[dom] = {"first_seen": today, "last_seen": today, "hits": 1, "token": token}
+            pool[dom] = {"first_seen": today, "last_seen": today, "hits": 1,
+                         "token": token, "last_mark": mark}
             fresh += 1
             continue
-        # 助手：上一轮是不是也见过（isolated 复现计数）
-        rec["last_seen"] = today
         rec["token"] = token or rec.get("token", "")
         rec.setdefault("first_seen", today)
-        # 每轮出现在 watch 里，说明本轮重新解析到或被 previous() 保留；
-        # 用 last_probe 区分"本轮实测"与"历史保留"由 discover 负责，这里保守 +1
-        rec["hits"] = int(rec.get("hits", 1)) + 1
+        rec["last_mark"] = mark
+        # 关键：只有"本轮真解析到"才算复现。历史保留（prev）不动 hits，
+        # 否则没复现的域也会攒够次数被晋级——那就是把误拦放了进来。
+        if mark == "probe":
+            rec["last_seen"] = today
+            rec["hits"] = int(rec.get("hits", 1)) + 1
 
         age = days_between(rec["first_seen"], today)
         if age >= SHADOW_DAYS and rec["hits"] >= PROMOTE_HITS and dom not in ep:

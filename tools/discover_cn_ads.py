@@ -352,19 +352,21 @@ def main():
     old_strong = previous("cn_ad_endpoints.txt")
     old_watch = previous("cn_ad_watch.txt")
     s_map = {h: (t, hint) for h, t, hint in strong}
-    w_map = {h: t for h, t in watch}
+    # 第三列记录"本轮是否真实测到"：probe=本轮解析成功过，prev=只是历史保留（没复现）。
+    # 这一列是影子计时器的判据——没有它，历史保留条目会被算成复现，14 天后全部误晋级。
+    w_map = {h: (t, "probe") for h, t in watch}
     for h, cols in old_strong.items():
         if h not in probed and h not in s_map:
             s_map[h] = (cols[0] if cols else "", cols[2] if len(cols) > 2 else "prev")
     for h, cols in old_watch.items():
         if h not in probed and h not in w_map and h not in s_map:
-            w_map[h] = cols[0] if cols else ""
+            w_map[h] = (cols[0] if cols else "", "prev")
     # 本轮确认存在的从观察池提升到端点表
     for h in s_map:
         w_map.pop(h, None)
 
     strong = [(h, t, hint) for h, (t, hint) in sorted(s_map.items())]
-    watch = [(h, t) for h, t in sorted(w_map.items())]
+    watch = [(h, t, mark) for h, (t, mark) in sorted(w_map.items())]
 
     with open(os.path.join(LISTS, "cn_ad_endpoints.txt"), "w", encoding="utf-8") as f:
         f.write("# NoAS 国内 App 首方广告子域（高置信：解析链落在广告网络，或品牌自有广告子域）\n"
@@ -375,8 +377,8 @@ def main():
     with open(os.path.join(LISTS, "cn_ad_watch.txt"), "w", encoding="utf-8") as f:
         f.write("# NoAS 国内广告子域观察池（低置信：词元命中的中间标签、链上无广告落点）\n"
                 "# 仅 mid/full 引入，lite 不用；累积，构建日期 %s\n" % ts)
-        for h, t in watch:
-            f.write("%s\t%s\n" % (h, t))
+        for h, t, mark in watch:
+            f.write("%s\t%s\t%s\n" % (h, t, mark))
 
     os.makedirs(OUT, exist_ok=True)
     stats = {"generated": ts, "roots_total": len(roots), "roots_batch": batch,
