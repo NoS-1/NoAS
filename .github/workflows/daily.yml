@@ -80,6 +80,9 @@ jobs:
       - name: 8 · 生成站点数据与 Pages 镜像
         run: python3 tools/report.py
 
+      - name: 8.5 · 更新成长账本（趋势 / 源贡献 / 学习事件）
+        run: python3 tools/growth.py
+
       - name: 9 · 提交（内容没变就零提交）
         run: |
           git config user.name  "github-actions[bot]"

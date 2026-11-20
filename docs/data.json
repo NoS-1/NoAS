@@ -1,16 +1,16 @@
 {
  "repo": "NoS-1/NoAS",
- "updated": "2026-11-20T08:52:51Z",
+ "updated": "2026-11-20T09:00:55Z",
  "tiers": {
   "lite": {
    "count": 23825,
    "version": "20261120-fdf9c27a",
    "wildcards": 0,
-   "generated_utc": "Fri, 20 Nov 2026 08:52:03 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 09:00:35 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 587390,
-     "sha256": "50db0148378855d9ec2a4bd77c3707991d2d79056296a5933c744ece47839797"
+     "sha256": "69951d9e144d2c539477c1e61afb980194d69db49d0a19359e6a92d12cc362c8"
     },
     "clash.yaml": {
      "bytes": 944521,
@@ -42,11 +42,11 @@
    "count": 164711,
    "version": "20261120-5bf32ac2",
    "wildcards": 0,
-   "generated_utc": "Fri, 20 Nov 2026 08:52:03 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 09:00:35 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 4029021,
-     "sha256": "be658082852b293179eb49a46095f6ef3d454d667ca63f3827c419655a048f57"
+     "sha256": "10fe12246ffdeef0251cedc3db5fd04d2cb179d74f51d1ee1009f5dbfe5dcd0e"
     },
     "clash.yaml": {
      "bytes": 6499442,
@@ -78,11 +78,11 @@
    "count": 415053,
    "version": "20261120-4eafd5fe",
    "wildcards": 0,
-   "generated_utc": "Fri, 20 Nov 2026 08:52:04 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 09:00:36 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 9891814,
-     "sha256": "9f0c28ceb9ed86e613f1858a775287bdd64228fb9553af403c78ec0fb1aeb080"
+     "sha256": "ca837e11b92aeae8fd7533248cc0921ad8dbc1d9e235f338810d44fc6d31495c"
     },
     "clash.yaml": {
      "bytes": 16117364,
@@ -112,8 +112,8 @@
   }
  },
  "sources": {
-  "count": 15,
-  "whitelist_blocked": 4359,
+  "count": 14,
+  "whitelist_blocked": 3720,
   "ad_endpoints": 11,
   "per_source": {
    "StevenBlack-all": 76101,
@@ -126,7 +126,6 @@
    "notracking": 500138,
    "AdAway": 6540,
    "urlhaus": 2112,
-   "PhishingArmy": 146883,
    "Spam404": 8140,
    "AdGuardDNS-filter": 191090,
    "AdGuard-CNAME-disguised": 306552,

@@ -1,0 +1,94 @@
+name: Feedback Learn (反馈学习 · 自我成长闭环)
+
+# 仓库 Issue 即"错误报告接口"，两个标签：误伤 / 漏拦。
+#   误伤 → 自动进白名单台账（立刻放行，误伤优先）
+#   漏拦 → 带广告/追踪结构的域进审计端点强拦；其余进观察池，等共识或人工，绝不乱加黑
+# 触发：新开 Issue 立刻跑；每天 04:20（北京）补一次；也可手动。
+# 额度：读 Issue 2 次 + 每条写 2 次（最多 10 条），其余全走 git，不占 API 配额。
+
+on:
+  issues:
+    types: [opened, labeled, reopened]
+  schedule:
+    - cron: "20 20 * * *"   # 北京 04:20
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: feedback
+  cancel-in-progress: false
+
+jobs:
+  learn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 1 · 拉取公开规则源
+        run: python3 tools/fetch.py
+
+      - name: 2 · 从 Issue 学习（白名单 / 端点 / 观察池）
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tools/feedback.py
+
+      - name: 3 · 重新编译三档
+        run: python3 tools/compile.py
+
+      - name: 4 · 发布前硬校验（含误伤审计必须为 0）
+        run: python3 tools/guard.py
+
+      - name: 5 · DoH 产物 + 回归
+        run: |
+          python3 tools/build_doh.py
+          node --check doh/worker.js
+          node tests/worker_check.mjs
+          node tests/standalone_check.mjs
+
+      - name: 6 · 发布 mid/full 到 data 分支
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tools/publish.py --token "$GITHUB_TOKEN"
+
+      - name: 7 · 站点数据 / Pages 镜像 / 成长账本
+        run: |
+          python3 tools/report.py
+          python3 tools/growth.py
+
+      - name: 8 · 提交（带推送自愈）
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A subs/lite docs history lists tests
+          if git diff --cached --quiet; then
+            echo "无变化，跳过提交"; exit 0
+          fi
+          git commit -m "learn: 反馈学习 $(date -u +%Y%m%d-%H%M)"
+          for i in 1 2 3 4 5; do
+            if git pull -q -X ours --rebase origin main && git push -q; then
+              echo "推送成功（第 $i 次）"; exit 0
+            fi
+            echo "推送被拒，重试 $i/5"; sleep $((i*3))
+          done
+          exit 1
+
+      - name: 9 · Pages 部署
+        uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - uses: actions/deploy-pages@v4
