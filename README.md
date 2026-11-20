@@ -54,7 +54,7 @@
 4. `meta.json` 里的 sha256 必须与真实文件一致（改了文件没重算直接红）
 5. 抽查：已知广告网络必须拦、已知正常站必须放
 6. **规模突变护栏**：比上一轮少 15% 以上直接判红停发（多半是上游集体挂掉，宁可停一天也不发残包）
-7. **黄金回归**：`tests/golden_set.txt` 里 2,151 条正常站点，lite 档命中必须为 0，出现一条就判红（实测三档误拦率见 [precision.html](https://nos-1.github.io/NoAS/precision.html)）
+7. **黄金回归**：`tests/golden_set.txt` 里 2,227 条正常站点，lite 档命中必须为 0，出现一条就判红（实测三档误拦率见 [precision.html](https://nos-1.github.io/NoAS/precision.html)）
 8. **基础服务护栏**：`lists/service_allow.txt`（登录/支付/推送/地图/验证码/崩溃上报）三档都不许出现——这条挂了，用户是登不上微信、付不了款，比误拦广告严重得多
 9. **影子期**：观察池里的低置信域必须先看够 14 天且复现 2 轮才准晋级，30 天不复现直接退役；没满期的绝不许进 lite（`tools/watch_pool.py`）
 10. **信誉评分**：多信号加权打分，≥70 才够格进 lite；命中白名单/良性大盘/黄金集的域直接清零，不给翻盘机会（`tools/reputation.py`）
@@ -115,6 +115,9 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 
 产物在 `subs/channels/`：`doh.txt`、`dot.txt`、`aiodns.sh`、`adguardhome-upstream.yaml`、`aiodns.special.txt`、`health.json`。
 每轮构建先体检再生成；体检若判定环境被代理劫持（`env=suspect`），**沿用完整清单，绝不剔空**。
+
+延迟不是拍脑袋定的：`tools/bench_dns.py` 按真实 DNS wire query 实测各家首包与复用耗时，结论和取舍写在 [`dns-latency.html`](https://nos-1.github.io/NoAS/dns-latency.html)。
+一句话：延迟大头是每次重做 TLS 握手，所以主用常连的国内 DoH（复用后 9–16ms），自建只兜底。
 
 ## 三层叠加（DNS 只是第一层）
 
