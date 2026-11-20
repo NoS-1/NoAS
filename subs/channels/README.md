@@ -15,7 +15,7 @@
 | 7 | `gateway-dot` | dot | `tls://oxyacq0a4t.cloudflare-gateway.com:853` | gateway | unknown | 自建带规则 DoT；端点已启用且免 token，需 CI 干净网络验证 |
 | 8 | `cf-doh` | doh | `https://noas-doh.199999510.workers.dev/dns-query` | last | unknown | 自建规则层，仅兜底；10 万/天，90% 自动熔断 |
 
-健康检查时间：2026-11-20T18:33:47Z
+健康检查时间：2026-11-20T18:40:59Z
 ⚠️ 本次体检环境异常（判定为代理劫持/网络不可达），已回退为**完整清单**，未经在线验证。
 
 ## 三种用法（按精力选一种）
