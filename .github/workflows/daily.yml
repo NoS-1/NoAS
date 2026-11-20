@@ -146,9 +146,10 @@ jobs:
           # 兜底：本地还有未暂存改动时 rebase 会直接拒绝（"cannot pull with rebase: You have unstaged changes"），
           # 先 stash 掉。已提交的产物不受影响，这一步只是清场。
           git stash -q || true
-          # 自愈：并发推送被拒时，最多重试 5 次（拉取用 ours，避免产物互相覆盖）
+          # 自愈：并发推送被拒时最多重试 5 次。rebase 下 -X theirs = 保留本轮新产物；
+            # 早前写成 -X ours，在 rebase 里 ours 其实是上游旧产物，会把本轮更新覆盖回去。
           for i in 1 2 3 4 5; do
-            if git pull -q -X ours --rebase origin main && git push -q; then
+            if git pull -q -X theirs --rebase origin main && git push -q; then
               echo "推送成功（第 $i 次）"; exit 0
             fi
             echo "推送被拒，重试 $i/5"; sleep $((i*3))
