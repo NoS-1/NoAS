@@ -89,6 +89,12 @@ def parse_wildcard(text):
 
 def norm(d):
     d = d.strip().lower().strip(".")
+    # 非 ASCII 域名先转 punycode：列表里混有 Unicode 域，DNS 查询只会是 xn-- 形式
+    if any(ord(c) > 127 for c in d):
+        try:
+            d = d.encode("idna").decode("ascii")
+        except Exception:
+            return ""
     if d.startswith("||"):
         d = d[2:]
     d = d.rstrip("^")
@@ -202,6 +208,8 @@ PARSERS = {"hosts": parse_hosts, "adblock": parse_adblock, "domains": parse_doma
 
 
 HEAVY_HINTS = ("AdGuard", "HaGeZi", "hagezi", "OISD", "oisd", "1Hosts", "KADhosts", "antiAD")
+# 小而准、单源也必须进中档的清单：CNAME 落点表（反第一方伪装）与国内 App 去广告清单
+FORCE_MID_HINTS = ("CNAME-original", "ACL4SSR")
 AD_LABELS = {"ad", "ads", "adserver", "adservice", "advert", "advertising", "adclick",
              "adtech", "banner", "banners", "click", "clicks", "track", "tracker",
              "tracking", "beacon", "pixel", "impression", "promo", "sponsor", "sponsored",
@@ -248,7 +256,12 @@ def collect():
                 exact.add(d)
                 seen.add(d)
                 n += 1
-        w = 1.5 if any(k in s["name"] for k in HEAVY_HINTS) else 1.0
+        if any(k in s["name"] for k in FORCE_MID_HINTS):
+            w = 3.0      # 单源即可过中档门槛，但仍进不了小档（小档要 4.0 + 3 源）
+        elif any(k in s["name"] for k in HEAVY_HINTS):
+            w = 1.5
+        else:
+            w = 1.0
         for d in seen:
             consensus[d] = consensus.get(d, 0) + w
             hitn[d] = hitn.get(d, 0) + 1
