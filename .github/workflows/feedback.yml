@@ -81,7 +81,7 @@ jobs:
             echo "无变化，跳过提交"; exit 0
           fi
           git commit -m "learn: 反馈学习 $(date -u +%Y%m%d-%H%M)"
-          git stash -u -q || true
+          git stash -q || true
           for i in 1 2 3 4 5; do
             if git pull -q -X ours --rebase origin main && git push -q; then
               echo "推送成功（第 $i 次）"; exit 0
