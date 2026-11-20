@@ -1,10 +1,10 @@
 ! Title: NoAS 拦截订阅（mid）
 ! Description: 免费公开源并集，白名单硬闸过滤后发布；每日自动重建
-! Version: 20261120-36ff42cd
-! Last modified: Fri, 20 Nov 2026 08:08:30 GMT
+! Version: 20261120-1ba6c3e1
+! Last modified: Fri, 20 Nov 2026 08:24:13 GMT
 ! Expires: 12 hours
 ! Homepage: https://github.com/NoS-1/NoAS
-! 条数: 29387（含通配 0）
+! 条数: 29398（含通配 0）
 
 ||00000.uno^
 ||0012565165165.aimeshive.com^
@@ -2504,6 +2504,7 @@
 ||adservice.google.co.in^
 ||adservice.google.co.jp^
 ||adservice.google.co.za^
+||adservice.google.com^
 ||adservice.google.com.au^
 ||adservice.google.com.mt^
 ||adservice.google.com.vn^
@@ -3611,6 +3612,7 @@
 ||amylewindesigns.blogspot.com^
 ||an.avast.com^
 ||an.dongphim.net^
+||an.facebook.com^
 ||an.media-active.ru^
 ||an.mlb.com^
 ||an.worldbaseballclassic.com^
@@ -3935,6 +3937,7 @@
 ||analytics.trutv.com^
 ||analytics.turk.pro^
 ||analytics.tver.jp^
+||analytics.twitter.com^
 ||analytics.ubs.com^
 ||analytics.uhhospitals.org^
 ||analytics.underarmour.com^
@@ -7556,6 +7559,8 @@
 ||cpm.adspine.com^
 ||cpmadvisors.com^
 ||cpmstar.com^
+||cpro.baidu.com^
+||cpro.baidustatic.com^
 ||cpu-api.infor.pl^
 ||cpu.samsungelectronics.com^
 ||cpv.popxml.com^
@@ -9406,6 +9411,7 @@
 ||e.email.simon.com^
 ||e.imguol.com^
 ||e.kde.cz^
+||e.qq.com^
 ||e.truedata.co^
 ||e.viously.com^
 ||e.zg-api.com^
@@ -11885,6 +11891,7 @@
 ||gdhomefashion.com^
 ||gdl.i9dhjx.ru^
 ||gdry35geos.eu.cc^
+||gdt.qq.com^
 ||gdyn.cnngo.com^
 ||gdyn.nba.com^
 ||gdyn.veryfunnyads.com^
@@ -16666,6 +16673,7 @@
 ||moatads.com.edgekey.net^
 ||moatpixel1.edgekey.net^
 ||mobad.ijinshan.com^
+||mobads.baidu.com^
 ||mobclix.com^
 ||mobfox.com^
 ||mobgames.mobi^
@@ -18790,6 +18798,7 @@
 ||page.bsigroup.com^
 ||page.widget.zalo.me^
 ||pagead.topobiavi.com^
+||pagead2.googlesyndication.com^
 ||pagemaster.net^
 ||pagerank.jklir.net^
 ||pages-stats.rbl.ms^
@@ -19870,6 +19879,7 @@
 ||portaorendanca.com^
 ||portesca-ai.com^
 ||portocaminhoes-am.com.br^
+||pos.baidu.com^
 ||poscenter.net^
 ||poshmark.dlhpmy.com^
 ||posicionamientonatural.es^
@@ -26928,6 +26938,7 @@
 ||uninttremo.store^
 ||union.56.com^
 ||union.6.cn^
+||union.baidu.com^
 ||union.china.com.cn^
 ||unionfxtradingpro.com^
 ||unisound.cdnvideo.ru^

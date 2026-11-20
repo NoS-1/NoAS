@@ -17063,6 +17063,7 @@ adservice.google.co.ve
 adservice.google.co.vi
 adservice.google.co.za
 adservice.google.co.zw
+adservice.google.com
 adservice.google.com.af
 adservice.google.com.ag
 adservice.google.com.ar
@@ -24355,6 +24356,7 @@ an.can-info.site
 an.constantcontact.com
 an.cowsnbullz.com
 an.dongphim.net
+an.facebook.com
 an.mail.ru
 an.martinandgang.com
 an.media-active.ru
@@ -26294,6 +26296,7 @@ analytics.turk.pro
 analytics.turnersouth.com
 analytics.turnertv.com
 analytics.tver.jp
+analytics.twitter.com
 analytics.ubports.com
 analytics.ubs.com
 analytics.uca.cloud.unity3d.com
@@ -59613,6 +59616,8 @@ cpp.pgrmlvl.site
 cppintai.com
 cppshacker123.zapto.org
 cprapid.com
+cpro.baidu.com
+cpro.baidustatic.com
 cpro.bdrmb.cn
 cpro.su
 cpro.zol.com.cn
@@ -80078,6 +80083,7 @@ e.ouijaboard.club
 e.ppidn.net
 e.ppift.com
 e.ps4.rocks
+e.qq.com
 e.rentclv.com
 e.revenue.cat
 e.rinchem.com
@@ -99283,6 +99289,7 @@ gds786bomyc.com
 gdsfkwghjspep.site
 gdsg.no-ip.org
 gdsw.pasvar.xyz
+gdt.qq.com
 gdtimg.com
 gdtrbrsyziwmw.website
 gdudh473-chersfeye483.landmarksfeed.su
@@ -159481,6 +159488,7 @@ mobacoinhack.com
 mobad.ijinshan.com
 mobadme.jp
 mobads-pre-config.cdn.bcebos.com
+mobads.baidu.com
 mobadvent.com
 mobaliyun.res.mgtv.com
 mobappconfig.securities.eastmoney.com
@@ -179711,6 +179719,7 @@ page4.me
 pagead.topobiavi.com
 pagead2.googleadservices-cn.com
 pagead2.googlesyndication-cn.com
+pagead2.googlesyndication.com
 pagealter.top
 pageantlethal.com
 pagedashcloudit.ww1journeys.org
@@ -188194,6 +188203,7 @@ portunitytostar.org
 porwani.you2.pl
 porz.bosd.online
 porzellanfiguren.com
+pos.baidu.com
 pos.sumatosolutions.com
 posadaelnogal.000webhostapp.com
 posateriu.myftp.org
@@ -247247,6 +247257,7 @@ union.360.cn
 union.55haitao.com
 union.56.com
 union.6.cn
+union.baidu.com
 union.china.com.cn
 union.duizhuang.com
 union.maccms.com

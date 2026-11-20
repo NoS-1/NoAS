@@ -1,4 +1,4 @@
-# NoAS 20261120-6e0fff9a（278600 条）
+# NoAS 20261120-7b1168d6（278611 条）
 0.0.0.0 0-1.ir
 0.0.0.0 0-105.com
 0.0.0.0 0-lx.9072531.xyz
@@ -17064,6 +17064,7 @@
 0.0.0.0 adservice.google.co.vi
 0.0.0.0 adservice.google.co.za
 0.0.0.0 adservice.google.co.zw
+0.0.0.0 adservice.google.com
 0.0.0.0 adservice.google.com.af
 0.0.0.0 adservice.google.com.ag
 0.0.0.0 adservice.google.com.ar
@@ -24356,6 +24357,7 @@
 0.0.0.0 an.constantcontact.com
 0.0.0.0 an.cowsnbullz.com
 0.0.0.0 an.dongphim.net
+0.0.0.0 an.facebook.com
 0.0.0.0 an.mail.ru
 0.0.0.0 an.martinandgang.com
 0.0.0.0 an.media-active.ru
@@ -26295,6 +26297,7 @@
 0.0.0.0 analytics.turnersouth.com
 0.0.0.0 analytics.turnertv.com
 0.0.0.0 analytics.tver.jp
+0.0.0.0 analytics.twitter.com
 0.0.0.0 analytics.ubports.com
 0.0.0.0 analytics.ubs.com
 0.0.0.0 analytics.uca.cloud.unity3d.com
@@ -59614,6 +59617,8 @@
 0.0.0.0 cppintai.com
 0.0.0.0 cppshacker123.zapto.org
 0.0.0.0 cprapid.com
+0.0.0.0 cpro.baidu.com
+0.0.0.0 cpro.baidustatic.com
 0.0.0.0 cpro.bdrmb.cn
 0.0.0.0 cpro.su
 0.0.0.0 cpro.zol.com.cn
@@ -80079,6 +80084,7 @@
 0.0.0.0 e.ppidn.net
 0.0.0.0 e.ppift.com
 0.0.0.0 e.ps4.rocks
+0.0.0.0 e.qq.com
 0.0.0.0 e.rentclv.com
 0.0.0.0 e.revenue.cat
 0.0.0.0 e.rinchem.com
@@ -99284,6 +99290,7 @@
 0.0.0.0 gdsfkwghjspep.site
 0.0.0.0 gdsg.no-ip.org
 0.0.0.0 gdsw.pasvar.xyz
+0.0.0.0 gdt.qq.com
 0.0.0.0 gdtimg.com
 0.0.0.0 gdtrbrsyziwmw.website
 0.0.0.0 gdudh473-chersfeye483.landmarksfeed.su
@@ -159482,6 +159489,7 @@
 0.0.0.0 mobad.ijinshan.com
 0.0.0.0 mobadme.jp
 0.0.0.0 mobads-pre-config.cdn.bcebos.com
+0.0.0.0 mobads.baidu.com
 0.0.0.0 mobadvent.com
 0.0.0.0 mobaliyun.res.mgtv.com
 0.0.0.0 mobappconfig.securities.eastmoney.com
@@ -179712,6 +179720,7 @@
 0.0.0.0 pagead.topobiavi.com
 0.0.0.0 pagead2.googleadservices-cn.com
 0.0.0.0 pagead2.googlesyndication-cn.com
+0.0.0.0 pagead2.googlesyndication.com
 0.0.0.0 pagealter.top
 0.0.0.0 pageantlethal.com
 0.0.0.0 pagedashcloudit.ww1journeys.org
@@ -188195,6 +188204,7 @@
 0.0.0.0 porwani.you2.pl
 0.0.0.0 porz.bosd.online
 0.0.0.0 porzellanfiguren.com
+0.0.0.0 pos.baidu.com
 0.0.0.0 pos.sumatosolutions.com
 0.0.0.0 posadaelnogal.000webhostapp.com
 0.0.0.0 posateriu.myftp.org
@@ -247248,6 +247258,7 @@
 0.0.0.0 union.55haitao.com
 0.0.0.0 union.56.com
 0.0.0.0 union.6.cn
+0.0.0.0 union.baidu.com
 0.0.0.0 union.china.com.cn
 0.0.0.0 union.duizhuang.com
 0.0.0.0 union.maccms.com
