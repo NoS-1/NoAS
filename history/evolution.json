@@ -4,5 +4,78 @@
   "round": 1,
   "events": [],
   "sources": 12
+ },
+ {
+  "ts": "2026-11-20T08:40:47Z",
+  "round": 2,
+  "events": [
+   {
+    "act": "drop_skipped",
+    "name": "StevenBlack-all",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "antiAD-cn",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "KADhosts",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "AdGuard-CN-adservers",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "AdGuard-tracking",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "DandelionSprout-malware",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "1Hosts-Lite",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "notracking",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "AdAway",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "urlhaus",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "PhishingArmy",
+    "why": "触及源数下限"
+   },
+   {
+    "act": "drop_skipped",
+    "name": "Spam404",
+    "why": "触及源数下限"
+   }
+  ],
+  "sources": 3
+ },
+ {
+  "ts": "2026-11-20T08:40:54Z",
+  "round": 1,
+  "events": [],
+  "sources": 15
  }
 ]

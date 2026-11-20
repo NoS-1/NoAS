@@ -281,6 +281,9 @@ def main():
     wild = {w for w in wild if not protected(w, wl)}
     exact = drop_children(exact) | ep
 
+    if len(per_source) < 8:
+        print("FAIL：可用源只剩 %d 个（下限 8），疑似批量失效，拒绝发布" % len(per_source))
+        return 1
     if len(exact) < 500:
         print("FAIL：规则太少（%d），疑似所有源都失效，拒绝发布" % len(exact))
         return 1
