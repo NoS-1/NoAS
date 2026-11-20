@@ -1,0 +1,42 @@
+{
+ "lite": {
+  "total": 2513,
+  "hit": 0,
+  "rate": 0.0,
+  "samples": []
+ },
+ "mid": {
+  "total": 2513,
+  "hit": 310,
+  "rate": 12.34,
+  "samples": [
+   "247realmedia.com",
+   "254a.com",
+   "4seeresults.com",
+   "51.la",
+   "abmr.net",
+   "accmgr.com",
+   "affec.tv",
+   "affinity.com",
+   "affinitymatrix.com",
+   "afilio.com.br"
+  ]
+ },
+ "full": {
+  "total": 2513,
+  "hit": 463,
+  "rate": 18.42,
+  "samples": [
+   "247realmedia.com",
+   "254a.com",
+   "2mdn.net",
+   "4seeresults.com",
+   "51.la",
+   "7eer.net",
+   "a3cloud.net",
+   "a9.com",
+   "abmr.net",
+   "acc-hd.de"
+  ]
+ }
+}

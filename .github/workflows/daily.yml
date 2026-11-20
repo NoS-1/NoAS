@@ -66,6 +66,14 @@ jobs:
           python3 tools/build_tags.py
           python3 tools/build_mixed.py
 
+      - name: 3.56 · 观察池影子计时 + 域名信誉评分
+        run: |
+          # 影子计时器：新发现的低置信域必须先观察够久（14 天 + 复现 2 轮）才准晋级，
+          # 超 30 天没复现的直接退役。这是"零误拦"的核心机制，必须紧跟 compile。
+          python3 tools/watch_pool.py
+          # 信誉评分：多信号加权给每条域打分，score>=70 才够格进 lite（手机默认档）
+          python3 tools/reputation.py
+
       - name: 3.6 · DNS 通道体检与产物（国内 DoH/DoT + aiodns）
         run: |
           python3 tools/check_channels.py || true   # 体检恒返回 0，环境异常只标注不阻断
@@ -77,6 +85,9 @@ jobs:
 
       - name: 4 · 发布前硬校验
         run: python3 tools/guard.py
+
+      - name: 4.5 · 拍 known-good 快照（校验通过即视为可用版本，供 rollback 回退）
+        run: python3 tools/snapshot.py
 
       - name: 5 · DoH 产物
         run: |
@@ -112,7 +123,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A subs/lite subs/channels subs/paths docs history tools doh/worker.tpl.js sources.tsv lists tests
+          git add -A subs/lite subs/channels subs/paths docs history tools doh/worker.tpl.js sources.tsv lists tests state
           if git diff --cached --quiet; then
             echo "无变化，跳过提交"
             exit 0

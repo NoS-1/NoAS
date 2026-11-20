@@ -1,4 +1,4 @@
-# NoAS RPZ（20261120-4739def8）
+# NoAS RPZ（20261120-73172e8a）
 ; $TTL 300
 0i0i0i0.com CNAME .
 1187531871.rsc.cdn77.org CNAME .
@@ -4455,7 +4455,6 @@ applog.uc.cn CNAME .
 applog.zijieapi.com CNAME .
 applovin.com CNAME .
 applvn.com CNAME .
-appnext-a.akamaihd.net CNAME .
 appnext.hs.llnwd.net CNAME .
 appodeal.com CNAME .
 appollo-plus.com CNAME .
@@ -5987,7 +5986,6 @@ drjzh.loveinfaith.life CNAME .
 drkness.net CNAME .
 drsbf.hannaandersson.com CNAME .
 drulilqe8wg66.cloudfront.net CNAME .
-ds-aksb-a.akamaihd.net CNAME .
 ds88pc0kw6cvc.cloudfront.net CNAME .
 dsb6jelx4yhln.cloudfront.net CNAME .
 dscex7u1h4a9a.cloudfront.net CNAME .
@@ -6670,7 +6668,6 @@ ingameads.gameloft.com CNAME .
 inmobi.cn CNAME .
 inmobi.com CNAME .
 inmobicdn.net CNAME .
-inmobisdk-a.akamaihd.net CNAME .
 inner-active.mobi CNAME .
 innity.com CNAME .
 innity.net CNAME .
@@ -7191,15 +7188,18 @@ metrics.fortinet.com CNAME .
 metrics.foxnews.com CNAME .
 metrics.foxsports.com.au CNAME .
 metrics.fressnapf.de CNAME .
+metrics.galicia.ar CNAME .
 metrics.gap.com CNAME .
 metrics.gcimetrics.com CNAME .
 metrics.geelongadvertiser.com.au CNAME .
+metrics.giftcards.com CNAME .
 metrics.gnc.com CNAME .
 metrics.govexec.com CNAME .
 metrics.harley-davidson.com CNAME .
 metrics.hbogo.com CNAME .
 metrics.health.com CNAME .
 metrics.heraldsun.com.au CNAME .
+metrics.hkexpress.com CNAME .
 metrics.hrblock.com CNAME .
 metrics.iconfitness.com CNAME .
 metrics.iij.ad.jp CNAME .
@@ -7223,10 +7223,12 @@ metrics.mars.com CNAME .
 metrics.mcafee.com CNAME .
 metrics.mein-jahnreisen.de CNAME .
 metrics.morganstanley.com CNAME .
+metrics.mycardwallet.com CNAME .
 metrics.myprime.com CNAME .
 metrics.natmags.co.uk CNAME .
 metrics.nba.com CNAME .
 metrics.news.com.au CNAME .
+metrics.news24.com.au CNAME .
 metrics.nextgov.com CNAME .
 metrics.nfm.com CNAME .
 metrics.nissanusa.com CNAME .
@@ -7747,7 +7749,6 @@ qevia.doubleclick.bond CNAME .
 qnsr.com CNAME .
 qqdflf.lpga.or.jp CNAME .
 qriqiz.lifeisgood.com CNAME .
-qsearch-a.akamaihd.net CNAME .
 quangcao.24h.com.vn CNAME .
 quangcao.tuoitre.vn CNAME .
 quantcount.com CNAME .
@@ -9336,7 +9337,6 @@ sucmetrics.unicreditgroup.eu CNAME .
 sumome.com CNAME .
 suncanny.marvel.com CNAME .
 superfastcdn.com CNAME .
-supersonicads-a.akamaihd.net CNAME .
 supersonicads.com CNAME .
 supply.upjers.com CNAME .
 support.tenten.vn CNAME .

@@ -1,0 +1,38 @@
+# NoAS 基础服务白名单 —— 拦了这些会让 App/网页的登录、支付、推送、地图、验证码、崩溃上报失效。
+# 与 whitelist.txt 同为最高优先级（编译期整体剔除）；区别只是来源：本表按"功能依赖"组织。
+# 格式：域名 <TAB> 功能类 <TAB> 说明。第一列必须是域名，编译机只认第一列。
+# 只收第三方基础服务，不收内容站；广告/追踪性质的 SDK 域绝不放这里。
+# 维护约定：新增一条必须写清它属于哪类功能，没有功能归属的不要加。
+
+open.weixin.qq.com	wechat-login	微信登录/分享
+graph.qq.com	wechat-login	QQ 登录
+api.weibo.com	wechat-login	微博登录
+mclient.alipay.com	alipay	支付宝收银台
+render.alipay.com	alipay	支付宝渲染层
+openapi.alipay.com	alipay	支付宝开放接口
+pay.weixin.qq.com	pay-wechat	微信支付
+gateway.95516.com	pay-union	银联支付
+jpush.cn	push-jpush	极光推送
+jpush.io	push-jpush	极光推送
+jiguang.cn	push-jpush	极光推送
+getui.com	push-getui	个推推送
+igexin.com	push-getui	个推推送
+push.hicloud.com	push-huawei	华为推送
+push-api.cloud.huawei.com	push-huawei	华为推送
+api.xmpush.xiaomi.com	push-xiaomi	小米推送
+messageapi.coloros.com	push-oppo	OPPO 推送
+api-push.vivo.com.cn	push-vivo	vivo 推送
+restapi.amap.com	map-amap	高德地图接口
+webapi.amap.com	map-amap	高德地图接口
+apis.map.qq.com	map-tencent	腾讯地图
+api.map.baidu.com	map-baidu	百度地图
+captcha.gtimg.com	captcha-tencent	腾讯验证码
+turing.captcha.gtimg.com	captcha-tencent	腾讯验证码
+bugly.qq.com	crash-bugly	腾讯崩溃上报
+android.bugly.qq.com	crash-bugly	腾讯崩溃上报
+qiyukf.com	service-qiyu	七鱼客服
+qiyukf.net	service-qiyu	七鱼客服
+akamaihd.net	cdn-normal	通用 CDN（拦了整个站图片/视频全挂）
+cloudflare-dns.com	cdn-normal	Cloudflare 基础服务
+ntp.aliyun.com	infra-ntp	时间同步
+time.windows.com	infra-ntp	时间同步

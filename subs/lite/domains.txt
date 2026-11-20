@@ -4453,7 +4453,6 @@ applog.uc.cn
 applog.zijieapi.com
 applovin.com
 applvn.com
-appnext-a.akamaihd.net
 appnext.hs.llnwd.net
 appodeal.com
 appollo-plus.com
@@ -5985,7 +5984,6 @@ drjzh.loveinfaith.life
 drkness.net
 drsbf.hannaandersson.com
 drulilqe8wg66.cloudfront.net
-ds-aksb-a.akamaihd.net
 ds88pc0kw6cvc.cloudfront.net
 dsb6jelx4yhln.cloudfront.net
 dscex7u1h4a9a.cloudfront.net
@@ -6668,7 +6666,6 @@ ingameads.gameloft.com
 inmobi.cn
 inmobi.com
 inmobicdn.net
-inmobisdk-a.akamaihd.net
 inner-active.mobi
 innity.com
 innity.net
@@ -7189,15 +7186,18 @@ metrics.fortinet.com
 metrics.foxnews.com
 metrics.foxsports.com.au
 metrics.fressnapf.de
+metrics.galicia.ar
 metrics.gap.com
 metrics.gcimetrics.com
 metrics.geelongadvertiser.com.au
+metrics.giftcards.com
 metrics.gnc.com
 metrics.govexec.com
 metrics.harley-davidson.com
 metrics.hbogo.com
 metrics.health.com
 metrics.heraldsun.com.au
+metrics.hkexpress.com
 metrics.hrblock.com
 metrics.iconfitness.com
 metrics.iij.ad.jp
@@ -7221,10 +7221,12 @@ metrics.mars.com
 metrics.mcafee.com
 metrics.mein-jahnreisen.de
 metrics.morganstanley.com
+metrics.mycardwallet.com
 metrics.myprime.com
 metrics.natmags.co.uk
 metrics.nba.com
 metrics.news.com.au
+metrics.news24.com.au
 metrics.nextgov.com
 metrics.nfm.com
 metrics.nissanusa.com
@@ -7745,7 +7747,6 @@ qevia.doubleclick.bond
 qnsr.com
 qqdflf.lpga.or.jp
 qriqiz.lifeisgood.com
-qsearch-a.akamaihd.net
 quangcao.24h.com.vn
 quangcao.tuoitre.vn
 quantcount.com
@@ -9334,7 +9335,6 @@ sucmetrics.unicreditgroup.eu
 sumome.com
 suncanny.marvel.com
 superfastcdn.com
-supersonicads-a.akamaihd.net
 supersonicads.com
 supply.upjers.com
 support.tenten.vn

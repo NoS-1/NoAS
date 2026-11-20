@@ -1,0 +1,3 @@
+# NoAS 国内 DoT 上游（853 端口，客户端支持 TLS 时优先用这个，更快）
+tls://dns.alidns.com:853
+tls://dot.pub:853

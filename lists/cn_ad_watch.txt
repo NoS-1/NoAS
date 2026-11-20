@@ -3,7 +3,6 @@
 ad-admin.immomo.com	ad
 ad-advertiser.soulapp.cn	ad
 ad-h5-cdn.soulapp.cn	ad
-ad-r.soulapp.cn	ad
 ad-www.guazi.com	ad
 ads.st.maoyan.com	ads
 analytics.wanmei.com	analytics

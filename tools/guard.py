@@ -304,8 +304,166 @@ def check_channel_artifacts():
     return fails
 
 
+
+def _first_col(path):
+    out = set()
+    if not os.path.exists(path):
+        return out
+    for line in open(path, encoding="utf-8"):
+        x = line.split("#", 1)[0]
+        if not x.strip():
+            continue
+        d = x.split("\t")[0].strip().lower()
+        if d and "." in d:
+            out.add(d)
+    return out
+
+
+def check_golden():
+    """黄金回归：正常站点在 lite 档必须全部放行。
+
+    lite 是手机默认档，它误拦一条就是用户网站打不开，所以这里判红（不是警告）。
+    mid/full 是高召回档，允许有误拦，只记录误拦率，供用户选档时参考。
+    """
+    fails = []
+    p = os.path.join(ROOT, "tests", "golden_set.txt")
+    if not os.path.exists(p):
+        return ["缺少 tests/golden_set.txt（黄金回归集），无法证明零误拦"]
+    golden = set()
+    for line in open(p, encoding="utf-8"):
+        x = line.split("#", 1)[0].strip().lower()
+        if x and "." in x:
+            golden.add(x)
+    if len(golden) < 2000:
+        fails.append("黄金集只有 %d 条，低于 2000 条的覆盖要求" % len(golden))
+    report = {}
+    for tier in TIERS:
+        base = set(domains_of(tier, "domains.txt") or [])
+        hit = sorted(golden & base)
+        report[tier] = {"total": len(golden), "hit": len(hit),
+                        "rate": round(100.0 * len(hit) / max(1, len(golden)), 2),
+                        "samples": hit[:10]}
+        if tier == "lite" and hit:
+            fails.append("lite 误拦黄金集 %d 条（必须为 0）：%s" % (len(hit), ", ".join(hit[:8])))
+    os.makedirs(os.path.join(ROOT, "history"), exist_ok=True)
+    json.dump(report, open(os.path.join(ROOT, "history", "golden.json"), "w", encoding="utf-8"),
+              ensure_ascii=False, indent=1)
+    return fails
+
+
+def check_service_allow():
+    """基础服务白名单：第一列必须是域名，且三档都不许出现。
+
+    这条一旦失效，用户会遇到"微信登不上/支付转不动/推送收不到"，比误拦广告严重得多。
+    """
+    fails = []
+    p = os.path.join(ROOT, "lists", "service_allow.txt")
+    if not os.path.exists(p):
+        return fails
+    svc = set()
+    bad_rows = []
+    for line in open(p, encoding="utf-8"):
+        if line.startswith("#") or not line.strip():
+            continue
+        cols = line.rstrip("\n").split("\t")
+        d = cols[0].strip().lower()
+        if "." not in d or not re.match(r"^[a-z0-9.\-]+$", d):
+            bad_rows.append(line.rstrip("\n")[:40])
+            continue
+        svc.add(d)
+    if bad_rows:
+        fails.append("service_allow.txt 首列不是域名 %d 行：%s" % (len(bad_rows), bad_rows[:3]))
+    if not svc:
+        return fails
+    for tier in TIERS:
+        base = set(domains_of(tier, "domains.txt") or [])
+        hit = sorted(svc & base)
+        if hit:
+            fails.append("%s 混入基础服务域 %d 条（登录/支付会坏）：%s" % (tier, len(hit), ", ".join(hit[:5])))
+    return fails
+
+
+def check_reputation():
+    """信誉评分台账：格式必须可解析，档位建议必须与 lite 实际一致。"""
+    fails = []
+    p = os.path.join(ROOT, "lists", "reputation.tsv")
+    if not os.path.exists(p):
+        return ["缺少 lists/reputation.tsv（信誉评分未生成）"]
+    rows = {}
+    bad = 0
+    for line in open(p, encoding="utf-8"):
+        if line.startswith("#") or not line.strip():
+            continue
+        cols = line.rstrip("\n").split("\t")
+        if len(cols) < 3:
+            bad += 1
+            continue
+        try:
+            sc = int(cols[1])
+        except Exception:
+            bad += 1
+            continue
+        if not (0 <= sc <= 100) or cols[2] not in ("lite", "mid", "full", "none"):
+            bad += 1
+            continue
+        rows[cols[0].lower()] = (sc, cols[2])
+    if bad:
+        fails.append("reputation.tsv 有 %d 行格式非法" % bad)
+    if len(rows) < 1000:
+        fails.append("信誉评分只覆盖 %d 条，样本过少" % len(rows))
+    # 一致性：评分 >=70 应至少出现在某档（否则评分与编译脱节）
+    lite = set(domains_of("lite", "domains.txt") or [])
+    mid = set(domains_of("mid", "domains.txt") or [])
+    hi = [d for d, (sc, t) in rows.items() if sc >= 70 and t == "lite"]
+    orphan = [d for d in hi if d not in lite and d not in mid]
+    if len(orphan) > len(hi) * 0.5:
+        fails.append("高分域与产出脱节：%d/%d 条不在 lite/mid" % (len(orphan), len(hi)))
+    return fails
+
+
+def check_shadow():
+    """影子期：观察池里还没满 14 天的域，绝不允许进 lite。
+
+    这是"零误拦"的核心机制——新发现的低置信域必须先看够久才能进默认档。
+    """
+    fails = []
+    wp = os.path.join(ROOT, "state", "watch_pool.json")
+    watch = _first_col(os.path.join(ROOT, "lists", "cn_ad_watch.txt"))
+    if not watch:
+        return fails
+    if not os.path.exists(wp):
+        return ["有观察池但缺 state/watch_pool.json（影子计时器没跑过）"]
+    try:
+        pool = json.load(open(wp, encoding="utf-8"))
+    except Exception:
+        return ["state/watch_pool.json 无法解析"]
+    lite = set(domains_of("lite", "domains.txt") or [])
+    SHADOW_DAYS = 14
+    too_young = []
+    for d in watch:
+        rec = pool.get(d) or {}
+        fs = rec.get("first_seen", "")
+        if not fs:
+            too_young.append(d)
+            continue
+        try:
+            import time as _t
+            age = int((_t.mktime(_t.strptime(_t.strftime("%Y-%m-%d"), "%Y-%m-%d"))
+                       - _t.mktime(_t.strptime(fs, "%Y-%m-%d"))) // 86400)
+        except Exception:
+            age = 0
+        if age < SHADOW_DAYS:
+            too_young.append(d)
+    leaked = sorted(set(too_young) & lite)
+    if leaked:
+        fails.append("影子期内混入 lite %d 条：%s" % (len(leaked), ", ".join(leaked[:5])))
+    return fails
+
+
 def main():
-    fails = check_ledger() + check_precision() + check_cooldown() + check_threat_isolation() + check_tags() + check_channel_artifacts() + check_sdk_video()
+    fails = (check_ledger() + check_precision() + check_cooldown() + check_threat_isolation()
+             + check_tags() + check_channel_artifacts() + check_sdk_video()
+             + check_golden() + check_service_allow() + check_reputation() + check_shadow())
     allow = load_allow()
     summary = {}
 

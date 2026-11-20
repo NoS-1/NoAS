@@ -1,0 +1,290 @@
+{
+ "ad-admin.immomo.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "ad"
+ },
+ "ad-advertiser.soulapp.cn": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "ad"
+ },
+ "ad-h5-cdn.soulapp.cn": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "ad"
+ },
+ "ad-r.soulapp.cn": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 1,
+  "token": "ad"
+ },
+ "ad-www.guazi.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "ad"
+ },
+ "ads.st.maoyan.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "ads"
+ },
+ "analytics.wanmei.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "analytics"
+ },
+ "api-log.immomo.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "log"
+ },
+ "apm-log-upload-v6.mihoyo.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "log"
+ },
+ "app-log.immomo.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "log"
+ },
+ "game-ad.immomo.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "ad"
+ },
+ "growth-tracker.guazi.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "tracker"
+ },
+ "image.ads.yidianzixun.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "ads"
+ },
+ "live-log.immomo.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "log"
+ },
+ "log-report.17zuoye.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "log"
+ },
+ "log-sc.qutoutiao.net": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "log"
+ },
+ "lx-upload-log.yidianzixun.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "log"
+ },
+ "m.ad.zhangyue.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "ad"
+ },
+ "market.uxin.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "market"
+ },
+ "metrics.t3go.cn": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "metrics"
+ },
+ "mina-promotion-cdn.pama.pingan.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "promotion"
+ },
+ "op-baoxiao-ng-bj.yuanfudao.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "op"
+ },
+ "op.dongchedi.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "op"
+ },
+ "op.zongheng.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "op"
+ },
+ "paas-push-api-log.immomo.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "log"
+ },
+ "shop-op.guazi.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "op"
+ },
+ "stat.myzaker.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "stat"
+ },
+ "tracking.ib24384.news.my.luckincoffee.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "tracking"
+ },
+ "tracking.ib71536.user.my.luckincoffee.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "tracking"
+ },
+ "tracking.ib85264.order.my.luckincoffee.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "tracking"
+ },
+ "tracking.news.sg.luckincoffee.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "tracking"
+ },
+ "tracking.order.sg.luckincoffee.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "tracking"
+ },
+ "tracking.sgmkt.luckincoffee.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "tracking"
+ },
+ "tracking.user.sg.luckincoffee.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "tracking"
+ },
+ "union.fun.tv": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.futunn.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.gome.com.cn": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.jdcloud.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.m.smzdm.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.quark.cn": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.smzdm.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.t3go.cn": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.tuniu.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.uc.cn": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.vip.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "union.wps.cn": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "union"
+ },
+ "v1.log.moji.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "log"
+ },
+ "v2.log.moji.com": {
+  "first_seen": "2026-11-20",
+  "last_seen": "2026-11-20",
+  "hits": 2,
+  "token": "log"
+ }
+}

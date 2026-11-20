@@ -168,12 +168,24 @@ def load_first_col(name):
 
 
 def load_whitelist():
+    """白名单三源合一：人工台账 + 回归基线 + 基础服务表。
+
+    service_allow.txt 存的是"登录/支付/推送/地图/验证码"这类一旦拦了整个 App 就废掉的
+    第三方基础服务。它们与 whitelist.txt 同等待遇（编译期整体剔除 + 父域保护），
+    只是维护视角不同：台账按"事故"记，服务表按"功能"记。
+    """
     wl = set()
-    p = os.path.join(LISTS, "whitelist.txt")
-    if os.path.exists(p):
+    for fn, first_col_only in (("whitelist.txt", False), ("service_allow.txt", True)):
+        p = os.path.join(LISTS, fn)
+        if not os.path.exists(p):
+            continue
         for line in open(p, encoding="utf-8"):
             line = line.split("#", 1)[0].strip()
-            if line:
+            if not line:
+                continue
+            if first_col_only or "\t" in line:
+                line = line.split("\t")[0].strip()
+            if line and "." in line:
                 wl.add(line.lower())
     p2 = os.path.join(ROOT, "tests", "benign_baseline.txt")
     if os.path.exists(p2):
@@ -383,11 +395,59 @@ def write_formats(domains, wild, outdir, kind, stamp_fixed=None):
     return ver, changed, meta
 
 
+INPUT_GLOBS = ("lists", "tests")
+FP_PATH = os.path.join(ROOT, "state", "compile_fingerprint.json")
+
+
+def input_fingerprint():
+    """参与编译的所有输入文件的内容指纹：任何一个字节变了，指纹就变。
+
+    用途：没变化时直接跳过重算。CI 里 discover/promote 会改 lists，所以正常情况下
+    指纹天天变；但一天跑 8 次日常构建，多数轮次输入是没变的，跳过能省下大头时间。
+    """
+    h = hashlib.sha256()
+    files = []
+    for g in INPUT_GLOBS:
+        d = os.path.join(ROOT, g)
+        if not os.path.isdir(d):
+            continue
+        for name in sorted(os.listdir(d)):
+            fp = os.path.join(d, name)
+            if os.path.isfile(fp) and (name.endswith(".txt") or name.endswith(".tsv")):
+                files.append(fp)
+    files.append(os.path.join(ROOT, "sources.tsv"))
+    for fp in files:
+        if not os.path.isfile(fp):
+            continue
+        try:
+            st = os.stat(fp)
+            h.update(("%s|%d|%d\n" % (os.path.basename(fp), st.st_size, int(st.st_mtime))).encode())
+            if st.st_size < 4 * 1024 * 1024:
+                h.update(open(fp, "rb").read())
+        except Exception:
+            pass
+    return h.hexdigest()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", choices=["lite", "mid", "full"])
+    ap.add_argument("--force", action="store_true", help="忽略增量判断，强制全量重算")
     args = ap.parse_args()
     os.makedirs(os.path.join(ROOT, "out"), exist_ok=True)
+
+    fp = input_fingerprint()
+    if not args.force and args.only is None:
+        prev = {}
+        if os.path.exists(FP_PATH):
+            try:
+                prev = json.load(open(FP_PATH, encoding="utf-8"))
+            except Exception:
+                prev = {}
+        ready = all(os.path.exists(os.path.join(SUBS, t, "domains.txt")) for t in ("lite", "mid", "full"))
+        if prev.get("fp") == fp and ready:
+            print("编译跳过：输入指纹未变（%s…），直接复用上次产物" % fp[:12])
+            return 0
 
     exact, wild, per_source, _, consensus, hitn = collect()
     wl = load_whitelist()
@@ -512,6 +572,12 @@ def main():
         results["full"] = {"version": ver, "changed": changed, "count": meta["count"]}
     for k, v in results.items():
         print("  %s：%d 条，版本 %s，变更 %d 个文件" % (k, v["count"], v["version"], len(v["changed"])))
+    try:
+        os.makedirs(os.path.join(ROOT, "state"), exist_ok=True)
+        json.dump({"fp": fp, "at": time.strftime("%Y-%m-%d %H:%M:%S")},
+                  open(FP_PATH, "w", encoding="utf-8"))
+    except Exception:
+        pass
     return 0
 
 

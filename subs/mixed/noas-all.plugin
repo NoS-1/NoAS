@@ -4463,7 +4463,6 @@ DOMAIN-SUFFIX,applog.uc.cn,REJECT
 DOMAIN-SUFFIX,applog.zijieapi.com,REJECT
 DOMAIN-SUFFIX,applovin.com,REJECT
 DOMAIN-SUFFIX,applvn.com,REJECT
-DOMAIN-SUFFIX,appnext-a.akamaihd.net,REJECT
 DOMAIN-SUFFIX,appnext.hs.llnwd.net,REJECT
 DOMAIN-SUFFIX,appodeal.com,REJECT
 DOMAIN-SUFFIX,appollo-plus.com,REJECT
@@ -5995,7 +5994,6 @@ DOMAIN-SUFFIX,drjzh.loveinfaith.life,REJECT
 DOMAIN-SUFFIX,drkness.net,REJECT
 DOMAIN-SUFFIX,drsbf.hannaandersson.com,REJECT
 DOMAIN-SUFFIX,drulilqe8wg66.cloudfront.net,REJECT
-DOMAIN-SUFFIX,ds-aksb-a.akamaihd.net,REJECT
 DOMAIN-SUFFIX,ds88pc0kw6cvc.cloudfront.net,REJECT
 DOMAIN-SUFFIX,dsb6jelx4yhln.cloudfront.net,REJECT
 DOMAIN-SUFFIX,dscex7u1h4a9a.cloudfront.net,REJECT
@@ -6678,7 +6676,6 @@ DOMAIN-SUFFIX,ingameads.gameloft.com,REJECT
 DOMAIN-SUFFIX,inmobi.cn,REJECT
 DOMAIN-SUFFIX,inmobi.com,REJECT
 DOMAIN-SUFFIX,inmobicdn.net,REJECT
-DOMAIN-SUFFIX,inmobisdk-a.akamaihd.net,REJECT
 DOMAIN-SUFFIX,inner-active.mobi,REJECT
 DOMAIN-SUFFIX,innity.com,REJECT
 DOMAIN-SUFFIX,innity.net,REJECT
@@ -7199,15 +7196,18 @@ DOMAIN-SUFFIX,metrics.fortinet.com,REJECT
 DOMAIN-SUFFIX,metrics.foxnews.com,REJECT
 DOMAIN-SUFFIX,metrics.foxsports.com.au,REJECT
 DOMAIN-SUFFIX,metrics.fressnapf.de,REJECT
+DOMAIN-SUFFIX,metrics.galicia.ar,REJECT
 DOMAIN-SUFFIX,metrics.gap.com,REJECT
 DOMAIN-SUFFIX,metrics.gcimetrics.com,REJECT
 DOMAIN-SUFFIX,metrics.geelongadvertiser.com.au,REJECT
+DOMAIN-SUFFIX,metrics.giftcards.com,REJECT
 DOMAIN-SUFFIX,metrics.gnc.com,REJECT
 DOMAIN-SUFFIX,metrics.govexec.com,REJECT
 DOMAIN-SUFFIX,metrics.harley-davidson.com,REJECT
 DOMAIN-SUFFIX,metrics.hbogo.com,REJECT
 DOMAIN-SUFFIX,metrics.health.com,REJECT
 DOMAIN-SUFFIX,metrics.heraldsun.com.au,REJECT
+DOMAIN-SUFFIX,metrics.hkexpress.com,REJECT
 DOMAIN-SUFFIX,metrics.hrblock.com,REJECT
 DOMAIN-SUFFIX,metrics.iconfitness.com,REJECT
 DOMAIN-SUFFIX,metrics.iij.ad.jp,REJECT
@@ -7231,10 +7231,12 @@ DOMAIN-SUFFIX,metrics.mars.com,REJECT
 DOMAIN-SUFFIX,metrics.mcafee.com,REJECT
 DOMAIN-SUFFIX,metrics.mein-jahnreisen.de,REJECT
 DOMAIN-SUFFIX,metrics.morganstanley.com,REJECT
+DOMAIN-SUFFIX,metrics.mycardwallet.com,REJECT
 DOMAIN-SUFFIX,metrics.myprime.com,REJECT
 DOMAIN-SUFFIX,metrics.natmags.co.uk,REJECT
 DOMAIN-SUFFIX,metrics.nba.com,REJECT
 DOMAIN-SUFFIX,metrics.news.com.au,REJECT
+DOMAIN-SUFFIX,metrics.news24.com.au,REJECT
 DOMAIN-SUFFIX,metrics.nextgov.com,REJECT
 DOMAIN-SUFFIX,metrics.nfm.com,REJECT
 DOMAIN-SUFFIX,metrics.nissanusa.com,REJECT
@@ -7755,7 +7757,6 @@ DOMAIN-SUFFIX,qevia.doubleclick.bond,REJECT
 DOMAIN-SUFFIX,qnsr.com,REJECT
 DOMAIN-SUFFIX,qqdflf.lpga.or.jp,REJECT
 DOMAIN-SUFFIX,qriqiz.lifeisgood.com,REJECT
-DOMAIN-SUFFIX,qsearch-a.akamaihd.net,REJECT
 DOMAIN-SUFFIX,quangcao.24h.com.vn,REJECT
 DOMAIN-SUFFIX,quangcao.tuoitre.vn,REJECT
 DOMAIN-SUFFIX,quantcount.com,REJECT
@@ -9344,7 +9345,6 @@ DOMAIN-SUFFIX,sucmetrics.unicreditgroup.eu,REJECT
 DOMAIN-SUFFIX,sumome.com,REJECT
 DOMAIN-SUFFIX,suncanny.marvel.com,REJECT
 DOMAIN-SUFFIX,superfastcdn.com,REJECT
-DOMAIN-SUFFIX,supersonicads-a.akamaihd.net,REJECT
 DOMAIN-SUFFIX,supersonicads.com,REJECT
 DOMAIN-SUFFIX,supply.upjers.com,REJECT
 DOMAIN-SUFFIX,support.tenten.vn,REJECT
