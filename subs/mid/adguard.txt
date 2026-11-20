@@ -1,7 +1,7 @@
 ! Title: NoAS 拦截订阅（mid）
 ! Description: 免费公开源并集，白名单硬闸过滤后发布；每日自动重建
 ! Version: 20261120-1ba6c3e1
-! Last modified: Fri, 20 Nov 2026 08:24:13 GMT
+! Last modified: Fri, 20 Nov 2026 08:29:41 GMT
 ! Expires: 12 hours
 ! Homepage: https://github.com/NoS-1/NoAS
 ! 条数: 29398（含通配 0）
