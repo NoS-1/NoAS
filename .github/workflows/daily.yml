@@ -176,6 +176,10 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: docs
+      # artifact 刚 finalize 时 GitHub 的索引还没刷新，deploy-pages 会报
+      # "No artifacts named github-pages were found"（实测相隔 0.02 秒就撞上）。等 8 秒再部署。
+      - name: 等待 artifact 索引
+        run: sleep 8
       - id: deployment
         uses: actions/deploy-pages@v4
 
