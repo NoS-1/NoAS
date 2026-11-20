@@ -1,10 +1,10 @@
 {
  "project": "noas-cdn",
  "production": "https://noas-cdn.pages.dev",
- "latest_deployment": "https://a765641f.noas-cdn.pages.dev",
+ "latest_deployment": "https://706e936a.noas-cdn.pages.dev",
  "files": 57,
- "bytes": 71424593,
- "updated_at": "2026-11-20T15:37:40Z",
+ "bytes": 80115067,
+ "updated_at": "2026-11-20T15:51:16Z",
  "entry": {
   "lite": "https://noas-cdn.pages.dev/subs/lite/adguard.txt",
   "mid": "https://noas-cdn.pages.dev/subs/mid/adguard.txt",
