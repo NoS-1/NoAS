@@ -51,6 +51,7 @@ ad-audit-provider.soulapp.cn
 ad-back.net
 ad-balancer.at
 ad-balancer.net
+ad-bice-seven.vercel.app
 ad-bls-tracking.lemino.docomo.ne.jp
 ad-breaking.top
 ad-brix.com
@@ -1044,6 +1045,7 @@ ads-blocker.app
 ads-blocker.pro
 ads-bloomberg-com.shared.bloomberga.com
 ads-bridge.pixocial.com
+ads-business-services635.vercel.app
 ads-cdn.fptplay.net
 ads-cdn.hopper.com
 ads-chi-nfl.yinzcam.com
@@ -1122,6 +1124,7 @@ ads-monitoring.shziyi.com
 ads-mtg.cbx-rtb.com
 ads-mth.cbx-rtb.com
 ads-not-by-this-site.de
+ads-onair.invitation-global.com
 ads-optima.com
 ads-partner-noneu.truecaller.com
 ads-partners.coupang.com
@@ -2518,6 +2521,7 @@ ads.scored.co
 ads.scott-sports.com
 ads.scottusa.com
 ads.search.bg
+ads.search360invite.com
 ads.searchingbooth.com
 ads.searchmobileonline.com
 ads.searchreinvented.com
@@ -3700,6 +3704,8 @@ advertising-cdn.dpgmedia.cloud.edgekey.net
 advertising-cdn.immediate.co.uk
 advertising-cdn.samsclub.com.akadns.net
 advertising-cdn.target.dpgmedia.cloud
+advertising-content-copyright-review.netlify.app
+advertising-copyright-support.netlify.app
 advertising-eu.amazon.com
 advertising-module.api.dpgmedia.cloud
 advertising-server.amadeus.net
@@ -3782,6 +3788,7 @@ adverts.freeloader.com
 advertserve.com
 advertshot.ru
 advertsight.com
+advertsom.com
 advertsource.co.uk
 advertstar.ru
 advertstream.com
@@ -4190,6 +4197,7 @@ chikayo-dsp.shinobi.jp
 cisco-ad.lightning.force.com
 city-ads.de
 cl-ad.x-flow.app
+claude-advertisers.ai
 cldata-ads-fr.heytapmobile.com
 cldata-ads-ru.heytapmobile.com
 click.adv.livedoor.com
@@ -4290,12 +4298,14 @@ exit-ad.de
 external-ad.bunjang.co.kr
 externos.iw-advertising.com
 f11-ads.com
+facebook-ads-acc1.github.io
 facebook-ads.hara.vn
 fallback.cstm-ads.nbcuni.com.cdn.cloudflare.net
 fam-ad.com
 fb-ads.aag.co.id
 fbme-recovery-page.violations-advertising.help
 feed-ads.com
+feedback-ad-no-060922.pages.dev
 ferreirateixeira.adv.br
 file-hw-ads-o.api.leiniao.com
 fin-banners-bt.wildberries.ru
@@ -4318,6 +4328,7 @@ gameday-stories-ads.mlb.com
 gateway-banner.eravage.com
 gb-ad-lgsmartad-com.aws-prd.net
 gcrlyd.career-adv.jp
+gemini-ads-team.com
 get-ads.ru
 gg-ads.b-cdn.net
 gke-ad-distibute-ingress.weplayer.cc
@@ -4459,6 +4470,7 @@ manage001.adtech.us
 marketing.net.24-ads.com
 masque-ads.b-cdn.net
 mathilde-ads.com
+matsui-ad.cfd
 max-adserv.com
 meazy-ads.com
 media-ads.zaloapp.com
@@ -4471,7 +4483,9 @@ media.ads.gfsrv.net
 mega-ad.de
 mena-ads.com
 mesure.ad-works.fr
+meta-ad-account-support.statichost.page
 meta-ads.aag.co.id
+meta-policy-advertising.com
 metrics.iij.ad.jp
 mincure-ad.com
 miniapp-ad.cdn.bcebos.com
@@ -4534,6 +4548,7 @@ op-ads-sg8-sg10-11.dr-wan.shopeemobile.com
 op-ads-sg8-sg10-12.dr-wan.shopeemobile.com
 op-ads-sg8-sg10-14.dr-wan.shopeemobile.com
 op-ads-sg8-sg10-8.dr-wan.shopeemobile.com
+openai--ads.com
 openrtb-banner.com
 optimus-ads.amap.com.w.alikunlun.com
 ot7.wagbridge.advertisement.tanx.com
@@ -5108,6 +5123,7 @@ trading-ad.net
 triggy-banners.web.app
 trk.a-dsp.com
 trkvz-cdn-ads.ercdn.net
+troubleshoot-ad-account-issues.edgeone.dev
 turbocpp-ads.firebaseio.com
 tx-ad.a.yximgs.com
 u-ad.info

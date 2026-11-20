@@ -1,6 +1,6 @@
 {
- "ts": "2026-11-20T08:40:54Z",
- "round": 1,
+ "ts": "2026-11-20T08:43:05Z",
+ "round": 2,
  "sources": [
   {
    "name": "StevenBlack-all",
@@ -54,7 +54,7 @@
   },
   {
    "name": "PhishingArmy",
-   "fails": 1,
+   "fails": 0,
    "seen_days": 1
   },
   {
