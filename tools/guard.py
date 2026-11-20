@@ -545,10 +545,22 @@ def main():
             prev = json.load(open(hist, encoding="utf-8"))
         except Exception:
             prev = {}
-    for tier, n in summary.items():
-        old = prev.get(tier)
-        if old and n < old * 0.85 and not (tier == "lite" and n <= LITE_CAP):
-            fails.append("%s 规模骤降：%d → %d（超过 15%%，疑似上游失效）" % (tier, old, n))
+    # 源可用数不一致时不做规模比较：CI 出网 21 源、受限网络 19 源，规模天然差 20%+，
+    # 拿两个环境的 scale.json 互相比较只会制造假红（真实失效由每源 min_items 单独判）
+    cur_src = 0
+    try:
+        cur_src = len(json.load(open(os.path.join(ROOT, "out", "compile.json"), encoding="utf-8"))["sources"])
+    except Exception:
+        cur_src = 0
+    prev_src = prev.get("_sources") or 0
+    if cur_src and prev_src and cur_src != prev_src:
+        print("  （规模检查跳过：源可用数 %d → %d，跨环境不可比）" % (prev_src, cur_src))
+    else:
+        for tier, n in summary.items():
+            old = prev.get(tier)
+            if old and n < old * 0.85 and not (tier == "lite" and n <= LITE_CAP):
+                fails.append("%s 规模骤降：%d → %d（超过 15%%，疑似上游失效）" % (tier, old, n))
+    summary["_sources"] = cur_src
     os.makedirs(os.path.dirname(hist), exist_ok=True)
     json.dump(summary, open(hist, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 

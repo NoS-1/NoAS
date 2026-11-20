@@ -36,3 +36,10 @@ akamaihd.net	cdn-normal	通用 CDN（拦了整个站图片/视频全挂）
 cloudflare-dns.com	cdn-normal	Cloudflare 基础服务
 ntp.aliyun.com	infra-ntp	时间同步
 time.windows.com	infra-ntp	时间同步
+
+vkontakte.ru	wechat-login	VK 社交登录/访问（俄罗斯主流社交，非广告）
+pubnub.com	push-realtime	实时消息通道（大量 App 依赖，拦了功能会坏）
+pusherapp.com	push-realtime	推送服务
+pushwoosh.com	push-realtime	推送服务
+
+honcode.ch	health-badge	HONcode 医疗网站认证徽章（医院站常引用，非广告）

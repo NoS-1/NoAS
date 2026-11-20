@@ -623,3 +623,25 @@ yldbt.com	full	确认广告
 ywxi.net	full	确认广告
 z5x.net	full	确认广告
 zergnet.com	full	确认广告
+# ---- 2026-11-21 CI 补源（21 源）后 full 才出现的新域，逐条审读：确认为广告/追踪 ----
+angsrvr.com	full	确认广告（CI补源）
+beanstock.com	full	确认广告（CI补源）
+cbox.ws	full	确认广告（CI补源）
+edigitalsurvey.com	full	确认广告（CI补源）
+ixiaa.com	full	确认广告（CI补源）
+jasmin.com	full	确认广告（CI补源）
+mdotm.com	full	确认广告（CI补源）
+nexage.com	full	确认广告（CI补源）
+optorb.com	full	确认广告（CI补源）
+prfct.co	full	确认广告（CI补源）
+res-x.com	full	确认广告（CI补源）
+responsys.net	full	确认广告（CI补源）
+returnpath.net	full	确认广告（CI补源）
+sharethis.com	full	确认广告（CI补源）
+sojern.com	full	确认广告（CI补源）
+superfish.com	full	确认广告（CI补源）
+trbas.com	full	确认广告（CI补源）
+userreport.com	full	确认广告（CI补源）
+webengage.com	full	确认广告（CI补源）
+webtrends.com	full	确认广告（CI补源）
+yieldmanager.com	full	确认广告（CI补源）
