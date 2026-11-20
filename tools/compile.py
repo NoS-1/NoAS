@@ -99,6 +99,32 @@ def norm(d):
     return d
 
 
+
+def registrable(d):
+    parts = d.split(".")
+    if len(parts) < 2:
+        return d
+    cc2 = {"com.cn", "net.cn", "org.cn", "gov.cn", "co.uk", "com.au", "co.jp", "co.kr",
+           "com.br", "com.mx", "com.tr", "com.tw", "com.hk", "com.sg", "com.my"}
+    if len(parts) >= 3 and ".".join(parts[-2:]) in cc2:
+        return ".".join(parts[-3:])
+    return ".".join(parts[-2:])
+
+
+def drop_benign_parent(domains, benign, endpoints):
+    """精度优先：属于良性大盘站点的子域默认不拦，只有审计过的端点例外。"""
+    keep, dropped = set(), []
+    for d in domains:
+        if d in endpoints:
+            keep.add(d)
+            continue
+        if registrable(d) in benign or d in benign:
+            dropped.append(d)
+            continue
+        keep.add(d)
+    return keep, dropped
+
+
 def load_list_file(name):
     """读取 lists/<name>，返回域集合（忽略注释）。"""
     out = set()
@@ -299,13 +325,22 @@ def main():
             line = line.split("#", 1)[0].strip().lower()
             if line and "." in line:
                 core.add(line)
-    promoted = {d for d in load_list_file("promoted.txt") if d not in wl}
-    lite = drop_children({d for d in exact if consensus.get(d, 0) >= 3} | (core & exact) | promoted) | ep
-    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2}) | ep
+    benign = load_list_file("benign_top.txt") | wl
+    exact, benign_dropped = drop_benign_parent(exact, benign, ep)
+    exact = drop_children(exact) | ep
+    # 精度优先：lite 只保留"多源共识 + 核心广告网 + 审计端点"，自动晋级只进 mid
+    promoted = {d for d in load_list_file("promoted.txt") if d not in wl and d in exact}
+    lite = drop_children({d for d in exact if consensus.get(d, 0) >= 3} | (core & exact)) | ep
+    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2} | promoted) | ep
+
+    prov = {d: consensus.get(d, 0) for d in lite}
+    json.dump({"lite": prov, "core": sorted(core & lite), "endpoints": sorted(ep & lite)},
+              open(os.path.join(ROOT, "out", "lite_provenance.json"), "w", encoding="utf-8"),
+              ensure_ascii=False)
 
     report = {"sources": per_source, "full": len(exact), "lite": len(lite), "mid": len(mid),
               "wildcards": len(wild), "whitelist_blocked": len(blocked_wl),
-              "ad_endpoints": len(ep), "promoted": len(promoted)}
+              "ad_endpoints": len(ep), "promoted": len(promoted), "benign_dropped": len(benign_dropped)}
     print("编译完成：full %d ／mid %d ／lite %d 条（通配 %d）｜白名单剔除 %d｜源 %d 个" % (
         len(exact), len(mid), len(lite), len(wild), len(blocked_wl), len(per_source)))
 

@@ -11,7 +11,7 @@ const load = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8').split('\n')
 
 const lite = load('subs/lite/domains.txt');
 const mid = load('subs/mid/domains.txt');
-const benign = load('tests/benign_baseline.txt');
+const benign = [...load('tests/benign_baseline.txt'), ...load('lists/benign_top.txt')];
 const endpoints = new Set(load('lists/ad_endpoints.txt'));
 
 let miss = [], fp = [];
