@@ -42,6 +42,11 @@ def main():
     if os.path.isdir(p_src):
         shutil.copytree(p_src, os.path.join(DOCS, "subs", "paths"), dirs_exist_ok=True)
 
+    # GKD 订阅（L4）同样镜像到 Pages
+    g_src = os.path.join(SUBS, "gkd")
+    if os.path.isdir(g_src):
+        shutil.copytree(g_src, os.path.join(DOCS, "subs", "gkd"), dirs_exist_ok=True)
+
     tiers = {}
     for t in TIERS:
         meta = read_json(os.path.join(SUBS, t, "meta.json"), {})
@@ -55,6 +60,7 @@ def main():
         }
 
     compile_report = read_json(os.path.join(ROOT, "out", "compile.json"), {})
+    gkd_report = read_json(os.path.join(ROOT, "out", "gkd.json"), {})
     health = read_json(os.path.join(ROOT, "history", "health.json"), {})
     evo = read_json(os.path.join(ROOT, "history", "evolution.json"), [])
     scale = read_json(os.path.join(ROOT, "history", "scale.json"), {})
@@ -70,6 +76,7 @@ def main():
             "per_source": compile_report.get("sources", {}),
         },
         "health": health,
+        "gkd": gkd_report,
         "evolution": (evo or [])[-6:],
         "scale": scale,
         "channels": [

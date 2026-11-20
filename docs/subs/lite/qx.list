@@ -6913,6 +6913,7 @@ host-suffix, inqjal.dickssportinggoods.com, reject
 host-suffix, insight.ucweb.com, reject
 host-suffix, insightexpress.com, reject
 host-suffix, insightexpressai.com, reject
+host-suffix, insights-collector.newrelic.com, reject
 host-suffix, insights.academy.com, reject
 host-suffix, insights.algolia.io, reject
 host-suffix, inspi-dsp.com, reject
@@ -9077,7 +9078,6 @@ host-suffix, somni.sbimobility.com, reject
 host-suffix, somni.silversea.com, reject
 host-suffix, somni.sky.de, reject
 host-suffix, somni.syf.com, reject
-host-suffix, somni.syfpayments.com, reject
 host-suffix, somni.synchrony.com, reject
 host-suffix, somni.synchronybank.com, reject
 host-suffix, somni.thermofisher.com, reject

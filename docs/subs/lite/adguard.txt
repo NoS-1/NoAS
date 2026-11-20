@@ -6920,6 +6920,7 @@
 ||insight.ucweb.com^
 ||insightexpress.com^
 ||insightexpressai.com^
+||insights-collector.newrelic.com^
 ||insights.academy.com^
 ||insights.algolia.io^
 ||inspi-dsp.com^
@@ -9084,7 +9085,6 @@
 ||somni.silversea.com^
 ||somni.sky.de^
 ||somni.syf.com^
-||somni.syfpayments.com^
 ||somni.synchrony.com^
 ||somni.synchronybank.com^
 ||somni.thermofisher.com^

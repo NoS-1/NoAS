@@ -184,8 +184,8 @@
   }
  },
  "sources": {
-  "count": 21,
-  "whitelist_blocked": 4913,
+  "count": 19,
+  "whitelist_blocked": 3930,
   "ad_endpoints": 56,
   "per_source": {
    "StevenBlack-all": 76101,
@@ -198,9 +198,8 @@
    "notracking": 500138,
    "AdAway": 6540,
    "urlhaus": 2112,
-   "PhishingArmy": 146856,
    "Spam404": 8140,
-   "AdGuardDNS-filter": 191145,
+   "AdGuardDNS-filter": 191090,
    "AdGuard-CNAME-disguised": 306552,
    "AdGuard-CNAME-original": 99,
    "OISD-Big": 0,
@@ -323,6 +322,16 @@
   ],
   "adopted": 0,
   "dropped": 0
+ },
+ "gkd": {
+  "source": "@gkd-kit/subscription (MIT)",
+  "source_version": 185,
+  "apps": 610,
+  "groups": 1371,
+  "rules": 1971,
+  "bytes": 904237,
+  "sha256": "b5ee37ecadcfceef11acaff2e1a328b2dae23172786eadf82b8fbf219e2ed605",
+  "generated_utc": "2026-11-20T12:14:47Z"
  },
  "evolution": [
   {
