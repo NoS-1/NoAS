@@ -98,6 +98,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
+    fetch_state = {}
+    fsp = os.path.join(ROOT, "cache", "sources.json")
+    if os.path.exists(fsp):
+        try:
+            data = json.load(open(fsp, encoding="utf-8"))
+            src = data.get("sources") if isinstance(data.get("sources"), dict) else data
+            for name, info in (src or {}).items():
+                if isinstance(info, dict):
+                    fetch_state[name] = info
+        except Exception:
+            fetch_state = {}
     st = state_load()
     st["rounds"] = st.get("rounds", 0) + 1
     wl = whitelist()
@@ -109,8 +120,10 @@ def main():
     for row in rows:
         name, url, fmt = row[0], row[1], row[2]
         meta = st["sources"].setdefault(name, {"fails": 0, "hits": []})
-        meta_file = os.path.join(ROOT, "cache", re.sub(r"[^a-z0-9\-_.]", "", name.lower()) + ".txt")
-        ok = os.path.exists(meta_file) and os.path.getsize(meta_file) > 0
+        # 只看本轮 fetch 的真实结果（sources.json），不看"缓存文件在不在"——
+        # CI 是干净环境，没有缓存文件，用存在性判断会把所有源误判成失效（曾经踩过）。
+        info = fetch_state.get(name) or {}
+        ok = bool(info.get("ok", True)) and int(info.get("bytes") or 0) > 0
         meta["fails"] = 0 if ok else meta.get("fails", 0) + 1
         meta["hits"] = (meta.get("hits", []) + [time.strftime("%Y-%m-%d")])[-30:]
         if meta["fails"] >= FAIL_LIMIT:
@@ -144,6 +157,13 @@ def main():
         st["sources"].setdefault(name, {"fails": 0, "hits": [time.strftime("%Y-%m-%d")]})
         adopted.append((name, len(doms)))
 
+    # 下限保护：一轮最多淘汰 1 个，且淘汰后至少保留 MIN_SOURCES 个，避免误判造成"自我阉割"
+    MIN_SOURCES = 8
+    if len(keep) - len(drop) < MIN_SOURCES:
+        dropped = drop[:max(0, len(keep) - MIN_SOURCES)]
+        for name, f in drop[len(dropped):]:
+            events.append({"act": "drop_skipped", "name": name, "why": "触及源数下限"})
+        drop = dropped
     for name, f in drop:
         events.append({"act": "drop", "name": name, "fails": f})
 
