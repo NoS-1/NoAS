@@ -102,7 +102,12 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 | L3 内容 | `subs/paths/ubo/noas-ubo.txt` | 浏览器内隐藏广告位、拦广告脚本 |
 | L4 交互 | `subs/gkd/noas-gkd.json5` | 安卓 GKD 无障碍自动点"跳过"；规则源 @gkd-kit/subscription（MIT） |
 
-**国内首方广告子域（自动发现）**：`tools/discover_cn_ads.py` 以证书透明度 + 被动 DNS + 广告前缀枚举三条通道收集子域，再用 DoH 逐个解析，先探泛解析（随机子域也解析得出来就整根域丢弃），再按解析链是否落到已知广告网络分两档：落到广告网络的进端点表（全档强制拦，可穿透白名单父域），只有名字像广告的进观察池（仅 mid/full）。产物 `lists/cn_ad_endpoints.txt`、`lists/cn_ad_watch.txt`，每周随 Discover 流水线刷新。
+**国内首方广告子域（自动发现，累积不覆盖）**：`tools/discover_cn_ads.py` 以证书透明度 + 被动 DNS + 广告前缀枚举三条通道收集子域，再用 DoH 逐个解析；先探泛解析（随机子域也解析得出来就整根域丢弃），再按证据分两档：
+
+- **端点表 `lists/cn_ad_endpoints.txt`**：解析链落到已知广告网络（穿山甲/优量汇/阿里妈妈/快手/Mintegral…），或域名最左标签就是 `ad/ads/adx/adapi/adserver/splash/gromore/pangolin…` 这类品牌自有广告前缀（带连字符的广告主后台除外）。全档强制拦；
+- **观察池 `lists/cn_ad_watch.txt`**：广告词元出现在中间标签、或 `union/track/stat/log/metrics` 这类歧义前缀。仅 mid/full，lite 不引入。
+
+产物按轮累积：本轮没重新探到的旧条目保留，不会被覆盖写冲掉；根域清单 `lists/cn_roots.txt`（188 个国内 App/品牌注册域）由游标轮换分批覆盖，每周随 Discover 流水线刷新。
 
 路径层源表是 `lists/ad_paths.tsv`，每行带 App 与用途；`core` 只打单主机端点，`full` 才启用通用路径（范围由 MITM 白名单兜住）。
 

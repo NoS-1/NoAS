@@ -1,5 +1,55 @@
-# NoAS 国内 App 首方广告子域（高置信：解析链落在广告网络）
-# 自动发现，构建日期 2026-11-20；列：域名 / 命中词 / 落点证据
+# NoAS 国内 App 首方广告子域（高置信：解析链落在广告网络，或品牌自有广告子域）
+# 自动发现并累积，构建日期 2026-11-20；列：域名 / 命中词 / 证据（落点域名 或 prefix）
+ad-experience.bytedance.com	ad	bytedance
+ad.10jqka.com.cn	ad	prefix
+ad.alimama.com	ad	prefix
+ad.csair.com	ad	prefix
+ad.gome.com.cn	ad	prefix
+ad.goofish.com	ad	prefix
+ad.haidilao.com	ad	prefix
+ad.immomo.com	ad	prefix
+ad.jdcloud.com	ad	prefix
+ad.kuaidi100.com	ad	prefix
+ad.kugou.com	ad	prefix
+ad.letv.com	ad	prefix
+ad.maoyan.com	ad	prefix
+ad.moji.com	ad	prefix
+ad.qingting.fm	ad	prefix
+ad.sf-express.com	ad	prefix
+ad.soulapp.cn	ad	prefix
+ad.tencentmusic.com	ad	prefix
+ad.wifi.com	ad	prefix
+ad.xiaojukeji.com	ad	prefix
+ad.xueersi.com	ad	prefix
+ad.yidianzixun.com	ad	prefix
+ad.zhuanzhuan.com	ad	prefix
+ad.zuche.com	ad	prefix
+adapi.moji.com	adapi	prefix
+adapi.soulapp.cn	adapi	prefix
+adapi.yangshipin.cn	adapi	prefix
+adlog.qingting.fm	adlog	prefix
+ads.cainiao.com	ads	prefix
+ads.maoyan.com	ads	prefix
+ads.uc.cn	ads	prefix
+ads.wps.cn	ads	prefix
+ads.xiaojukeji.com	ads	prefix
+ads.xueersi.com	ads	prefix
+ads.yidianzixun.com	ads	prefix
+adserver.qingting.fm	adserver	prefix
+adserver.yidianzixun.com	adserver	prefix
+adservice.kugou.com	adservice	prefix
+adservice.kuwo.cn	adservice	prefix
+adv.10jqka.com.cn	adv	prefix
+adv.kuwo.cn	adv	prefix
+adv.moji.com	adv	prefix
+adv.yidianzixun.com	adv	prefix
 adx.alimama.com	adx	tanx
+adx.hupu.com	adx	prefix
+adx.ke.com	adx	prefix
+adx.wifi.com	adx	prefix
+adx.xiaojukeji.com	adx	prefix
+adx.yidianzixun.com	adx	prefix
+adx.zuoyebang.com	adx	prefix
 pangolin.bytedance.com	pangolin	pangolin
+splash.quark.cn	splash	prefix
 union.bytedance.com	union	bytedance
