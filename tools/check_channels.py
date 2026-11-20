@@ -21,6 +21,11 @@ import struct
 import sys
 import time
 import urllib.request
+from urllib.request import ProxyHandler, build_opener
+
+# 显式禁掉系统代理：本机/CI 的 HTTP(S)_PROXY 白名单通常不含 Cloudflare 与 DNS 厂商，
+# 走代理会被安全网关拦成 000/5xx，体检就会把好通道全判死。直连才是真实结果。
+OPENER = build_opener(ProxyHandler({}))
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,8 +41,26 @@ def build_query(name):
     return hdr + q + struct.pack(">HH", 1, 1)
 
 
+def looks_forged(resp):
+    """网关 DPI 伪造响应的指纹：报文截断在 17-20 字节、QDCOUNT=1 但问题名被砍、
+    rcode 为 NOTIMP(4)/REFUSED(5)、RA=0。真实解析器不会返回这种残缺报文。"""
+    if not (17 <= len(resp) <= 20):
+        return False
+    flags = struct.unpack(">H", resp[2:4])[0]
+    qd = struct.unpack(">H", resp[4:6])[0]
+    rcode = flags & 0xF
+    ra = (flags >> 7) & 0x1
+    return qd == 1 and rcode in (4, 5) and ra == 0 and ancount_of(resp) == 0
+
+
+def ancount_of(resp):
+    return struct.unpack(">H", resp[6:8])[0] if len(resp) >= 8 else 0
+
+
 def judge(resp):
     """返回 (ok, rcode)。要求 ID 回显、QDCOUNT=1、rcode 合法、NOERROR 有应答。"""
+    if looks_forged(resp):
+        return False, -5          # -5：明文网关伪造，非通道故障
     if len(resp) < 12:
         return False, -1
     ident = struct.unpack(">H", resp[0:2])[0]
@@ -62,7 +85,7 @@ def probe_doh(url):
     req = urllib.request.Request(
         url + ("&" if "?" in url else "?") + "dns=" + b64,
         headers={"accept": "application/dns-message", "user-agent": "NoAS-health/1.0"})
-    with urllib.request.urlopen(req, timeout=10) as r:
+    with OPENER.open(req, timeout=10) as r:
         body = r.read()
     return judge(body), int((time.time() - t0) * 1000)
 
@@ -145,10 +168,14 @@ def main():
 
     real = [v for v in results.values() if v["status"] in ("ok", "down")]
     down = [v for v in real if v["status"] == "down"]
-    proxy_env = any(os.environ.get(k) for k in
-                    ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "all_proxy", "ALL_PROXY"))
+    # 已经强制直连，代理存在不再等于测不准；只保留"全部失败"这一条强证据
+    proxy_env = False
     suspect = False
     # 判定优先级：一条都没通 → 环境问题（阿里/腾讯在国内不可能同时全挂）
+    # 只要出现"网关伪造"指纹，就说明本机网络不可信，与通道无关
+    forged = sum(1 for v in real if v.get("rcode") == -5)
+    if forged:
+        suspect = True
     if real and not any(v["status"] == "ok" for v in real):
         suspect = True
     elif real and len(down) / len(real) >= 0.6:
