@@ -3,11 +3,11 @@
  "version": "20261120-622a988e",
  "count": 74298,
  "wildcards": 56,
- "generated_utc": "Fri, 20 Nov 2026 10:34:39 GMT",
+ "generated_utc": "Fri, 20 Nov 2026 11:08:41 GMT",
  "files": {
   "adguard.txt": {
    "bytes": 1717961,
-   "sha256": "c808739443d612a648cc6266a01d99aceb9f9bfcf2221df9f802955efbc91a89"
+   "sha256": "4b4a0e55720eeced4e8295bd83c737975ffc5bb3f3d7db7bc1499930c3436dd8"
   },
   "allow.txt": {
    "bytes": 1657,
@@ -28,6 +28,10 @@
   "hosts.txt": {
    "bytes": 2088112,
    "sha256": "7ac3d152875b2ce591380d76242a7f9c0e81d4944852cc6f43e7f874e49a5697"
+  },
+  "qx.list": {
+   "bytes": 3054203,
+   "sha256": "4e6378af61e92162dfaf9cd247dd1c81a486f447bef35d1153df4f0ed8fdcaa6"
   },
   "rpz.zone": {
    "bytes": 2089475,
