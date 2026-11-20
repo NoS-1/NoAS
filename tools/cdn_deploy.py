@@ -83,7 +83,27 @@ def main():
 
     auth = {"Authorization": "Bearer " + token}
 
-    # 1) 上传变更资产
+    # 0) 干跑：只看差异，一个请求都不发（Pages 部署次数是硬配额，误触一次就是白花）
+    if os.environ.get("NOAS_DRY") == "1":
+        print("干跑模式：不部署")
+        print("  差异文件：", [p for p in todo][:12], "共 %d 个" % len(todo))
+        return 0
+
+    # 1.5) 无变化就绝不发部署：Pages 每月 500 次部署是硬配额，空部署纯属浪费，
+    #      也让"真的部署了"这件事失去信号价值。跳过前回读线上文件数，避免把故障盖住。
+    if not todo:
+        try:
+            d = requests.get(f"{BASE}?per_page=1", headers=auth, timeout=60).json()
+            latest = (d.get("result") or [{}])[0]
+            if len(latest.get("files") or {}) == len(files):
+                print("无变化且线上一致（%d 个文件），跳过部署以节省配额" % len(files))
+                return 0
+            print("台账无变化但线上只有 %d 个文件（预期 %d），继续部署"
+                  % (len(latest.get("files") or {}), len(files)))
+        except Exception as e:
+            print("回读最新部署失败（%s），继续走正常部署" % type(e).__name__)
+
+    # 2) 上传变更资产
     if todo:
         r = requests.get(f"{ACC_BASE}/pages/projects/{PROJECT}/upload-token", headers=auth, timeout=60)
         if r.status_code != 200:

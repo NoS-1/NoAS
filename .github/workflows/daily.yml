@@ -230,6 +230,13 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v5
 
+      # 免费额度守门：Pages 每月 500 次部署，用光就整月发不了新规则。
+      # 放在发布之后，不影响产物；逼近告警线则让构建红，触发 Issue 而不是静默耗尽。
+      - name: 11.5 · 免费额度守门
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: python3 tools/quota_check.py
+
       - name: 12 · 留档
         uses: actions/upload-artifact@v4
         with:
