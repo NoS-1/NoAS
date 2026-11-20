@@ -1,4 +1,5 @@
 # NoAS 国内 DoH 上游（可直接填入 AdGuard Home / sing-box / 浏览器）
+# 注意：本次体检环境异常，以下为完整清单（未经在线验证），请自行试通
 # 顺序即优先级；均为国内直连，无调用额度
 https://dns.alidns.com/dns-query
 https://doh.pub/dns-query

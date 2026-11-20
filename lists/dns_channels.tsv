@@ -9,3 +9,5 @@ ali-dot	dot	tls://dns.alidns.com:853	3	backup	同上加密通道（DoT），客�
 tencent-dot	dot	tls://dot.pub:853	4	backup	腾讯 DoT，移动/联通线路稳
 aiodns-local	aiodns	127.0.0.1:5300	5	local	本机 aiodns（honwen/aiodns），做国内分流 + 缓存，零额度
 cf-doh	doh	https://noas-doh.199999510.workers.dev/dns-query	9	last	自建规则层，仅兜底；10 万/天，90% 自动熔断
+gateway-doh	doh	https://oxyacq0a4t.cloudflare-gateway.com/dns-query	6	gateway	自建带规则 DoH（Zero Trust Gateway，7 条档位规则），免费额度远高于 Worker
+gateway-dot	dot	tls://oxyacq0a4t.cloudflare-gateway.com:853	7	gateway	自建带规则 DoT；端点已启用且免 token，需 CI 干净网络验证

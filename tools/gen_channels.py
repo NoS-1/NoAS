@@ -59,9 +59,10 @@ def main():
 
     def alive(r):
         h = health.get(r["name"]) or {}
-        return h.get("status") != "down"
+        return h.get("status") == "ok"          # unknown/absent 都不算可用，只信实测
 
-    up = [r for r in rows if r["role"] != "last"]
+    up = [r for r in rows if r["role"] not in ("last", "gateway")]
+    gw = [r for r in rows if r["role"] == "gateway"]
     alive_up = [r for r in up if alive(r)]
     dead_up = [r for r in up if not alive(r)]
     # FAIL-SAFE：体检环境不可信（一条都没通）时，绝不能把清单剔空——
@@ -83,6 +84,29 @@ def main():
     (OUTDIR / "dot.txt").write_text(
         "# NoAS 国内 DoT 上游（853 端口，客户端支持 TLS 时优先用这个，更快）\n"
         + "".join("%s\n" % r["endpoint"] for r in dot), encoding="utf-8")
+
+    # gateway.txt：带规则的自建端点（不与公共通道混排，避免把未验证的当默认）
+    (OUTDIR / "gateway.txt").write_text(
+        "# NoAS 自建带规则端点（Zero Trust Gateway）\n"
+        "# DoH 与 DoT 均带 7 条档位规则；额度按用户数计算，远高于 Worker 的 10 万/天\n"
+        "# 标注「已实测」的才可信；未标注的需自行试通（本机代理会伪造响应）\n"
+        + "".join("%s%s\n" % (r["endpoint"],
+                              "   # 已实测" if (health.get(r["name"]) or {}).get("status") == "ok" else "   # 待验证")
+                  for r in gw), encoding="utf-8")
+
+    # dot-preferred.txt：只留健康检查里最快的那条 DoT，安卓私人 DNS 直接抄
+    measured = [(r, (health.get(r["name"]) or {}).get("rtt_ms"))
+                for r in dot if (health.get(r["name"]) or {}).get("status") == "ok"]
+    measured = [(r, ms) for r, ms in measured if isinstance(ms, int)]
+    measured.sort(key=lambda x: x[1])
+    best = measured[0] if measured else (dot[0] if dot else None)
+    if best:
+        r, ms = best if isinstance(best, tuple) else (best, None)
+        (OUTDIR / "dot-preferred.txt").write_text(
+            "# 安卓「私人 DNS」/ iOS 描述文件 里直接填这一行（只填主机名，端口固定 853）\n"
+            "# 依据：本轮 CI 在干净网络实测 RTT 排序，最快者为 %s%s\n"
+            "%s\n" % (r["name"], ("（%dms）" % ms if ms else "（本轮无有效实测，按清单顺序取首条）"),
+                       r["endpoint"].replace("tls://", "").split(":")[0]), encoding="utf-8")
 
     # aiodns special-list：国内域走国内上游，境外域仍走默认上游
     special = []
@@ -197,8 +221,8 @@ AGH 免费无额度，规则和通道都在本地，最稳。
     (OUTDIR / "README.md").write_text(md, encoding="utf-8")
 
     DOCS.mkdir(parents=True, exist_ok=True)
-    for f in ("README.md", "doh.txt", "dot.txt", "aiodns.sh", "aiodns.special.txt",
-              "adguardhome-upstream.yaml", "health.json"):
+    for f in ("README.md", "doh.txt", "dot.txt", "dot-preferred.txt", "aiodns.sh",
+              "aiodns.special.txt", "adguardhome-upstream.yaml", "health.json"):
         src = OUTDIR / f
         if src.exists():
             (DOCS / f).write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
