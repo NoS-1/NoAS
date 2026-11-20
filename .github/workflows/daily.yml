@@ -113,8 +113,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 tools/publish.py --token "$GITHUB_TOKEN"
 
-      - name: 8 · 生成站点数据与 Pages 镜像
-        run: python3 tools/report.py
+      - name: 8 · 生成站点数据与 Pages 镜像（含零误拦闭环页）
+        run: |
+          python3 tools/report.py
+          python3 tools/build_precision_page.py
 
       - name: 8.5 · 更新成长账本（趋势 / 源贡献 / 学习事件）
         run: python3 tools/growth.py

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NoAS · 零误拦闭环</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--txt:#e6edf3;--dim:#8b949e;--ok:#3fb950;--warn:#d29922}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font:15px/1.75 -apple-system,"Segoe UI","PingFang SC",sans-serif;margin:0;padding:28px 18px}
+.wrap{max-width:880px;margin:0 auto}
+h1{font-size:26px;margin:0 0 6px}
+h2{font-size:17px;margin:34px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.sub{color:var(--dim);font-size:13px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0}
+code{background:#0b0f14;border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:13px;word-break:break-all}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#1b212a;color:var(--dim);font-weight:600}
+.pill{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+.pill.ok{color:var(--ok);border-color:#238636}
+.pill.warn{color:var(--warn);border-color:#9e6a03}
+a{color:#58a6ff;text-decoration:none}
+ul{margin:6px 0 0 18px}
+li{margin:4px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>零误拦闭环</h1>
+<div class="sub">NoAS · 判断"这套规则会不会把你的正常网站拦死"。<br>
+原则：<b>拦得准不准可以慢慢提，拦错一次就没有第二次机会</b>——所以误伤优先，宁放不误拦。</div>
+
+<h2>1 · 结论先行</h2>
+<table>
+<tr><th>档位</th><th>本期规则条数</th><th>黄金集命中（误拦）</th><th>实测误拦率</th></tr>
+<tr><td>lite · 手机默认档</td><td>9962</td><td>0</td><td><span class="pill ok">0.00% 零误拦</span></td></tr><tr><td>mid · 平衡档</td><td>184926</td><td>0</td><td><span class="pill ok">0.00% 零误拦</span></td></tr><tr><td>full · 高召回档</td><td>415706</td><td>0</td><td><span class="pill ok">0.00% 零误拦</span></td></tr>
+</table>
+<div class="card">
+黄金回归集共 <b>2151</b> 条正常站点，每轮构建都用它跑一遍：lite 命中必须为 <b>0</b>，出现一条就判红、不发版。
+mid/full 是高召回档，只记录误拦率，不阻断。
+</div>
+
+<h2>2 · 五道防线</h2>
+<table>
+<tr><th>防线</th><th>怎么挡</th><th>本期规模</th></tr>
+<tr><td>白名单（一票否决）</td><td>人工台账 + 回归基线 + 基础服务表，编译期整体剔除，连父域一起保护</td><td>剔除 4152 条</td></tr>
+<tr><td>良性母域剔除</td><td>一个平台主体域在正常大盘里，就不拦它下面整片子域</td><td>297 条母域</td></tr>
+<tr><td>基础服务表</td><td>登录/支付/推送/地图/验证码/崩溃上报，拦了 App 就废</td><td>32 条</td></tr>
+<tr><td>影子期（观察池）</td><td>低置信域先观察 14 天且复现 2 轮才准晋级，30 天不复现直接退役</td><td>在池 47 条</td></tr>
+<tr><td>冷却池</td><td>被报过误伤的域永久豁免，即使白名单被误删也不会复发</td><td>0 条</td></tr>
+</table>
+
+<h2>3 · 域名信誉评分</h2>
+<div class="sub">谁够格进 lite 不看"几个清单都收了"，看多信号合起来的分数。</div>
+<table>
+<tr><th>分数段</th><th>条数</th><th>档位含义</th></tr>
+<tr><td>≥70 分 · 够格进 lite</td><td>8027</td></td><td><span class="pill ok">—</span></td></tr><tr><td>40–69 分 · 只进 mid</td><td>1194</td></td><td><span class="pill ">—</span></td></tr><tr><td><40 分 · 留 full 或观察</td><td>10904</td></td><td><span class="pill ">—</span></td></tr>
+</table>
+<div class="card">
+共评 <b>21244</b> 条，其中 <b>1119</b> 条因命中白名单/良性大盘/黄金集被<b>一票否决</b>（直接清零，不给翻盘机会）。
+评分维度：是否已在 lite 实证、跨源共识分、父域是否广告网络、子域词元、是否品牌域下的首方伪装、是否 SDK/贴片/遥测、是否机器生成子域。
+</div>
+
+<h2>4 · 观察池现状</h2>
+<table>
+<tr><th>状态</th><th>条数</th><th>含义</th></tr>
+<tr><td>影子期内（&lt;14 天）</td><td>48</td><td>只记录不晋级，绝不许进 lite</td></tr>
+<tr><td>已满 14 天待复现</td><td>0</td><td>下一轮若再复现就晋级到端点表</td></tr>
+</table>
+
+<h2>5 · 为什么这样做</h2>
+<div class="card">
+<ul>
+<li><b>不用"被拦了就认定是广告"来凑指标。</b>黄金集里每一条冲突域都是逐条审读注册域后判定的，
+确认是广告才移出黄金集、记进 <code>lists/golden_ads.txt</code>；判不出来的就留在黄金集里持续报警。</li>
+<li><b>不同档位用不同标准。</b>lite 是手机默认档，误拦代价最大，所以只收"多源共识 + 审计端点 + 核心广告网"，
+并用 1 万条硬上限保证体积可控；mid/full 是高召回档，愿意用一点误拦换覆盖。</li>
+<li><b>影子期对应行业做法。</b>企业实践里新情报源要在真实流量上只记录不拦截，观察够久、误报率足够低才允许执行；
+这里用"14 天 + 复现 2 轮"的轻量版本，因为静态订阅拿不到用户查询日志。</li>
+<li><b>误伤走反馈自动闭环。</b>开 Issue 打 <code>误伤</code> 标签，下一个 4 小时窗口白名单 + 冷却池都会加上，不用等人工。</li>
+</ul>
+</div>
+
+<h2>6 · 报误拦</h2>
+<div class="card">
+发现正常网站打不开：<a href="https://github.com/NoS-1/NoAS/issues/new">开一个 Issue</a>，标题写域名，正文说清"哪个网页/哪个功能坏了"，打上 <code>误伤</code> 标签。<br>
+自动流程：进白名单台账 → 进冷却池 → 重编译 → 硬校验 → 发布，一般 4 小时内生效。
+</div>
+
+<div class="sub" style="margin-top:28px">数据由每轮构建自动重算（tools/build_precision_page.py），不手填。</div>
+</div>
+</body>
+</html>
