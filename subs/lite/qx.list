@@ -83,7 +83,6 @@ host-suffix, aametrics.aktia.fi, reject
 host-suffix, aamt.nbcnews.com, reject
 host-suffix, aamt.newsapp.telemundo.com, reject
 host-suffix, aamt.today.com, reject
-host-suffix, aan8bq.ru, reject
 host-suffix, aanalytics.adelaide.edu.au, reject
 host-suffix, aanalytics.panduit.com, reject
 host-suffix, aas.visitsaudi.com, reject
@@ -406,6 +405,7 @@ host-suffix, ad.anprom.com, reject
 host-suffix, ad.anuntis.com, reject
 host-suffix, ad.api.fello.net, reject
 host-suffix, ad.api.moji.com, reject
+host-suffix, ad.api.youshiad.cn, reject
 host-suffix, ad.api.yyapi.net, reject
 host-suffix, ad.apl298.me, reject
 host-suffix, ad.apl423.me, reject
@@ -1020,6 +1020,7 @@ host-suffix, ad.vonna.com, reject
 host-suffix, ad.votravis.me, reject
 host-suffix, ad.vpnrapid.net, reject
 host-suffix, ad.vrvm.com, reject
+host-suffix, ad.vryeye.com, reject
 host-suffix, ad.walkgame.com, reject
 host-suffix, ad.walla.co.il, reject
 host-suffix, ad.wanderlist.com, reject
@@ -3725,10 +3726,6 @@ host-suffix, adtima-media.zadn.vn, reject
 host-suffix, adtima-media.zascdn.me, reject
 host-suffix, adtima-static.aka.zdn.vn, reject
 host-suffix, adtima-static.zadn.vn, reject
-host-suffix, adtima-static.zascdn.me, reject
-host-suffix, adtima-video.zascdn.me, reject
-host-suffix, adtima.net.vn, reject
-host-suffix, adtima.vn, reject
 host-suffix, adtimaserver.vn, reject
 host-suffix, adtlgc.com, reject
 host-suffix, adtng.com, reject
@@ -4134,8 +4131,6 @@ host-suffix, an.mlb.com, reject
 host-suffix, an.sharkninja.co.za, reject
 host-suffix, an.worldbaseballclassic.com, reject
 host-suffix, analysis.polarisoffice.com, reject
-host-suffix, analysis.sozialversicherung.at, reject
-host-suffix, analystic.365av.net, reject
 host-suffix, analysys.cn, reject
 host-suffix, analytic.ae.com, reject
 host-suffix, analytic.baodantoc.vn, reject
@@ -4147,7 +4142,6 @@ host-suffix, analytics-cdiscount.com, reject
 host-suffix, analytics-egain.com, reject
 host-suffix, analytics-events.inshorts.com, reject
 host-suffix, analytics-fe.digital-cloud.medallia.eu, reject
-host-suffix, analytics-ingestion.pbpms.de, reject
 host-suffix, analytics-ingestion.production-public.tubi.io, reject
 host-suffix, analytics-ingress-global.bitmovin.com, reject
 host-suffix, analytics-lgs.corebridgefinancial.com, reject
@@ -4270,7 +4264,6 @@ host-suffix, analytics.posttv.com, reject
 host-suffix, analytics.publitas.com, reject
 host-suffix, analytics.ravelz.com, reject
 host-suffix, analytics.reliant.com, reject
-host-suffix, analytics.rever.vn, reject
 host-suffix, analytics.reyrey.net, reject
 host-suffix, analytics.scorpion.co, reject
 host-suffix, analytics.searchspring.net, reject
@@ -4279,7 +4272,6 @@ host-suffix, analytics.simplii.com, reject
 host-suffix, analytics.simplyhealth.co.uk, reject
 host-suffix, analytics.sixt.es, reject
 host-suffix, analytics.sixt.fr, reject
-host-suffix, analytics.sixt.it, reject
 host-suffix, analytics.sixt.jp, reject
 host-suffix, analytics.sixtmiddleeast.com, reject
 host-suffix, analytics.slashdotmedia.com, reject
@@ -4290,13 +4282,11 @@ host-suffix, analytics.surfline.com, reject
 host-suffix, analytics.sve.cc, reject
 host-suffix, analytics.sydney.edu.au, reject
 host-suffix, analytics.tabichan.jp, reject
-host-suffix, analytics.talentegy.com, reject
 host-suffix, analytics.tbs.com, reject
 host-suffix, analytics.tcm.com, reject
 host-suffix, analytics.teko.vn, reject
 host-suffix, analytics.test.cheggnet.com, reject
 host-suffix, analytics.ticimax.cloud, reject
-host-suffix, analytics.tiki.vn, reject
 host-suffix, analytics.tiktok.com, reject
 host-suffix, analytics.tnt-tv.de, reject
 host-suffix, analytics.tnt-tv.pl, reject
@@ -5913,6 +5903,7 @@ host-suffix, doo9gpa5xdov2.cloudfront.net, reject
 host-suffix, doqpm.click, reject
 host-suffix, dot.wp.pl, reject
 host-suffix, doubleclick-cn.net, reject
+host-suffix, doubleclick.cn, reject
 host-suffix, doubleclick.com, reject
 host-suffix, doubleclick.ctfile.com, reject
 host-suffix, doubleclick.d4p.net, reject
@@ -6391,7 +6382,6 @@ host-suffix, gonet-ads.com, reject
 host-suffix, good-ads-online.com, reject
 host-suffix, goodcontentservice.top, reject
 host-suffix, google-ads.hara.vn, reject
-host-suffix, google-analytics.bi.owox.com, reject
 host-suffix, google-analytics.com, reject
 host-suffix, google-shopping-v2.sapoapps.vn, reject
 host-suffix, google-shopping.sapoapps.vn, reject
@@ -6566,7 +6556,6 @@ host-suffix, ifnyop.priceline.com, reject
 host-suffix, igpnt.truereligion.com, reject
 host-suffix, iivmm.coolinastore.com, reject
 host-suffix, ijaabm.eonline.com, reject
-host-suffix, ijaabm.golfchannel.com, reject
 host-suffix, ijaabm.nbcsports.com, reject
 host-suffix, ijhlca.lulus.com, reject
 host-suffix, ilarh.dermstore.com, reject
@@ -7023,7 +7012,6 @@ host-suffix, maxbounty.com, reject
 host-suffix, maxonclick.com, reject
 host-suffix, mc.pirateship.com, reject
 host-suffix, mc.yandex.com, reject
-host-suffix, mc.yandex.md, reject
 host-suffix, mc.yango.com, reject
 host-suffix, mcdmetrics.aaa.com, reject
 host-suffix, mcs-va.tiktokv.com, reject
@@ -9168,6 +9156,7 @@ host-suffix, ssp.dzh.com.cn, reject
 host-suffix, ssp.emol.com, reject
 host-suffix, ssp.hbrd.io, reject
 host-suffix, ssp.hinet.net, reject
+host-suffix, ssp.indexmob.com, reject
 host-suffix, ssp.kdnet.net, reject
 host-suffix, ssp.kssws.ks-cdn.com, reject
 host-suffix, ssp.laptopsourceofficial.com, reject
