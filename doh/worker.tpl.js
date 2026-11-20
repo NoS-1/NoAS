@@ -32,6 +32,23 @@ const UPSTREAM = [
 const FREE_DAILY = 100000;
 const SOFT_RATIO = 0.9;
 const PER_IP_PER_MIN = 120;
+
+// ── Analytics Engine（可选绑定 AE）────────────────────────────────────────
+// 只写数据点，不碰 D1：D1 的行读额度（500 万行/天）留给配置与状态。
+// 免费额度 1 亿点/月，按当前量级（万级/天）约用掉 3% 以内。
+// 绑定缺失时静默跳过 —— 没绑 AE 也必须照常解析，绝不能让日志拖垮服务。
+function logHit(env, kind, name, tier, extra) {
+  const ae = env && env.AE;
+  if (!ae || !name) return;
+  try {
+    ae.writeDataPoint({
+      blobs: [kind, name, "t" + tier, extra || ""],
+      doubles: [1],
+      indexes: [name],
+    });
+  } catch (e) { /* 记录失败不影响 DNS 应答 */ }
+}
+
 let dayKey = "";
 let dayCount = 0;
 const ipWindow = new Map();
@@ -240,6 +257,7 @@ async function handle(request, env, ctx) {
   if (url.pathname === "/health") {
     return json({ ok: true, version: VERSION, tier1: TIER1.size, tier2: TIER2.size,
                   allowlist: ALLOW.size, endpoints: ENDPOINTS.size, upstream: UPSTREAM.length,
+                  ae: !!(env && env.AE),
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
                            soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
   }
@@ -278,6 +296,7 @@ async function handle(request, env, ctx) {
 
   if (blocked(name, tier)) {
     if (ctx && ctx.waitUntil) ctx.waitUntil(Promise.resolve());
+    logHit(env, "block", name, tier, "");
     return new Response(blockedResponse(bytes, qtype, end), {
       headers: { "content-type": "application/dns-message", "x-noas": "blocked", "x-noas-ver": VERSION },
     });
@@ -290,12 +309,14 @@ async function handle(request, env, ctx) {
   const chain = cnameTargets(buf);
   for (const t of chain) {
     if (blocked(t, tier)) {
+      logHit(env, "cname", name, tier, t);
       return new Response(blockedResponse(bytes, qtype, end), {
         headers: { "content-type": "application/dns-message", "x-noas": "blocked-cname",
                    "x-noas-target": t, "x-noas-ver": VERSION },
       });
     }
   }
+  logHit(env, "pass", name, tier, "");
   return new Response(buf, {
     headers: { "content-type": "application/dns-message", "x-noas": "pass", "x-noas-ver": VERSION },
   });

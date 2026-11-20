@@ -14,6 +14,9 @@ TOK = os.environ.get("CF_API_TOKEN", "").strip()
 ACC = os.environ.get("CF_ACCOUNT_ID", "226431c8f431ebb75d82dd5dbd5e8d86").strip()
 NAME = os.environ.get("DOH_SCRIPT", "noas-doh").strip()
 COMPAT = "2025-09-01"
+# Analytics Engine 数据集：绑上即自动建表（CF 官方行为），首次写点后可在 SQL API 里 SHOW TABLES 看到。
+# DOH_AE_DATASET=off 可临时关掉绑定（应急时一行环境变量即可退回到“纯解析、零日志”）。
+AE_DATASET = os.environ.get("DOH_AE_DATASET", "noas_dns").strip()
 
 BASE = "https://api.cloudflare.com/client/v4/accounts/%s/workers/scripts/%s" % (ACC, NAME)
 
@@ -44,7 +47,15 @@ def main():
     print("本地 worker.js %d 字节 sha=%s" % (len(body), local[:16]))
 
     boundary = "----noasDoh" + uuid.uuid4().hex
-    meta = json.dumps({"main_module": "worker.mjs", "compatibility_date": COMPAT}).encode()
+    meta_obj = {"main_module": "worker.mjs", "compatibility_date": COMPAT}
+    if AE_DATASET and AE_DATASET.lower() != "off":
+        meta_obj["bindings"] = [
+            {"type": "analytics_engine", "name": "AE", "dataset": AE_DATASET}
+        ]
+        print("绑定 Analytics Engine：AE → %s" % AE_DATASET)
+    else:
+        print("Analytics Engine 绑定已关闭（DOH_AE_DATASET=off）")
+    meta = json.dumps(meta_obj).encode()
     chunks = [
         ("--" + boundary + "\r\n").encode(),
         b'Content-Disposition: form-data; name="metadata"\r\nContent-Type: application/json\r\n\r\n',
