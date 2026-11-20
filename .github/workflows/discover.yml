@@ -30,14 +30,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 tools/discover.py --limit 4
+      - name: 自动发现国内 App 首方广告子域（被动 DNS + 证书透明度 + 前缀枚举）
+        run: python3 tools/discover_cn_ads.py
       - name: 有新增就提交（走 git，不占 API 配额）
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet lists/candidates.tsv; then
+          git add lists/candidates.tsv lists/cn_ad_endpoints.txt lists/cn_ad_watch.txt 2>/dev/null || true
+          if git diff --cached --quiet; then
             echo "本周无新增候选"
             exit 0
           fi
-          git add lists/candidates.tsv
           git commit -m "discover: 自动新增候选源 $(date -u +%Y%m%d)"
           git push

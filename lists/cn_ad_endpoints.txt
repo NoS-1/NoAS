@@ -1,0 +1,5 @@
+# NoAS 国内 App 首方广告子域（高置信：解析链落在广告网络）
+# 自动发现，构建日期 2026-11-20；列：域名 / 命中词 / 落点证据
+adx.alimama.com	adx	tanx
+pangolin.bytedance.com	pangolin	pangolin
+union.bytedance.com	union	bytedance
