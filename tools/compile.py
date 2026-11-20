@@ -513,7 +513,9 @@ def main():
     threat_extra = {d for d in threat_all
                     if not protected(d, wl) and d not in benign and d not in ep}
     dead = load_list_file("dead.txt")
-    dropped_dead = {d for d in exact if d in dead and hitn.get(d, 0) <= 1}
+    # 死域一律剔除：这些域解析探测已确认不存在（NXDOMAIN/无记录），留着只占名额、拦不到任何东西。
+    # 硬边界：白名单与审计端点永不剪，避免把正常站误判成死域。
+    dropped_dead = {d for d in exact if d in dead and not protected(d, wl) and d not in ep}
     exact = exact - dropped_dead
     # 本地 blocklist：用户显式要求必拦，优先于良性大盘判断（仍让本地 allow 压过）
     exact = drop_children(exact) | ep | (lblock - lallow)
@@ -556,7 +558,8 @@ def main():
               open(os.path.join(ROOT, "out", "lite_provenance.json"), "w", encoding="utf-8"),
               ensure_ascii=False)
 
-    report = {"sources": per_source, "full": len(full), "lite": len(lite), "mid": len(mid),
+    report = {"dead_dropped": len(dropped_dead), "sources": per_source,
+              "full": len(full), "lite": len(lite), "mid": len(mid),
               "cn_discovered": len(ep - load_list_file("ad_endpoints.txt")), "cn_watch": len(watch),
               "lite_cap": LITE_CAP, "lite_pool": len(promoted) + len(consensus_pool),
               "wildcards": len(wild), "whitelist_blocked": len(blocked_wl),
