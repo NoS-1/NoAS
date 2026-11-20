@@ -1,0 +1,37 @@
+{
+ "kind": "mid",
+ "version": "20261120-36ff42cd",
+ "count": 29387,
+ "wildcards": 0,
+ "generated_utc": "Fri, 20 Nov 2026 08:08:30 GMT",
+ "files": {
+  "adguard.txt": {
+   "bytes": 651245,
+   "sha256": "83e3550fcab0c174fbf8935fce89840a7201ef13ab4d5ec4786acbe3fb7db6d4"
+  },
+  "clash.yaml": {
+   "bytes": 1091807,
+   "sha256": "a4d97ea59c0bc5be974972082a034001eebab9f9c9976a1fba2f045d33230d12"
+  },
+  "dnsmasq.conf": {
+   "bytes": 1062404,
+   "sha256": "2ca848d43bc2794ff6d71b01194916203fb06761eda833849a0c245645294711"
+  },
+  "domains.txt": {
+   "bytes": 562785,
+   "sha256": "2868bce7408cd5bbda19e463836409128a17432b4d1d76e3426368f2ce76b845"
+  },
+  "hosts.txt": {
+   "bytes": 797921,
+   "sha256": "7a7e5648386ba0e0ad0dc54e69172d878134b2fde092042bd9d590d3a937f19f"
+  },
+  "singbox.json": {
+   "bytes": 768562,
+   "sha256": "f02827243176d85aa460f93560cde5b4ecb784a2ed2d9552a4dd17cb7cb83a28"
+  },
+  "surge.list": {
+   "bytes": 974203,
+   "sha256": "b103641d91037bf0b50070644a30902b6cbfdc11c3d68781ceefd9c39606661a"
+  }
+ }
+}

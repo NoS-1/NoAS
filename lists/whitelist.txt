@@ -1,0 +1,1 @@
+# 人工白名单（额外于 tests/benign_baseline.txt）：这里的域及其子域永不拦截。
