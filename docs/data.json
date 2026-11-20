@@ -1,16 +1,16 @@
 {
  "repo": "NoS-1/NoAS",
- "updated": "2026-11-20T09:59:07Z",
+ "updated": "2026-11-20T10:11:15Z",
  "tiers": {
   "lite": {
    "count": 74292,
    "version": "20261120-e7fdc872",
    "wildcards": 56,
-   "generated_utc": "Fri, 20 Nov 2026 09:58:00 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 10:10:15 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 1717854,
-     "sha256": "8581972ae51d61c974b9294126f471baae5d856c7b3f4f933963413d3fbc04a8"
+     "sha256": "fc4d634ca206f900a17e8ac27a90da8258e2c25fd345bbb28465aa5d98ba6948"
     },
     "allow.txt": {
      "bytes": 1657,
@@ -62,11 +62,11 @@
    "count": 210985,
    "version": "20261120-061770cb",
    "wildcards": 56,
-   "generated_utc": "Fri, 20 Nov 2026 09:58:01 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 10:10:16 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 5028336,
-     "sha256": "23dc5ca2f5fd162983469dac666160efc2fcb00960ef12e910a686648dae3407"
+     "sha256": "a13bdcfb20fe0b1b59b1c5124d1fca82cd5873c9e69566b4387df61acfb7d377"
     },
     "allow.txt": {
      "bytes": 1657,
@@ -115,58 +115,58 @@
    }
   },
   "full": {
-   "count": 530648,
-   "version": "20261120-9344673c",
+   "count": 530652,
+   "version": "20261120-f41aeb6d",
    "wildcards": 399786,
-   "generated_utc": "Fri, 20 Nov 2026 09:58:02 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 10:10:16 GMT",
    "files": {
     "adguard.txt": {
-     "bytes": 22508778,
-     "sha256": "d807f6b8e57874a527bba90623e4747453d9c823a45f53960981b659fda8e8b6"
+     "bytes": 22508869,
+     "sha256": "4f85ad7b7c9b1c5cdaf64252f7982ec526d32264aa7ba2628f270f8be8ff6c97"
     },
     "allow.txt": {
      "bytes": 1657,
-     "sha256": "02d80513d06ea996308b77142486e3f1b3fee066f859f1358c293fb8856c6c67"
+     "sha256": "3e0cc1930b7a86f7985976a1620983cdc6d25674d35aef0fb8797135e16fff7c"
     },
     "clash.yaml": {
-     "bytes": 20496130,
-     "sha256": "fe84fc3a60571a85e5b1661105dba2fbc183e6bdaf1c60447bced125573aebd3"
+     "bytes": 20496281,
+     "sha256": "0223a5a675a3a95d03ba073a7907fea5208d7c85730279a53a234a90147bcffc"
     },
     "dnsmasq.conf": {
-     "bytes": 19965467,
-     "sha256": "ac60897aa7a154a29a1ba84f3773295e969f198fb2b6403f545e953eca063102"
+     "bytes": 19965614,
+     "sha256": "d5a227b9b9482adfa9517c5ebc18c3642aaaeb0a0d83b08b47fdae5efcc24622"
     },
     "domains.txt": {
-     "bytes": 10944410,
-     "sha256": "4820aeff073c4378b01148da5e061eea46d2cdc7faba9f6dcfd2d0f56fa9fa9f"
+     "bytes": 10944489,
+     "sha256": "8e19b82f0b6370efe9c263917f75354a29d7f6f92f0bbcf2e7fcc111daffb7e3"
     },
     "hosts.txt": {
-     "bytes": 15189635,
-     "sha256": "15a3aa2559e5c5fb7e0fdb6acc0ea8098f36cb0b79e6610e31d0521b0e57ce2d"
+     "bytes": 15189746,
+     "sha256": "859b7d7ba67ad15c1cccc5045f694d632d6c8f6959d8e63ece012c9cc8183fc5"
     },
     "rpz.zone": {
-     "bytes": 27160687,
-     "sha256": "730ba999a4d8316da9e8f7d91559509bbc5e6a2eda5ea8b948dc8607250ec854"
+     "bytes": 27160798,
+     "sha256": "2d0baf7b4811e4328c99a44b8551a25f994e2c4e9f099002bd4cab48431beed0"
     },
     "singbox.json": {
-     "bytes": 14659014,
-     "sha256": "a5c32ae3e50c4b0f03a43dbe918d449281056525dc5deeb3b2104bdb9d997b92"
+     "bytes": 14659121,
+     "sha256": "18a2902b20e40c0412a05a06dbda2faea3d972df330620d319589e606a902ffb"
     },
     "surge.list": {
-     "bytes": 18373482,
-     "sha256": "86d8923b8ea8aeec456c5fde44c353ef8291546293cd3431c08348832e5b80f0"
+     "bytes": 18373617,
+     "sha256": "f3d1661ee8ca81416e912e50eed5f9fbbee41f30df00d7c4c80b1fb3f2691197"
     },
     "unbound.conf": {
-     "bytes": 26863888,
-     "sha256": "e20669c5583033fe37ec0be045dafb7b2f7ccfb9b4bfabb2ac60fda2c34702bd"
+     "bytes": 26864087,
+     "sha256": "a29c4b350afe39fd82c31fd774be57d2e0318e1a66d9f9fae654ef746a3b8f1c"
     },
     "wildcard.txt": {
-     "bytes": 12005743,
-     "sha256": "2bf83f4e33797f57bce59faa3482971f2b651e9738da4a32f494f7e942733457"
+     "bytes": 12005830,
+     "sha256": "677cfc17e748e0c453c5b14b0ffee499a3483519381e053e69c081e067c4b2ff"
     },
     "wildcards.txt": {
      "bytes": 8772838,
-     "sha256": "da9175a2f5c10eb5d72b0e1533f832b4a47d9b6346035573b5f5331cf34b1a69"
+     "sha256": "6753512fc6687d43cf671810d97f5f85558ba0205a48abd481d33202705458e7"
     }
    }
   }
@@ -194,14 +194,14 @@
    "OISD-Big": 0,
    "HaGeZi-Pro": 0,
    "HaGeZi-ProPlus": 0,
-   "EasyList": 47577,
+   "EasyList": 47581,
    "NoS-antiAD": 110355,
    "ACL4SSR-BanProgramAD": 995
   }
  },
  "health": {
-  "ts": "2026-11-20T09:57:29Z",
-  "round": 5,
+  "ts": "2026-11-20T10:09:46Z",
+  "round": 6,
   "sources": [
    {
     "name": "StevenBlack-all",
@@ -314,73 +314,6 @@
  },
  "evolution": [
   {
-   "ts": "2026-11-20T08:40:47Z",
-   "round": 2,
-   "events": [
-    {
-     "act": "drop_skipped",
-     "name": "StevenBlack-all",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "antiAD-cn",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "KADhosts",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "AdGuard-CN-adservers",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "AdGuard-tracking",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "DandelionSprout-malware",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "1Hosts-Lite",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "notracking",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "AdAway",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "urlhaus",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "PhishingArmy",
-     "why": "触及源数下限"
-    },
-    {
-     "act": "drop_skipped",
-     "name": "Spam404",
-     "why": "触及源数下限"
-    }
-   ],
-   "sources": 3
-  },
-  {
    "ts": "2026-11-20T08:40:54Z",
    "round": 1,
    "events": [],
@@ -409,12 +342,18 @@
    "round": 5,
    "events": [],
    "sources": 21
+  },
+  {
+   "ts": "2026-11-20T10:09:46Z",
+   "round": 6,
+   "events": [],
+   "sources": 21
   }
  ],
  "scale": {
   "lite": 74292,
   "mid": 210985,
-  "full": 530648
+  "full": 530652
  },
  "channels": [
   {
