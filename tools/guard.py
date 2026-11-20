@@ -20,7 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SUBS = os.path.join(ROOT, "subs")
 TIERS = ("lite", "mid", "full")
 FILES = ["adguard.txt", "domains.txt", "hosts.txt", "dnsmasq.conf",
-         "clash.yaml", "surge.list", "singbox.json",
+         "clash.yaml", "surge.list", "singbox.json", "qx.list",
          "rpz.zone", "wildcard.txt", "unbound.conf"]
 
 MUST_BLOCK_LITE = ["doubleclick.net", "googlesyndication.com", "applovin.com"]
@@ -108,7 +108,7 @@ def domains_of(tier, name):
         if not line or line[0] in "#!" or line.startswith("payload:"):
             continue
         for pat in (r"^\|\|(.+?)\^$", r"^0\.0\.0\.0\s+(\S+)$",
-                    r"^address=/(\S+)/0\.0\.0\.0$", r"^(?:- +)?DOMAIN-SUFFIX,(\S+)$",
+                    r"^address=/(\S+)/0\.0\.0\.0$", r"^(?:- +)?DOMAIN-SUFFIX,(\S+)$", r"^host-suffix, (\S+), reject$",
                     r"^(\S+) CNAME \.$", r"^\*\.(\S+)$",
                     r'^local-zone: "(\S+)" always_nxdomain$'):
             m = re.match(pat, line)
@@ -144,6 +144,11 @@ def main():
             counts[f] = len(d)
             if len(d) != len(set(d)):
                 fails.append("%s/%s 有重复 %d 条" % (tier, f, len(d) - len(set(d))))
+            if f == "qx.list":
+                # 通配与精确域可能重叠，去重后条数落在 [base, base+wc]
+                if not (len(base) <= len(d) <= len(base) + wc):
+                    fails.append("%s/%s 条数 %d，应为 %d~%d" % (tier, f, len(d), len(base), len(base) + wc))
+                continue
             want = len(base) + (wc if f in ("adguard.txt", "rpz.zone") else 0)
             slack = 2 if f == "rpz.zone" else 0
             if not (want <= len(d) <= want + slack):
