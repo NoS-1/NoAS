@@ -1,40 +1,40 @@
 {
  "repo": "NoS-1/NoAS",
- "updated": "2026-11-20T08:24:40Z",
+ "updated": "2026-11-20T08:30:03Z",
  "tiers": {
   "lite": {
-   "count": 3483,
-   "version": "20261120-3cf5f371",
+   "count": 7862,
+   "version": "20261120-d57555fc",
    "wildcards": 0,
-   "generated_utc": "Fri, 20 Nov 2026 08:24:13 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 08:29:41 GMT",
    "files": {
     "adguard.txt": {
-     "bytes": 79165,
-     "sha256": "9c15573f5de4b63ea3d8fc0c02b322e492f16b8dba1a52bc53499cc0c7fda122"
+     "bytes": 177949,
+     "sha256": "8e2faf758aab9142629df1e40eb9350af3b89ebd378d520c95e0c950bd02ef21"
     },
     "clash.yaml": {
-     "bytes": 131167,
-     "sha256": "8393439036f13276292569769a5053e23e6ed1f7331f11d80f01cd506c89329d"
+     "bytes": 295636,
+     "sha256": "0654140fe4de89e1410399c15cea94c1c2f1ab81dacab99702baf528e91ee026"
     },
     "dnsmasq.conf": {
-     "bytes": 127667,
-     "sha256": "0c2763e61d7f2e7efb51a0cdcc02a15ca25450ff5fcb9e7712efbc1be3409f08"
+     "bytes": 287757,
+     "sha256": "112bd601df251c7b3da18579f873e10c00d3a3da2f2354ba92d79c2c913a6aa6"
     },
     "domains.txt": {
-     "bytes": 68417,
-     "sha256": "9beb8866bf12b366e8904cfda39ed7db42f9aa4487313e63da3e2106991f7d67"
+     "bytes": 154064,
+     "sha256": "e61fbea0601bb301f594beff1469605b9b1b2d9660c5ed9254d8e79ce8e540d8"
     },
     "hosts.txt": {
-     "bytes": 96320,
-     "sha256": "a6092ef23a9ffa8a28618aa789dd3fa7673da6772bb317e0a26877b1676591ef"
+     "bytes": 216999,
+     "sha256": "21f56e84dee2e6d72e14214ef104969337299fb4c564fa200b8bbc05715ab148"
     },
     "singbox.json": {
-     "bytes": 92866,
-     "sha256": "41e34960e2edd251980893537ed662ad5d468c147e2ba81705e30ea3d7d3a509"
+     "bytes": 209166,
+     "sha256": "b64642d1692aec87a3a212c7f966b1b501365173d8b17a268140f51e5688784a"
     },
     "surge.list": {
-     "bytes": 117179,
-     "sha256": "f472a91861cbbe3b3540d331e793f7833274587aabdafb47f505a424984d4fe4"
+     "bytes": 264132,
+     "sha256": "56dddb1d4d36270e12a7aa059b8e528694d96522dc5ed43836a2923f60a57ab6"
     }
    }
   },
@@ -42,11 +42,11 @@
    "count": 29398,
    "version": "20261120-1ba6c3e1",
    "wildcards": 0,
-   "generated_utc": "Fri, 20 Nov 2026 08:24:13 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 08:29:41 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 651470,
-     "sha256": "e848fbd5ce4f8f1d1acc2500dbb9f703b50a54756161bc9e71707b7f0dfb7670"
+     "sha256": "bbbd97c4857aabe3aaf6754f08935e572e4394c70f1252c7a43a2fc8612e0636"
     },
     "clash.yaml": {
      "bytes": 1092197,
@@ -78,11 +78,11 @@
    "count": 278611,
    "version": "20261120-7b1168d6",
    "wildcards": 0,
-   "generated_utc": "Fri, 20 Nov 2026 08:24:14 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 08:29:41 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 6600796,
-     "sha256": "5ff8db76032966c7937b66098be66038ef7ed223d03a67d609dcde4b50697508"
+     "sha256": "0828789ef5765a8ef0616ca744ab2766c90d8e16fa1ca98ccec2ab462e094c4b"
     },
     "clash.yaml": {
      "bytes": 10779716,
@@ -132,7 +132,7 @@
  "health": {},
  "evolution": [],
  "scale": {
-  "lite": 3483,
+  "lite": 7862,
   "mid": 29398,
   "full": 278611
  },

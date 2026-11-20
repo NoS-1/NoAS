@@ -296,12 +296,13 @@ def main():
             line = line.split("#", 1)[0].strip().lower()
             if line and "." in line:
                 core.add(line)
-    lite = drop_children({d for d in exact if consensus.get(d, 0) >= 3} | (core & exact)) | ep
+    promoted = {d for d in load_list_file("promoted.txt") if d not in wl}
+    lite = drop_children({d for d in exact if consensus.get(d, 0) >= 3} | (core & exact) | promoted) | ep
     mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2}) | ep
 
     report = {"sources": per_source, "full": len(exact), "lite": len(lite), "mid": len(mid),
               "wildcards": len(wild), "whitelist_blocked": len(blocked_wl),
-              "ad_endpoints": len(ep)}
+              "ad_endpoints": len(ep), "promoted": len(promoted)}
     print("编译完成：full %d ／mid %d ／lite %d 条（通配 %d）｜白名单剔除 %d｜源 %d 个" % (
         len(exact), len(mid), len(lite), len(wild), len(blocked_wl), len(per_source)))
 
