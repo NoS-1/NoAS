@@ -53,15 +53,30 @@ def main():
         return 0
 
     # 写构建状态：每次构建只更新一行
-    meta = json.load(open(os.path.join(ROOT, "subs", "lite", "meta.json"), encoding="utf-8"))
-    comp = json.load(open(os.path.join(ROOT, "out", "compile.json"), encoding="utf-8"))
-    ver = str(meta.get("version", ""))
-    built = str(meta.get("generated_utc", ""))
-    lite = int(comp.get("lite") or 0)
-    mid = int(comp.get("mid") or 0)
-    full = int(comp.get("full") or 0)
-    wild = int(comp.get("wildcards") or 0)
-    sha = (meta.get("files", {}).get("adguard.txt") or {}).get("sha256", "")
+    # 数据源优先 docs/data.json（已提交，任何单独 checkout 都能读到），
+    # out/compile.json 只在完整构建链里存在，缺了就用 data.json 兜底
+    data_path = os.path.join(ROOT, "docs", "data.json")
+    tiers = {}
+    try:
+        tiers = (json.load(open(data_path, encoding="utf-8")) or {}).get("tiers") or {}
+    except Exception:
+        tiers = {}
+    ver = str((tiers.get("lite") or {}).get("version", "")) or "unknown"
+    built = str((tiers.get("lite") or {}).get("generated_utc", "")) or "unknown"
+    lite = int((tiers.get("lite") or {}).get("count") or 0)
+    mid = int((tiers.get("mid") or {}).get("count") or 0)
+    full = int((tiers.get("full") or {}).get("count") or 0)
+    wild = int((tiers.get("full") or {}).get("wildcards") or (tiers.get("lite") or {}).get("wildcards") or 0)
+    sha = (((tiers.get("lite") or {}).get("files") or {}).get("adguard.txt") or {}).get("sha256", "")
+    comp_path = os.path.join(ROOT, "out", "compile.json")
+    try:
+        comp = json.load(open(comp_path, encoding="utf-8"))
+        lite = int(comp.get("lite") or lite)
+        mid = int(comp.get("mid") or mid)
+        full = int(comp.get("full") or full)
+        wild = int(comp.get("wildcards") or wild)
+    except Exception:
+        pass
     sql = (
         "INSERT OR REPLACE INTO build_state "
         "(id,version,built_at,lite_count,mid_count,full_count,wildcards,sha_lite,note) "

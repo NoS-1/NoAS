@@ -1,0 +1,43 @@
+name: D1 状态同步
+
+# 只做一件事：把当前构建状态写进 D1（幂等，一次 upsert 一行）。
+# 时间选在 UTC 00:05 = 北京 08:05，因为 D1 免费额度按 UTC 0 点重置，
+# 这是全天内第一个额度“满血”的时刻，能确保验证/写入一次过。
+# 额度仍打满或未配 secret 时脚本自行 exit 0，不会红。
+
+on:
+  schedule:
+    - cron: "5 0 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: 写入 D1 build_state
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: python3 tools/d1_init.py
+      - name: 回读校验
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          tok = os.environ.get("CF_API_TOKEN", "").strip()
+          if not tok:
+              print("未配 token，跳过回读"); raise SystemExit(0)
+          url = "https://api.cloudflare.com/client/v4/accounts/226431c8f431ebb75d82dd5dbd5e8d86/d1/database/6f7f3f3f-4ac3-4b28-8ca3-343811a92973/query"
+          req = urllib.request.Request(url, data=json.dumps({"sql": "SELECT version,lite_count,mid_count,full_count FROM build_state WHERE id=1"}).encode(),
+              headers={"Authorization": "Bearer " + tok, "Content-Type": "application/json"}, method="POST")
+          r = json.loads(urllib.request.urlopen(req, timeout=45).read())
+          rows = (r.get("result") or [{}])[0].get("results") or []
+          print("回读 build_state:", rows)
+          if not r.get("success"):
+              print("回读失败（可能是额度未恢复）：", r.get("errors"))
+          PY
