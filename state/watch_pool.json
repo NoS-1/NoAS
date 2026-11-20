@@ -38,140 +38,240 @@
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "ads",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "analytics.wanmei.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 3,
   "token": "analytics",
-  "last_mark": "probe"
+  "last_mark": "probe",
+  "ai": {
+   "v": "tracker",
+   "c": 50,
+   "ts": "2026-11-21"
+  }
  },
  "api-log.immomo.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "log",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "apm-log-upload-v6.mihoyo.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "log",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "benign",
+   "c": 90,
+   "ts": "2026-11-21"
+  }
  },
  "app-log.immomo.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "log",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "game-ad.immomo.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "ad",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "growth-tracker.guazi.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "tracker",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "tracker",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "image.ads.yidianzixun.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "ads",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "live-log.immomo.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "log",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "benign",
+   "c": 100,
+   "ts": "2026-11-21"
+  }
  },
  "log-report.17zuoye.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "log",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "tracker",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "log-sc.qutoutiao.net": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "log",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 50,
+   "ts": "2026-11-21"
+  }
  },
  "lx-upload-log.yidianzixun.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "log",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 80,
+   "ts": "2026-11-21"
+  }
  },
  "m.ad.zhangyue.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "ad",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 90,
+   "ts": "2026-11-21"
+  }
  },
  "market.uxin.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "market",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 70,
+   "ts": "2026-11-21"
+  }
  },
  "metrics.t3go.cn": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "metrics",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 60,
+   "ts": "2026-11-21"
+  }
  },
  "mina-promotion-cdn.pama.pingan.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "promotion",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "ad",
+   "c": 20,
+   "ts": "2026-11-21"
+  }
  },
  "op-baoxiao-ng-bj.yuanfudao.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "op",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "ad",
+   "c": 80,
+   "ts": "2026-11-21"
+  }
  },
  "op.dongchedi.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "op",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "benign",
+   "c": 90,
+   "ts": "2026-11-21"
+  }
  },
  "op.zongheng.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "op",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "benign",
+   "c": 95,
+   "ts": "2026-11-21"
+  }
  },
  "paas-push-api-log.immomo.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "log",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "tracker",
+   "c": 60,
+   "ts": "2026-11-21"
+  }
  },
  "shop-op.guazi.com": {
   "first_seen": "2026-11-20",
@@ -213,70 +313,120 @@
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "tracking",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "tracking.order.sg.luckincoffee.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "tracking",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "tracking.sgmkt.luckincoffee.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "tracking",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "tracking.user.sg.luckincoffee.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "tracking",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-21"
+  }
  },
  "union.fun.tv": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 25,
   "token": "union",
-  "last_mark": "probe"
+  "last_mark": "probe",
+  "ai": {
+   "v": "unknown",
+   "c": 50,
+   "ts": "2026-11-21"
+  }
  },
  "union.futunn.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 25,
   "token": "union",
-  "last_mark": "probe"
+  "last_mark": "probe",
+  "ai": {
+   "v": "unknown",
+   "c": 50,
+   "ts": "2026-11-21"
+  }
  },
  "union.gome.com.cn": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 25,
   "token": "union",
-  "last_mark": "probe"
+  "last_mark": "probe",
+  "ai": {
+   "v": "unknown",
+   "c": 60,
+   "ts": "2026-11-21"
+  }
  },
  "union.jdcloud.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 25,
   "token": "union",
-  "last_mark": "probe"
+  "last_mark": "probe",
+  "ai": {
+   "v": "unknown",
+   "c": 70,
+   "ts": "2026-11-21"
+  }
  },
  "union.m.smzdm.com": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 8,
   "token": "union",
-  "last_mark": "prev"
+  "last_mark": "prev",
+  "ai": {
+   "v": "unknown",
+   "c": 40,
+   "ts": "2026-11-21"
+  }
  },
  "union.quark.cn": {
   "first_seen": "2026-11-20",
   "last_seen": "2026-11-20",
   "hits": 25,
   "token": "union",
-  "last_mark": "probe"
+  "last_mark": "probe",
+  "ai": {
+   "v": "unknown",
+   "c": 80,
+   "ts": "2026-11-21"
+  }
  },
  "union.smzdm.com": {
   "first_seen": "2026-11-20",

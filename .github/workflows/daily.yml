@@ -173,6 +173,12 @@ jobs:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: python3 tools/ae_selfcheck.py
 
+      - name: 6.95 · AI 复核观察池（免费 1 万 neurons/天，只出建议不进主表）
+        continue-on-error: true
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: python3 tools/ai_classify.py
+
       - name: 7 · 发布 mid/full 到 data 分支
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,152 @@
+{
+ "ads.st.maoyan.com": {
+  "v": "ad",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "analytics.wanmei.com": {
+  "v": "tracker",
+  "c": 50,
+  "ts": "2026-11-21"
+ },
+ "api-log.immomo.com": {
+  "v": "unknown",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "apm-log-upload-v6.mihoyo.com": {
+  "v": "benign",
+  "c": 90,
+  "ts": "2026-11-21"
+ },
+ "app-log.immomo.com": {
+  "v": "unknown",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "game-ad.immomo.com": {
+  "v": "ad",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "growth-tracker.guazi.com": {
+  "v": "tracker",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "image.ads.yidianzixun.com": {
+  "v": "ad",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "live-log.immomo.com": {
+  "v": "benign",
+  "c": 100,
+  "ts": "2026-11-21"
+ },
+ "log-report.17zuoye.com": {
+  "v": "tracker",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "log-sc.qutoutiao.net": {
+  "v": "unknown",
+  "c": 50,
+  "ts": "2026-11-21"
+ },
+ "lx-upload-log.yidianzixun.com": {
+  "v": "unknown",
+  "c": 80,
+  "ts": "2026-11-21"
+ },
+ "m.ad.zhangyue.com": {
+  "v": "unknown",
+  "c": 90,
+  "ts": "2026-11-21"
+ },
+ "market.uxin.com": {
+  "v": "unknown",
+  "c": 70,
+  "ts": "2026-11-21"
+ },
+ "metrics.t3go.cn": {
+  "v": "unknown",
+  "c": 60,
+  "ts": "2026-11-21"
+ },
+ "mina-promotion-cdn.pama.pingan.com": {
+  "v": "ad",
+  "c": 20,
+  "ts": "2026-11-21"
+ },
+ "op-baoxiao-ng-bj.yuanfudao.com": {
+  "v": "ad",
+  "c": 80,
+  "ts": "2026-11-21"
+ },
+ "op.dongchedi.com": {
+  "v": "benign",
+  "c": 90,
+  "ts": "2026-11-21"
+ },
+ "op.zongheng.com": {
+  "v": "benign",
+  "c": 95,
+  "ts": "2026-11-21"
+ },
+ "paas-push-api-log.immomo.com": {
+  "v": "tracker",
+  "c": 60,
+  "ts": "2026-11-21"
+ },
+ "tracking.news.sg.luckincoffee.com": {
+  "v": "ad",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "tracking.order.sg.luckincoffee.com": {
+  "v": "ad",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "tracking.sgmkt.luckincoffee.com": {
+  "v": "ad",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "tracking.user.sg.luckincoffee.com": {
+  "v": "ad",
+  "c": 0,
+  "ts": "2026-11-21"
+ },
+ "union.fun.tv": {
+  "v": "unknown",
+  "c": 50,
+  "ts": "2026-11-21"
+ },
+ "union.futunn.com": {
+  "v": "unknown",
+  "c": 50,
+  "ts": "2026-11-21"
+ },
+ "union.gome.com.cn": {
+  "v": "unknown",
+  "c": 60,
+  "ts": "2026-11-21"
+ },
+ "union.jdcloud.com": {
+  "v": "unknown",
+  "c": 70,
+  "ts": "2026-11-21"
+ },
+ "union.m.smzdm.com": {
+  "v": "unknown",
+  "c": 40,
+  "ts": "2026-11-21"
+ },
+ "union.quark.cn": {
+  "v": "unknown",
+  "c": 80,
+  "ts": "2026-11-21"
+ }
+}

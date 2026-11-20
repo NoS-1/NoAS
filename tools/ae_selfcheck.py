@@ -58,13 +58,22 @@ def main():
     req = urllib.request.Request(
         "https://%s/dns-query" % host, data=body,
         headers={"content-type": "application/dns-message",
-                 "accept": "application/dns-message"})
+                 "accept": "application/dns-message",
+                 "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                               "AppleWebKit/537.36 (KHTML, like Gecko) "
+                               "Chrome/141.0 Safari/537.36"})
     try:
         resp = urllib.request.urlopen(req, timeout=25)
         print("DoH 应答：HTTP %s ／ x-noas=%s ／ %d 字节" % (
             resp.status, resp.headers.get("x-noas"), len(resp.read())))
     except urllib.error.HTTPError as e:
-        print("DoH 应答：HTTP %s ／ x-noas=%s" % (e.code, e.headers.get("x-noas")))
+        snippet = ""
+        try:
+            snippet = e.read()[:160].decode("utf-8", "ignore").replace("\n", " ")
+        except Exception:
+            pass
+        print("DoH 应答：HTTP %s ／ x-noas=%s ／ body=%s" % (
+            e.code, e.headers.get("x-noas"), snippet))
     except Exception as e:
         print("DoH 请求失败（不影响构建）：%s" % e)
         return 0
