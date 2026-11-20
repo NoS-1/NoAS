@@ -1,21 +1,21 @@
 {
- "updated": "2026-11-20T09:56:35Z",
+ "updated": "2026-11-20T09:59:07Z",
  "today": {
   "date": "2026-11-20",
-  "lite": 45159,
-  "mid": 184525,
-  "full": 415656,
-  "sources": 19,
+  "lite": 74292,
+  "mid": 210985,
+  "full": 530648,
+  "sources": 21,
   "whitelist": 135
  },
  "delta": {},
  "series": [
   {
    "date": "2026-11-20",
-   "lite": 45159,
-   "mid": 184525,
-   "full": 415656,
-   "sources": 19,
+   "lite": 74292,
+   "mid": 210985,
+   "full": 530648,
+   "sources": 21,
    "whitelist": 135
   }
  ],
