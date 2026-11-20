@@ -90,3 +90,16 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 - 白名单是保守的：写了 `baidu.com` 就保护所有 `*.baidu.com`；只有人工审计过的广告端点（`lists/ad_endpoints.txt`）能穿透这层保护。
 - lite 里除共识条目外，还包含 `lists/promoted.txt` 自动晋级的域名结构即广告条目，规则见 `tools/promote.py`，误伤可直接在台账里加白。
 - full 档很激进（含大量长尾域），对极少数站点可能有误伤；介意就用 lite。
+
+## 四层叠加（DNS 只是第一层）
+
+单层做不到 100%。完整方案见站点 `docs/stack.html`：
+
+| 层 | 产物 | 作用 |
+| --- | --- | --- |
+| L1 DNS | `subs/{lite,mid,full}/` | 拦广告/追踪域名，全设备生效 |
+| L2 路径 | `subs/paths/{core,full}/noas-path.{sgmodule,plugin,conf}` | MITM 后拦开屏/广告接口（Surge/Loon/QX） |
+| L3 内容 | `subs/paths/ubo/noas-ubo.txt` | 浏览器内隐藏广告位、拦广告脚本 |
+| L4 交互 | 文档指引（GKD） | 安卓无障碍自动点"跳过" |
+
+路径层源表是 `lists/ad_paths.tsv`，每行带 App 与用途；`core` 只打单主机端点，`full` 才启用通用路径（范围由 MITM 白名单兜住）。
