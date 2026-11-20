@@ -85,7 +85,7 @@ def write_surge(tier, rules, mitm):
              "#!category=NoAS",
              f"#!reject={len(rules)}", f"#!mitm={len(mitm)}",
              f"#!total={len(rules) + len(mitm)}", "", "[URL Rewrite]"]
-    lines += [f"{compile_pattern(r)} {r['action']}" for r in rules]
+    lines += [f"{compile_pattern(r)} _ {r['action']}" for r in rules]
     lines += ["", "[MITM]", "hostname = %APPEND% " + ",".join(mitm), ""]
     (OUT / tier / "noas-path.sgmodule").write_text("\n".join(lines), encoding="utf-8")
 

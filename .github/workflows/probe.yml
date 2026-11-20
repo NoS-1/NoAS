@@ -1,0 +1,68 @@
+name: Availability Probe (每 3 小时线上体检)
+
+# 只做只读探测：raw / Pages / Release / 路径层产物，任一条不通就开 Issue。
+# 目的：订阅"构建成功"不等于"用户能取到"，把可用性和构建结果解耦监控。
+
+on:
+  schedule:
+    - cron: "23 */3 * * *"   # UTC，每 3 小时一次
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 探测四条通道
+        id: check
+        run: |
+          set -u
+          fail=0
+          probe() {
+            name="$1"; url="$2"
+            if curl -fsSL --connect-timeout 8 --max-time 25 --retry 2 --retry-delay 2 "$url" -o /tmp/p.out; then
+              echo "OK   $name ($(wc -c </tmp/p.out) bytes)"
+            else
+              echo "FAIL $name $url"
+              fail=1
+            fi
+          }
+          probe "raw-lite"  "https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt"
+          probe "raw-mid"   "https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt"
+          probe "pages-data" "https://nos-1.github.io/NoAS/data.json"
+          probe "pages-path" "https://nos-1.github.io/NoAS/subs/paths/full/noas-path.sgmodule"
+          probe "release"   "https://github.com/NoS-1/NoAS/releases/latest/download/noas-snapshot.zip"
+          echo "fail=$fail" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: 失败时开/更新滚动 Issue
+        if: steps.check.outputs.fail == '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          title="线上通道体检失败"
+          body="本轮探测至少一条通道不可用。时间：$(date -u +%Y-%m-%dT%H:%M:%SZ)，运行：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          num=$(gh issue list --label probe --state open --json number -q '.[0].number' 2>/dev/null || true)
+          if [ -n "${num:-}" ]; then
+            gh issue comment "$num" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body" --label probe || gh issue create --title "$title" --body "$body"
+          fi
+
+      - name: 恢复时关闭 Issue
+        if: steps.check.outputs.fail == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          num=$(gh issue list --label probe --state open --json number -q '.[0].number' 2>/dev/null || true)
+          if [ -n "${num:-}" ]; then
+            gh issue close "$num" -c "通道已恢复：$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          fi

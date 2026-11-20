@@ -103,3 +103,9 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 | L4 交互 | 文档指引（GKD） | 安卓无障碍自动点"跳过" |
 
 路径层源表是 `lists/ad_paths.tsv`，每行带 App 与用途；`core` 只打单主机端点，`full` 才启用通用路径（范围由 MITM 白名单兜住）。
+
+## 运行监控
+
+- `Daily Build`：每日 4 轮重建 + 发布（03/09/15/21 点）
+- `Availability Probe`：每 3 小时探测 raw / Pages / Release / 路径层四条通道，失败开 Issue、恢复自动关
+- `Discover` / `Maintain`：每周两次（周一、周四）

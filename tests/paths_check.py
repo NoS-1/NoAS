@@ -50,7 +50,7 @@ def main():
         check(len(mitm) == manifest["tiers"][tier]["mitm"], f"{tier} MITM 数不一致")
         for h in mitm:
             check(bool(HOST_RE.match(h)), f"{tier} MITM 主机不合法：{h}")
-        for f, sep in (("noas-path.sgmodule", " "), ("noas-path.plugin", " - "), ("noas-path.conf", " url ")):
+        for f, sep in (("noas-path.sgmodule", " _ "), ("noas-path.plugin", " - "), ("noas-path.conf", " url ")):
             text = (OUT / tier / f).read_text(encoding="utf-8")
             body = text.split("hostname = %APPEND%", 1)[0]
             rules = [l for l in body.splitlines() if l.startswith("^https?") or l.startswith("^https")]
