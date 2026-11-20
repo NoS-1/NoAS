@@ -1,6 +1,6 @@
 # NoAS 国内 App 首方广告子域（高置信：解析链落在广告网络，或品牌自有广告子域）
 # 自动发现并累积，构建日期 2026-11-20；列：域名 / 命中词 / 证据（落点域名 或 prefix）
-ad-experience.bytedance.com	ad	bytedance
+ad-experience.bytedance.com	ad	prev
 ad.10jqka.com.cn	ad	prefix
 ad.alimama.com	ad	prefix
 ad.csair.com	ad	prefix
