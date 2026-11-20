@@ -56,6 +56,13 @@ AD_TOKENS = {
     "logs", "stat", "stats", "statistics", "metric", "metrics", "analytics", "monitor",
     "promote", "promotion", "market", "mkt", "bdad", "tuia", "tuiguang", "admon",
 }
+# 强前缀：域名最左标签整词就是这些词 -> 该品牌给自有广告业务单独开的子域，
+# 消费端用户不会正常访问，可直接进端点表（全档强制拦）。
+STRONG_PREFIX = {
+    "ad", "ads", "adx", "adv", "adapi", "adlog", "adsdk", "adserver", "adservice",
+    "adopen", "adnet", "adstat", "admetric", "splash", "splashad", "gromore",
+    "pangolin", "pangle", "openads", "mobads", "tanx", "cpro", "gdt", "tuia",
+}
 # 词元前缀形态：ad1 / ads2 / adserver01 / splash3 之类
 TOKEN_RE = re.compile(r"^(ad|ads|adx|adserver|adsdk|splash)[0-9]{0,3}$")
 # 落点证据：CNAME 链里出现即判高置信
@@ -183,6 +190,21 @@ def token_hit(host):
     return None
 
 
+def strong_prefix(host):
+    """最左标签整词等于强前缀词 -> 视为品牌自有广告子域。
+
+    排除带连字符的标签（ad-admin 这类多为广告主后台 / 企业 AD 域控），
+    也排除出现在中间标签的情况（如 xxx.ad-cdn.com 不在此列）。
+    """
+    labels = host.split(".")
+    if len(labels) < 3:
+        return None
+    left = labels[0]
+    if "-" in left or "_" in left:
+        return None
+    return left if left in STRONG_PREFIX else None
+
+
 def resolve(name):
     url = "%s?name=%s&type=A" % (DOH, name)
     req = urllib.request.Request(url, headers={"User-Agent": UA,
@@ -213,7 +235,9 @@ def main():
     allow = benign_set()
 
     # 滚动分批，避免 crt.sh 一次拉太多
-    stamp = os.path.join(CACHE, "..", "ct_cursor.txt")
+    # 游标必须落在会被提交的目录里（cache/ 被 gitignore，放那里 CI 每次都会从头重跑）
+    stamp = os.path.join(ROOT, "state", "ct_cursor.txt")
+    os.makedirs(os.path.dirname(stamp), exist_ok=True)
     start = 0
     try:
         start = int(open(stamp, encoding="utf-8").read().strip())
@@ -285,19 +309,55 @@ def main():
         hint = next((x for x in AD_CHAIN_HINTS if x in chain_text), None)
         if hint:
             strong.append((h, info["token"], hint))
+        elif strong_prefix(h):
+            # 词元就是 ad/ads/adx/splash 这类强前缀，且挂在品牌注册域下
+            strong.append((h, info["token"], "prefix"))
         else:
             watch.append((h, info["token"]))
 
     ts = time.strftime("%Y-%m-%d")
+
+    def previous(fn):
+        """读上一轮产物：本轮没重新探到的条目保留，避免覆盖写把历史成果冲掉。"""
+        out = {}
+        p2 = os.path.join(LISTS, fn)
+        if not os.path.exists(p2):
+            return out
+        for line in open(p2, encoding="utf-8"):
+            if line.startswith("#") or not line.strip():
+                continue
+            cols = line.rstrip("\n").split("\t")
+            if len(cols) >= 2 and "." in cols[0]:
+                out[cols[0]] = cols[1:]
+        return out
+
+    probed = set(resolved)          # 本轮实测过的域名
+    old_strong = previous("cn_ad_endpoints.txt")
+    old_watch = previous("cn_ad_watch.txt")
+    s_map = {h: (t, hint) for h, t, hint in strong}
+    w_map = {h: t for h, t in watch}
+    for h, cols in old_strong.items():
+        if h not in probed and h not in s_map:
+            s_map[h] = (cols[0] if cols else "", cols[2] if len(cols) > 2 else "prev")
+    for h, cols in old_watch.items():
+        if h not in probed and h not in w_map and h not in s_map:
+            w_map[h] = cols[0] if cols else ""
+    # 本轮确认存在的从观察池提升到端点表
+    for h in s_map:
+        w_map.pop(h, None)
+
+    strong = [(h, t, hint) for h, (t, hint) in sorted(s_map.items())]
+    watch = [(h, t) for h, t in sorted(w_map.items())]
+
     with open(os.path.join(LISTS, "cn_ad_endpoints.txt"), "w", encoding="utf-8") as f:
-        f.write("# NoAS 国内 App 首方广告子域（高置信：解析链落在广告网络）\n"
-                "# 自动发现，构建日期 %s；列：域名 / 命中词 / 落点证据\n" % ts)
+        f.write("# NoAS 国内 App 首方广告子域（高置信：解析链落在广告网络，或品牌自有广告子域）\n"
+                "# 自动发现并累积，构建日期 %s；列：域名 / 命中词 / 证据（落点域名 或 prefix）\n" % ts)
         for h, t, hint in strong:
             f.write("%s\t%s\t%s\n" % (h, t, hint))
 
     with open(os.path.join(LISTS, "cn_ad_watch.txt"), "w", encoding="utf-8") as f:
-        f.write("# NoAS 国内广告子域观察池（低置信：词元命中、链上无广告落点）\n"
-                "# 仅 mid/full 引入，lite 不用；构建日期 %s\n" % ts)
+        f.write("# NoAS 国内广告子域观察池（低置信：词元命中的中间标签、链上无广告落点）\n"
+                "# 仅 mid/full 引入，lite 不用；累积，构建日期 %s\n" % ts)
         for h, t in watch:
             f.write("%s\t%s\n" % (h, t))
 
