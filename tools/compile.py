@@ -191,6 +191,18 @@ PARSERS = {"hosts": parse_hosts, "adblock": parse_adblock, "domains": parse_doma
            "dnsmasq": parse_domains, "wildcard": parse_wildcard}
 
 
+def load_local(name):
+    """仓库根目录的本地覆盖清单（allowlist.txt / blocklist.txt）。"""
+    p = os.path.join(ROOT, name)
+    out = set()
+    if os.path.exists(p):
+        for line in open(p, encoding="utf-8"):
+            line = line.split("#", 1)[0].strip().lower()
+            if line and "." in line:
+                out.add(line)
+    return out
+
+
 def collect():
     srcs, meta = sources_by_kind()
     exact, wild = set(), set()
@@ -267,6 +279,17 @@ def write_formats(domains, wild, outdir, kind, stamp_fixed=None):
     # 通配清单（DoH 端按 *.x 匹配任意多级子域；suffix 格式客户端可直接吃根域）
     files["wildcards.txt"] = "\n".join(["# NoAS 通配清单（%s）：*.域 = 该域任意多级子域" % ver] +
                                         ["*.%s" % w for w in wilds]) + "\n"
+    # RPZ：BIND / Knot / PowerDNS / Unbound 通用，CNAME . 表示 NXDOMAIN
+    files["rpz.zone"] = "\n".join(["# NoAS RPZ（%s）" % ver,
+                                   "; $TTL 300"] +
+                                  ["%s CNAME ." % d for d in doms] +
+                                  ["*.%s CNAME ." % w for w in wilds]) + "\n"
+    # 通配域名格式：Blocky / OPNsense / FritzBox / DNSCrypt 系
+    files["wildcard.txt"] = "\n".join(["# NoAS 通配（%s）" % ver] +
+                                       ["*.%s" % d for d in doms]) + "\n"
+    # Unbound 原生配置
+    files["unbound.conf"] = "\n".join(["# NoAS Unbound（%s）" % ver] +
+                                       ['local-zone: "%s" always_nxdomain' % d for d in doms]) + "\n"
     # 允许清单：把白名单台账下发给客户端，用户侧也能"宁放不误拦"
     ep_set = load_list_file("ad_endpoints.txt")
     allow = load_whitelist()
@@ -315,6 +338,9 @@ def main():
     blocked_wl = [d for d in exact if protected(d, wl) and d not in ep]
     exact = {d for d in exact if not protected(d, wl) or d in ep}
     wild = {w for w in wild if not protected(w, wl)}
+    lallow = load_local("allowlist.txt")
+    lblock = load_local("blocklist.txt")
+    wl = wl | lallow
     exact = drop_children(exact) | ep
 
     if len(per_source) < 8:
@@ -337,11 +363,15 @@ def main():
                 core.add(line)
     benign = load_list_file("benign_top.txt") | wl
     exact, benign_dropped = drop_benign_parent(exact, benign, ep)
-    exact = drop_children(exact) | ep
+    dead = load_list_file("dead.txt")
+    dropped_dead = {d for d in exact if d in dead and consensus.get(d, 0) <= 1}
+    exact = exact - dropped_dead
+    # 本地 blocklist：用户显式要求必拦，优先于良性大盘判断（仍让本地 allow 压过）
+    exact = drop_children(exact) | ep | (lblock - lallow)
     # 精度优先：lite 只保留"多源共识 + 核心广告网 + 审计端点"，自动晋级只进 mid
     promoted = {d for d in load_list_file("promoted.txt") if d not in wl and d in exact}
-    lite = drop_children({d for d in exact if consensus.get(d, 0) >= 3} | (core & exact)) | ep
-    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2} | promoted) | ep
+    lite = drop_children({d for d in exact if consensus.get(d, 0) >= 3} | (core & exact)) | ep | (lblock - lallow)
+    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2} | promoted) | ep | (lblock - lallow)
 
     # 安全通配：只给"纯广告网根域"开通配，绝不碰白名单/良性大盘，误伤面为零
     wild_safe = {c for c in core
