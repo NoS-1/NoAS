@@ -126,6 +126,12 @@ def main():
         if base is None:
             fails.append("%s：缺少 domains.txt" % tier)
             continue
+        # adguard.txt 额外含 "||*.根域^" 通配行，条数应等于 domains + wildcards
+        wc = 0
+        try:
+            wc = int(json.load(open(os.path.join(SUBS, tier, "meta.json"), encoding="utf-8")).get("wildcards", 0))
+        except Exception:
+            wc = 0
         counts = {}
         for f in FILES:
             d = domains_of(tier, f)
@@ -135,8 +141,9 @@ def main():
             counts[f] = len(d)
             if len(d) != len(set(d)):
                 fails.append("%s/%s 有重复 %d 条" % (tier, f, len(d) - len(set(d))))
-        if len(set(counts.values())) != 1:
-            fails.append("%s：七格式条数不一致 %s" % (tier, counts))
+            want = len(base) + (wc if f == "adguard.txt" else 0)
+            if len(d) != want:
+                fails.append("%s/%s 条数 %d，应为 %d" % (tier, f, len(d), want))
         if len(base) < 100:
             fails.append("%s：条数过少 %d" % (tier, len(base)))
         ep_all = set()

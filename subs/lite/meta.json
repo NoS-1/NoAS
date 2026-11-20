@@ -1,21 +1,25 @@
 {
  "kind": "lite",
- "version": "20261120-fdf9c27a",
+ "version": "20261120-4435ffda",
  "count": 23825,
- "wildcards": 0,
- "generated_utc": "Fri, 20 Nov 2026 09:00:35 GMT",
+ "wildcards": 59,
+ "generated_utc": "Fri, 20 Nov 2026 09:09:37 GMT",
  "files": {
   "adguard.txt": {
-   "bytes": 587390,
-   "sha256": "69951d9e144d2c539477c1e61afb980194d69db49d0a19359e6a92d12cc362c8"
+   "bytes": 588530,
+   "sha256": "6cc56bf3db3d2b0c5398d992bbb5b8bf3c46afa1d82e5c8dd11afb7a6c269c27"
+  },
+  "allow.txt": {
+   "bytes": 1657,
+   "sha256": "5abb2ab6050ce7e2317b43c6be17a0ca71cdde614e272ccc781b277a5ee038dd"
   },
   "clash.yaml": {
    "bytes": 944521,
-   "sha256": "40ecf2a25909818e221851b0173d2c14706b3dedfbd93a36c3113b8f3fc9b883"
+   "sha256": "3a3907f6f7df8ae45379eac8d5a8c0ccb8d96a3b308257dcb4b4cbae7b6532f4"
   },
   "dnsmasq.conf": {
    "bytes": 920680,
-   "sha256": "a976d56421563d1e5ba9e5812015316f4a66d75548a6491a15a6e6c27535e3f8"
+   "sha256": "46f55965db5bd27585186ef5d1f668779ec5f2bc7e1cface32244910662c8dc3"
   },
   "domains.txt": {
    "bytes": 515615,
@@ -23,7 +27,7 @@
   },
   "hosts.txt": {
    "bytes": 706255,
-   "sha256": "3a1dcbf853eaf1bea2e8e37a4c082bf3f6904c44452710f4af609cc857cdebda"
+   "sha256": "5b2ec48bb12a63b7d00d473706e2d665058afe79f0e68ef3a7fbebf41fa908fd"
   },
   "singbox.json": {
    "bytes": 682458,
@@ -32,6 +36,10 @@
   "surge.list": {
    "bytes": 849165,
    "sha256": "bec86ccb1227d526678e4ccae6fa487cfc757eb6fb901f20a88c31dd7d01066f"
+  },
+  "wildcards.txt": {
+   "bytes": 1040,
+   "sha256": "064c6ff63c3cb5bff5d210de2d37758d6ff1e192bc2e26a763691eac03e97a01"
   }
  }
 }

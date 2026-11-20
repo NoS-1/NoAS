@@ -1,10 +1,10 @@
 ! Title: NoAS 拦截订阅（lite）
 ! Description: 免费公开源并集，白名单硬闸过滤后发布；每日自动重建
-! Version: 20261120-fdf9c27a
-! Last modified: Fri, 20 Nov 2026 09:00:35 GMT
+! Version: 20261120-4435ffda
+! Last modified: Fri, 20 Nov 2026 09:09:37 GMT
 ! Expires: 12 hours
 ! Homepage: https://github.com/NoS-1/NoAS
-! 条数: 23825（含通配 0）
+! 条数: 23825（含通配 59）
 
 ||0i0i0i0.com^
 ||0n.click^
@@ -23831,3 +23831,62 @@
 ||zxrrop.musely.com^
 ||zyq2.destinia.sk^
 ||zzaoea.costacrociere.it^
+||*.adchina.cn^
+||*.adcolony.com^
+||*.adjust.com^
+||*.admaster.com.cn^
+||*.adnxs.com^
+||*.ads-twitter.com^
+||*.ads.tiktok.com^
+||*.adsafeprotected.com^
+||*.adsrvr.org^
+||*.alimama.com^
+||*.amazon-adsystem.com^
+||*.analytics.tiktok.com^
+||*.applovin.com^
+||*.applvn.com^
+||*.appsflyer.com^
+||*.branch.io^
+||*.casalemedia.com^
+||*.chartboost.com^
+||*.cnzz.com^
+||*.criteo.com^
+||*.criteo.net^
+||*.csjplatform.com^
+||*.doubleclick.net^
+||*.google-analytics.com^
+||*.googleadservices.com^
+||*.googlesyndication.com^
+||*.googletagmanager.com^
+||*.gromore.com^
+||*.gromore.net^
+||*.inmobi.cn^
+||*.inmobi.com^
+||*.ironsource.com^
+||*.kochava.com^
+||*.lianmeng.360.cn^
+||*.miaozhen.com^
+||*.miaozhen.com.cn^
+||*.mintegral.com^
+||*.moatads.com^
+||*.oceanengine.com^
+||*.outbrain.com^
+||*.pangle.io^
+||*.pangolin-sdk-toutiao.com^
+||*.pubmatic.com^
+||*.quantserve.com^
+||*.rubiconproject.com^
+||*.scorecardresearch.com^
+||*.singular.net^
+||*.smaato.net^
+||*.startapp.com^
+||*.supersonicads.com^
+||*.taboola.com^
+||*.talkingdata.com^
+||*.talkingdata.net^
+||*.tanx.com^
+||*.tapjoy.com^
+||*.tenjin.io^
+||*.umeng.com^
+||*.umengcloud.com^
+||*.vungle.com^

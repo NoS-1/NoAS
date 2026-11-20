@@ -264,6 +264,15 @@ def write_formats(domains, wild, outdir, kind, stamp_fixed=None):
     files["surge.list"] = "\n".join(["DOMAIN-SUFFIX,%s" % d for d in doms]) + "\n"
     files["singbox.json"] = json.dumps({"version": 1, "rules": [{"domain_suffix": doms}]},
                                        ensure_ascii=False, indent=1) + "\n"
+    # 通配清单（DoH 端按 *.x 匹配任意多级子域；suffix 格式客户端可直接吃根域）
+    files["wildcards.txt"] = "\n".join(["# NoAS 通配清单（%s）：*.域 = 该域任意多级子域" % ver] +
+                                        ["*.%s" % w for w in wilds]) + "\n"
+    # 允许清单：把白名单台账下发给客户端，用户侧也能"宁放不误拦"
+    ep_set = load_list_file("ad_endpoints.txt")
+    allow = load_whitelist()
+    allow = sorted(d for d in allow if d not in ep_set)
+    files["allow.txt"] = "\n".join(["# NoAS 允许清单（%s）：这些域禁止拦截" % ver] +
+                                    [d for d in allow]) + "\n"
 
     changed = []
     for name, text in files.items():
@@ -333,6 +342,10 @@ def main():
     lite = drop_children({d for d in exact if consensus.get(d, 0) >= 3} | (core & exact)) | ep
     mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2} | promoted) | ep
 
+    # 安全通配：只给"纯广告网根域"开通配，绝不碰白名单/良性大盘，误伤面为零
+    wild_safe = {c for c in core
+                 if not protected(c, wl) and c not in benign and c not in ep}
+
     prov = {d: consensus.get(d, 0) for d in lite}
     json.dump({"lite": prov, "core": sorted(core & lite), "endpoints": sorted(ep & lite)},
               open(os.path.join(ROOT, "out", "lite_provenance.json"), "w", encoding="utf-8"),
@@ -342,7 +355,7 @@ def main():
               "wildcards": len(wild), "whitelist_blocked": len(blocked_wl),
               "ad_endpoints": len(ep), "promoted": len(promoted), "benign_dropped": len(benign_dropped)}
     print("编译完成：full %d ／mid %d ／lite %d 条（通配 %d）｜白名单剔除 %d｜源 %d 个" % (
-        len(exact), len(mid), len(lite), len(wild), len(blocked_wl), len(per_source)))
+        len(exact), len(mid), len(lite), len(wild | wild_safe), len(blocked_wl), len(per_source)))
 
     os.makedirs(LISTS, exist_ok=True)
     json.dump(report, open(os.path.join(ROOT, "out_compile.json"), "w", encoding="utf-8"),
@@ -352,13 +365,13 @@ def main():
 
     results = {}
     if args.only in (None, "lite"):
-        ver, changed, meta = write_formats(lite, set(), os.path.join(SUBS, "lite"), "lite")
+        ver, changed, meta = write_formats(lite, wild_safe, os.path.join(SUBS, "lite"), "lite")
         results["lite"] = {"version": ver, "changed": changed, "count": meta["count"]}
     if args.only in (None, "mid"):
-        ver, changed, meta = write_formats(mid, set(), os.path.join(SUBS, "mid"), "mid")
+        ver, changed, meta = write_formats(mid, wild_safe, os.path.join(SUBS, "mid"), "mid")
         results["mid"] = {"version": ver, "changed": changed, "count": meta["count"]}
     if args.only in (None, "full"):
-        ver, changed, meta = write_formats(exact, wild, os.path.join(SUBS, "full"), "full")
+        ver, changed, meta = write_formats(exact, wild | wild_safe, os.path.join(SUBS, "full"), "full")
         results["full"] = {"version": ver, "changed": changed, "count": meta["count"]}
     for k, v in results.items():
         print("  %s：%d 条，版本 %s，变更 %d 个文件" % (k, v["count"], v["version"], len(v["changed"])))
