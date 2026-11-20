@@ -39,8 +39,8 @@
    }
   },
   "mid": {
-   "count": 29398,
-   "version": "20261120-1ba6c3e1",
+   "count": 37574,
+   "version": "20261120-8d4a6eda",
    "wildcards": 0,
    "generated_utc": "Fri, 20 Nov 2026 08:29:41 GMT",
    "files": {
@@ -49,34 +49,34 @@
      "sha256": "bbbd97c4857aabe3aaf6754f08935e572e4394c70f1252c7a43a2fc8612e0636"
     },
     "clash.yaml": {
-     "bytes": 1092197,
-     "sha256": "0a5913a3e1eed331e5939babc119ee7f514d32b8ef241e877738008bfc1c275a"
+     "bytes": 1408038,
+     "sha256": "971e7035a3154ba0be762db2c88ce8478660032b04e9633742e9a0b4d7f5ac88"
     },
     "dnsmasq.conf": {
-     "bytes": 1062783,
-     "sha256": "2f3952e2b7a3608c5ad20479fddf9a6db496be07a40f01a799ae945bb9bd6f2a"
+     "bytes": 1370448,
+     "sha256": "c90d81b4c4e9a755fcede8a8cd3f8f006e4efc4daa7e066dbe07e03e89017cd2"
     },
     "domains.txt": {
-     "bytes": 562977,
-     "sha256": "4776bb79a1b8dcea16baed3a980bac50653a825cbab67cdf852bf85c53630cba"
+     "bytes": 731650,
+     "sha256": "d9fdee0ecfcfa2abfe8ffa964ea028b66b07e2ca1752f883f61b4f37b2cd2618"
     },
     "hosts.txt": {
-     "bytes": 798201,
-     "sha256": "6b2e060ca97dcdb453763f19e06be464a340804ce18bc8fc8873c5074349c232"
+     "bytes": 1032282,
+     "sha256": "c5429277d7a131b4e17c6435ad96a6d390a63a254ea164d798b59c214258581b"
     },
     "singbox.json": {
-     "bytes": 768831,
-     "sha256": "956e48c9afd9b322d1828af9361ab0b3911f5b625b034245295c2ae9bc9d2c13"
+     "bytes": 994736,
+     "sha256": "42dc513f0a1d17f5c5cf068ec5aa6f9e59e9b0c0dec20c24f1e3596d291c4789"
     },
     "surge.list": {
-     "bytes": 974549,
-     "sha256": "b1ddf8c9e0d53b93392b60a0ebc71bf06c9829f3cab62ed12db6fc1928d89c2e"
+     "bytes": 1257686,
+     "sha256": "22f16813ddd72ae4d650c8b62e520b55ce1abd2d2d4e1ff4e2d5435d4eab75ca"
     }
    }
   },
   "full": {
-   "count": 278611,
-   "version": "20261120-7b1168d6",
+   "count": 384037,
+   "version": "20261120-392121db",
    "wildcards": 0,
    "generated_utc": "Fri, 20 Nov 2026 08:29:41 GMT",
    "files": {
@@ -85,35 +85,35 @@
      "sha256": "0828789ef5765a8ef0616ca744ab2766c90d8e16fa1ca98ccec2ab462e094c4b"
     },
     "clash.yaml": {
-     "bytes": 10779716,
-     "sha256": "b3419956664cabdfbdde8fd8572b760017d166428d097461f58a3d5d6116f8f8"
+     "bytes": 14852819,
+     "sha256": "ac5b2a6f03f68e1b338036ce3ffb2e484c8a38d738a649b19054bdba3bd62dbd"
     },
     "dnsmasq.conf": {
-     "bytes": 10501090,
-     "sha256": "948c98a2d4cba3ad38abed227fb6390892c5cd8624a8e29ca700454c1d4a7b3f"
+     "bytes": 14468767,
+     "sha256": "cc260573057400e2d63cf2bd2bac16a1afd1963bb152b3c797b0c7bfe7a1fbbd"
     },
     "domains.txt": {
-     "bytes": 5764662,
-     "sha256": "8c7a411ddbe6ab793f5ae7b7f7d2a4d6bf117d1ec37147c3334918e4cee4bca9"
+     "bytes": 7940097,
+     "sha256": "daf3d4651b0e40210b189e681267ec620285496ef6fdc3ad9d4c6a7107cf9083"
     },
     "hosts.txt": {
-     "bytes": 7993591,
-     "sha256": "55dafe03446837fa5e8ef23eb250eb71d3780405906e383599926d8922efdfcb"
+     "bytes": 11012434,
+     "sha256": "1e00eb29fccc689a241d76ed63b129da3651a95dd1576eaf8bba0f6a00e91e8c"
     },
     "singbox.json": {
-     "bytes": 7715007,
-     "sha256": "4a720287fbc69f4a6cd42ccf399a6e5d2342e9138096435039e350a733204d2a"
+     "bytes": 10628424,
+     "sha256": "e7c42890f239fa7e7ac8c0bd3784adc5c39bcfda4560fec261411db9d437342c"
     },
     "surge.list": {
-     "bytes": 9665216,
-     "sha256": "fd7e5f8e0b51c418a3f2924e9b34a544ca7aa02b0bcebfebcf9fbd33421a3d9d"
+     "bytes": 13316615,
+     "sha256": "28dcd33705f5b4465b523e688f5e3e24380618b25b4cddaad92d66bca10ca39c"
     }
    }
   }
  },
  "sources": {
-  "count": 11,
-  "whitelist_blocked": 3418,
+  "count": 12,
+  "whitelist_blocked": 4057,
   "ad_endpoints": 11,
   "per_source": {
    "StevenBlack-all": 76101,
@@ -126,11 +126,86 @@
    "notracking": 500138,
    "AdAway": 6540,
    "urlhaus": 2112,
+   "PhishingArmy": 146819,
    "Spam404": 8140
   }
  },
- "health": {},
- "evolution": [],
+ "health": {
+  "ts": "2026-11-20T08:25:16Z",
+  "round": 1,
+  "sources": [
+   {
+    "name": "StevenBlack-all",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "antiAD-cn",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "KADhosts",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "AdGuard-CN-adservers",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "AdGuard-tracking",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "DandelionSprout-malware",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "1Hosts-Lite",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "notracking",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "AdAway",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "urlhaus",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "PhishingArmy",
+    "fails": 1,
+    "seen_days": 1
+   },
+   {
+    "name": "Spam404",
+    "fails": 1,
+    "seen_days": 1
+   }
+  ],
+  "adopted": 0,
+  "dropped": 0
+ },
+ "evolution": [
+  {
+   "ts": "2026-11-20T08:25:16Z",
+   "round": 1,
+   "events": [],
+   "sources": 12
+  }
+ ],
  "scale": {
   "lite": 7862,
   "mid": 29398,
