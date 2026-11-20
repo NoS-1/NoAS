@@ -26,13 +26,27 @@
 
 ```bash
 cd /home/user/NoAS
-cat /home/user/.noas/creds.env          # 看当前值（600，不入库）
-python3 tools/token_check.py            # GitHub PAT + CF 令牌双体检
-python3 tools/cf_rotate.py --check      # 轮换链路体检，不动手
-cat state/cf_rotation.json              # 上次轮换时间 / 新旧令牌 id
+python3 tools/cf_rotate.py --doctor   # 根令牌故障第一站：四段链路逐段点亮 + 下一步动作
+cat /home/user/.noas/creds.env       # 看当前值（600，不入库）
+python3 tools/token_check.py         # GitHub PAT + CF 令牌双体检
+python3 tools/cf_rotate.py --check    # 轮换链路体检，不动手
+cat state/cf_rotation.json           # 上次轮换时间 / 新旧令牌 id
 ```
 
-`--check` 只读，随时可跑；`--force` 才真轮换；`--keep-old` 保留旧令牌便于回滚。
+`--doctor` 只读，随时可跑，输出会直接写成"去点哪里、跑哪条命令"；`--check` 判断能不能轮换；`--force` 才真轮换；`--keep-old` 保留旧令牌便于回滚。
+
+## 六、根令牌出问题时的四条路径
+
+先跑 `python3 tools/cf_rotate.py --doctor`，它会把下面四段逐段点亮，缺哪段就直说缺哪段。
+
+| 出问题的环节 | 表现 | 一条命令修好 |
+|---|---|---|
+| 根令牌失效/被删 | `--doctor` 第一行 ✗ | 后台重建 `NoAS-Root` → 改 `creds.env` 的 `CF_USER_TOKEN` → `cf_rotate.py --force` |
+| 现用令牌失效 | Pages/Worker 部署全 4xx，`--doctor` 第二行 ✗ | `cf_rotate.py --force`（用根令牌签新的，自动回写 secret） |
+| GitHub secret 缺失或过期 | CI 里 `0 · 凭据健康检查` 红 | `cf_rotate.py --force`（自动写 secret） |
+| GH_PAT 失效 | 本地推送 403 | 后台重建 PAT → 改 `creds.env` 的 `GH_PAT` |
+
+最底的一条：**根令牌本身不能自助重建**，它只能由已登录的人在 CF 后台建一次。所以根令牌一旦删掉，必须人工重建；其余三段都能由一行命令自愈。
 
 ## 四、轮换节奏
 

@@ -120,9 +120,80 @@ def writable_policies(pol_in: list) -> tuple[list, list]:
     return out, dropped
 
 
+def doctor(c: dict, acc: str) -> int:
+    """根令牌出事时的第一站：把四段链路逐段点亮，并直接给出下一步动作。
+
+    设计原则：任何一段坏了，结论必须写成"去点哪里、跑哪条命令"，不留给记忆。
+    """
+    root, cur, pat = c.get("CF_USER_TOKEN", ""), c.get("CF_API_TOKEN", ""), c.get("GH_PAT", "")
+    fixes = []
+
+    # 1 根令牌：唯一能签令牌的东西
+    if not root:
+        print("✗ 根令牌：未配置 CF_USER_TOKEN")
+        fixes.append("去 dash.cloudflare.com/profile/api-tokens 建一枚 NoAS-Root"
+                     "（Account｜Account API Tokens｜Edit + User｜API Tokens｜Edit），写入 creds.env")
+    else:
+        s, d = cf("GET", "/user/tokens/verify", root)
+        st = (d.get("result") or {}).get("status")
+        mark = "✓" if s == 200 and st == "active" else "✗"
+        print(f"{mark} 根令牌：http={s} status={st}")
+        if mark == "✗":
+            fixes.append("根令牌已失效/被删：回 CF 后台重建 NoAS-Root 并替换 creds.env 的 CF_USER_TOKEN，"
+                         "然后跑 python3 tools/cf_rotate.py --force")
+
+    # 2 现用账号令牌：真正部署 Pages/Worker/D1 的那枚
+    if not cur:
+        print("✗ 现用令牌：未配置 CF_API_TOKEN")
+        fixes.append("creds.env 补 CF_API_TOKEN，最快路径是根令牌就绪后跑 --force 直接签一枚新的")
+    else:
+        s, d = cf("GET", f"/accounts/{acc}/tokens/verify", cur)
+        st = (d.get("result") or {}).get("status")
+        mark = "✓" if s == 200 and st == "active" else "✗"
+        print(f"{mark} 现用令牌：http={s} status={st}")
+        if mark == "✗":
+            fixes.append("现用令牌失效：python3 tools/cf_rotate.py --force 会用根令牌签新的并回写 secret")
+
+    # 3 GitHub secret：CI 读的就是它
+    if not pat:
+        print("✗ GitHub：无 GH_PAT，无法核对 secret")
+    else:
+        s, d = gh("GET", f"/repos/{REPO}/actions/secrets", pat)
+        names = [x["name"] for x in d.get("secrets", [])] if s == 200 else []
+        print(f"{'✓' if 'CF_API_TOKEN' in names else '✗'} GitHub secret CF_API_TOKEN："
+              f"http={s} {'已存在' if 'CF_API_TOKEN' in names else '不存在'}")
+        if s != 200:
+            fixes.append(f"GH_PAT 读不到仓库 secret（http={s}）：PAT 需有 secrets 读权限")
+        elif "CF_API_TOKEN" not in names:
+            fixes.append("仓库缺 CF_API_TOKEN secret：轮换脚本 --force 会自动写入")
+
+         # 4 与本地的一致性：secret 更新时间和本地轮换时间应当接近
+    if STATE.exists():
+        try:
+            st_ = json.loads(STATE.read_text(encoding="utf-8"))
+            print(f"· 上次轮换：{st_.get('last_rotated')}  新 id={st_.get('new_id')} 旧 id={st_.get('old_id')}")
+            last = dt.datetime.fromisoformat(st_["last_rotated"].replace("Z", "+00:00"))
+            age = (dt.datetime.now(dt.timezone.utc) - last).days
+            print(f"· {age} 天前，阈值 {ROTATE_EVERY_DAYS} 天" + ("，该轮换了" if age >= ROTATE_EVERY_DAYS else ""))
+        except Exception as e:
+            print(f"· 轮换台账读不出来：{type(e).__name__}")
+    else:
+        print("· 无轮换台账 state/cf_rotation.json（还没轮换过）")
+
+    print()
+    if fixes:
+        print("下一步：")
+        for i, f in enumerate(fixes, 1):
+            print(f"  {i}. {f}")
+        return 1
+    print("结论：四段链路齐全，无需处理")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="只体检不轮换")
+    ap.add_argument("--doctor", action="store_true", help="根令牌故障诊断：逐段点亮并给出下一步")
     ap.add_argument("--force", action="store_true", help="忽略间隔强制轮换")
     ap.add_argument("--keep-old", action="store_true", help="保留旧令牌不删除")
     a = ap.parse_args()
@@ -131,6 +202,8 @@ def main() -> int:
     acc = c.get("CF_ACCOUNT_ID", "") or "226431c8f431ebb75d82dd5dbd5e8d86"
     cur = c.get("CF_API_TOKEN", "")
     root, pat = c.get("CF_USER_TOKEN", ""), c.get("GH_PAT", "")
+    if a.doctor:
+        return doctor(c, acc)
     if not cur:
         print("· 无 CF_API_TOKEN（CI 未配置 / 本地没凭据），跳过轮换")
         return 0
