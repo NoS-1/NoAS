@@ -1,0 +1,41 @@
+name: Discover (自动发现新规则源)
+
+# 每周一次，用 GitHub 自己的搜索 API 找新清单；验过（≥300 条、与白名单零冲突）才写入候选池。
+# 额度友好：4 条查询 × 5 个仓库，一次运行 < 30 次搜索请求；其余全部走 git，不占 API 配额。
+
+on:
+  schedule:
+    - cron: "40 19 * * 0"   # 北京 周一 03:40
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: discover
+  cancel-in-progress: true
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 发现并校验候选源
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tools/discover.py --limit 4
+      - name: 有新增就提交（走 git，不占 API 配额）
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet lists/candidates.tsv; then
+            echo "本周无新增候选"
+            exit 0
+          fi
+          git add lists/candidates.tsv
+          git commit -m "discover: 自动新增候选源 $(date -u +%Y%m%d)"
+          git push
