@@ -1,0 +1,24 @@
+{
+ "ts": "2026-11-20T08:09:46Z",
+ "compile": {
+  "sources": {
+   "StevenBlack-all": 76101,
+   "antiAD-cn": 0,
+   "KADhosts": 51607,
+   "AdGuard-CN-adservers": 128,
+   "AdGuard-tracking": 1536,
+   "DandelionSprout-malware": 12264,
+   "1Hosts-Lite": 202858,
+   "notracking": 500138,
+   "AdAway": 6540,
+   "urlhaus": 2112,
+   "PhishingArmy": 146883,
+   "Spam404": 8140
+  },
+  "full": 384116,
+  "lite": 15000,
+  "mid": 37562,
+  "wildcards": 0,
+  "whitelist_blocked": 4066
+ }
+}
