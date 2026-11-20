@@ -11,6 +11,7 @@ const TIER1 = new Set(__TIER1__.map((x) => x.toLowerCase()));
 const TIER2 = new Set(__TIER2__.map((x) => x.toLowerCase()));
 const ALLOW = new Set(__ALLOW__.map((x) => x.toLowerCase()));
 const ENDPOINTS = new Set(__ENDPOINTS__.map((x) => x.toLowerCase()));
+const WILD = (__WILD__ || []).map((x) => x.toLowerCase());
 const VERSION = __VERSION__;
 
 const UPSTREAM = [
@@ -36,6 +37,72 @@ function allowed(name) {
   return false;
 }
 
+function matchSet(set, name) {
+  if (set.has(name)) return true;
+  const parts = name.split(".");
+  for (let i = 1; i < parts.length - 1; i++) {
+    if (set.has(parts.slice(i).join("."))) return true;
+  }
+  // 通配规则：*.example.com 命中其任意多级子域
+  for (const w of WILD) {
+    const suffix = w.slice(2);
+    if (name.endsWith("." + suffix) && name.length > suffix.length + 1) return true;
+  }
+  return false;
+}
+
+function cnameTargets(buf) {
+  // 扫描应答里的 CNAME（type=5）记录，返回链上的所有目标域
+  const out = [];
+  try {
+    const dv = new DataView(buf.buffer || buf, buf.byteOffset || 0);
+    const total = dv.byteLength;
+    let off = 12, qd = dv.getUint16(4);
+    for (let i = 0; i < qd && off < total; i++) {
+      off = skipName(dv, off) + 4;
+    }
+    const an = dv.getUint16(6);
+    for (let i = 0; i < an && off < total; i++) {
+      off = skipName(dv, off);
+      const type = dv.getUint16(off); off += 8;              // type/class + ttl
+      const rdlen = dv.getUint16(off); off += 2;
+      if (type === 5) {
+        const t = readName(dv, off);
+        if (t) out.push(t.toLowerCase());
+      }
+      off += rdlen;
+    }
+  } catch (e) { /* 报文异常就放弃反隐蔽，不影响正常解析 */ }
+  return out;
+}
+
+function readName(dv, off) {
+  const labels = [];
+  let p = off, jumps = 0;
+  while (p < dv.byteLength && jumps < 8) {
+    const len = dv.getUint8(p);
+    if (len === 0) break;
+    if ((len & 0xc0) === 0xc0) {
+      p = dv.getUint16(p) & 0x3fff; jumps++;
+      continue;
+    }
+    labels.push(String.fromCharCode(...new Uint8Array(dv.buffer, dv.byteOffset + p + 1, len)));
+    p += len + 1;
+  }
+  return labels.join(".").toLowerCase();
+}
+
+function skipName(dv, off) {
+  let p = off, jumps = 0;
+  while (p < dv.byteLength && jumps < 8) {
+    const len = dv.getUint8(p);
+    if (len === 0) return p + 1;
+    if ((len & 0xc0) === 0xc0) return p + 2;
+    p += len + 1;
+  }
+  return p;
+}
+
 function isEndpoint(name) {
   if (ENDPOINTS.has(name)) return true;
   const parts = name.split(".");
@@ -51,12 +118,7 @@ function blocked(name, tier) {
   if (isEndpoint(name)) return true;
   if (allowed(name)) return false;
   const set = tier >= 2 ? TIER2 : TIER1;
-  if (set.has(name)) return true;
-  const parts = name.split(".");
-  for (let i = 1; i < parts.length - 1; i++) {
-    if (set.has(parts.slice(i).join("."))) return true;
-  }
-  return false;
+  return matchSet(set, name);
 }
 
 function parseQuery(bytes) {
@@ -130,7 +192,10 @@ async function handle(request, env, ctx) {
   if (url.pathname === "/check") {
     const q = (url.searchParams.get("q") || "").toLowerCase();
     const tier = Number(url.searchParams.get("tier") || 1);
-    return json({ domain: q, blocked: blocked(q, tier), tier, version: VERSION });
+    const cn = (url.searchParams.get("cname") || "").toLowerCase();
+    const viaCname = cn ? blocked(cn, tier) : false;
+    return json({ domain: q, blocked: blocked(q, tier), cname: cn || null,
+                  cname_blocked: cn ? viaCname : null, tier, version: VERSION });
   }
   if (!/^\/dns-query$/.test(url.pathname)) {
     return new Response("NoAS · /dns-query 或 /check 或 /health", {
@@ -161,6 +226,16 @@ async function handle(request, env, ctx) {
   const buf = await upstream(bytes);
   if (!buf) {
     return new Response("上游不可用", { status: 502, headers: { "x-noas": "upstream-fail" } });
+  }
+  // CNAME 反隐蔽：第一方子域 CNAME 到追踪者时，按追踪者判定并直接拦掉
+  const chain = cnameTargets(buf);
+  for (const t of chain) {
+    if (blocked(t, tier)) {
+      return new Response(blockedResponse(bytes, qtype, end), {
+        headers: { "content-type": "application/dns-message", "x-noas": "blocked-cname",
+                   "x-noas-target": t, "x-noas-ver": VERSION },
+      });
+    }
   }
   return new Response(buf, {
     headers: { "content-type": "application/dns-message", "x-noas": "pass", "x-noas-ver": VERSION },

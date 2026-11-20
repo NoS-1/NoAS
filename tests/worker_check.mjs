@@ -32,6 +32,13 @@ for (const d of benign) {
   }
 }
 
+// CNAME 反隐蔽：第一方子域 CNAME 到广告域时，必须判为拦截
+const cn = await handler(new Request('https://x.dev/check?q=stats.someblog.org&cname=doubleclick.net&tier=1'), {}, ctx);
+const cnj = await cn.json();
+if (cnj.cname_blocked !== true) { miss.push('cname:doubleclick.net'); }
+const cn2 = await handler(new Request('https://x.dev/check?q=stats.someblog.org&cname=api.someblog.org&tier=1'), {}, ctx);
+if ((await cn2.json()).cname_blocked !== false) { fp.push('cname-benign'); }
+
 console.log(`lite ${lite.length} 全量｜mid 抽样 ${sample.length}｜良性 ${benign.length}`);
 console.log(`漏放 ${miss.length}｜误拦 ${fp.length}`);
 if (miss.length) console.log('漏放示例', miss.slice(0, 6));

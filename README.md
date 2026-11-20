@@ -7,9 +7,9 @@
 
 | 档位 | 条数 | 说明 | 地址 |
 |---|---|---|---|
-| lite | ≈7.8k | 跨 3 源共识 + 广告结构自动晋级，误拦率最低，**日常用这档** | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
-| mid | ≈29k | 跨 2 个源共识，覆盖更广 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
-| full | ≈28 万 | 全部源并集，最激进 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/adguard.txt` |
+| lite | ≈28k | 跨 3 源共识 + 广告结构自动晋级 + AdGuard DNS 过滤器，误拦率最低，**日常用这档** | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
+| mid | ≈162k | 跨 2 源共识，覆盖更广 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
+| full | ≈41 万 | 14 源并集，最激进 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/adguard.txt` |
 
 每档都有 7 种格式，把上表地址里的文件名换掉即可：
 
@@ -32,6 +32,14 @@
 | Release | `https://github.com/NoS-1/NoAS/releases/download/latest/noas-snapshot.zip` | 单包下载（三档 + DoH 产物），长期留档 |
 
 站点首页 `https://nos-1.github.io/NoAS/` 有实时条数、各格式校验值、源健康度与自我成长记录。
+
+## 用了哪些行业级手段
+
+- **CNAME 反隐蔽**：第一方子域 CNAME 到追踪者（`stats.某站.com` → `tracker.com`）是近几年最主要的绕过手段。自建 DoH 会解析应答里的 CNAME 链，链上任何一跳命中黑名单就直接拦掉，并在响应头标记 `x-noas: blocked-cname`。
+- **官方 CNAME 清单**：接入 AdGuard 的 CNAME 伪装落地域名清单（约 30 万条）与原始追踪者清单（用于反隐蔽校验）。
+- **通配规则匹配**：`*.example.com` 形态的规则在运行时按后缀匹配，不再被丢掉。
+- **广告端点例外**：审计过的投放端点穿透白名单父域保护（百度/腾讯/谷歌的广告子域不会被"保护整站"误放）。
+- **跨源共识分档**：3 源以上进 lite、2 源进 mid、并集进 full；单源但域名结构即广告的自动晋级进 lite。
 
 ## 为什么可信
 

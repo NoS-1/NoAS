@@ -47,6 +47,9 @@ def main():
           .replace("__TIER1__", json.dumps(sorted(set(lite)), ensure_ascii=False))
           .replace("__TIER2__", json.dumps(sorted(set(mid)), ensure_ascii=False))
           .replace("__ALLOW__", json.dumps(allow, ensure_ascii=False))
+          .replace("__WILD__", json.dumps(sorted({
+              l.strip().lower() for l in open(os.path.join(ROOT, "subs", "full", "domains.txt"), encoding="utf-8")
+              if l.strip().startswith("*.")}), ensure_ascii=False))
           .replace("__ENDPOINTS__", json.dumps(sorted({
               l.split("#", 1)[0].strip().lower()
               for l in open(os.path.join(ROOT, "lists", "ad_endpoints.txt"), encoding="utf-8")
