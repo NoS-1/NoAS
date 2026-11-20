@@ -307,6 +307,12 @@ def write_formats(domains, wild, outdir, kind, stamp_fixed=None):
     files["clash.yaml"] = "\n".join(["# NoAS %s rule-provider payload" % ver, "payload:"] +
                                    ["  - DOMAIN-SUFFIX,%s" % d for d in doms]) + "\n"
     files["surge.list"] = "\n".join(["DOMAIN-SUFFIX,%s" % d for d in doms]) + "\n"
+    # QuantumultX 过滤器语法（host-suffix 天然覆盖子域，通配条目按后缀下发）
+    dom_set = set(doms)
+    qx_extra = [w for w in wilds if w not in dom_set]
+    files["qx.list"] = "\n".join(["# NoAS %s（%d 条 + 通配 %d）" % (ver, len(doms), len(qx_extra))] +
+                                  ["host-suffix, %s, reject" % d for d in doms] +
+                                  ["host-suffix, %s, reject" % w for w in qx_extra]) + "\n"
     files["singbox.json"] = json.dumps({"version": 1, "rules": [{"domain_suffix": doms}]},
                                        ensure_ascii=False, indent=1) + "\n"
     # 通配清单（DoH 端按 *.x 匹配任意多级子域；suffix 格式客户端可直接吃根域）

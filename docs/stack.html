@@ -78,6 +78,26 @@
     <p class="note">补充：安卓系统级还可用 AdAway（F-Droid 免费，无需 root 走本地 VPN），源填本站 hosts.txt。</p>
   </div>
 
+
+  <h2>客户端对照</h2>
+  <table>
+    <tr><th>客户端</th><th>L1 用哪个文件</th><th>L2 路径层</th><th>L3 内容层</th></tr>
+    <tr><td>AdGuard Home / AdGuard DNS</td><td><code>adguard.txt</code>（或 hosts.txt）</td><td>—</td><td>—</td></tr>
+    <tr><td>AdGuard App（iOS/Android/桌面）</td><td><code>adguard.txt</code></td><td>—</td><td>内置过滤规则</td></tr>
+    <tr><td>Pi-hole</td><td><code>hosts.txt</code></td><td>—</td><td>—</td></tr>
+    <tr><td>AdAway（安卓）</td><td><code>hosts.txt</code></td><td>—</td><td>—</td></tr>
+    <tr><td>NextDNS</td><td><code>domains.txt</code></td><td>—</td><td>—</td></tr>
+    <tr><td>dnscrypt-proxy</td><td><code>domains.txt</code></td><td>—</td><td>—</td></tr>
+    <tr><td>Clash / mihomo / FlClash / Stash</td><td><code>clash.yaml</code></td><td>—</td><td>—</td></tr>
+    <tr><td>sing-box / Karing</td><td><code>singbox.json</code></td><td>—</td><td>—</td></tr>
+    <tr><td>Surge / Shadowrocket</td><td><code>surge.list</code></td><td><code>noas-path.sgmodule</code></td><td>—</td></tr>
+    <tr><td>Loon</td><td><code>surge.list</code>（规则集策略选 REJECT）</td><td><code>noas-path.plugin</code></td><td>—</td></tr>
+    <tr><td>QuantumultX</td><td><code>qx.list</code></td><td><code>noas-path.conf</code></td><td>—</td></tr>
+    <tr><td>Firefox + uBO / Brave</td><td><code>adguard.txt</code>（当普通过滤器订阅）</td><td>—</td><td><code>noas-ubo.txt</code></td></tr>
+    <tr><td>BIND / Unbound / PowerDNS</td><td><code>rpz.zone</code> / <code>unbound.conf</code></td><td>—</td><td>—</td></tr>
+  </table>
+  <p class="note">L2 只有能改写 HTTPS 并装证书的客户端才支持；Clash 系、AdGuard Home、Pi-hole 都不具备，别指望它们能治开屏。</p>
+
   <h2>四层的真实覆盖</h2>
   <table>
     <tr><th>场景</th><th>L1 DNS</th><th>+L2 路径</th><th>+L3 内容</th><th>+L4 点击</th></tr>
