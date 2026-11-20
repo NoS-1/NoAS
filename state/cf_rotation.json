@@ -1,0 +1,11 @@
+{
+ "last_rotated": "2026-11-20T23:02:27Z",
+ "new_id": "63b35f354f8951ad66c50b3ce75af54c",
+ "old_id": "2c2f65e71a4caea1d8070a476950e273",
+ "dropped_groups": [
+  "Account API Tokens Write",
+  "Account API Tokens Read"
+ ],
+ "policies": 1,
+ "old_removed": "2026-11-20T23:17:07Z"
+}
