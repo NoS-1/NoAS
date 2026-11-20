@@ -72,6 +72,11 @@ jobs:
             echo "推送凭据：内置 GITHUB_TOKEN（未配置 App）"
           fi
 
+      # CF 令牌轮换：account token 在协议层无法派生其它令牌（CF 明确拒绝 sub-token 管理令牌），
+      # 只有 user 级根令牌能签新令牌。没有根令牌时脚本自行跳过（exit 0），绝不阻塞构建。
+      - name: 0.3 · CF 令牌轮换（配了根令牌才动手）
+        run: python3 tools/cf_rotate.py
+
       - name: 0.2 · 挂载推送凭据
         env:
           APP_TOK: ${{ steps.app.outputs.token }}
