@@ -3,7 +3,7 @@
 #!author=NoS-1
 #!homepage=https://github.com/NoS-1/NoAS
 #!system=ios,macos
-#!dns=10018
+#!dns=10017
 #!path=14
 #!mitm=14
 
@@ -880,7 +880,6 @@ DOMAIN-SUFFIX,a8.yumejin.jp,REJECT
 DOMAIN-SUFFIX,a8.yuzen-official.com,REJECT
 DOMAIN-SUFFIX,a8.zen-camps.com,REJECT
 DOMAIN-SUFFIX,a8.zeroku.jp,REJECT
-DOMAIN-SUFFIX,a8.zzz-land.com,REJECT
 DOMAIN-SUFFIX,a8cv.adv.gr.jp,REJECT
 DOMAIN-SUFFIX,a8cv.cpi.ad.jp,REJECT
 DOMAIN-SUFFIX,a8cv.secure.sakura.ad.jp,REJECT

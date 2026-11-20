@@ -1,4 +1,4 @@
-# NoAS 通配（20261120-52f89103）
+# NoAS 通配（20261120-a0dff889）
 *.0017c6c37c.com
 *.00a39e6dfd.com
 *.01168nl.com
@@ -871,7 +871,6 @@
 *.a8.yuzen-official.com
 *.a8.zen-camps.com
 *.a8.zeroku.jp
-*.a8.zzz-land.com
 *.a8cv.adv.gr.jp
 *.a8cv.cpi.ad.jp
 *.a8cv.secure.sakura.ad.jp

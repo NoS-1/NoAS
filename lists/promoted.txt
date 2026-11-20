@@ -74,6 +74,7 @@ ad-cloud.jp
 ad-cmp.hismarttv.com
 ad-collect.hzyoka.com
 ad-configurator.6cloud.fr
+ad-console.jdcloud.com
 ad-core-lb-v3.lf.bytelb.net
 ad-count.jp
 ad-courier.com

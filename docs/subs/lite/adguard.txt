@@ -1,10 +1,10 @@
 ! Title: NoAS 拦截订阅（lite）
 ! Description: 免费公开源并集，白名单硬闸过滤后发布；每日自动重建
-! Version: 20261120-52f89103
-! Last modified: Fri, 20 Nov 2026 18:21:56 GMT
+! Version: 20261120-a0dff889
+! Last modified: Fri, 20 Nov 2026 18:26:17 GMT
 ! Expires: 12 hours
 ! Homepage: https://github.com/NoS-1/NoAS
-! 条数: 9961（含通配 57）
+! 条数: 9960（含通配 57）
 
 ||0017c6c37c.com^
 ||00a39e6dfd.com^
@@ -878,7 +878,6 @@
 ||a8.yuzen-official.com^
 ||a8.zen-camps.com^
 ||a8.zeroku.jp^
-||a8.zzz-land.com^
 ||a8cv.adv.gr.jp^
 ||a8cv.cpi.ad.jp^
 ||a8cv.secure.sakura.ad.jp^

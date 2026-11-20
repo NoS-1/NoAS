@@ -1,7 +1,7 @@
 {
   "layers": {
     "L1_dns": {
-      "domains": 9961,
+      "domains": 9960,
       "wildcards": 57,
       "source": "https://nos-1.github.io/NoAS/subs/lite/"
     },
