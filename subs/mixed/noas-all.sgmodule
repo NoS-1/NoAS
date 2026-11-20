@@ -5329,6 +5329,7 @@ DOMAIN-SUFFIX,an.mlb.com,REJECT
 DOMAIN-SUFFIX,analysis.polarisoffice.com,REJECT
 DOMAIN-SUFFIX,analysys.cn,REJECT
 DOMAIN-SUFFIX,analytics-ad-eyu9u2md.kgslb.com,REJECT
+DOMAIN-SUFFIX,analytics-adv.ozon.ru,REJECT
 DOMAIN-SUFFIX,analytics-api.gemcommerce.com,REJECT
 DOMAIN-SUFFIX,analytics-beacon.p.uliza.jp,REJECT
 DOMAIN-SUFFIX,analytics-fe.digital-cloud.medallia.eu,REJECT
@@ -5906,6 +5907,7 @@ DOMAIN-SUFFIX,cash-ads.com,REJECT
 DOMAIN-SUFFIX,cbjs.baidu.com,REJECT
 DOMAIN-SUFFIX,cbzxy.com,REJECT
 DOMAIN-SUFFIX,cc.swiftype.com,REJECT
+DOMAIN-SUFFIX,ccb.uncle-ad.com,REJECT
 DOMAIN-SUFFIX,ccgateway.net,REJECT
 DOMAIN-SUFFIX,ccpd.jet2.com,REJECT
 DOMAIN-SUFFIX,ccpd.jet2holidays.com,REJECT
@@ -7158,6 +7160,7 @@ DOMAIN-SUFFIX,loopme.me,REJECT
 DOMAIN-SUFFIX,losangeles-ads.com,REJECT
 DOMAIN-SUFFIX,love-banner.com,REJECT
 DOMAIN-SUFFIX,lovelydrum.com,REJECT
+DOMAIN-SUFFIX,loyalnost-adv.ozon.ru,REJECT
 DOMAIN-SUFFIX,lp4.io,REJECT
 DOMAIN-SUFFIX,lpbhnv.nbcboston.com,REJECT
 DOMAIN-SUFFIX,lpbhnv.nbcchicago.com,REJECT
@@ -7431,6 +7434,7 @@ DOMAIN-SUFFIX,mon.tiktokv.com,REJECT
 DOMAIN-SUFFIX,mon.zijieapi.com,REJECT
 DOMAIN-SUFFIX,monetization-ad-tracking.prod-eu-c.az.vidaahub.com,REJECT
 DOMAIN-SUFFIX,monetizer101.com,REJECT
+DOMAIN-SUFFIX,monitor-ads-test.huan.tv,REJECT
 DOMAIN-SUFFIX,monitor-ads.huan.tv,REJECT
 DOMAIN-SUFFIX,mookie1.com,REJECT
 DOMAIN-SUFFIX,motionspots.com,REJECT
@@ -7567,6 +7571,7 @@ DOMAIN-SUFFIX,op-ads-sg8-sg10-11.dr-wan.shopeemobile.com,REJECT
 DOMAIN-SUFFIX,op-ads-sg8-sg10-12.dr-wan.shopeemobile.com,REJECT
 DOMAIN-SUFFIX,op-ads-sg8-sg10-14.dr-wan.shopeemobile.com,REJECT
 DOMAIN-SUFFIX,op-ads-sg8-sg10-8.dr-wan.shopeemobile.com,REJECT
+DOMAIN-SUFFIX,open-ad.vivo.com.cn,REJECT
 DOMAIN-SUFFIX,open.e.kuaishou.com,REJECT
 DOMAIN-SUFFIX,open.isnssdk.com,REJECT
 DOMAIN-SUFFIX,open.oneplus.net,REJECT
@@ -7721,6 +7726,7 @@ DOMAIN-SUFFIX,prod-do-dsp-mp-microsoft.global.ssl.fastly.net,REJECT
 DOMAIN-SUFFIX,prod-sponsoredads.mkt.zappos.com,REJECT
 DOMAIN-SUFFIX,prod.us-east-1.cxm-bcn.publisher-services.amazon.dev,REJECT
 DOMAIN-SUFFIX,products.gobankingrates.com,REJECT
+DOMAIN-SUFFIX,prodvizhenie-adv.ozon.ru,REJECT
 DOMAIN-SUFFIX,profiling.avandor.com,REJECT
 DOMAIN-SUFFIX,profusesupport.com,REJECT
 DOMAIN-SUFFIX,projectwonderful.com,REJECT
@@ -9484,6 +9490,7 @@ DOMAIN-SUFFIX,toiletpaper.life,REJECT
 DOMAIN-SUFFIX,tongji.meizu.com,REJECT
 DOMAIN-SUFFIX,top-free-ad.com,REJECT
 DOMAIN-SUFFIX,topqualitylink.com,REJECT
+DOMAIN-SUFFIX,torimochi-ad.net,REJECT
 DOMAIN-SUFFIX,tourism.visitorlando.com,REJECT
 DOMAIN-SUFFIX,tp.otto.de,REJECT
 DOMAIN-SUFFIX,tp88trk.com,REJECT
@@ -9852,6 +9859,7 @@ DOMAIN-SUFFIX,y.one.impact-ad.com,REJECT
 DOMAIN-SUFFIX,yadro.ru,REJECT
 DOMAIN-SUFFIX,yads.c.yimg.jp,REJECT
 DOMAIN-SUFFIX,yandexadexchange.net,REJECT
+DOMAIN-SUFFIX,yango-ads.com,REJECT
 DOMAIN-SUFFIX,ybswii.swarovski.com,REJECT
 DOMAIN-SUFFIX,ycembr.net-a-porter.com,REJECT
 DOMAIN-SUFFIX,ydpushserver.youdao.com,REJECT
