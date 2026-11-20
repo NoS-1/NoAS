@@ -87,10 +87,17 @@ jobs:
           git add -A subs/lite docs history tools doh/worker.tpl.js sources.tsv lists tests
           if git diff --cached --quiet; then
             echo "无变化，跳过提交"
-          else
-            git commit -m "build: 每日重建 $(date -u +%Y%m%d-%H%M)"
-            git push
+            exit 0
           fi
+          git commit -m "build: 每日重建 $(date -u +%Y%m%d-%H%M)"
+          # 自愈：并发推送被拒时，最多重试 5 次（拉取用 ours，避免产物互相覆盖）
+          for i in 1 2 3 4 5; do
+            if git pull -q -X ours --rebase origin main && git push -q; then
+              echo "推送成功（第 $i 次）"; exit 0
+            fi
+            echo "推送被拒，重试 $i/5"; sleep $((i*3))
+          done
+          echo "推送重试 5 次仍失败"; exit 1
 
       - name: 10 · Release 单包（lite+mid+full+DoH）
         env:

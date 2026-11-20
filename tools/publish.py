@@ -71,7 +71,18 @@ def main():
         print("已本地打包到 %s（%.1f MB），未推送（没有 token）" % (dt, total / 1024 / 1024))
         return 0
     url = "https://x-access-token:%s@github.com/%s.git" % (args.token, args.repo)
-    run(["git", "push", "-f", "-q", url, "%s:%s" % (args.branch, args.branch)], dt)
+    last = ""
+    for attempt in range(1, 5):
+        try:
+            run(["git", "push", "-f", "-q", url, "%s:%s" % (args.branch, args.branch)], dt)
+            last = ""
+            break
+        except SystemExit as e:
+            last = str(e)
+            print("data 分支推送被拒，重试 %d/4" % attempt)
+            time.sleep(attempt * 2)
+    if last:
+        raise SystemExit(last)
     print("已发布 %s 分支：%s ｜%.1f MB" % (args.branch, ",".join(sorted(payload)), total / 1024 / 1024))
     shutil.rmtree(dt, ignore_errors=True)
     return 0
