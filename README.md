@@ -100,7 +100,7 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 | L1 DNS | `subs/{lite,mid,full}/` | 拦广告/追踪域名，全设备生效 |
 | L2 路径 | `subs/paths/{core,full}/noas-path.{sgmodule,plugin,conf}` | MITM 后拦开屏/广告接口（Surge/Loon/QX） |
 | L3 内容 | `subs/paths/ubo/noas-ubo.txt` | 浏览器内隐藏广告位、拦广告脚本 |
-| L4 交互 | 文档指引（GKD） | 安卓无障碍自动点"跳过" |
+| L4 交互 | `subs/gkd/noas-gkd.json5` | 安卓 GKD 无障碍自动点"跳过"；规则源 @gkd-kit/subscription（MIT） |
 
 路径层源表是 `lists/ad_paths.tsv`，每行带 App 与用途；`core` 只打单主机端点，`full` 才启用通用路径（范围由 MITM 白名单兜住）。
 
