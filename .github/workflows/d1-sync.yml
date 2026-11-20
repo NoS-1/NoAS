@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: 写入 D1 build_state
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
