@@ -1,4 +1,4 @@
-# NoAS 20261120-e7fdc872 rule-provider payload
+# NoAS 20261120-622a988e rule-provider payload
 payload:
   - DOMAIN-SUFFIX,0.net.easyjet.com
   - DOMAIN-SUFFIX,000491b06a.com
@@ -3559,6 +3559,7 @@ payload:
   - DOMAIN-SUFFIX,ad.walkgame.com
   - DOMAIN-SUFFIX,ad.weplayer.cc
   - DOMAIN-SUFFIX,ad.woman.mynavi.jp
+  - DOMAIN-SUFFIX,ad.wretch.cc
   - DOMAIN-SUFFIX,ad.wurangxian.top
   - DOMAIN-SUFFIX,ad.wynk.in
   - DOMAIN-SUFFIX,ad.xdomain.ne.jp
@@ -7520,6 +7521,7 @@ payload:
   - DOMAIN-SUFFIX,arcticattention.com
   - DOMAIN-SUFFIX,arctiumplunger.com
   - DOMAIN-SUFFIX,arctwjodckpyz.site
+  - DOMAIN-SUFFIX,ard.yahoo.co.jp
   - DOMAIN-SUFFIX,ardacxtirzki.in
   - DOMAIN-SUFFIX,ardassobtuse.com
   - DOMAIN-SUFFIX,ardentlydrivablepagan.com
@@ -9708,6 +9710,7 @@ payload:
   - DOMAIN-SUFFIX,biz.coface.com
   - DOMAIN-SUFFIX,biz.gexing.com
   - DOMAIN-SUFFIX,biz1.kddi.com
+  - DOMAIN-SUFFIX,biz5.kankan.com
   - DOMAIN-SUFFIX,bizibgjvenyhc.space
   - DOMAIN-SUFFIX,bizible.com
   - DOMAIN-SUFFIX,bizlog-gateway.myrealtrip.com
@@ -23835,6 +23838,7 @@ payload:
   - DOMAIN-SUFFIX,flnfeuesmzmzy.online
   - DOMAIN-SUFFIX,flnkmj.hometogo.fr
   - DOMAIN-SUFFIX,flnqxpirffyqt.online
+  - DOMAIN-SUFFIX,float.kankan.com
   - DOMAIN-SUFFIX,floatingpresentedshopping.com
   - DOMAIN-SUFFIX,floejjeohkn.com
   - DOMAIN-SUFFIX,flonlazaret.com
@@ -33897,6 +33901,7 @@ payload:
   - DOMAIN-SUFFIX,l.ti-da.net
   - DOMAIN-SUFFIX,l.training-page.worldvision.ca
   - DOMAIN-SUFFIX,l.typesquare.com
+  - DOMAIN-SUFFIX,l.ykimg.com
   - DOMAIN-SUFFIX,l0cpto94.xyz
   - DOMAIN-SUFFIX,l0nrjph1.xyz
   - DOMAIN-SUFFIX,l1native.com
@@ -59294,6 +59299,7 @@ payload:
   - DOMAIN-SUFFIX,stat.his-j.com
   - DOMAIN-SUFFIX,stat.hitosara.com
   - DOMAIN-SUFFIX,stat.interestfree.com.au
+  - DOMAIN-SUFFIX,stat.it168.com
   - DOMAIN-SUFFIX,stat.juridicas.com
   - DOMAIN-SUFFIX,stat.kaago.com
   - DOMAIN-SUFFIX,stat.kakaku.com

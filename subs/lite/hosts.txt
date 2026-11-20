@@ -1,4 +1,4 @@
-# NoAS 20261120-e7fdc872（74292 条）
+# NoAS 20261120-622a988e（74298 条）
 0.0.0.0 0.net.easyjet.com
 0.0.0.0 000491b06a.com
 0.0.0.0 0017c6c37c.com
@@ -3558,6 +3558,7 @@
 0.0.0.0 ad.walkgame.com
 0.0.0.0 ad.weplayer.cc
 0.0.0.0 ad.woman.mynavi.jp
+0.0.0.0 ad.wretch.cc
 0.0.0.0 ad.wurangxian.top
 0.0.0.0 ad.wynk.in
 0.0.0.0 ad.xdomain.ne.jp
@@ -7519,6 +7520,7 @@
 0.0.0.0 arcticattention.com
 0.0.0.0 arctiumplunger.com
 0.0.0.0 arctwjodckpyz.site
+0.0.0.0 ard.yahoo.co.jp
 0.0.0.0 ardacxtirzki.in
 0.0.0.0 ardassobtuse.com
 0.0.0.0 ardentlydrivablepagan.com
@@ -9707,6 +9709,7 @@
 0.0.0.0 biz.coface.com
 0.0.0.0 biz.gexing.com
 0.0.0.0 biz1.kddi.com
+0.0.0.0 biz5.kankan.com
 0.0.0.0 bizibgjvenyhc.space
 0.0.0.0 bizible.com
 0.0.0.0 bizlog-gateway.myrealtrip.com
@@ -23834,6 +23837,7 @@
 0.0.0.0 flnfeuesmzmzy.online
 0.0.0.0 flnkmj.hometogo.fr
 0.0.0.0 flnqxpirffyqt.online
+0.0.0.0 float.kankan.com
 0.0.0.0 floatingpresentedshopping.com
 0.0.0.0 floejjeohkn.com
 0.0.0.0 flonlazaret.com
@@ -33896,6 +33900,7 @@
 0.0.0.0 l.ti-da.net
 0.0.0.0 l.training-page.worldvision.ca
 0.0.0.0 l.typesquare.com
+0.0.0.0 l.ykimg.com
 0.0.0.0 l0cpto94.xyz
 0.0.0.0 l0nrjph1.xyz
 0.0.0.0 l1native.com
@@ -59293,6 +59298,7 @@
 0.0.0.0 stat.his-j.com
 0.0.0.0 stat.hitosara.com
 0.0.0.0 stat.interestfree.com.au
+0.0.0.0 stat.it168.com
 0.0.0.0 stat.juridicas.com
 0.0.0.0 stat.kaago.com
 0.0.0.0 stat.kakaku.com
