@@ -181,7 +181,7 @@ jobs:
       - name: 等待 artifact 索引
         run: sleep 8
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
       - name: 12 · 留档
         uses: actions/upload-artifact@v4
