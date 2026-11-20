@@ -460,10 +460,48 @@ def check_shadow():
     return fails
 
 
+
+def check_dead():
+    """死域不得进产物：lists/dead.txt 里已探测确认无解析的域，除白名单/审计端点外一律不许出现。
+
+    为什么必须硬校验：剪枝逻辑一旦被后续改动绕过（历史上就出现过 lite 里混回 1147 条死域），
+    产物体积不变、误拦也不会报警，只有这条能抓出来。
+    """
+    fails = []
+    dead = set()
+    p = os.path.join(ROOT, "lists", "dead.txt")
+    if os.path.exists(p):
+        for line in open(p, encoding="utf-8"):
+            line = line.split("#", 1)[0].strip().lower()
+            if line and "." in line:
+                dead.add(line)
+    if not dead:
+        return fails
+    # 人工审核的必拦清单不参与死域判定（品牌根域可能无 A 记录，但确实是广告实体）
+    ep = set()
+    for f in ("ad_endpoints.txt", "sdk_ads.txt", "video_ads.txt", "miner.txt",
+              "affiliate.txt", "telemetry.txt"):
+        p = os.path.join(ROOT, "lists", f)
+        if not os.path.exists(p):
+            continue
+        for line in open(p, encoding="utf-8"):
+            line = line.split("#", 1)[0].strip().lower()
+            if line and "." in line:
+                ep.add(line)
+    allow = load_allow()
+    for tier in TIERS:
+        doms = set(domains_of(tier, "domains.txt") or [])
+        bad = sorted(d for d in doms if d in dead and d not in ep and d not in allow)
+        if bad:
+            fails.append("死域混入 %s %d 条：%s" % (tier, len(bad), ", ".join(bad[:5])))
+    return fails
+
+
 def main():
     fails = (check_ledger() + check_precision() + check_cooldown() + check_threat_isolation()
              + check_tags() + check_channel_artifacts() + check_sdk_video()
-             + check_golden() + check_service_allow() + check_reputation() + check_shadow())
+             + check_golden() + check_service_allow() + check_reputation() + check_shadow()
+             + check_dead())
     allow = load_allow()
     summary = {}
 

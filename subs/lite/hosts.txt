@@ -1,4 +1,4 @@
-# NoAS 20261120-9feeb90b（9903 条）
+# NoAS 20261121-286aeb9a（9903 条）
 0.0.0.0 0017c6c37c.com
 0.0.0.0 00a39e6dfd.com
 0.0.0.0 01168nl.com
@@ -5320,7 +5320,6 @@
 0.0.0.0 analysis.polarisoffice.com
 0.0.0.0 analysys.cn
 0.0.0.0 analytics-ad-eyu9u2md.kgslb.com
-0.0.0.0 analytics-adv.ozon.ru
 0.0.0.0 analytics-api.gemcommerce.com
 0.0.0.0 analytics-beacon.p.uliza.jp
 0.0.0.0 analytics-fe.digital-cloud.medallia.eu
@@ -5898,7 +5897,6 @@
 0.0.0.0 cbjs.baidu.com
 0.0.0.0 cbzxy.com
 0.0.0.0 cc.swiftype.com
-0.0.0.0 ccb.uncle-ad.com
 0.0.0.0 ccgateway.net
 0.0.0.0 ccpd.jet2.com
 0.0.0.0 ccpd.jet2holidays.com
@@ -7151,7 +7149,6 @@
 0.0.0.0 losangeles-ads.com
 0.0.0.0 love-banner.com
 0.0.0.0 lovelydrum.com
-0.0.0.0 loyalnost-adv.ozon.ru
 0.0.0.0 lp4.io
 0.0.0.0 lpbhnv.nbcboston.com
 0.0.0.0 lpbhnv.nbcchicago.com
@@ -7425,7 +7422,6 @@
 0.0.0.0 mon.zijieapi.com
 0.0.0.0 monetization-ad-tracking.prod-eu-c.az.vidaahub.com
 0.0.0.0 monetizer101.com
-0.0.0.0 monitor-ads-test.huan.tv
 0.0.0.0 monitor-ads.huan.tv
 0.0.0.0 mookie1.com
 0.0.0.0 motionspots.com
@@ -7562,7 +7558,6 @@
 0.0.0.0 op-ads-sg8-sg10-12.dr-wan.shopeemobile.com
 0.0.0.0 op-ads-sg8-sg10-14.dr-wan.shopeemobile.com
 0.0.0.0 op-ads-sg8-sg10-8.dr-wan.shopeemobile.com
-0.0.0.0 open-ad.vivo.com.cn
 0.0.0.0 open.e.kuaishou.com
 0.0.0.0 open.isnssdk.com
 0.0.0.0 open.oneplus.net
@@ -7717,7 +7712,6 @@
 0.0.0.0 prod-sponsoredads.mkt.zappos.com
 0.0.0.0 prod.us-east-1.cxm-bcn.publisher-services.amazon.dev
 0.0.0.0 products.gobankingrates.com
-0.0.0.0 prodvizhenie-adv.ozon.ru
 0.0.0.0 profiling.avandor.com
 0.0.0.0 profusesupport.com
 0.0.0.0 projectwonderful.com
@@ -9481,7 +9475,6 @@
 0.0.0.0 tongji.meizu.com
 0.0.0.0 top-free-ad.com
 0.0.0.0 topqualitylink.com
-0.0.0.0 torimochi-ad.net
 0.0.0.0 tourism.visitorlando.com
 0.0.0.0 tp.otto.de
 0.0.0.0 tp88trk.com
@@ -9850,7 +9843,6 @@
 0.0.0.0 yadro.ru
 0.0.0.0 yads.c.yimg.jp
 0.0.0.0 yandexadexchange.net
-0.0.0.0 yango-ads.com
 0.0.0.0 ybswii.swarovski.com
 0.0.0.0 ycembr.net-a-porter.com
 0.0.0.0 ydpushserver.youdao.com

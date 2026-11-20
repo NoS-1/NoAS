@@ -507,12 +507,14 @@ def main():
     # 广告 SDK 与长视频贴片：高置信、低误伤，进 mid（不进 lite，避免挤占 1 万名额）
     sdk = load_list_file("sdk_ads.txt")
     video = load_list_file("video_ads.txt")
+    dead = load_list_file("dead.txt")
+    # 人工审核过的必拦清单（SDK/贴片/端点/威胁）不适用死域闸：
+    # 品牌根域常常没有 A 记录（pangle.io 就是这样），但它是真广告实体，删掉等于漏拦。
     sdk_video = {d for d in (sdk | video)
                  if not protected(d, wl) and d not in benign and d not in ep}
     threat_all = miner | affiliate | telemetry
     threat_extra = {d for d in threat_all
                     if not protected(d, wl) and d not in benign and d not in ep}
-    dead = load_list_file("dead.txt")
     # 死域一律剔除：这些域解析探测已确认不存在（NXDOMAIN/无记录），留着只占名额、拦不到任何东西。
     # 硬边界：白名单与审计端点永不剪，避免把正常站误判成死域。
     dropped_dead = {d for d in exact if d in dead and not protected(d, wl) and d not in ep}
