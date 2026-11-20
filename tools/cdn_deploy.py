@@ -1,86 +1,42 @@
 #!/usr/bin/env python3
-"""cdn_deploy.py —— 把规则产物推到 Cloudflare Pages（免费 CDN，不占 Workers 额度）。
+"""把订阅产物推到 Cloudflare Pages（真增量：按内容哈希只上传变更文件）。
 
-为什么用 Pages 而不是 Worker：
-  Worker 每请求都计 10 万/天的免费额度，做 CDN 分发会很快打满；
-  Pages 是纯静态边缘节点，免费、带宽不限，适合当订阅分发层。
+CF Pages direct upload 的正确姿势（2026-11 实测）：
+  1) GET  /accounts/{acc}/pages/projects/{p}/upload-token   -> JWT（一次性，只管上传）
+  2) POST /pages/assets/upload  body=[{key, value(base64), metadata:{contentType}}]
+     key 必须与 final manifest 里的哈希一致；本项目统一用 sha256 hex（64 位），
+     因为部署详情里的 files 记录就是 sha256，md5 提交上去会被判成空部署。
+  3) POST /accounts/{acc}/pages/projects/{p}/deployments
+     multipart，只提交 manifest（路径 -> 哈希），不带文件本体；data= urlencoded 会 400。
+  4) 部署后回读 deployment.files 数量做自校验，少于预期即视为失败。
 
-部署内容：lite 全格式 + mid 全格式 + L2 路径层 + 通道产物 + L1/L2 合并包 + 入口页。
-full 档不上（单文件 27MB 超过 Pages 25MB 上限，继续走 GitHub data 分支）。
-
-用法：
-  CF_TOKEN=$(cat /tmp/.cftoken) python3 tools/cdn_deploy.py
+state/cdn_assets.json 记 path -> sha256，入库后 CI 每次只传变更，68MB 常态零上传。
 """
+import base64
 import hashlib
 import json
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
 
 ROOT = Path(__file__).resolve().parent.parent
-ACCT = "226431c8f431ebb75d82dd5dbd5e8d86"
-PROJECT = "noas-cdn"
-BASE = f"https://api.cloudflare.com/client/v4/accounts/{ACCT}/pages/projects/{PROJECT}/deployments"
-
-INDEX = """<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NoAS · 规则分发（Cloudflare Pages）</title>
-<style>
-body{background:#0d1117;color:#e6edf3;font:16px/1.7 -apple-system,"Segoe UI",sans-serif;max-width:820px;margin:0 auto;padding:32px 20px}
-a{color:#58a6ff}h1{font-size:24px}h2{font-size:17px;margin-top:28px;color:#8b949e}
-code{background:#161b22;padding:2px 6px;border-radius:4px;word-break:break-all}
-.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 16px;margin:10px 0}
-</style></head><body>
-<h1>NoAS · 规则分发节点</h1>
-<p>Cloudflare Pages 静态分发，免费、带宽不限。规则每日重建。</p>
-
-<h2>L1 DNS 规则</h2>
-<div class="card">
-<b>lite（零误伤最小集 · 9,962 条）</b><br>
-AdGuard：<code>https://noas-cdn.pages.dev/subs/lite/adguard.txt</code><br>
-domains：<code>https://noas-cdn.pages.dev/subs/lite/domains.txt</code>
-</div>
-<div class="card">
-<b>mid（日常默认 · 184,941 条）</b><br>
-AdGuard：<code>https://noas-cdn.pages.dev/subs/mid/adguard.txt</code><br>
-domains：<code>https://noas-cdn.pages.dev/subs/mid/domains.txt</code>
-</div>
-
-<h2>L1+L2 合并包（一份搞定域名拦截 + 路径改写）</h2>
-<div class="card">
-Surge：<code>https://noas-cdn.pages.dev/subs/mixed/noas-all.sgmodule</code><br>
-Loon：<code>https://noas-cdn.pages.dev/subs/mixed/noas-all.plugin</code><br>
-Quantumult X：<code>https://noas-cdn.pages.dev/subs/mixed/noas-all.conf</code>
-</div>
-
-<h2>L2 路径层</h2>
-<div class="card"><code>https://noas-cdn.pages.dev/subs/paths/core/noas-path.sgmodule</code></div>
-
-<h2>DNS 通道</h2>
-<div class="card">
-DoH 清单：<code>https://noas-cdn.pages.dev/subs/channels/doh.txt</code><br>
-DoT 清单：<code>https://noas-cdn.pages.dev/subs/channels/dot.txt</code><br>
-aiodns 脚本：<code>https://noas-cdn.pages.dev/subs/channels/aiodns.sh</code>
-</div>
-
-<p style="color:#8b949e;font-size:13px;margin-top:32px">
-full 档（415,758 条）体积超过本节点单文件上限，请走 GitHub data 分支。
-</p>
-</body></html>
-"""
+ACCT = os.environ.get("CF_ACCOUNT_ID", "226431c8f431ebb75d82dd5dbd5e8d86")
+PROJECT = os.environ.get("CF_PROJECT", "noas-cdn")
+ACC_BASE = f"https://api.cloudflare.com/client/v4/accounts/{ACCT}"
+BASE = f"{ACC_BASE}/pages/projects/{PROJECT}/deployments"
+ASSET_URL = "https://api.cloudflare.com/client/v4/pages/assets/upload"
+STATE = ROOT / "state" / "cdn_assets.json"
+BATCH = 8 * 1024 * 1024
 
 
 def collect():
+    """收集要发布的文件：页面 + 三档订阅 + 通道 + 路径 + 混合。排除 meta/history 之类。"""
     files = {}
-    files["/index.html"] = INDEX.encode()
-    # 站点页：实时任务看板（前端直连 GitHub API，无需 token）+ 零误拦闭环页
-    for name in ("tasks.html", "precision.html", "dns-latency.html"):
-        p = ROOT / "docs" / name
-        if p.exists():
-            files["/" + name] = p.read_bytes()
+    for f in sorted((ROOT / "docs").glob("*.html")):
+        files[f"/{f.name}"] = f.read_bytes()
     for tier in ("lite", "mid"):
         d = ROOT / "subs" / tier
         for f in sorted(d.iterdir()):
@@ -95,25 +51,83 @@ def collect():
     return files
 
 
+def ctype(path):
+    if path.endswith(".html"):
+        return "text/html; charset=utf-8"
+    if path.endswith(".json"):
+        return "application/json"
+    if path.endswith(".txt") or path.endswith(".list") or path.endswith(".sh"):
+        return "text/plain; charset=utf-8"
+    return "application/octet-stream"
+
+
 def main():
     token = os.environ.get("CF_TOKEN") or ""
     if not token:
         print("缺 CF_TOKEN")
         return 2
+
     files = collect()
     total = sum(len(v) for v in files.values())
-    manifest = {p: hashlib.sha256(v).hexdigest() for p, v in files.items()}
-    print("待部署 %d 个文件，共 %.1f MB" % (len(files), total / 1048576))
+    hashes = {p: hashlib.sha256(v).hexdigest() for p, v in files.items()}
+    known = {}
+    if STATE.exists():
+        try:
+            known = json.loads(STATE.read_text(encoding="utf-8"))
+        except Exception:
+            known = {}
 
-    data = {"manifest": json.dumps(manifest), "branch": "main",
-            "commit_message": "NoAS rules %s" % os.environ.get("NOAS_VER", "latest")}
-    parts = []
-    for path, content in files.items():
-        ctype = "text/html; charset=utf-8" if path.endswith(".html") else "application/octet-stream"
-        parts.append((path, (path.lstrip("/"), content, ctype)))
+    todo = [p for p in files if known.get(p) != hashes[p]]
+    print("待部署 %d 个文件，共 %.1f MB｜需上传 %d 个，复用 %d 个"
+          % (len(files), total / 1048576, len(todo), len(files) - len(todo)))
 
-    r = requests.post(BASE, headers={"Authorization": "Bearer " + token},
-                      data=data, files=parts, timeout=600)
+    auth = {"Authorization": "Bearer " + token}
+
+    # 1) 上传变更资产
+    if todo:
+        r = requests.get(f"{ACC_BASE}/pages/projects/{PROJECT}/upload-token", headers=auth, timeout=60)
+        if r.status_code != 200:
+            print("取 upload-token 失败", r.status_code, r.text[:300])
+            return 1
+        jwt = (r.json().get("result") or {}).get("jwt") or ""
+        if not jwt:
+            print("upload-token 为空")
+            return 1
+
+        batch, size = [], 0
+        sent = 0
+
+        def flush(batch, size):
+            if not batch:
+                return 0
+            resp = requests.post(ASSET_URL, headers={"Authorization": "Bearer " + jwt},
+                                 json=batch, timeout=600)
+            if resp.status_code >= 300:
+                print("资产上传失败 HTTP", resp.status_code, resp.text[:400])
+                raise SystemExit(1)
+            return len(batch)
+
+        for p in todo:
+            content = files[p]
+            item = {"key": hashes[p],
+                    "value": base64.b64encode(content).decode(),
+                    "metadata": {"contentType": ctype(p)}}
+            # base64 后体积约 1.34 倍，按原始字节预算分批
+            if size and size + len(content) > BATCH:
+                sent += flush(batch, size)
+                batch, size = [], 0
+            batch.append(item)
+            size += len(content)
+        sent += flush(batch, size)
+        print("资产已上传 %d 个（sha256 键）" % sent)
+
+    # 2) 只提交 manifest
+    parts = [
+        ("manifest", (None, json.dumps({p: hashes[p] for p in files}))),
+        ("branch", (None, "main")),
+        ("commit_message", (None, "NoAS rules %s" % os.environ.get("NOAS_VER", "latest"))),
+    ]
+    r = requests.post(BASE, headers=auth, files=parts, timeout=600)
     try:
         body = r.json()
     except Exception:
@@ -121,30 +135,52 @@ def main():
         return 1
     print("HTTP", r.status_code, "success", body.get("success"))
     res = body.get("result") or {}
-    if res.get("url"):
-        print("部署地址：", res.get("url"))
-        # 留一份机器可读台账：生产别名固定不变，latest_deployment 用于回滚定位
-        from datetime import datetime, timezone
-        ledger = {
-            "project": PROJECT,
-            "production": f"https://{PROJECT}.pages.dev",
-            "latest_deployment": res.get("url"),
-            "files": len(files), "bytes": total,
-            "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "entry": {
-                "lite": f"https://{PROJECT}.pages.dev/subs/lite/adguard.txt",
-                "mid": f"https://{PROJECT}.pages.dev/subs/mid/adguard.txt",
-                "mixed_surge": f"https://{PROJECT}.pages.dev/subs/mixed/noas-all.sgmodule",
-                "doh_list": f"https://{PROJECT}.pages.dev/subs/channels/doh.txt",
-                "aiodns": f"https://{PROJECT}.pages.dev/subs/channels/aiodns.sh",
-                "tasks": f"https://{PROJECT}.pages.dev/tasks.html",
-            },
-        }
-        (ROOT / "subs" / "channels" / "cdn.json").write_text(
-            json.dumps(ledger, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     for e in body.get("errors") or []:
         print("ERR", e.get("code"), e.get("message"))
-    return 0 if body.get("success") else 1
+    if not body.get("success"):
+        return 1
+
+    url = res.get("url") or ""
+    dep_id = res.get("id") or ""
+
+    # 3) 回读 files 自校验：增量提交的 manifest 若没被接受，部署会是空的
+    got = -1
+    try:
+        d = requests.get(f"{BASE}/{dep_id}", headers=auth, timeout=60).json()
+        got = len((d.get("result") or {}).get("files") or {})
+    except Exception as e:
+        print("回读失败", e)
+    print("部署地址：", url)
+    print("内容校验：线上 %d 个文件 / 预期 %d 个 -> %s"
+          % (got, len(files), "OK" if got == len(files) else "FAIL"))
+
+    if got != len(files):
+        print("增量提交没被接受，请回退全量脚本（/tmp/cdn_deploy_v1.py）")
+        return 1
+
+    # 4) 台账：资产哈希 + 部署信息
+    STATE.parent.mkdir(parents=True, exist_ok=True)
+    STATE.write_text(json.dumps(hashes, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+
+    ledger = {
+        "project": PROJECT,
+        "production": f"https://{PROJECT}.pages.dev",
+        "latest_deployment": url,
+        "files": len(files), "bytes": total,
+        "uploaded_this_run": len(todo),
+        "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "entry": {
+            "lite": f"https://{PROJECT}.pages.dev/subs/lite/adguard.txt",
+            "mid": f"https://{PROJECT}.pages.dev/subs/mid/adguard.txt",
+            "mixed_surge": f"https://{PROJECT}.pages.dev/subs/mixed/noas-all.sgmodule",
+            "doh_list": f"https://{PROJECT}.pages.dev/subs/channels/doh.txt",
+            "aiodns": f"https://{PROJECT}.pages.dev/subs/channels/aiodns.sh",
+            "tasks": f"https://{PROJECT}.pages.dev/tasks.html",
+        },
+    }
+    (ROOT / "subs" / "channels" / "cdn.json").write_text(
+        json.dumps(ledger, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    return 0
 
 
 if __name__ == "__main__":
