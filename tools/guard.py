@@ -27,6 +27,45 @@ MUST_NOT_BLOCK = ["www.baidu.com", "github.com", "www.bilibili.com", "api.weixin
                   "www.taobao.com", "mp.weixin.qq.com", "www.zhihu.com"]
 
 
+def check_ledger():
+    """白名单台账与镜像必须一致，且不得与"强制入 lite"的广告网根域自相矛盾。"""
+    import subprocess
+    rc = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "whitelist.py"), "check"],
+                        capture_output=True, text=True)
+    if rc.returncode != 0:
+        print(rc.stdout.strip())
+        return ["白名单台账校验失败（镜像漂移或条目非法）"]
+    allow = load_allow()
+
+    def read_set(rel):
+        out = set()
+        p = os.path.join(ROOT, rel)
+        if os.path.exists(p):
+            for line in open(p, encoding="utf-8"):
+                d = line.split("#", 1)[0].strip().lower()
+                if d and "." in d:
+                    out.add(d)
+        return out
+
+    endpoints = read_set("lists/ad_endpoints.txt")
+    bad = []
+    for d in read_set("lists/core_ad_networks.txt"):
+        if d in endpoints:
+            continue          # 审计过的广告端点：故意压过白名单，不算冲突
+        if any(".".join(d.split(".")[i:]) in allow for i in range(len(d.split(".")) - 1)):
+            bad.append(d)
+    errs = ["核心广告域与白名单冲突：%s" % bad] if bad else []
+
+    # 端点必须在 lite/mid/full 里真的生效（自身或其父域被拦即可）
+    for d in sorted(endpoints):
+        for tier in ("lite", "mid", "full"):
+            sets = read_set(os.path.join("subs", tier, "domains.txt"))
+            parts = d.split(".")
+            if not any(".".join(parts[i:]) in sets for i in range(len(parts) - 1)):
+                errs.append("广告端点 %s 在 %s 档未生效" % (d, tier))
+    return errs
+
+
 def load_allow():
     allow = set()
     for rel in ("tests/benign_baseline.txt", "lists/whitelist.txt"):
@@ -67,7 +106,7 @@ def domains_of(tier, name):
 
 
 def main():
-    fails = []
+    fails = check_ledger()
     allow = load_allow()
     summary = {}
 
@@ -89,7 +128,14 @@ def main():
             fails.append("%s：七格式条数不一致 %s" % (tier, counts))
         if len(base) < 100:
             fails.append("%s：条数过少 %d" % (tier, len(base)))
-        hit = sorted({d for d in set(base) if protected(d, allow)})
+        ep_all = set()
+        epp = os.path.join(ROOT, "lists", "ad_endpoints.txt")
+        if os.path.exists(epp):
+            for line in open(epp, encoding="utf-8"):
+                x = line.split("#", 1)[0].strip().lower()
+                if x and "." in x:
+                    ep_all.add(x)
+        hit = sorted({d for d in set(base) if protected(d, allow) and d not in ep_all})
         if hit:
             fails.append("%s：混入白名单域 %d 条：%s" % (tier, len(hit), ", ".join(hit[:5])))
         bad = [d for d in set(base) if not re.match(r"^[a-z0-9][a-z0-9.\-]*$", d)]

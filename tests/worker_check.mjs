@@ -12,6 +12,7 @@ const load = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8').split('\n')
 const lite = load('subs/lite/domains.txt');
 const mid = load('subs/mid/domains.txt');
 const benign = load('tests/benign_baseline.txt');
+const endpoints = new Set(load('lists/ad_endpoints.txt'));
 
 let miss = [], fp = [];
 for (const d of lite) {
@@ -24,6 +25,7 @@ for (const d of sample) {
   if (!(await r.json()).blocked) miss.push('mid:' + d);
 }
 for (const d of benign) {
+  if (endpoints.has(d)) continue;   // 端点表是"父域在白名单里也照拦"的人工例外
   for (const t of [1, 2]) {
     const r = await handler(new Request(`https://x.dev/check?q=${d}&tier=${t}`), {}, ctx);
     if ((await r.json()).blocked) fp.push(`t${t}:${d}`);

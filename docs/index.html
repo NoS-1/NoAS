@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoAS · 免费广告拦截订阅</title>
+<style>
+  :root{
+    --bg:#0c0f0e; --panel:#141917; --line:#243029; --fg:#e8efe9; --dim:#93a49a;
+    --accent:#3ddc84; --warn:#f5c15c; --bad:#ff6b6b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+       font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:960px;margin:0 auto;padding:48px 20px 80px}
+  h1{font-size:30px;margin:0 0 8px;letter-spacing:-.5px}
+  h2{font-size:19px;margin:38px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .sub{color:var(--dim);margin:0 0 26px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .card .k{color:var(--dim);font-size:12px;letter-spacing:.4px}
+  .card .v{font-size:26px;font-weight:600;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+  .card .n{color:var(--dim);font-size:12px}
+  .tier{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .tier .hd{display:flex;justify-content:space-between;align-items:baseline;padding:14px 16px;border-bottom:1px solid var(--line)}
+  .tier .hd b{font-size:16px}
+  .tier .hd span{color:var(--dim);font-size:12px}
+  .fmt{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;padding:12px 16px;font-size:13px}
+  .fmt a{color:var(--accent);text-decoration:none;word-break:break-all}
+  .fmt a:hover{text-decoration:underline}
+  .fmt .m{color:var(--dim)}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;
+        padding:2px 9px;font-size:12px;color:var(--dim);margin:0 6px 6px 0}
+  .ok{color:var(--accent)} .no{color:var(--bad)} .wn{color:var(--warn)}
+  ul{margin:8px 0 0 18px;padding:0} li{margin:4px 0}
+  code{background:#1b2320;padding:1px 6px;border-radius:5px;font-size:12.5px}
+  .note{color:var(--dim);font-size:13px;margin-top:10px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+  th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:500}
+  footer{margin-top:44px;color:var(--dim);font-size:12.5px;border-top:1px solid var(--line);padding-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>NoAS</h1>
+  <p class="sub">每天自动重建的广告 / 追踪 / 恶意域订阅。全部跑在 GitHub 自家免费能力上，不依赖任何第三方平台。</p>
+
+  <div class="cards" id="top"></div>
+
+  <h2>直接接入</h2>
+  <div id="tiers"></div>
+  <p class="note">国内访问 raw 慢时，可改用本页所在站点的镜像地址（同一份文件，另一个通道）：
+    <code id="pagesbase">/subs/lite/…</code>。</p>
+
+  <h2>自建 DoH（不需要任何服务器租用）</h2>
+  <p>本仓库自带零依赖 DoH 服务，规则与订阅同源，不会出现"订阅拦了但 DoH 没拦"：</p>
+  <ul>
+    <li><code>python3 tools/build_doh.py</code> 生成 <code>doh/worker.js</code></li>
+    <li><code>node serve/standalone.mjs</code> 起服务，<code>/dns-query</code> 收 DoH，<code>/check</code> 查单域，<code>/health</code> 看状态</li>
+    <li>端点表优先于白名单：百度 / 腾讯 / 谷歌的广告投放端点即使父域在白名单里也照拦</li>
+  </ul>
+
+  <h2>发布前必须过的闸</h2>
+  <ul>
+    <li>七个格式条数完全一致，<code>meta</code> 里 sha256 与真实文件对得上</li>
+    <li>命中白名单（含父域）的一律剔除；台账 <code>lists/whitelist.tsv</code> 只增不减，误报留痕</li>
+    <li>比上一轮少 15% 以上直接停发（宁可停一天，也不发残包）</li>
+    <li>回归用真产物跑：lite 全量逐条必须拦、mid 抽样必须拦、良性域必须放行，漏放/误拦不为 0 就不发</li>
+  </ul>
+
+  <h2>自我成长</h2>
+  <p>每天体检一次源：连续失联的自动淘汰，候选池里达标（≥300 条、可解析、与台账零冲突）的自动吸收，全过程写入 <code>history/evolution.json</code>。</p>
+  <div id="evo"></div>
+
+  <h2>边界（不吹）</h2>
+  <p>DNS 层做不到"百分百"：同域多租户路径广告、加密 SNI、客户端自带 DoH 都能绕过 DNS 拦截。本项目的做法是把公开源并集拉满、把审计过的广告端点强制入档、白名单硬闸只放过真正需要放过的域——DNS 层能拦的，不放过。</p>
+
+  <footer>
+    数据每小时级更新于每日两轮构建 · <span id="stamp"></span> · 仓库 <a id="repo" style="color:var(--accent)"></a>
+  </footer>
+</div>
+<script>
+const FMT = ["adguard.txt","domains.txt","hosts.txt","dnsmasq.conf","clash.yaml","singbox.json","surge.list"];
+const NAME = {lite:"lite · 日常默认",mid:"mid · 更广覆盖",full:"full · 最激进"};
+const el = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+fetch("data.json", {cache:"no-store"}).then(r => r.json()).then(d => {
+  const t = d.tiers || {};
+  const base = location.href.replace(/\/[^/]*$/, "/");
+  el("pagesbase").textContent = base + "subs/lite/adguard.txt";
+
+  el("top").innerHTML = [
+    ["lite", t.lite && t.lite.count],
+    ["mid", t.mid && t.mid.count],
+    ["full", t.full && t.full.count],
+    ["规则源", d.sources && d.sources.count],
+  ].map(([k,v]) => `<div class="card"><div class="k">${k.toUpperCase()}</div>
+      <div class="v">${v==null?"—":Number(v).toLocaleString()}</div>
+      <div class="n">条域名规则</div></div>`).join("");
+
+  el("tiers").innerHTML = ["lite","mid","full"].map(tier => {
+    const m = t[tier]; if (!m) return "";
+    const rawBase = `https://raw.githubusercontent.com/${d.repo}/${tier==="lite"?"main":"data"}/subs/${tier}/`;
+    const rows = FMT.map(f => {
+      const bytes = m.files?.[f]?.bytes;
+      const kb = bytes ? (bytes/1024).toFixed(0) + " KB" : "—";
+      const mirror = tier === "lite" ? `<a href="${base}subs/lite/${f}">镜像</a>` : `<span class="m">—</span>`;
+      return `<div><a href="${rawBase}${f}">${f}</a></div><div><span class="m">${kb}</span> · ${mirror}</div>`;
+    }).join("");
+    return `<div class="tier"><div class="hd"><b>${NAME[tier]}</b>
+      <span>${(m.count||0).toLocaleString()} 条 · 版本 ${esc(m.version||"—")} · 通配 ${m.wildcards||0}</span></div>
+      <div class="fmt">${rows}</div></div>`;
+  }).join("");
+
+  const evo = (d.evolution || []).slice().reverse();
+  el("evo").innerHTML = evo.length ? `<table><tr><th>时间</th><th>动作</th><th>对象</th><th>结果</th></tr>${
+    evo.map(e => (e.events||[]).map(v => `<tr><td>${esc((e.ts||"").replace("T"," ").replace("Z",""))}</td>
+      <td>${esc(v.act)}</td><td>${esc(v.name||"—")}</td><td>${esc(v.n!=null?v.n+" 条":(v.why||"—"))}</td></tr>`).join("")).join("")
+  }</table>` : `<p class="note">首轮体检记录将在下一次构建后出现。</p>`;
+
+  el("stamp").textContent = "生成于 " + esc(d.updated || "—");
+  const repo = el("repo"); repo.textContent = d.repo; repo.href = "https://github.com/" + d.repo;
+}).catch(() => { el("top").innerHTML = `<div class="card"><div class="v">—</div><div class="n">数据未生成</div></div>`; });
+</script>
+</body>
+</html>

@@ -99,6 +99,18 @@ def norm(d):
     return d
 
 
+def load_list_file(name):
+    """读取 lists/<name>，返回域集合（忽略注释）。"""
+    out = set()
+    p = os.path.join(LISTS, name)
+    if os.path.exists(p):
+        for line in open(p, encoding="utf-8"):
+            d = line.split("#", 1)[0].strip().lower()
+            if d and "." in d:
+                out.add(d)
+    return out
+
+
 def load_whitelist():
     wl = set()
     p = os.path.join(LISTS, "whitelist.txt")
@@ -263,10 +275,11 @@ def main():
 
     exact, wild, per_source, _, consensus = collect()
     wl = load_whitelist()
-    blocked_wl = [d for d in exact if protected(d, wl)]
-    exact = {d for d in exact if not protected(d, wl)}
+    ep = load_list_file("ad_endpoints.txt")
+    blocked_wl = [d for d in exact if protected(d, wl) and d not in ep]
+    exact = {d for d in exact if not protected(d, wl) or d in ep}
     wild = {w for w in wild if not protected(w, wl)}
-    exact = drop_children(exact)
+    exact = drop_children(exact) | ep
 
     if len(exact) < 500:
         print("FAIL：规则太少（%d），疑似所有源都失效，拒绝发布" % len(exact))
@@ -283,11 +296,12 @@ def main():
             line = line.split("#", 1)[0].strip().lower()
             if line and "." in line:
                 core.add(line)
-    lite = drop_children({d for d in exact if consensus.get(d, 0) >= 3} | (core & exact))
-    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2})
+    lite = drop_children({d for d in exact if consensus.get(d, 0) >= 3} | (core & exact)) | ep
+    mid = drop_children({d for d in exact if consensus.get(d, 0) >= 2}) | ep
 
     report = {"sources": per_source, "full": len(exact), "lite": len(lite), "mid": len(mid),
-              "wildcards": len(wild), "whitelist_blocked": len(blocked_wl)}
+              "wildcards": len(wild), "whitelist_blocked": len(blocked_wl),
+              "ad_endpoints": len(ep)}
     print("编译完成：full %d ／mid %d ／lite %d 条（通配 %d）｜白名单剔除 %d｜源 %d 个" % (
         len(exact), len(mid), len(lite), len(wild), len(blocked_wl), len(per_source)))
 

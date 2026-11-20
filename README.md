@@ -23,12 +23,15 @@
 | sing-box | rule_set（format: source） | `singbox.json` |
 | Surge / Loon | DOMAIN-SUFFIX 列表 | `surge.list` |
 
-国内直连 raw 慢时，把前缀换成 jsDelivr（同一份文件、免费无限带宽）：
+三通道，全部是 GitHub 自家，不挂任何第三方 CDN：
 
-```
-https://cdn.jsdelivr.net/gh/NoS-1/NoAS@main/subs/lite/adguard.txt
-https://cdn.jsdelivr.net/gh/NoS-1/NoAS@data/subs/mid/adguard.txt
-```
+| 通道 | 用法 | 说明 |
+|---|---|---|
+| raw | 上表地址 | 随仓库提交即时生效 |
+| Pages | `https://nos-1.github.io/NoAS/subs/lite/adguard.txt` | 站点镜像，带宽由 GitHub 承担，与 raw 互为备份 |
+| Release | `https://github.com/NoS-1/NoAS/releases/download/latest/noas-snapshot.zip` | 单包下载（三档 + DoH 产物），长期留档 |
+
+站点首页 `https://nos-1.github.io/NoAS/` 有实时条数、各格式校验值、源健康度与自我成长记录。
 
 ## 为什么可信
 
@@ -64,12 +67,14 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 
 ## 自动化
 
-`.github/workflows/daily.yml`：每天 03:17 / 15:17（北京）拉源、编译、校验、发布、回归，**不读任何 secrets**。
+`.github/workflows/daily.yml`：每天 03:17 / 15:17（北京）自我体检 → 拉源 → 编译 → 校验 → 发布 → 回归 → 站点部署，**只用仓库自带的 GITHUB_TOKEN，不读任何外部 secrets**。
 
 - 高频写入走 git push（不吃 API 配额）
 - mid/full 发到 `data` 分支，每次强制单 commit —— 历史永不膨胀，jsDelivr 可直接按分支取
 - lite 跟代码留在 `main`，克隆即用
 - 生成物按内容指纹做幂等：规则没变就不产生新提交
+- 公开仓库的 Actions 时长不限，规则更新不设频率上限；写入走 git push，不吃 API 配额
+- 安全扫描（CodeQL，公开仓库免费）每周跑一次，只扫自己的流水线脚本
 
 ## 已知边界（不吹）
 
