@@ -77,7 +77,7 @@ def collect():
     files = {}
     files["/index.html"] = INDEX.encode()
     # 站点页：实时任务看板（前端直连 GitHub API，无需 token）+ 零误拦闭环页
-    for name in ("tasks.html", "precision.html"):
+    for name in ("tasks.html", "precision.html", "dns-latency.html"):
         p = ROOT / "docs" / name
         if p.exists():
             files["/" + name] = p.read_bytes()
