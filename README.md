@@ -20,7 +20,7 @@
 | hosts | 路由器、老 App | `hosts.txt` |
 | dnsmasq | OpenWrt / dnsmasq | `dnsmasq.conf` |
 | Clash | Clash / Mihomo rule-provider（behavior: domain） | `clash.yaml` |
-| sing-box | rule_set（format: source） | `singbox.json` |
+| sing-box | rule_set（format: source），**仅 L1**；内核无 MITM，不能跑 L2 路径改写 | `singbox.json` |
 | Surge / Loon | DOMAIN-SUFFIX 列表 | `surge.list` |
 
 三通道，全部是 GitHub 自家，不挂任何第三方 CDN：
