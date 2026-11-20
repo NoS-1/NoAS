@@ -1,0 +1,33 @@
+name: Security (CodeQL)
+
+# 公开仓库的代码扫描是免费的；这里只扫自己的脚本，防止流水线被注入或误删。
+on:
+  schedule:
+    - cron: "0 20 * * 0"   # 每周一 04:00（北京）
+  push:
+    branches: [main]
+    paths:
+      - "tools/**"
+      - "serve/**"
+      - "doh/worker.tpl.js"
+      - "tests/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python, javascript-typescript]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          language: ${{ matrix.language }}
+      - uses: github/codeql-action/analyze@v3

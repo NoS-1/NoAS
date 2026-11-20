@@ -47,6 +47,10 @@ def main():
           .replace("__TIER1__", json.dumps(sorted(set(lite)), ensure_ascii=False))
           .replace("__TIER2__", json.dumps(sorted(set(mid)), ensure_ascii=False))
           .replace("__ALLOW__", json.dumps(allow, ensure_ascii=False))
+          .replace("__ENDPOINTS__", json.dumps(sorted({
+              l.split("#", 1)[0].strip().lower()
+              for l in open(os.path.join(ROOT, "lists", "ad_endpoints.txt"), encoding="utf-8")
+              if l.split("#", 1)[0].strip()}), ensure_ascii=False))
           .replace("__VERSION__", json.dumps(ver)))
     os.makedirs(os.path.join(ROOT, "doh"), exist_ok=True)
     p = os.path.join(ROOT, "doh", "worker.js")

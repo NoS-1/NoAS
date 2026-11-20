@@ -1,0 +1,15 @@
+# NoAS 广告端点例外表（覆盖白名单的父域保护）
+# 为什么需要它：白名单写 baidu.com 会保护所有 *.baidu.com，结果连 pos.baidu.com（百度广告投放）
+# 也一起放行。本表是人工审计过的"纯广告/投放端点"，即使父域在白名单里也照拦不误。
+# 收录标准：该域只做广告/追踪，拦掉它不会让宿主站点功能失效。
+adservice.google.com
+pagead2.googlesyndication.com
+an.facebook.com
+analytics.twitter.com
+gdt.qq.com
+e.qq.com
+pos.baidu.com
+cpro.baidu.com
+cpro.baidustatic.com
+mobads.baidu.com
+union.baidu.com

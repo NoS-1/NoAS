@@ -10,6 +10,7 @@
 const TIER1 = new Set(__TIER1__.map((x) => x.toLowerCase()));
 const TIER2 = new Set(__TIER2__.map((x) => x.toLowerCase()));
 const ALLOW = new Set(__ALLOW__.map((x) => x.toLowerCase()));
+const ENDPOINTS = new Set(__ENDPOINTS__.map((x) => x.toLowerCase()));
 const VERSION = __VERSION__;
 
 const UPSTREAM = [
@@ -35,8 +36,20 @@ function allowed(name) {
   return false;
 }
 
+function isEndpoint(name) {
+  if (ENDPOINTS.has(name)) return true;
+  const parts = name.split(".");
+  for (let i = 1; i < parts.length - 1; i++) {
+    if (ENDPOINTS.has(parts.slice(i).join("."))) return true;
+  }
+  return false;
+}
+
 function blocked(name, tier) {
-  if (!name || allowed(name)) return false;
+  if (!name) return false;
+  // 端点例外：人工审计过的纯广告端点，父域在白名单里也照拦
+  if (isEndpoint(name)) return true;
+  if (allowed(name)) return false;
   const set = tier >= 2 ? TIER2 : TIER1;
   if (set.has(name)) return true;
   const parts = name.split(".");
@@ -112,7 +125,7 @@ async function handle(request, env, ctx) {
 
   if (url.pathname === "/health") {
     return json({ ok: true, version: VERSION, tier1: TIER1.size, tier2: TIER2.size,
-                  allowlist: ALLOW.size, upstream: UPSTREAM.length });
+                  allowlist: ALLOW.size, endpoints: ENDPOINTS.size, upstream: UPSTREAM.length });
   }
   if (url.pathname === "/check") {
     const q = (url.searchParams.get("q") || "").toLowerCase();

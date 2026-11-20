@@ -1,13 +1,15 @@
-name: Daily Build (每日重建 + 发布)
+name: Daily Build (每日重建 · 发布 · 站点)
 
-# 这条流水线不读任何 secrets，也不需要任何平台账号：
-#   拉公开源 → 编译 → 白名单硬闸 → 三档订阅 → Worker 产物 → 回归 → 提交 / 发布 data 分支
-# 高频写入走 git（不消耗 API 配额）；大文件走 data 分支（强制单 commit，历史不膨胀）。
+# 只用 GitHub 自家免费能力，不挂任何第三方平台或 CDN：
+#   Actions（公开仓库不限时长）→ 拉公开源 → 自我体检 → 编译 → 硬闸 → 订阅 → DoH 产物 → 回归
+#   → data 分支（大文件单 commit，历史不膨胀）→ Release 资产（单包下载，长期留档）
+#   → Pages（站点 + 镜像通道，带宽由 GitHub 承担）
+# 写操作全程走 git push 与 gh CLI，不消耗 API 配额，也不依赖外部账号。
 
 on:
   schedule:
-    - cron: "17 19 * * *"   # 北京 03:17，避开整点高峰
-    - cron: "17 7 * * *"    # 北京 15:17，白天补一轮（源更新更快）
+    - cron: "17 19 * * *"   # 北京 03:17
+    - cron: "17 7 * * *"    # 北京 15:17
   workflow_dispatch: {}
   push:
     branches: [main]
@@ -15,9 +17,12 @@ on:
       - "subs/**"
       - "docs/**"
       - "**/*.md"
+      - "history/**"
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: daily
@@ -40,53 +45,76 @@ jobs:
         with:
           node-version: "20"
 
-      - name: 拉取公开规则源
+      - name: 1 · 自我体检（淘汰坏源 / 吸收合格新源）
+        run: python3 tools/evolve.py
+
+      - name: 2 · 拉取公开规则源
         run: python3 tools/fetch.py
 
-      - name: 编译三档（lite/mid/full）
+      - name: 3 · 编译三档（lite / mid / full）
         run: python3 tools/compile.py
 
-      - name: 发布前硬校验（白名单/格式/一致性/规模突变）
+      - name: 4 · 发布前硬校验
         run: python3 tools/guard.py
 
-      - name: 构建 DoH 产物
+      - name: 5 · DoH 产物
         run: |
           python3 tools/build_doh.py
           node --check doh/worker.js
 
-      - name: 产物回归（真拦截 / 真放行）
+      - name: 6 · 真产物回归
         run: |
           node tests/worker_check.mjs
           node tests/standalone_check.mjs
 
-      - name: 发布 mid/full 到 data 分支（不占 API 配额、历史不膨胀）
+      - name: 7 · 发布 mid/full 到 data 分支
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 tools/publish.py --token "$GITHUB_TOKEN"
 
-      - name: 归档当天快照
-        run: |
-          mkdir -p history
-          python3 -c "import json,time,pathlib; p=pathlib.Path('history/last_run.json'); c=json.load(open('out/compile.json',encoding='utf-8')); json.dump({'ts':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'compile':c}, open(p,'w',encoding='utf-8'), ensure_ascii=False, indent=1); print(str(c)[:300])"
+      - name: 8 · 生成站点数据与 Pages 镜像
+        run: python3 tools/report.py
 
-      - name: 提交 lite 与代码（内容没变就零提交）
+      - name: 9 · 提交（内容没变就零提交）
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A subs/lite history tools doh/worker.tpl.js sources.tsv lists tests
+          git add -A subs/lite docs history tools doh/worker.tpl.js sources.tsv lists tests
           if git diff --cached --quiet; then
             echo "无变化，跳过提交"
           else
-            git commit -m "build: 每日规则重建 $(date -u +%Y%m%d-%H%M)"
+            git commit -m "build: 每日重建 $(date -u +%Y%m%d-%H%M)"
             git push
           fi
 
-      - name: 留档
+      - name: 10 · Release 单包（lite+mid+full+DoH）
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf /tmp/noas-pkg && mkdir -p /tmp/noas-pkg
+          cp -r subs/* /tmp/noas-pkg/
+          mkdir -p /tmp/noas-pkg/doh && cp doh/worker.js serve/standalone.mjs /tmp/noas-pkg/doh/
+          cp README.md /tmp/noas-pkg/
+          ( cd /tmp/noas-pkg && zip -qr /tmp/noas-snapshot.zip . )
+          gh release view latest >/dev/null 2>&1 || gh release create latest \
+            --title "NoAS 最新快照" --notes "每日自动重建的规则单包（lite/mid/full + 自建 DoH）"
+          gh release upload latest /tmp/noas-snapshot.zip --clobber
+
+      - name: 11 · Pages 部署
+        uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: 12 · 留档
         uses: actions/upload-artifact@v4
         with:
           name: noas-subs-and-reports
           path: |
             subs/
             out/compile.json
-            history/last_run.json
+            history/health.json
+            history/evolution.json
           retention-days: 14
