@@ -128,11 +128,12 @@ def main() -> int:
     a = ap.parse_args()
 
     c = load_creds()
-    acc, cur = c.get("CF_ACCOUNT_ID", ""), c.get("CF_API_TOKEN", "")
+    acc = c.get("CF_ACCOUNT_ID", "") or "226431c8f431ebb75d82dd5dbd5e8d86"
+    cur = c.get("CF_API_TOKEN", "")
     root, pat = c.get("CF_USER_TOKEN", ""), c.get("GH_PAT", "")
-    if not acc or not cur:
-        print("✗ creds.env 缺 CF_ACCOUNT_ID / CF_API_TOKEN")
-        return 1
+    if not cur:
+        print("· 无 CF_API_TOKEN（CI 未配置 / 本地没凭据），跳过轮换")
+        return 0
 
     # 现状体检
     s, d = cf("GET", f"/accounts/{acc}/tokens/verify", cur)

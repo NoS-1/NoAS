@@ -72,11 +72,6 @@ jobs:
             echo "推送凭据：内置 GITHUB_TOKEN（未配置 App）"
           fi
 
-      # CF 令牌轮换：account token 在协议层无法派生其它令牌（CF 明确拒绝 sub-token 管理令牌），
-      # 只有 user 级根令牌能签新令牌。没有根令牌时脚本自行跳过（exit 0），绝不阻塞构建。
-      - name: 0.3 · CF 令牌轮换（配了根令牌才动手）
-        run: python3 tools/cf_rotate.py
-
       - name: 0.2 · 挂载推送凭据
         env:
           APP_TOK: ${{ steps.app.outputs.token }}
@@ -87,6 +82,17 @@ jobs:
           else
             git remote set-url origin "https://x-access-token:${FALLBACK}@github.com/${GITHUB_REPOSITORY}.git"
           fi
+
+
+      # CF 令牌体检：CI 里只读不改（写 secret 需要 PAT，内置 token 无该权限）。
+      # 真轮换在本地或凭据齐备时执行；未配置时脚本自行跳过，绝不阻塞构建。
+      - name: 0.3 · CF 令牌体检（轮换前先确认根令牌可用）
+        continue-on-error: true
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_USER_TOKEN: ${{ secrets.CF_USER_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
+        run: python3 tools/cf_rotate.py --check
 
       - name: 1 · 拉取公开规则源
         run: python3 tools/fetch.py
