@@ -96,14 +96,14 @@ def main():
         except Exception:
             pass
 
-    picked = sorted(d for d in full if d not in lite and promoted_ok(d, allow, endpoints, True))
-    track = sorted(d for d in full if d not in lite and promoted_ok(d, allow, endpoints, False) and d not in picked)
+    picked = sorted(d for d in full if promoted_ok(d, allow, endpoints, True))
+    track = sorted(d for d in full if promoted_ok(d, allow, endpoints, False) and d not in picked)
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write("# 自动晋级进 lite：域名结构命中广告强特征，且未被白名单/端点表覆盖\n")
         fh.write("# 生成规则见 tools/promote.py；本文件由工具覆盖，不手改\n")
         for d in picked:
             fh.write(d + "\n")
-    print("自动晋级候选（进 lite）：" + str(len(picked)) + " 条；追踪类（进 mid）：" + str(len(track)) + " 条")
+    print("自动晋级（进 lite）：" + str(len(picked)) + " 条；追踪类（进 mid）：" + str(len(track)) + " 条（纯函数：只由 full + 白名单决定，反复运行结果一致）")
     for d in picked[:5]:
         print("  · " + d)
     return 0
