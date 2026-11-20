@@ -9,7 +9,9 @@ name: Daily Build (每日重建 · 发布 · 站点)
 on:
   schedule:
     - cron: "17 19 * * *"   # 北京 03:17
+    - cron: "17 1 * * *"    # 北京 09:17
     - cron: "17 7 * * *"    # 北京 15:17
+    - cron: "17 13 * * *"   # 北京 21:17
   workflow_dispatch: {}
   push:
     branches: [main]

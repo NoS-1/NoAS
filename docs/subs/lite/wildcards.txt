@@ -1,4 +1,4 @@
-# NoAS 通配清单（20261120-f613a4cd）：*.域 = 该域任意多级子域
+# NoAS 通配清单（20261120-e7b101cc）：*.域 = 该域任意多级子域
 *.adchina.cn
 *.adcolony.com
 *.adjust.com
@@ -26,7 +26,6 @@
 *.googleadservices.com
 *.googlesyndication.com
 *.googletagmanager.com
-*.gromore.com
 *.gromore.net
 *.inmobi.cn
 *.inmobi.com
@@ -40,7 +39,6 @@
 *.oceanengine.com
 *.outbrain.com
 *.pangle.io
-*.pangolin-sdk-toutiao.com
 *.pubmatic.com
 *.quantserve.com
 *.rubiconproject.com
@@ -52,7 +50,6 @@
 *.taboola.com
 *.talkingdata.com
 *.talkingdata.net
-*.tanx.com
 *.tapjoy.com
 *.tenjin.io
 *.umeng.com

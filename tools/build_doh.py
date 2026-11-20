@@ -42,10 +42,10 @@ def main():
         allow += [l.split("#", 1)[0].strip().lower() for l in open(tp, encoding="utf-8") if "." in l]
     allow = sorted(set(allow))
 
+    # DoH 只带"高精度通配"（mid 档，纯广告网根域），避免把 40 万条通配塞进 worker
     wild = sorted({
         l.strip().lower()
-        for t in ("mid", "full")
-        for l in open(os.path.join(SUBS, t, "wildcards.txt"), encoding="utf-8")
+        for l in open(os.path.join(SUBS, "mid", "wildcards.txt"), encoding="utf-8")
         if l.strip().startswith("*.")
     })
     ver = time.strftime("%Y%m%d-%H%M")
