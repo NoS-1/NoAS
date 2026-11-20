@@ -873,7 +873,6 @@ a8.yumejin.jp	70	lite	已在lite; 共识5.5
 a8.yuzen-official.com	70	lite	已在lite; 共识5.5
 a8.zen-camps.com	70	lite	已在lite; 共识5.5
 a8.zeroku.jp	70	lite	已在lite; 共识5.5
-a8.zzz-land.com	70	lite	已在lite; 共识5.5
 a8cv.adv.gr.jp	90	lite	已在lite; 共识4.5; 父域为广告网络
 a8cv.cpi.ad.jp	90	lite	已在lite; 共识5.5; 父域为广告网络
 a8cv.secure.sakura.ad.jp	90	lite	已在lite; 共识5.5; 父域为广告网络
@@ -990,6 +989,7 @@ ad-cloud.jp	90	lite	已在lite; 共识5.5; 父域为广告网络
 ad-cmp.hismarttv.com	77	lite	已在lite; 共识3.0; 父域为广告网络
 ad-collect.hzyoka.com	65	mid	已在lite; 父域为广告网络
 ad-configurator.6cloud.fr	73	lite	已在lite; 父域为广告网络; 机器生成子域
+ad-console.jdcloud.com	0	none	白名单/良性/黄金集一票否决
 ad-core-lb-v3.lf.bytelb.net	65	mid	已在lite; 父域为广告网络
 ad-count.jp	90	lite	已在lite; 共识4.0; 父域为广告网络
 ad-courier.com	65	mid	已在lite; 父域为广告网络
@@ -14238,6 +14238,7 @@ op-ads-sg8-sg10-11.dr-wan.shopeemobile.com	65	mid	已在lite; 父域为广告网
 op-ads-sg8-sg10-12.dr-wan.shopeemobile.com	65	mid	已在lite; 父域为广告网络
 op-ads-sg8-sg10-14.dr-wan.shopeemobile.com	65	mid	已在lite; 父域为广告网络
 op-ads-sg8-sg10-8.dr-wan.shopeemobile.com	65	mid	已在lite; 父域为广告网络
+op-api.docer.wps.cn	0	none	白名单/良性/黄金集一票否决
 op-baoxiao-ng-bj.yuanfudao.com	0	none	白名单/良性/黄金集一票否决
 op.dongchedi.com	0	none	白名单/良性/黄金集一票否决
 op.zongheng.com	0	none	白名单/良性/黄金集一票否决
@@ -20850,6 +20851,7 @@ tracker.jkplayers.com	15	full	词元=tracker
 tracker.joongang.co.kr	15	full	词元=tracker
 tracker.joost.com	15	full	词元=tracker
 tracker.jornada.facialacademy.com.br	15	full	词元=tracker
+tracker.jx3.kingsoft.com	23	full	标签2类; 词元=tracker
 tracker.kantan-access.com	85	lite	已在lite; 共识6.5; 词元=tracker
 tracker.karinerizzardi.com.br	15	full	词元=tracker
 tracker.keywordintent.com	15	full	词元=tracker
@@ -21094,10 +21096,12 @@ union.bytedance.com	73	lite	已在lite; 标签2类; 父域为广告网络
 union.china.com.cn	0	full	无信号
 union.dangdang.com	0	none	白名单/良性/黄金集一票否决
 union.duizhuang.com	0	full	无信号
+union.fanxing.kugou.com	0	none	白名单/良性/黄金集一票否决
 union.fun.tv	8	full	标签2类
 union.futunn.com	8	full	标签2类
 union.gome.com.cn	28	full	标签2类; 父域为广告网络
 union.ijinshan.com	0	none	白名单/良性/黄金集一票否决
+union.img.alimama.com	28	full	标签2类; 父域为广告网络
 union.jdcloud.com	0	none	白名单/良性/黄金集一票否决
 union.m.smzdm.com	8	full	标签2类
 union.maccms.la	0	full	无信号
