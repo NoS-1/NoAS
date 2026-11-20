@@ -135,3 +135,4 @@ yahoo.com	2026-11-20	baseline	基线：常用服务，防止订阅误伤
 youku.com	2026-11-20	baseline	基线：常用服务，防止订阅误伤
 youtube.com	2026-11-20	baseline	基线：常用服务，防止订阅误伤
 zhihu.com	2026-11-20	baseline	基线：常用服务，防止订阅误伤
+17173.com	2026-11-20	manual	黄金回归发现：游戏门户被 full 误拦

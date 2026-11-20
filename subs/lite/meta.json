@@ -3,15 +3,15 @@
  "version": "20261120-73172e8a",
  "count": 9962,
  "wildcards": 56,
- "generated_utc": "Fri, 20 Nov 2026 14:57:08 GMT",
+ "generated_utc": "Fri, 20 Nov 2026 15:36:07 GMT",
  "files": {
   "adguard.txt": {
    "bytes": 232212,
-   "sha256": "e0391c91e5423d442dff70e13894d215ec658d5a43deb6b681e2d62b4f660ff8"
+   "sha256": "bfa4597e4b134ce7fc277c6a385a2d5749cd0ef17478431a645811876c4f41b0"
   },
   "allow.txt": {
-   "bytes": 2152,
-   "sha256": "374876b2948259a42249581c5b6813452324d1c0009d7411d5e77cd963cc88ad"
+   "bytes": 2162,
+   "sha256": "9c2204417f8ab9f2571cee3dd29f5f07539d949abaa12bb22f183c531f1c1d80"
   },
   "clash.yaml": {
    "bytes": 380320,

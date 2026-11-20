@@ -85,7 +85,7 @@ def probe_doh(url):
     req = urllib.request.Request(
         url + ("&" if "?" in url else "?") + "dns=" + b64,
         headers={"accept": "application/dns-message", "user-agent": "NoAS-health/1.0"})
-    with OPENER.open(req, timeout=10) as r:
+    with OPENER.open(req, timeout=8) as r:
         body = r.read()
     return judge(body), int((time.time() - t0) * 1000)
 
@@ -99,7 +99,7 @@ def probe_dot(uri):
     msg = build_query(PROBE_HOST)
     t0 = time.time()
     ctx = ssl.create_default_context()
-    with socket.create_connection((host, port), timeout=10) as s:
+    with socket.create_connection((host, port), timeout=6) as s:
         with ctx.wrap_socket(s, server_hostname=host) as ss:
             ss.sendall(struct.pack(">H", len(msg)) + msg)
             buf = b""
