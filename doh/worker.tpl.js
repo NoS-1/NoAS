@@ -322,4 +322,9 @@ async function handle(request, env, ctx) {
   });
 }
 
-export default { fetch: handle };
+// 免费 Cron Trigger（每账户 5 个额度）：云端自己留心跳，GitHub Actions 挂了也能看出 worker 是否活着。
+async function scheduled(event, env, ctx) {
+  logHit(env, "cron", "heartbeat", 0, "v" + VERSION);
+}
+
+export default { fetch: handle, scheduled };

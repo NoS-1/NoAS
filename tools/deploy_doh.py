@@ -48,6 +48,12 @@ def main():
 
     boundary = "----noasDoh" + uuid.uuid4().hex
     meta_obj = {"main_module": "worker.mjs", "compatibility_date": COMPAT}
+    # Workers Logs 免费额度 20 万事件/天；按 1% 采样，10 万请求/天也只留约 1 千条，不抢额度。
+    meta_obj["observability"] = {
+        "enabled": True,
+        "head_sampling_rate": 0.01,
+        "logs": {"enabled": True, "head_sampling_rate": 0.01, "invocation_logs": False},
+    }
     if AE_DATASET and AE_DATASET.lower() != "off":
         meta_obj["bindings"] = [
             {"type": "analytics_engine", "name": "AE", "dataset": AE_DATASET}
