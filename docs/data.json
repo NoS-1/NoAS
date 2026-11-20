@@ -1,112 +1,112 @@
 {
  "repo": "NoS-1/NoAS",
- "updated": "2026-11-20T08:42:37Z",
+ "updated": "2026-11-20T08:52:51Z",
  "tiers": {
   "lite": {
-   "count": 28605,
-   "version": "20261120-f8c148c7",
+   "count": 23825,
+   "version": "20261120-fdf9c27a",
    "wildcards": 0,
-   "generated_utc": "Fri, 20 Nov 2026 08:42:13 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 08:52:03 GMT",
    "files": {
     "adguard.txt": {
-     "bytes": 697137,
-     "sha256": "eca2fcc87fea8d7794f2323cab8f537d5f6f9b36ae61ddec1a0870768a946318"
+     "bytes": 587390,
+     "sha256": "50db0148378855d9ec2a4bd77c3707991d2d79056296a5933c744ece47839797"
     },
     "clash.yaml": {
-     "bytes": 1125968,
-     "sha256": "ee214df9425cc2f962d8a73d10b459070a569a2ea3d7b755296b25f93b0f46cb"
+     "bytes": 944521,
+     "sha256": "40ecf2a25909818e221851b0173d2c14706b3dedfbd93a36c3113b8f3fc9b883"
     },
     "dnsmasq.conf": {
-     "bytes": 1097347,
-     "sha256": "2358a562d414f34b70bb100519a51dfb29cd85a51850e0168e375cdd563de7bb"
+     "bytes": 920680,
+     "sha256": "a976d56421563d1e5ba9e5812015316f4a66d75548a6491a15a6e6c27535e3f8"
     },
     "domains.txt": {
-     "bytes": 611022,
-     "sha256": "d3b7967e579aaa7a391f162519725c510195f5d933bf9fabd564734bd14af9bc"
+     "bytes": 515615,
+     "sha256": "ce429f2dd642753fb2d82a866e83a8c035e5ca79d486311d91190e6f296d8e20"
     },
     "hosts.txt": {
-     "bytes": 839902,
-     "sha256": "7d91c63174c25535df4e488cbf5ab08a4b2eccc0801158988510a770fcdbe4ef"
+     "bytes": 706255,
+     "sha256": "3a1dcbf853eaf1bea2e8e37a4c082bf3f6904c44452710f4af609cc857cdebda"
     },
     "singbox.json": {
-     "bytes": 811325,
-     "sha256": "ee0467d81121f9027b70da60e8de2c8887c181694ff55a9331a3c1bbe00911f0"
+     "bytes": 682458,
+     "sha256": "d3655882a6f9fbc9f7e399d732e19180462277a4c9302a354343c02c9d9f4802"
     },
     "surge.list": {
-     "bytes": 1011492,
-     "sha256": "b5da3a36080334a3d1b0e09ab2f2616ddfa223cf8b4b35977c8c2c5fc3160d35"
+     "bytes": 849165,
+     "sha256": "bec86ccb1227d526678e4ccae6fa487cfc757eb6fb901f20a88c31dd7d01066f"
     }
    }
   },
   "mid": {
-   "count": 162225,
-   "version": "20261120-e357b267",
+   "count": 164711,
+   "version": "20261120-5bf32ac2",
    "wildcards": 0,
-   "generated_utc": "Fri, 20 Nov 2026 08:42:14 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 08:52:03 GMT",
    "files": {
     "adguard.txt": {
-     "bytes": 3971337,
-     "sha256": "572422b74ced41e79e26e81f659bc20acbf30b8fe91539a4bafb93d8a331af97"
+     "bytes": 4029021,
+     "sha256": "be658082852b293179eb49a46095f6ef3d454d667ca63f3827c419655a048f57"
     },
     "clash.yaml": {
-     "bytes": 6404468,
-     "sha256": "931d28c9dfcdecaedaabaf486f2688c3a5ea15428511acf29f6ec5a338430488"
+     "bytes": 6499442,
+     "sha256": "c44eee837d848a363d7cbccfa05e032c4de00e9b69fd8ab50c3ea378a373d2dc"
     },
     "dnsmasq.conf": {
-     "bytes": 6242228,
-     "sha256": "ecf128d3c65a55a3bf0f2efa74388b0ffee9587cab04efd24f84d7ebedf7194b"
+     "bytes": 6334716,
+     "sha256": "55e30cf5463b445d5f7c8845233fa89c1915fcff67b867e1b58c27374085a4cd"
     },
     "domains.txt": {
-     "bytes": 3484362,
-     "sha256": "ec32a3628537224f2bf6059ba4f2cd388c70870309633e8f2e58445a61cd713d"
+     "bytes": 3534588,
+     "sha256": "ec02563acda3c17b37487f71bce8758ba2f7788c30ab157b03926311eefd21aa"
     },
     "hosts.txt": {
-     "bytes": 4782203,
-     "sha256": "d4dae63bf764e51313400271c9ed95607b08bdd2a12ad56be0598c6e281c922b"
+     "bytes": 4852317,
+     "sha256": "5c0189e846cbc55eacae075b9230cc4ac1ddeb998111a23f99c3a53222458a52"
     },
     "singbox.json": {
-     "bytes": 4620005,
-     "sha256": "42318af6b737107b39483dba65d5ea1de80fda8fd943e8199fa5395dbfc34658"
+     "bytes": 4687633,
+     "sha256": "a731f47be498d83ad38494b0efb3f909e986e27fb5734dc70f8057ca716be00a"
     },
     "surge.list": {
-     "bytes": 5755512,
-     "sha256": "342bd2bb10f3a75be6ccf657c75e14829cfd1f30a792a9a89ffd948ed31becb9"
+     "bytes": 5840542,
+     "sha256": "5d3916af586ce7f9537873eb48ff0e3ecbf9f262c836ced0d321028f6bbe9d0c"
     }
    }
   },
   "full": {
-   "count": 416928,
-   "version": "20261120-9cac55de",
+   "count": 415053,
+   "version": "20261120-4eafd5fe",
    "wildcards": 0,
-   "generated_utc": "Fri, 20 Nov 2026 08:42:14 GMT",
+   "generated_utc": "Fri, 20 Nov 2026 08:52:04 GMT",
    "files": {
     "adguard.txt": {
-     "bytes": 9942797,
-     "sha256": "58c9b15127f2393231564b17f0f8da28bc49845dec4f0af284acae22e17066d1"
+     "bytes": 9891814,
+     "sha256": "9f0c28ceb9ed86e613f1858a775287bdd64228fb9553af403c78ec0fb1aeb080"
     },
     "clash.yaml": {
-     "bytes": 16196472,
-     "sha256": "cb55a0ca39f8b8b12c6bf5328439d2204562debdfa0619fd0adc7097cd673a3a"
+     "bytes": 16117364,
+     "sha256": "64385a941c17154633245386fa826b31397cdecc8d10d4241fc965294aaef0a9"
     },
     "dnsmasq.conf": {
-     "bytes": 15779529,
-     "sha256": "79232b11d6884d12159c4bae53de3cc6e676c82658a6037a7d6047030d1c99c7"
+     "bytes": 15702296,
+     "sha256": "345b493db6521a65d5e32786229df14a3207262edeb2b77edc325ec36bd25c30"
     },
     "domains.txt": {
-     "bytes": 8691712,
-     "sha256": "864313cb98d7caad3ad5f408deabac59e88d9a800d254401e8d1b59af79d0bb8"
+     "bytes": 8646354,
+     "sha256": "c6283fb0ce19acb12a7254f916452f5b30e5c46fa427b6faf4fae123aec0e228"
     },
     "hosts.txt": {
-     "bytes": 12027177,
-     "sha256": "2078b98ee9c24ab1541d5a6bb8e430d9e17548de028e9d5b7003c74292944541"
+     "bytes": 11966819,
+     "sha256": "1ea50f382f8f9362f7f29e72fe3b727fd6cfa7579693ff44bd9785b10addbea9"
     },
     "singbox.json": {
-     "bytes": 11610276,
-     "sha256": "095ef8bf879a2c2d1860ab2ae077ab19c382604bae80cbe511e129c61dc3b7ca"
+     "bytes": 11551793,
+     "sha256": "817d98fa3236ac4c4c430f7ec5297c014daeee006fef99451a67c10494d8839b"
     },
     "surge.list": {
-     "bytes": 14528704,
-     "sha256": "43ec13a893845b21e59da6441f11a9d23800439f73701651053b3f9b4a7de00e"
+     "bytes": 14457096,
+     "sha256": "a5274e721c823e2243f8fc3beabafd42311fe2faea5d2f690d94d0754eb4b5c9"
     }
    }
   }
@@ -297,9 +297,9 @@
   }
  ],
  "scale": {
-  "lite": 28605,
-  "mid": 162225,
-  "full": 416928
+  "lite": 23825,
+  "mid": 164711,
+  "full": 415053
  },
  "channels": [
   {

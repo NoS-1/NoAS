@@ -27,6 +27,17 @@ MUST_NOT_BLOCK = ["www.baidu.com", "github.com", "www.bilibili.com", "api.weixin
                   "www.taobao.com", "mp.weixin.qq.com", "www.zhihu.com"]
 
 
+def check_precision():
+    """误伤审计必须为 0：任何一档踩到良性大盘都判红。"""
+    import subprocess
+    rc = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "precision.py")],
+                        capture_output=True, text=True)
+    if rc.returncode != 0:
+        print(rc.stdout.strip()[-400:])
+        return ["误伤审计未通过（存在踩良性大盘的条目）"]
+    return []
+
+
 def check_ledger():
     """白名单台账与镜像必须一致，且不得与"强制入 lite"的广告网根域自相矛盾。"""
     import subprocess
@@ -106,7 +117,7 @@ def domains_of(tier, name):
 
 
 def main():
-    fails = check_ledger()
+    fails = check_ledger() + check_precision()
     allow = load_allow()
     summary = {}
 

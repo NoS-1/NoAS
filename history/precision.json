@@ -1,0 +1,22 @@
+{
+ "ts": "2026-11-20T08:52:41Z",
+ "benign_size": 345,
+ "tiers": {
+  "lite": {
+   "count": 23825,
+   "risky": 0,
+   "samples": []
+  },
+  "mid": {
+   "count": 164711,
+   "risky": 0,
+   "samples": []
+  },
+  "full": {
+   "count": 415053,
+   "risky": 0,
+   "samples": []
+  }
+ },
+ "risky_total": 0
+}
