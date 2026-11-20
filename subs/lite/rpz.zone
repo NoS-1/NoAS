@@ -1,4 +1,4 @@
-# NoAS RPZ（20261121-286aeb9a）
+# NoAS RPZ（20261120-9feeb90b）
 ; $TTL 300
 0017c6c37c.com CNAME .
 00a39e6dfd.com CNAME .
@@ -5321,6 +5321,7 @@ an.mlb.com CNAME .
 analysis.polarisoffice.com CNAME .
 analysys.cn CNAME .
 analytics-ad-eyu9u2md.kgslb.com CNAME .
+analytics-adv.ozon.ru CNAME .
 analytics-api.gemcommerce.com CNAME .
 analytics-beacon.p.uliza.jp CNAME .
 analytics-fe.digital-cloud.medallia.eu CNAME .
@@ -5898,6 +5899,7 @@ cash-ads.com CNAME .
 cbjs.baidu.com CNAME .
 cbzxy.com CNAME .
 cc.swiftype.com CNAME .
+ccb.uncle-ad.com CNAME .
 ccgateway.net CNAME .
 ccpd.jet2.com CNAME .
 ccpd.jet2holidays.com CNAME .
@@ -7150,6 +7152,7 @@ loopme.me CNAME .
 losangeles-ads.com CNAME .
 love-banner.com CNAME .
 lovelydrum.com CNAME .
+loyalnost-adv.ozon.ru CNAME .
 lp4.io CNAME .
 lpbhnv.nbcboston.com CNAME .
 lpbhnv.nbcchicago.com CNAME .
@@ -7423,6 +7426,7 @@ mon.tiktokv.com CNAME .
 mon.zijieapi.com CNAME .
 monetization-ad-tracking.prod-eu-c.az.vidaahub.com CNAME .
 monetizer101.com CNAME .
+monitor-ads-test.huan.tv CNAME .
 monitor-ads.huan.tv CNAME .
 mookie1.com CNAME .
 motionspots.com CNAME .
@@ -7559,6 +7563,7 @@ op-ads-sg8-sg10-11.dr-wan.shopeemobile.com CNAME .
 op-ads-sg8-sg10-12.dr-wan.shopeemobile.com CNAME .
 op-ads-sg8-sg10-14.dr-wan.shopeemobile.com CNAME .
 op-ads-sg8-sg10-8.dr-wan.shopeemobile.com CNAME .
+open-ad.vivo.com.cn CNAME .
 open.e.kuaishou.com CNAME .
 open.isnssdk.com CNAME .
 open.oneplus.net CNAME .
@@ -7713,6 +7718,7 @@ prod-do-dsp-mp-microsoft.global.ssl.fastly.net CNAME .
 prod-sponsoredads.mkt.zappos.com CNAME .
 prod.us-east-1.cxm-bcn.publisher-services.amazon.dev CNAME .
 products.gobankingrates.com CNAME .
+prodvizhenie-adv.ozon.ru CNAME .
 profiling.avandor.com CNAME .
 profusesupport.com CNAME .
 projectwonderful.com CNAME .
@@ -9476,6 +9482,7 @@ toiletpaper.life CNAME .
 tongji.meizu.com CNAME .
 top-free-ad.com CNAME .
 topqualitylink.com CNAME .
+torimochi-ad.net CNAME .
 tourism.visitorlando.com CNAME .
 tp.otto.de CNAME .
 tp88trk.com CNAME .
@@ -9844,6 +9851,7 @@ y.one.impact-ad.com CNAME .
 yadro.ru CNAME .
 yads.c.yimg.jp CNAME .
 yandexadexchange.net CNAME .
+yango-ads.com CNAME .
 ybswii.swarovski.com CNAME .
 ycembr.net-a-porter.com CNAME .
 ydpushserver.youdao.com CNAME .

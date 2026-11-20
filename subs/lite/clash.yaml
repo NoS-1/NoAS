@@ -1,4 +1,4 @@
-# NoAS 20261121-286aeb9a rule-provider payload
+# NoAS 20261120-9feeb90b rule-provider payload
 payload:
   - DOMAIN-SUFFIX,0017c6c37c.com
   - DOMAIN-SUFFIX,00a39e6dfd.com
@@ -5321,6 +5321,7 @@ payload:
   - DOMAIN-SUFFIX,analysis.polarisoffice.com
   - DOMAIN-SUFFIX,analysys.cn
   - DOMAIN-SUFFIX,analytics-ad-eyu9u2md.kgslb.com
+  - DOMAIN-SUFFIX,analytics-adv.ozon.ru
   - DOMAIN-SUFFIX,analytics-api.gemcommerce.com
   - DOMAIN-SUFFIX,analytics-beacon.p.uliza.jp
   - DOMAIN-SUFFIX,analytics-fe.digital-cloud.medallia.eu
@@ -5898,6 +5899,7 @@ payload:
   - DOMAIN-SUFFIX,cbjs.baidu.com
   - DOMAIN-SUFFIX,cbzxy.com
   - DOMAIN-SUFFIX,cc.swiftype.com
+  - DOMAIN-SUFFIX,ccb.uncle-ad.com
   - DOMAIN-SUFFIX,ccgateway.net
   - DOMAIN-SUFFIX,ccpd.jet2.com
   - DOMAIN-SUFFIX,ccpd.jet2holidays.com
@@ -7150,6 +7152,7 @@ payload:
   - DOMAIN-SUFFIX,losangeles-ads.com
   - DOMAIN-SUFFIX,love-banner.com
   - DOMAIN-SUFFIX,lovelydrum.com
+  - DOMAIN-SUFFIX,loyalnost-adv.ozon.ru
   - DOMAIN-SUFFIX,lp4.io
   - DOMAIN-SUFFIX,lpbhnv.nbcboston.com
   - DOMAIN-SUFFIX,lpbhnv.nbcchicago.com
@@ -7423,6 +7426,7 @@ payload:
   - DOMAIN-SUFFIX,mon.zijieapi.com
   - DOMAIN-SUFFIX,monetization-ad-tracking.prod-eu-c.az.vidaahub.com
   - DOMAIN-SUFFIX,monetizer101.com
+  - DOMAIN-SUFFIX,monitor-ads-test.huan.tv
   - DOMAIN-SUFFIX,monitor-ads.huan.tv
   - DOMAIN-SUFFIX,mookie1.com
   - DOMAIN-SUFFIX,motionspots.com
@@ -7559,6 +7563,7 @@ payload:
   - DOMAIN-SUFFIX,op-ads-sg8-sg10-12.dr-wan.shopeemobile.com
   - DOMAIN-SUFFIX,op-ads-sg8-sg10-14.dr-wan.shopeemobile.com
   - DOMAIN-SUFFIX,op-ads-sg8-sg10-8.dr-wan.shopeemobile.com
+  - DOMAIN-SUFFIX,open-ad.vivo.com.cn
   - DOMAIN-SUFFIX,open.e.kuaishou.com
   - DOMAIN-SUFFIX,open.isnssdk.com
   - DOMAIN-SUFFIX,open.oneplus.net
@@ -7713,6 +7718,7 @@ payload:
   - DOMAIN-SUFFIX,prod-sponsoredads.mkt.zappos.com
   - DOMAIN-SUFFIX,prod.us-east-1.cxm-bcn.publisher-services.amazon.dev
   - DOMAIN-SUFFIX,products.gobankingrates.com
+  - DOMAIN-SUFFIX,prodvizhenie-adv.ozon.ru
   - DOMAIN-SUFFIX,profiling.avandor.com
   - DOMAIN-SUFFIX,profusesupport.com
   - DOMAIN-SUFFIX,projectwonderful.com
@@ -9476,6 +9482,7 @@ payload:
   - DOMAIN-SUFFIX,tongji.meizu.com
   - DOMAIN-SUFFIX,top-free-ad.com
   - DOMAIN-SUFFIX,topqualitylink.com
+  - DOMAIN-SUFFIX,torimochi-ad.net
   - DOMAIN-SUFFIX,tourism.visitorlando.com
   - DOMAIN-SUFFIX,tp.otto.de
   - DOMAIN-SUFFIX,tp88trk.com
@@ -9844,6 +9851,7 @@ payload:
   - DOMAIN-SUFFIX,yadro.ru
   - DOMAIN-SUFFIX,yads.c.yimg.jp
   - DOMAIN-SUFFIX,yandexadexchange.net
+  - DOMAIN-SUFFIX,yango-ads.com
   - DOMAIN-SUFFIX,ybswii.swarovski.com
   - DOMAIN-SUFFIX,ycembr.net-a-porter.com
   - DOMAIN-SUFFIX,ydpushserver.youdao.com
