@@ -13,8 +13,19 @@
  },
  "full": {
   "total": 2257,
-  "hit": 0,
-  "rate": 0.0,
-  "samples": []
+  "hit": 30,
+  "rate": 1.33,
+  "samples": [
+   "angsrvr.com",
+   "beanstock.com",
+   "cbox.ws",
+   "edigitalsurvey.com",
+   "honcode.ch",
+   "ixiaa.com",
+   "jasmin.com",
+   "mdotm.com",
+   "newrelic.com",
+   "nexage.com"
+  ]
  }
 }

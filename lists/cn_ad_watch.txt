@@ -5,7 +5,6 @@ ad-advertiser.soulapp.cn	ad	probe
 ad-h5-cdn.soulapp.cn	ad	probe
 ad-www.guazi.com	ad	probe
 ads.st.maoyan.com	ads	probe
-analytics.wanmei.com	analytics	probe
 api-log.immomo.com	log	probe
 apm-log-upload-v6.mihoyo.com	log	probe
 app-log.immomo.com	log	probe

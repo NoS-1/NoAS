@@ -23,6 +23,7 @@ ad-1258444056.cos.accelerate.myqcloud.com
 ad-411.com
 ad-a8.www.zeiri4.com
 ad-adapex.io
+ad-advertiser.soulapp.cn
 ad-ak.wowma.jp
 ad-alp.net
 ad-analyze.jp
@@ -98,6 +99,7 @@ ad-ettoday.cdn.hinet.net
 ad-eu-bid.veonadx.com
 ad-events-prod.voltaxam-events.com
 ad-exchange.toast.com
+ad-experience.bytedance.com
 ad-fam.com
 ad-feed.com
 ad-feeds.com
@@ -116,6 +118,7 @@ ad-growth-in.heytapmobile.com
 ad-growth-ru.heytapmobile.com
 ad-growth-sg.heytapmobile.com
 ad-growth.it.com
+ad-h5-cdn.soulapp.cn
 ad-hatena.com
 ad-house.mobi
 ad-hub.it
@@ -254,8 +257,10 @@ ad-visor.com
 ad-vortex.com
 ad-wa.anydesk.com
 ad-wisteria.excite.co.jp
+ad-www.guazi.com
 ad-x.co.uk
 ad.001zb.com
+ad.10jqka.com.cn
 ad.12306.cn.wscdns.com
 ad.1k3.com
 ad.1kxun.com
@@ -308,6 +313,7 @@ ad.advst.cp33.ott.cibntv.net
 ad.afftrck.com
 ad.aim-universe.co.jp
 ad.ajitad.co.kr
+ad.alimama.com
 ad.allboxing.ru
 ad.aloodo.com
 ad.alpham.co.kr
@@ -411,6 +417,7 @@ ad.cq-andc.jp
 ad.creafi.com
 ad.creativesontap.net
 ad.crosswalk.com
+ad.csair.com
 ad.cub.red
 ad.culture.pl
 ad.cyapi.cn
@@ -541,7 +548,9 @@ ad.gluak.com
 ad.gmw.cn
 ad.go.com
 ad.gogox.com
+ad.gome.com.cn
 ad.goo.ne.jp
+ad.goofish.com
 ad.grafika.cz
 ad.grandprixgroup.com
 ad.greedland.net
@@ -559,6 +568,7 @@ ad.gtbrowser.com
 ad.gunosy.com
 ad.guru
 ad.gyermekevek.hu
+ad.haidilao.com
 ad.hani.co.kr
 ad.hankooki.com
 ad.hankookilbo.com
@@ -598,6 +608,7 @@ ad.ilikesponsorad.co.kr
 ad.ilikesponsorad.com
 ad.iloveinterracial.com
 ad.ilse.nl
+ad.immomo.com
 ad.imp.joins.com
 ad.imptrid.site
 ad.infoseek.com
@@ -627,6 +638,7 @@ ad.jamster.co.uk
 ad.jamster.com
 ad.janalta.com
 ad.jcrsoft.com
+ad.jdcloud.com
 ad.jetsoftware.com
 ad.jeune-independant.net
 ad.jia.360.cn
@@ -667,9 +679,11 @@ ad.kmib.co.kr
 ad.kodansha.net
 ad.koreadaily.com
 ad.krutilka.ru
+ad.kuaidi100.com
 ad.kubiccomps.icu
 ad.kubico.com
 ad.kubiserves.icu
+ad.kugou.com
 ad.l2b.co.za
 ad.land.to
 ad.lapa.pub
@@ -678,6 +692,7 @@ ad.ldplayer.net
 ad.leap.app
 ad.lectinect.no
 ad.leongaming.com
+ad.letv.com
 ad.lflucky.com
 ad.lgappstv.com
 ad.life.360.cn
@@ -729,6 +744,7 @@ ad.mirror.co.uk
 ad.mmbiz.oa.com
 ad.mnt123.com
 ad.mobiuspace.net
+ad.moji.com
 ad.mojisead.co.kr
 ad.molitv.cn
 ad.moo-mam-tai.com
@@ -871,6 +887,7 @@ ad.setn.com
 ad.sexcount.de
 ad.sexplex.com
 ad.seznam.cz
+ad.sf-express.com
 ad.sg.kslawin.com
 ad.sgdgjarfpp123.com
 ad.shareholders.dk
@@ -893,6 +910,7 @@ ad.snappea.com
 ad.snaptube.app
 ad.softcatala.org
 ad.solverlabs.com
+ad.soulapp.cn
 ad.sp.mbga.jp
 ad.spreaker.com
 ad.spreamedia.it
@@ -988,6 +1006,7 @@ ad.webdice.jp
 ad.webnext.ru
 ad.weplayer.cc
 ad.widgetserver.com
+ad.wifi.com
 ad.wingads.com
 ad.winiso.pl
 ad.winrar.com.cn
@@ -1002,16 +1021,19 @@ ad.x-flow.app
 ad.xaxis.co.kr
 ad.xdomain.ne.jp
 ad.xhey.top
+ad.xiaojukeji.com
 ad.xiaomi.com.edgesuite.net
 ad.xmmnsl.com
 ad.xmovies8.si
 ad.xn--o9jem5iv41o982db8k.jp
 ad.xrea.com
+ad.xueersi.com
 ad.xunkids.com
 ad.xxam.org
 ad.yam.com.tw
 ad.yemeksepeti.com
 ad.yeshitv.com
+ad.yidianzixun.com
 ad.yixin.im
 ad.ymcdn.org
 ad.yna.co.kr
@@ -1033,6 +1055,7 @@ ad.zodera.hu
 ad.zompmedia.com
 ad.zotop88.one
 ad.ztylez.com
+ad.zuche.com
 ad.zui.com
 ad.zuimeitianqi.com
 ad.zumst.com
@@ -1524,6 +1547,7 @@ ads.businessweek.com
 ads.butlereagle.com
 ads.cabalexile.to
 ads.cadovn.biz
+ads.cainiao.com
 ads.calgarystampede.com
 ads.camrecord.com
 ads.canalblog.com
@@ -2163,6 +2187,7 @@ ads.mainloop.net
 ads.maleflixxx.tv
 ads.mammanett.no
 ads.manager.bg
+ads.maoyan.com
 ads.marica.bg
 ads.marinij.com
 ads.mariuana.it
@@ -2662,6 +2687,7 @@ ads.sportsseoul.com
 ads.spusu.at
 ads.spymac.net
 ads.ssmas.com
+ads.st.maoyan.com
 ads.stadtradeln.de
 ads.standartnews.com
 ads.starbanner.com
@@ -2952,6 +2978,7 @@ ads.world-fusigi.net
 ads.worldofshowjumping.com
 ads.worldstarhiphop.com
 ads.worthplaying.com
+ads.wps.cn
 ads.wteam.xyz
 ads.wwe.biz
 ads.x-cdn.org
@@ -2967,6 +2994,7 @@ ads.xemphimso.com
 ads.xemtivisohd.net
 ads.xglobalmarkets.com
 ads.xhamster.com
+ads.xiaojukeji.com
 ads.xl.pt
 ads.xlxtra.com
 ads.xnavxx.com
@@ -2978,6 +3006,7 @@ ads.xtargeting.com
 ads.xtra.ca
 ads.xtra.co.nz
 ads.xtramsn.co.nz
+ads.xueersi.com
 ads.xxxad.net
 ads.xxxbunker.com
 ads.yadio.com
@@ -2988,6 +3017,7 @@ ads.yankscash.com
 ads.yeeyi.com
 ads.yenimedya.com.tr
 ads.yeshanews.com
+ads.yidianzixun.com
 ads.yifan.com
 ads.yimg.com
 ads.yimg.com.edgesuite.net
@@ -3245,6 +3275,7 @@ adserver.pressflex.com
 adserver.proteinos.com
 adserver.publiservicio.com
 adserver.pubtech.amazon.dev
+adserver.qingting.fm
 adserver.raceonline.hu
 adserver.rightbrainmedia.com
 adserver.ro
@@ -3312,6 +3343,7 @@ adserver.wolterskluwer.pl
 adserver.xh.no
 adserver.xpanama.net
 adserver.yanosik.pl
+adserver.yidianzixun.com
 adserver.zylom.com
 adserver1.adtech.com.tr
 adservice.com
@@ -3487,6 +3519,7 @@ adservice.google.ws
 adservice.hani.co.kr
 adservice.hepsiburada.com
 adservice.kugou.com
+adservice.kuwo.cn
 adservice.sbs.co.kr
 adservice.tohsoft.com
 adsp.ciner.com.tr
@@ -3546,6 +3579,7 @@ adv-op2.joygames.me
 adv-sv-show.focus.cn
 adv-sv-stat.focus.cn
 adv.0tub.com
+adv.10jqka.com.cn
 adv.440network.com
 adv.abv.bg
 adv.ad-splash.jp
@@ -3600,12 +3634,14 @@ adv.ilsole24ore.it
 adv.isdn.cz
 adv.jxnews.com.cn
 adv.khan.co.kr
+adv.kuwo.cn
 adv.lampsplus.com
 adv.lihkg.com
 adv.mangoadv.com
 adv.medscape.com
 adv.merlin.co.il
 adv.mobsmart.net
+adv.moji.com
 adv.mpvc.it
 adv.mxmcdn.net
 adv.netinfo.bg
@@ -3652,6 +3688,7 @@ adv.wisdom.bg
 adv.wp.pl
 adv.xmmku.com
 adv.yandex.com
+adv.yidianzixun.com
 adv.yo.cz
 adv.yuetnc.com
 adv.zdnet.co.kr
@@ -4369,6 +4406,7 @@ fuse-ad.com
 fw-ad.jp
 fyls88zqyb.content-ad.net
 gain-ads.com
+game-ad.immomo.com
 game-advertising-online.com
 gameday-stories-ads.mlb.com
 gateway-banner.eravage.com
@@ -4425,6 +4463,7 @@ ibda.adv.br
 ie-ad-refresh.mediahuis.com
 im.banner.t-online.de
 image-ad.sm.cn
+image.ads.yidianzixun.com
 image.adv.livedoor.com
 images-ads.aland.com
 images.proxena-adserver.com
@@ -4510,6 +4549,7 @@ loyalnost-adv.ozon.ru
 lux-ad.com
 lz-pub-ads.com
 m-rtb.com
+m.ad.zhangyue.com
 maec.adv.br
 major-ads.net
 manage001.adtech.fr

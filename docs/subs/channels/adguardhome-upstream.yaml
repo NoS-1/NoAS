@@ -1,0 +1,13 @@
+# NoAS · AdGuard Home 上游片段（YAML 键名与 AGH 配置文件一致）
+# 用法：编辑 AdGuardHome.yaml 的 dns 段，替换 upstream_dns / bootstrap_dns 后重启
+# AGH 免费、无调用额度，是"规则 + 通道"一起用的推荐方案
+dns:
+  upstream_dns:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  bootstrap_dns:
+    - 223.5.5.5
+    - 119.29.29.29
+  upstream_dns_file: ""
+  fallback_dns:
+    - https://noas-doh.199999510.workers.dev/dns-query
