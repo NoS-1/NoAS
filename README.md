@@ -140,3 +140,9 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 - `Daily Build`：每日 4 轮重建 + 发布（03/09/15/21 点）
 - `Availability Probe`：每 3 小时探测 raw / Pages / Release / 路径层四条通道，失败开 Issue、恢复自动关
 - `Discover` / `Maintain`：每周两次（周一、周四）
+
+
+## 可选加速层：Cloudflare D1
+
+D1 只存**小体量状态**（构建版本、三档条数、通配数、lite 的 sha），不存规则正文也不存查询日志——免费额度按行读取计费，灌日志两天就会被限流（错误码 7500）。
+每日构建的 3.58 步会自动建表并 upsert 一行 `build_state`；额度打满或未配 secret 时该步静默跳过，不影响主链。
