@@ -1,61 +1,61 @@
 {
  "kind": "lite",
- "version": "20261120-97d30172",
- "count": 9969,
+ "version": "20261120-4739def8",
+ "count": 9962,
  "wildcards": 56,
- "generated_utc": "Fri, 20 Nov 2026 12:48:08 GMT",
+ "generated_utc": "Fri, 20 Nov 2026 14:14:46 GMT",
  "files": {
   "adguard.txt": {
-   "bytes": 232358,
-   "sha256": "1c9289aeb8f54a733b1efd64c2e814520f0d7c668a72915e136bab4a3cdd91e0"
+   "bytes": 232225,
+   "sha256": "54aa8993f8575b0623c1cfeca48083eb663b5585d6995eb6fea94bc9b1b9f582"
   },
   "allow.txt": {
    "bytes": 1657,
-   "sha256": "9073c86152dbf157fcc97496b47c104ccab1f35f55ebfb4b41a3a41e4871e950"
+   "sha256": "2b885e69413ffc92b867423916d08564c28cfd204b490895dfc7f460178b5591"
   },
   "clash.yaml": {
-   "bytes": 380571,
-   "sha256": "b20f2901c5fec2e119187e0e4471404f9cc2c2e09c53ca605e41a6cb9b279010"
+   "bytes": 380333,
+   "sha256": "71d7d5bfc227eaae3e0c9631a253f4e0c27e644f1d6e85c44ab8b7a271e11f94"
   },
   "dnsmasq.conf": {
-   "bytes": 370585,
-   "sha256": "7490560cef55cd084895bf8393ffbde7d7aea27f68a165ce58456628e7836a1e"
+   "bytes": 370354,
+   "sha256": "a764d083d9cbcd6ffb321aed58f5bc6186265b613cfa9e463e9e8dc793a28353"
   },
   "domains.txt": {
-   "bytes": 201073,
-   "sha256": "c94b9cb140ef88f9096090f95bad8657ca3eacab8a02a7268f3660d73116c900"
+   "bytes": 200961,
+   "sha256": "bae96bbfdf26679d1ce09ae105253cba39f93f0cef47bc96fc8568acf763b164"
   },
   "hosts.txt": {
-   "bytes": 280864,
-   "sha256": "915dcff86c9abee105d7cae7d3181bf5e51746e8f3104510526d6b1f27221c3d"
+   "bytes": 280696,
+   "sha256": "147746d24b8fa476478ad7fe88f31e1e5db539b641e5c4bf4495eb6b92980b3d"
   },
   "qx.list": {
-   "bytes": 410678,
-   "sha256": "9f6e431211afbef5126a8b0c7d91ed43ebcda376ba78f7a3176c8ca1a9f0f744"
+   "bytes": 410618,
+   "sha256": "999c973d82820911ffa186c98406bad4eae1df4c51a02ac99f97a4bcd701ecdd"
   },
   "rpz.zone": {
-   "bytes": 282228,
-   "sha256": "8fd2211272b4774d894f85d221df92e9c787e4a495786cf3f6751370e6b7171b"
+   "bytes": 282060,
+   "sha256": "a3ccf412552d48e2493ef2ba79ce40f172dc1d9a880855653c0aa48b625b0f5d"
   },
   "singbox.json": {
-   "bytes": 270924,
-   "sha256": "5e87970a7220827b30dda9a43c8a3a52d2e94313b3a88e12880a60f2b1e875da"
+   "bytes": 270763,
+   "sha256": "64621f9c0eb85b1dc7c05d628e293b99cd00fc2ad49b980001934e72e702531d"
   },
   "surge.list": {
-   "bytes": 340639,
-   "sha256": "e6f9bf5528273ad2331462ee5f187a1379a5bae27e1657cd175ff546d907b355"
+   "bytes": 340429,
+   "sha256": "bd104b811210d0c850610ce6fd8395d8945ca9f0d7216952669fbca8de92ca45"
   },
   "unbound.conf": {
-   "bytes": 500181,
-   "sha256": "4b55bce20e3ba0ceec089a723b65dc628054f75a490da33bb32f811229a80fc4"
+   "bytes": 499859,
+   "sha256": "e09ac536437aefbb7dc5b6a5729171ac9b6c6fe570dd17bcf846517b87e75727"
   },
   "wildcard.txt": {
-   "bytes": 221048,
-   "sha256": "840afa01631bf76df4a86966394cc30294c7cb4d42d7d4bafd60ebefb2fbf7c0"
+   "bytes": 220922,
+   "sha256": "c1f8fbee4f1fd5b165d8e88b4f1f5b9b49927fa9a2f3e4946521b674b51bddaf"
   },
   "wildcards.txt": {
    "bytes": 988,
-   "sha256": "2fd475f91dcf047a46922e03d6381837cae130dcf5f47b27e4832294d8d323be"
+   "sha256": "07106fc9a3d14faf7cc93f1acbbe4bb875df4ebc2769bc6ffd4acdc2983ab0d6"
   }
  }
 }

@@ -1,4 +1,4 @@
-# NoAS 20261120-97d30172（9969 条 + 通配 6）
+# NoAS 20261120-4739def8（9962 条 + 通配 12）
 host-suffix, 0i0i0i0.com, reject
 host-suffix, 1187531871.rsc.cdn77.org, reject
 host-suffix, 12112336.pix-cdn.org, reject
@@ -1180,7 +1180,6 @@ host-suffix, adingo.jp, reject
 host-suffix, adition.com, reject
 host-suffix, adition.de, reject
 host-suffix, adition.net, reject
-host-suffix, adjust.com, reject
 host-suffix, adkit-advertising.amazon, reject
 host-suffix, adl.national-lottery.co.uk, reject
 host-suffix, adlc-exchange.toast.com, reject
@@ -2373,6 +2372,7 @@ host-suffix, ads.metromanager.com, reject
 host-suffix, ads.metropolis.co.jp, reject
 host-suffix, ads.mezimedia.com, reject
 host-suffix, ads.mgnetwork.com, reject
+host-suffix, ads.mgtv.com, reject
 host-suffix, ads.mic.com, reject
 host-suffix, ads.midwayusa.com, reject
 host-suffix, ads.millionairemate.com, reject
@@ -4440,7 +4440,6 @@ host-suffix, apilogduration.mytvnet.vn, reject
 host-suffix, apinas.nct.vn, reject
 host-suffix, apiv2.moengage.com, reject
 host-suffix, app-ads-services.com, reject
-host-suffix, app-measurement.com, reject
 host-suffix, app.advertisingsolutions.att-mail.com, reject
 host-suffix, app.f2trk.com, reject
 host-suffix, app.hstatic.net, reject
@@ -4460,7 +4459,6 @@ host-suffix, appnext.hs.llnwd.net, reject
 host-suffix, appodeal.com, reject
 host-suffix, appollo-plus.com, reject
 host-suffix, appsdt.com, reject
-host-suffix, appsflyer.com, reject
 host-suffix, apptornado.com, reject
 host-suffix, apptracer.ru, reject
 host-suffix, aptoide-rtb.aptoide.com, reject
@@ -4509,6 +4507,7 @@ host-suffix, atbjh.getcasely.com, reject
 host-suffix, athena-ads.wikia.com, reject
 host-suffix, athwartwhoafat.com, reject
 host-suffix, atlas-adv.pages.dev, reject
+host-suffix, atm.youku.com, reject
 host-suffix, atomictrackercollector-i5adxi4wfq-uc.a.run.app, reject
 host-suffix, attn.tv, reject
 host-suffix, attribution.airbridge.io, reject
@@ -4944,7 +4943,6 @@ host-suffix, bqjco.simon.com, reject
 host-suffix, br-ad-lgsmartad-com.aws-prd.net, reject
 host-suffix, br.fling.com, reject
 host-suffix, brainient.com, reject
-host-suffix, branch.io, reject
 host-suffix, brand-display.com, reject
 host-suffix, brand.zing.vn, reject
 host-suffix, brandreachsys.com, reject
@@ -5264,6 +5262,7 @@ host-suffix, ctxcollect.com, reject
 host-suffix, ctyjsf.cellphones.com.vn, reject
 host-suffix, cu-ad.tbs.co.jp, reject
 host-suffix, culturaltracking.ru, reject
+host-suffix, cupid.iqiyi.com, reject
 host-suffix, custom.shop.avispl.com, reject
 host-suffix, customads.co, reject
 host-suffix, cvgbl.consumeraffairs.com, reject
@@ -6800,7 +6799,6 @@ host-suffix, knfkd.revzilla.com, reject
 host-suffix, knorzj.wearfigs.com, reject
 host-suffix, knymhv.ariat.com, reject
 host-suffix, kobel.services, reject
-host-suffix, kochava.com, reject
 host-suffix, kohlermetricssecure.kohler.com, reject
 host-suffix, kpdgj.adanola.com, reject
 host-suffix, kpqgh.directmeds.com, reject
@@ -7192,18 +7190,15 @@ host-suffix, metrics.fortinet.com, reject
 host-suffix, metrics.foxnews.com, reject
 host-suffix, metrics.foxsports.com.au, reject
 host-suffix, metrics.fressnapf.de, reject
-host-suffix, metrics.galicia.ar, reject
 host-suffix, metrics.gap.com, reject
 host-suffix, metrics.gcimetrics.com, reject
 host-suffix, metrics.geelongadvertiser.com.au, reject
-host-suffix, metrics.giftcards.com, reject
 host-suffix, metrics.gnc.com, reject
 host-suffix, metrics.govexec.com, reject
 host-suffix, metrics.harley-davidson.com, reject
 host-suffix, metrics.hbogo.com, reject
 host-suffix, metrics.health.com, reject
 host-suffix, metrics.heraldsun.com.au, reject
-host-suffix, metrics.hkexpress.com, reject
 host-suffix, metrics.hrblock.com, reject
 host-suffix, metrics.iconfitness.com, reject
 host-suffix, metrics.iij.ad.jp, reject
@@ -9686,8 +9681,6 @@ host-suffix, uimserv.net, reject
 host-suffix, ujm.hansel.io, reject
 host-suffix, uk.ads.hexus.net, reject
 host-suffix, ukoffzeh.com, reject
-host-suffix, umeng.com, reject
-host-suffix, umengcloud.com, reject
 host-suffix, umommy.cyou, reject
 host-suffix, unid.go.com, reject
 host-suffix, union.6.cn, reject
@@ -9969,8 +9962,14 @@ host-suffix, ztrck.me, reject
 host-suffix, zucks.net, reject
 host-suffix, zug.sbb.ch, reject
 host-suffix, adchina.cn, reject
+host-suffix, adjust.com, reject
+host-suffix, appsflyer.com, reject
+host-suffix, branch.io, reject
 host-suffix, gromore.net, reject
 host-suffix, ironsource.com, reject
+host-suffix, kochava.com, reject
 host-suffix, miaozhen.com.cn, reject
 host-suffix, oceanengine.com, reject
 host-suffix, tenjin.io, reject
+host-suffix, umeng.com, reject
+host-suffix, umengcloud.com, reject

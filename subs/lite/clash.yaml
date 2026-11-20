@@ -1,4 +1,4 @@
-# NoAS 20261120-97d30172 rule-provider payload
+# NoAS 20261120-4739def8 rule-provider payload
 payload:
   - DOMAIN-SUFFIX,0i0i0i0.com
   - DOMAIN-SUFFIX,1187531871.rsc.cdn77.org
@@ -1181,7 +1181,6 @@ payload:
   - DOMAIN-SUFFIX,adition.com
   - DOMAIN-SUFFIX,adition.de
   - DOMAIN-SUFFIX,adition.net
-  - DOMAIN-SUFFIX,adjust.com
   - DOMAIN-SUFFIX,adkit-advertising.amazon
   - DOMAIN-SUFFIX,adl.national-lottery.co.uk
   - DOMAIN-SUFFIX,adlc-exchange.toast.com
@@ -2374,6 +2373,7 @@ payload:
   - DOMAIN-SUFFIX,ads.metropolis.co.jp
   - DOMAIN-SUFFIX,ads.mezimedia.com
   - DOMAIN-SUFFIX,ads.mgnetwork.com
+  - DOMAIN-SUFFIX,ads.mgtv.com
   - DOMAIN-SUFFIX,ads.mic.com
   - DOMAIN-SUFFIX,ads.midwayusa.com
   - DOMAIN-SUFFIX,ads.millionairemate.com
@@ -4441,7 +4441,6 @@ payload:
   - DOMAIN-SUFFIX,apinas.nct.vn
   - DOMAIN-SUFFIX,apiv2.moengage.com
   - DOMAIN-SUFFIX,app-ads-services.com
-  - DOMAIN-SUFFIX,app-measurement.com
   - DOMAIN-SUFFIX,app.advertisingsolutions.att-mail.com
   - DOMAIN-SUFFIX,app.f2trk.com
   - DOMAIN-SUFFIX,app.hstatic.net
@@ -4461,7 +4460,6 @@ payload:
   - DOMAIN-SUFFIX,appodeal.com
   - DOMAIN-SUFFIX,appollo-plus.com
   - DOMAIN-SUFFIX,appsdt.com
-  - DOMAIN-SUFFIX,appsflyer.com
   - DOMAIN-SUFFIX,apptornado.com
   - DOMAIN-SUFFIX,apptracer.ru
   - DOMAIN-SUFFIX,aptoide-rtb.aptoide.com
@@ -4510,6 +4508,7 @@ payload:
   - DOMAIN-SUFFIX,athena-ads.wikia.com
   - DOMAIN-SUFFIX,athwartwhoafat.com
   - DOMAIN-SUFFIX,atlas-adv.pages.dev
+  - DOMAIN-SUFFIX,atm.youku.com
   - DOMAIN-SUFFIX,atomictrackercollector-i5adxi4wfq-uc.a.run.app
   - DOMAIN-SUFFIX,attn.tv
   - DOMAIN-SUFFIX,attribution.airbridge.io
@@ -4945,7 +4944,6 @@ payload:
   - DOMAIN-SUFFIX,br-ad-lgsmartad-com.aws-prd.net
   - DOMAIN-SUFFIX,br.fling.com
   - DOMAIN-SUFFIX,brainient.com
-  - DOMAIN-SUFFIX,branch.io
   - DOMAIN-SUFFIX,brand-display.com
   - DOMAIN-SUFFIX,brand.zing.vn
   - DOMAIN-SUFFIX,brandreachsys.com
@@ -5265,6 +5263,7 @@ payload:
   - DOMAIN-SUFFIX,ctyjsf.cellphones.com.vn
   - DOMAIN-SUFFIX,cu-ad.tbs.co.jp
   - DOMAIN-SUFFIX,culturaltracking.ru
+  - DOMAIN-SUFFIX,cupid.iqiyi.com
   - DOMAIN-SUFFIX,custom.shop.avispl.com
   - DOMAIN-SUFFIX,customads.co
   - DOMAIN-SUFFIX,cvgbl.consumeraffairs.com
@@ -6801,7 +6800,6 @@ payload:
   - DOMAIN-SUFFIX,knorzj.wearfigs.com
   - DOMAIN-SUFFIX,knymhv.ariat.com
   - DOMAIN-SUFFIX,kobel.services
-  - DOMAIN-SUFFIX,kochava.com
   - DOMAIN-SUFFIX,kohlermetricssecure.kohler.com
   - DOMAIN-SUFFIX,kpdgj.adanola.com
   - DOMAIN-SUFFIX,kpqgh.directmeds.com
@@ -7193,18 +7191,15 @@ payload:
   - DOMAIN-SUFFIX,metrics.foxnews.com
   - DOMAIN-SUFFIX,metrics.foxsports.com.au
   - DOMAIN-SUFFIX,metrics.fressnapf.de
-  - DOMAIN-SUFFIX,metrics.galicia.ar
   - DOMAIN-SUFFIX,metrics.gap.com
   - DOMAIN-SUFFIX,metrics.gcimetrics.com
   - DOMAIN-SUFFIX,metrics.geelongadvertiser.com.au
-  - DOMAIN-SUFFIX,metrics.giftcards.com
   - DOMAIN-SUFFIX,metrics.gnc.com
   - DOMAIN-SUFFIX,metrics.govexec.com
   - DOMAIN-SUFFIX,metrics.harley-davidson.com
   - DOMAIN-SUFFIX,metrics.hbogo.com
   - DOMAIN-SUFFIX,metrics.health.com
   - DOMAIN-SUFFIX,metrics.heraldsun.com.au
-  - DOMAIN-SUFFIX,metrics.hkexpress.com
   - DOMAIN-SUFFIX,metrics.hrblock.com
   - DOMAIN-SUFFIX,metrics.iconfitness.com
   - DOMAIN-SUFFIX,metrics.iij.ad.jp
@@ -9687,8 +9682,6 @@ payload:
   - DOMAIN-SUFFIX,ujm.hansel.io
   - DOMAIN-SUFFIX,uk.ads.hexus.net
   - DOMAIN-SUFFIX,ukoffzeh.com
-  - DOMAIN-SUFFIX,umeng.com
-  - DOMAIN-SUFFIX,umengcloud.com
   - DOMAIN-SUFFIX,umommy.cyou
   - DOMAIN-SUFFIX,unid.go.com
   - DOMAIN-SUFFIX,union.6.cn

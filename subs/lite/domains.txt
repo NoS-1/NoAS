@@ -1179,7 +1179,6 @@ adingo.jp
 adition.com
 adition.de
 adition.net
-adjust.com
 adkit-advertising.amazon
 adl.national-lottery.co.uk
 adlc-exchange.toast.com
@@ -2372,6 +2371,7 @@ ads.metromanager.com
 ads.metropolis.co.jp
 ads.mezimedia.com
 ads.mgnetwork.com
+ads.mgtv.com
 ads.mic.com
 ads.midwayusa.com
 ads.millionairemate.com
@@ -4439,7 +4439,6 @@ apilogduration.mytvnet.vn
 apinas.nct.vn
 apiv2.moengage.com
 app-ads-services.com
-app-measurement.com
 app.advertisingsolutions.att-mail.com
 app.f2trk.com
 app.hstatic.net
@@ -4459,7 +4458,6 @@ appnext.hs.llnwd.net
 appodeal.com
 appollo-plus.com
 appsdt.com
-appsflyer.com
 apptornado.com
 apptracer.ru
 aptoide-rtb.aptoide.com
@@ -4508,6 +4506,7 @@ atbjh.getcasely.com
 athena-ads.wikia.com
 athwartwhoafat.com
 atlas-adv.pages.dev
+atm.youku.com
 atomictrackercollector-i5adxi4wfq-uc.a.run.app
 attn.tv
 attribution.airbridge.io
@@ -4943,7 +4942,6 @@ bqjco.simon.com
 br-ad-lgsmartad-com.aws-prd.net
 br.fling.com
 brainient.com
-branch.io
 brand-display.com
 brand.zing.vn
 brandreachsys.com
@@ -5263,6 +5261,7 @@ ctxcollect.com
 ctyjsf.cellphones.com.vn
 cu-ad.tbs.co.jp
 culturaltracking.ru
+cupid.iqiyi.com
 custom.shop.avispl.com
 customads.co
 cvgbl.consumeraffairs.com
@@ -6799,7 +6798,6 @@ knfkd.revzilla.com
 knorzj.wearfigs.com
 knymhv.ariat.com
 kobel.services
-kochava.com
 kohlermetricssecure.kohler.com
 kpdgj.adanola.com
 kpqgh.directmeds.com
@@ -7191,18 +7189,15 @@ metrics.fortinet.com
 metrics.foxnews.com
 metrics.foxsports.com.au
 metrics.fressnapf.de
-metrics.galicia.ar
 metrics.gap.com
 metrics.gcimetrics.com
 metrics.geelongadvertiser.com.au
-metrics.giftcards.com
 metrics.gnc.com
 metrics.govexec.com
 metrics.harley-davidson.com
 metrics.hbogo.com
 metrics.health.com
 metrics.heraldsun.com.au
-metrics.hkexpress.com
 metrics.hrblock.com
 metrics.iconfitness.com
 metrics.iij.ad.jp
@@ -9685,8 +9680,6 @@ uimserv.net
 ujm.hansel.io
 uk.ads.hexus.net
 ukoffzeh.com
-umeng.com
-umengcloud.com
 umommy.cyou
 unid.go.com
 union.6.cn

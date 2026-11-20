@@ -4,6 +4,8 @@
 
 纯本地、零凭证：产物既能挂在任何支持 Web 标准的运行时上，也能被 serve/standalone.mjs 直接加载。
 """
+import base64
+import gzip
 import json
 import os
 import sys
@@ -49,15 +51,23 @@ def main():
         if l.strip().startswith("*.")
     })
     ver = time.strftime("%Y%m%d-%H%M")
+    payload = {
+        "t1": sorted(set(lite)),
+        "t2": sorted(set(mid)),
+        "allow": allow,
+        "wild": wild,
+        "ep": sorted({
+            l.split("#", 1)[0].strip().lower()
+            for l in open(os.path.join(ROOT, "lists", "ad_endpoints.txt"), encoding="utf-8")
+            if l.split("#", 1)[0].strip()}),
+    }
+    # 规则以换行分隔纯文本内嵌：模块级同步切分，避免顶层 await 异步 I/O（CF 禁止）
     js = (open(TPL, encoding="utf-8").read()
-          .replace("__TIER1__", json.dumps(sorted(set(lite)), ensure_ascii=False))
-          .replace("__TIER2__", json.dumps(sorted(set(mid)), ensure_ascii=False))
-          .replace("__ALLOW__", json.dumps(allow, ensure_ascii=False))
-          .replace("__WILD__", json.dumps(wild, ensure_ascii=False))
-          .replace("__ENDPOINTS__", json.dumps(sorted({
-              l.split("#", 1)[0].strip().lower()
-              for l in open(os.path.join(ROOT, "lists", "ad_endpoints.txt"), encoding="utf-8")
-              if l.split("#", 1)[0].strip()}), ensure_ascii=False))
+          .replace("__T1__", json.dumps("\n".join(payload["t1"]), ensure_ascii=False))
+          .replace("__T2__", json.dumps("\n".join(payload["t2"]), ensure_ascii=False))
+          .replace("__ALLOW_TEXT__", json.dumps("\n".join(payload["allow"]), ensure_ascii=False))
+          .replace("__EP_TEXT__", json.dumps("\n".join(payload["ep"]), ensure_ascii=False))
+          .replace("__WILD_TEXT__", json.dumps("\n".join(payload["wild"]), ensure_ascii=False))
           .replace("__VERSION__", json.dumps(ver)))
     os.makedirs(os.path.join(ROOT, "doh"), exist_ok=True)
     p = os.path.join(ROOT, "doh", "worker.js")

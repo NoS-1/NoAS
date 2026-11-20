@@ -7,8 +7,8 @@
 
 | 档位 | 条数 | 说明 | 地址 |
 |---|---|---|---|
-| lite | ≤1 万（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断，误拦率最低，**日常用这档**；被截断的条目留在 mid/full | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
-| mid | ≈162k | 跨 2 源共识，覆盖更广 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
+| lite | 9,962（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断；**零误伤最小集**，设备算力很弱时用这档 | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
+| mid | 184,941 | 跨 2 源共识 + 广告 SDK/贴片专项；**日常默认就用这档**，覆盖与误伤的平衡点 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
 | full | ≈41 万 | 14 源并集，最激进 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/adguard.txt` |
 
 每档都有 7 种格式，把上表地址里的文件名换掉即可：
@@ -23,13 +23,14 @@
 | sing-box | rule_set（format: source），**仅 L1**；内核无 MITM，不能跑 L2 路径改写 | `singbox.json` |
 | Surge / Loon | DOMAIN-SUFFIX 列表 | `surge.list` |
 
-三通道，全部是 GitHub 自家，不挂任何第三方 CDN：
+四通道，全部是自家免费能力（GitHub + 自建 CF Pages），不挂任何第三方 CDN：
 
 | 通道 | 用法 | 说明 |
 |---|---|---|
 | raw | 上表地址 | 随仓库提交即时生效 |
 | Pages | `https://nos-1.github.io/NoAS/subs/lite/adguard.txt` | 站点镜像，带宽由 GitHub 承担，与 raw 互为备份 |
-| Release | `https://github.com/NoS-1/NoAS/releases/download/latest/noas-snapshot.zip` | 单包下载（三档 + DoH 产物），长期留档 |
+| **CF Pages** | `https://noas-cdn.pages.dev/subs/mid/adguard.txt` | **国内推荐**：CF 边缘静态分发，免费、带宽不限，**不占 Worker 额度** |
+| Release | `https://github.com/NoS-1/NoAS/releases/latest/download/noas-snapshot.zip` | 单包下载（三档 + DoH + 通道产物），长期留档 |
 
 站点首页 `https://nos-1.github.io/NoAS/` 有实时条数、各格式校验值、源健康度与自我成长记录。
 
@@ -91,7 +92,22 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 - lite 里除共识条目外，还包含 `lists/promoted.txt` 自动晋级的域名结构即广告条目，规则见 `tools/promote.py`，误伤可直接在台账里加白。
 - full 档很激进（含大量长尾域），对极少数站点可能有误伤；介意就用 lite。
 
-## 四层叠加（DNS 只是第一层）
+## DNS 通道（国内主用 + 自建兜底）
+
+规则解决"拦什么"，通道解决"走哪条路"。默认全走国内公共 DNS，零调用额度：
+
+| 角色 | 通道 | 地址 |
+|---|---|---|
+| 主 | 阿里 DoH | `https://dns.alidns.com/dns-query` |
+| 备 | 腾讯 DoH | `https://doh.pub/dns-query` |
+| 备 | 阿里/腾讯 DoT | `tls://dns.alidns.com:853`、`tls://dot.pub:853` |
+| 本地 | aiodns | `127.0.0.1:5300`（国内分流 + 缓存，不做拦截） |
+| 兜底 | 自建 DoH | `https://noas-doh.199999510.workers.dev/dns-query`（10 万/天，90% 熔断） |
+
+产物在 `subs/channels/`：`doh.txt`、`dot.txt`、`aiodns.sh`、`adguardhome-upstream.yaml`、`aiodns.special.txt`、`health.json`。
+每轮构建先体检再生成；体检若判定环境被代理劫持（`env=suspect`），**沿用完整清单，绝不剔空**。
+
+## 三层叠加（DNS 只是第一层）
 
 单层做不到 100%。完整方案见站点 `docs/stack.html`：
 
@@ -100,7 +116,6 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 | L1 DNS | `subs/{lite,mid,full}/` | 拦广告/追踪域名，全设备生效 |
 | L2 路径 | `subs/paths/{core,full}/noas-path.{sgmodule,plugin,conf}` | MITM 后拦开屏/广告接口（Surge/Loon/QX） |
 | L3 内容 | `subs/paths/ubo/noas-ubo.txt` | 浏览器内隐藏广告位、拦广告脚本 |
-| L4 交互 | `subs/gkd/noas-gkd.json5` | 安卓 GKD 无障碍自动点"跳过"；规则源 @gkd-kit/subscription（MIT） |
 
 **国内首方广告子域（自动发现，累积不覆盖）**：`tools/discover_cn_ads.py` 以证书透明度 + 被动 DNS + 广告前缀枚举三条通道收集子域，再用 DoH 逐个解析；先探泛解析（随机子域也解析得出来就整根域丢弃），再按证据分两档：
 

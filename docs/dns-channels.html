@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NoAS · DNS 通道与额度</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--txt:#e6edf3;--dim:#8b949e;--ok:#3fb950;--warn:#d29922}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font:15px/1.75 -apple-system,"Segoe UI","PingFang SC",sans-serif;margin:0;padding:28px 18px}
+.wrap{max-width:880px;margin:0 auto}
+h1{font-size:26px;margin:0 0 6px}
+h2{font-size:17px;margin:34px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.sub{color:var(--dim);font-size:13px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0}
+code{background:#0b0f14;border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:13px;word-break:break-all}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#1b212a;color:var(--dim);font-weight:600}
+.pill{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+.pill.ok{color:var(--ok);border-color:#238636}
+.pill.warn{color:var(--warn);border-color:#9e6a03}
+a{color:#58a6ff;text-decoration:none}
+ul{margin:6px 0 0 18px}
+li{margin:4px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>DNS 通道与额度</h1>
+<div class="sub">NoAS · 三层叠加中的<b>通道层</b>。规则负责"拦什么"，通道负责"走哪条路"。<br>
+原则：主一备一，绝不铺满；额度不超，接近上限就熔断。</div>
+
+<h2>1 · 通道表</h2>
+<table>
+<tr><th>序号</th><th>通道</th><th>协议</th><th>地址</th><th>角色</th><th>说明</th></tr>
+<tr><td>1</td><td>阿里公共 DNS</td><td>DoH</td><td><code>https://dns.alidns.com/dns-query</code></td><td><span class="pill ok">主</span></td><td>国内最快，无调用额度</td></tr>
+<tr><td>2</td><td>腾讯 DNSPod</td><td>DoH</td><td><code>https://doh.pub/dns-query</code></td><td><span class="pill">备</span></td><td>国内直连，无调用额度</td></tr>
+<tr><td>3</td><td>阿里 DoT</td><td>DoT</td><td><code>tls://dns.alidns.com:853</code></td><td><span class="pill">备</span></td><td>客户端支持 TLS 时更快</td></tr>
+<tr><td>4</td><td>腾讯 DoT</td><td>DoT</td><td><code>tls://dot.pub:853</code></td><td><span class="pill">备</span></td><td>移动/联通线路稳</td></tr>
+<tr><td>5</td><td>aiodns 本机</td><td>aiodns</td><td><code>127.0.0.1:5300</code></td><td><span class="pill">本地</span></td><td>国内分流 + 缓存，零额度</td></tr>
+<tr><td>9</td><td>自建 DoH</td><td>DoH</td><td><code>https://noas-doh.199999510.workers.dev/dns-query</code></td><td><span class="pill warn">兜底</span></td><td>带规则，10 万/天，90% 熔断</td></tr>
+</table>
+
+<h2>2 · 三种用法（按精力选一种）</h2>
+
+<div class="card">
+<b>A. 只换通道（最省事）</b>
+<ul>
+<li>手机「私人 DNS / 自定义 DoH」填 <code>https://dns.alidns.com/dns-query</code></li>
+<li>只换解析路径，不带任何拦截规则 —— 也最不容易误伤</li>
+</ul>
+</div>
+
+<div class="card">
+<b>B. 通道 + 规则（推荐）</b>
+<ul>
+<li>AdGuard Home 上游填 <code>https://dns.alidns.com/dns-query</code>，过滤器订阅 mid 档</li>
+<li>规则和通道都在本地，AGH 免费无额度，最稳</li>
+<li>过滤器：<code>https://noas-cdn.pages.dev/subs/mid/adguard.txt</code></li>
+</ul>
+</div>
+
+<div class="card">
+<b>C. 通道 + 分流（进阶）</b>
+<ul>
+<li><code>bash aiodns.sh</code> 起在 127.0.0.1:5300，国内域走阿里/腾讯直连，开缓存</li>
+<li><b>aiodns 不做拦截</b>：拦截仍要 B 方案的 AGH，或系统 hosts 导 <code>hosts.txt</code></li>
+<li>脚本：<code>https://noas-cdn.pages.dev/subs/channels/aiodns.sh</code></li>
+</ul>
+</div>
+
+<h2>3 · 额度红线（"额度不超"怎么守）</h2>
+<table>
+<tr><th>资源</th><th>免费额度</th><th>本方案怎么守</th></tr>
+<tr><td>CF Workers</td><td>10 万请求/天（UTC 0 点＝北京 08:00 重置）</td><td>只做兜底；Worker 内 90% 熔断 + 单 IP 120 次/分钟</td></tr>
+<tr><td>CF KV</td><td>读 10 万 / 写 1,000 每天</td><td>计数只放内存，<b>绝不写 KV</b></td></tr>
+<tr><td>CF D1</td><td>读 500 万行 / 写 10 万行每天</td><td>规则不入库，只存单行状态</td></tr>
+<tr><td>CF Pages</td><td>免费、带宽不限</td><td><b>订阅分发主力</b>，不占 Worker 额度</td></tr>
+<tr><td>GitHub raw / Pages</td><td>不限 Actions 分钟</td><td>full 档与大文件走这里</td></tr>
+<tr><td>阿里 / 腾讯 DoH</td><td>无公开调用上限</td><td>日常主力通道</td></tr>
+</table>
+
+<h2>4 · 分发地址</h2>
+<table>
+<tr><th>档位</th><th>条数</th><th>CF Pages CDN（推荐）</th><th>GitHub raw（备用）</th></tr>
+<tr><td>lite</td><td>9,962</td><td><code>https://noas-cdn.pages.dev/subs/lite/adguard.txt</code></td><td><code>https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt</code></td></tr>
+<tr><td>mid</td><td>184,941</td><td><code>https://noas-cdn.pages.dev/subs/mid/adguard.txt</code></td><td>GitHub data 分支</td></tr>
+<tr><td>full</td><td>415,758</td><td>超单文件上限，不上 CDN</td><td>GitHub data 分支</td></tr>
+<tr><td>L1+L2 合并</td><td>DNS 9,962 + 路径 14</td><td><code>https://noas-cdn.pages.dev/subs/mixed/noas-all.sgmodule</code></td><td>GitHub Pages</td></tr>
+</table>
+
+<h2>5 · 踩过的坑（别再踩）</h2>
+<ul>
+<li><b>DoT 必须带 2 字节长度前缀</b>（DNS over TCP 帧格式），少这个直接收不到回应。</li>
+<li>Worker 全局作用域<b>不能做异步 I/O</b>，规则只能同步切分，不能解压。</li>
+<li>本机若挂代理，所有 853/53 探测会拿到<b>假响应</b>（rcode 4/5 且极快）。此时体检判 <code>env=suspect</code>，不会误判通道死亡，更不会把清单剔空。</li>
+<li>DoH 的 <code>bootstrap</code> 必须是<b>明文 IP</b>，用域名会鸡生蛋。</li>
+</ul>
+
+<p style="color:#8b949e;font-size:12.5px;margin-top:36px">
+← <a href="stack.html">返回三层叠加指引</a>　|　<a href="index.html">返回首页</a>
+</p>
+</div>
+</body>
+</html>

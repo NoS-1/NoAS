@@ -1,0 +1,14 @@
+# NoAS 加密挖矿域名（cryptojacking：矿池 / 挖矿脚本域）
+# 仅进 full 威胁档，不进 lite/mid；只收纯挖矿用途域，正常业务域一律不收。
+# 来源：公开反挖矿清单共识；新增需人工确认其唯一用途为挖矿。
+moneroocean.stream
+gulf.moneroocean.stream
+pool.supportxmr.com
+xmrpool.eu
+minexmr.com
+moneropool.com
+coinhive.com
+coin-hive.com
+coinimp.com
+crypto-loot.com
+hashcity.org

@@ -1,0 +1,36 @@
+# NoAS · 第三方广告 SDK 域（只进 mid，不进 lite）
+# 判断依据：这些域本身就是广告 SDK 的取数/竞价端点，不是平台业务域。
+# 只收录高置信、可人工核对的；不确定的一律不写（宁可少，不许错）。
+# 已在 full 的其它长尾由上游源覆盖，本表只解决"分类可见"与"mid 精确覆盖"。
+
+# 穿山甲 / Pangle / Gromore（字节）
+pangolin-sdk-toutiao.com
+pangolin-sdk-toutiao-b.com
+pangle.io
+
+# 优量汇 / 广点通（腾讯）
+gdt.qq.com
+mi.gdt.qq.com
+
+# AppLovin（含 MAX 聚合）
+applovin.com
+d.applovin.com
+a.applovin.com
+
+# ironSource（含 LevelPlay 聚合）
+ironsource.com
+
+# Unity Ads
+unityads.unity3d.com
+
+# Mintegral（汇量）
+mintegral.com
+
+# Vungle（现 Lumata）
+vungle.com
+
+# Chartboost
+chartboost.com
+
+# Facebook Audience Network
+an.facebook.com

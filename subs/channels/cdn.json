@@ -1,0 +1,15 @@
+{
+ "url": "https://ee8f3f0d.noas-cdn.pages.dev",
+ "files": 53,
+ "project": "noas-cdn",
+ "entry": {
+  "lite": "https://noas-cdn.pages.dev/subs/lite/adguard.txt",
+  "mid": "https://noas-cdn.pages.dev/subs/mid/adguard.txt",
+  "mixed_surge": "https://noas-cdn.pages.dev/subs/mixed/noas-all.sgmodule",
+  "doh_list": "https://noas-cdn.pages.dev/subs/channels/doh.txt",
+  "aiodns": "https://noas-cdn.pages.dev/subs/channels/aiodns.sh"
+ },
+ "production": "https://noas-cdn.pages.dev",
+ "latest_deployment": "https://18755a21.noas-cdn.pages.dev",
+ "bytes": 71408025.6
+}

@@ -61,15 +61,14 @@ jobs:
           python3 tools/promote.py
           python3 tools/compile.py
 
+      - name: 3.6 · DNS 通道体检与产物（国内 DoH/DoT + aiodns）
+        run: |
+          python3 tools/check_channels.py || true   # 体检恒返回 0，环境异常只标注不阻断
+          python3 tools/gen_channels.py
       - name: 4 · 路径层（L2）重建与体检
         run: |
           python3 tools/build_paths.py
           python3 tests/paths_check.py
-
-      - name: 4.5 · GKD 订阅（L4）重建与体检
-        run: |
-          python3 tools/build_gkd.py
-          python3 tests/gkd_check.py
 
       - name: 4 · 发布前硬校验
         run: python3 tools/guard.py
@@ -83,6 +82,15 @@ jobs:
         run: |
           node tests/worker_check.mjs
           node tests/standalone_check.mjs
+
+      - name: 6.8 · 同步规则到 CF Pages（免费 CDN，不占 Worker 额度）
+        continue-on-error: true          # 没配 secret 也不该阻断每日构建
+        env:
+          CF_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          NOAS_VER: ${{ github.run_id }}
+        run: |
+          if [ -z "$CF_TOKEN" ]; then echo "无 CF_API_TOKEN，跳过 CDN 同步"; exit 0; fi
+          python3 tools/cdn_deploy.py
 
       - name: 7 · 发布 mid/full 到 data 分支
         env:
@@ -99,7 +107,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A subs/lite subs/paths subs/gkd docs history tools doh/worker.tpl.js sources.tsv lists tests
+          git add -A subs/lite subs/channels subs/paths docs history tools doh/worker.tpl.js sources.tsv lists tests
           if git diff --cached --quiet; then
             echo "无变化，跳过提交"
             exit 0
