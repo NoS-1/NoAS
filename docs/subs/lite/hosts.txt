@@ -6913,7 +6913,6 @@
 0.0.0.0 insight.ucweb.com
 0.0.0.0 insightexpress.com
 0.0.0.0 insightexpressai.com
-0.0.0.0 insights-collector.newrelic.com
 0.0.0.0 insights.academy.com
 0.0.0.0 insights.algolia.io
 0.0.0.0 inspi-dsp.com
@@ -9078,6 +9077,7 @@
 0.0.0.0 somni.silversea.com
 0.0.0.0 somni.sky.de
 0.0.0.0 somni.syf.com
+0.0.0.0 somni.syfpayments.com
 0.0.0.0 somni.synchrony.com
 0.0.0.0 somni.synchronybank.com
 0.0.0.0 somni.thermofisher.com
