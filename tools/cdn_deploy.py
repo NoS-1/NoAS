@@ -76,6 +76,10 @@ full 档（415,758 条）体积超过本节点单文件上限，请走 GitHub da
 def collect():
     files = {}
     files["/index.html"] = INDEX.encode()
+    # 实时任务看板（前端直连 GitHub API，无需 token）
+    tp = ROOT / "docs" / "tasks.html"
+    if tp.exists():
+        files["/tasks.html"] = tp.read_bytes()
     for tier in ("lite", "mid"):
         d = ROOT / "subs" / tier
         for f in sorted(d.iterdir()):
@@ -132,6 +136,7 @@ def main():
                 "mixed_surge": f"https://{PROJECT}.pages.dev/subs/mixed/noas-all.sgmodule",
                 "doh_list": f"https://{PROJECT}.pages.dev/subs/channels/doh.txt",
                 "aiodns": f"https://{PROJECT}.pages.dev/subs/channels/aiodns.sh",
+                "tasks": f"https://{PROJECT}.pages.dev/tasks.html",
             },
         }
         (ROOT / "subs" / "channels" / "cdn.json").write_text(
