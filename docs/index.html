@@ -70,8 +70,9 @@
   </ul>
 
   <h2>自我成长</h2>
-  <p>每天体检一次源：连续失联的自动淘汰，候选池里达标（≥300 条、可解析、与台账零冲突）的自动吸收，全过程写入 <code>history/evolution.json</code>。</p>
+  <p>每天体检一次源：连续失联的自动淘汰，候选池里达标（≥300 条、可解析、与台账零冲突）的自动吸收；每周自动发现新源；仓库 Issue 即错误报告接口（标签 <code>误伤</code> / <code>漏拦</code>），误伤自动进白名单立刻放行、漏拦只收带广告结构的端点，其余进观察池等共识。全过程写入 <code>history/growth.json</code> 与 <code>learn_events.jsonl</code>，可逐日审计。</p>
   <div id="evo"></div>
+  <div id="grow"></div>
 
   <h2>边界（不吹）</h2>
   <p>DNS 层做不到"百分百"：同域多租户路径广告、加密 SNI、客户端自带 DoH 都能绕过 DNS 拦截。本项目的做法是把公开源并集拉满、把审计过的广告端点强制入档、白名单硬闸只放过真正需要放过的域——DNS 层能拦的，不放过。</p>
@@ -119,6 +120,19 @@ fetch("data.json", {cache:"no-store"}).then(r => r.json()).then(d => {
     evo.map(e => (e.events||[]).map(v => `<tr><td>${esc((e.ts||"").replace("T"," ").replace("Z",""))}</td>
       <td>${esc(v.act)}</td><td>${esc(v.name||"—")}</td><td>${esc(v.n!=null?v.n+" 条":(v.why||"—"))}</td></tr>`).join("")).join("")
   }</table>` : `<p class="note">首轮体检记录将在下一次构建后出现。</p>`;
+
+  fetch("growth.json", {cache:"no-store"}).then(r => r.json()).then(g => {
+    const t = g.today || {}, dl = g.delta || {};
+    const ds = (v) => v==null ? "—" : (v>0?"+"+v:String(v));
+    el("grow").innerHTML = `<table>
+      <tr><th>指标</th><th>当前</th><th>较上一轮</th></tr>
+      <tr><td>lite / mid / full</td><td>${Number(t.lite||0).toLocaleString()} / ${Number(t.mid||0).toLocaleString()} / ${Number(t.full||0).toLocaleString()}</td><td>${ds(dl.lite)} / ${ds(dl.mid)} / ${ds(dl.full)}</td></tr>
+      <tr><td>可用规则源</td><td>${t.sources ?? "—"}</td><td>${ds(dl.sources)}</td></tr>
+      <tr><td>白名单台账</td><td>${t.whitelist ?? "—"}</td><td>${ds(dl.whitelist)}</td></tr>
+      <tr><td>累计学习事件</td><td>${g.events_total ?? 0}</td><td><span class="m">只增不减</span></td></tr>
+    </table>
+    ${(g.learn_events||[]).length ? `<p class="note">最近学习：${(g.learn_events||[]).slice(-5).reverse().map(e => esc(e.kind) + " · " + esc(JSON.stringify(e.detail))).join("；")}</p>` : `<p class="note">还没有反馈学习事件——在仓库提一个带「误伤」或「漏拦」标签的 Issue，下一轮构建就会学进去。</p>`}`;
+  }).catch(() => {});
 
   el("stamp").textContent = "生成于 " + esc(d.updated || "—");
   const repo = el("repo"); repo.textContent = d.repo; repo.href = "https://github.com/" + d.repo;
