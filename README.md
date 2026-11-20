@@ -7,7 +7,7 @@
 
 | 档位 | 条数 | 说明 | 地址 |
 |---|---|---|---|
-| lite | ≈3.5k | 跨 3 个以上独立源共识，误拦率最低，**日常用这档** | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
+| lite | ≈7.8k | 跨 3 源共识 + 广告结构自动晋级，误拦率最低，**日常用这档** | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
 | mid | ≈29k | 跨 2 个源共识，覆盖更广 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
 | full | ≈28 万 | 全部源并集，最激进 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/adguard.txt` |
 
@@ -79,5 +79,6 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 ## 已知边界（不吹）
 
 - 「100% 拦截」在 DNS 层不可能做到：同域多租户（如 CDN 上的广告路径）、加密 SNI、DoH 客户端自带解析都能绕过 DNS 拦截。本项目能做到的是**把公开源并集拉满 + 白名单硬闸**，DNS 层能拦的都拦。
-- 白名单是保守的：写了 `baidu.com` 就保护所有 `*.baidu.com`。宁可放过也不误伤。
+- 白名单是保守的：写了 `baidu.com` 就保护所有 `*.baidu.com`；只有人工审计过的广告端点（`lists/ad_endpoints.txt`）能穿透这层保护。
+- lite 里除共识条目外，还包含 `lists/promoted.txt` 自动晋级的域名结构即广告条目，规则见 `tools/promote.py`，误伤可直接在台账里加白。
 - full 档很激进（含大量长尾域），对极少数站点可能有误伤；介意就用 lite。
