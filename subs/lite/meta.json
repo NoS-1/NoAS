@@ -3,11 +3,11 @@
  "version": "20261121-49f7db41",
  "count": 9904,
  "wildcards": 55,
- "generated_utc": "Sat, 21 Nov 2026 08:57:08 GMT",
+ "generated_utc": "Sat, 21 Nov 2026 09:03:50 GMT",
  "files": {
   "adguard.txt": {
    "bytes": 226931,
-   "sha256": "4058250a86a0895e0833bd25e0f2efe5588a455cc95aad3d5ecd7d0ea793876c"
+   "sha256": "86b494e8a81e3ed1ddd2d48a095641258f86cbb40ba74556cabfa7868b2f2e03"
   },
   "allow.txt": {
    "bytes": 2234,
