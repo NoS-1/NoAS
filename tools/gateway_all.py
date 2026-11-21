@@ -128,6 +128,10 @@ def main():
     for item in plans:
         ids = []
         for p in item["plan"]:
+            # 幂等跳过：sha 一致且 id 在，就不重复上传（稳态下 6.88 从 20s 降到 1s 级）
+            if p["id"] and not p["stale"]:
+                ids.append(p["id"])
+                continue
             body = {"name": p["name"], "type": "DOMAIN",
                     "description": "NoAS %s（%d 条）sha:%s"
                                    % (next(l for t, _, _, l in TIERS if t == item["tier"]),
@@ -144,6 +148,10 @@ def main():
             ids.append(lid)
         traffic = " or ".join("any(dns.domains[*] in $%s)" % i for i in ids)
         rule = item["rule"]
+        if (rule.get("traffic") or "").strip() == traffic.strip() and not any(
+                p["stale"] for p in item["plan"]):
+            print("规则「%s」引用未变，跳过" % rule["name"])
+            continue
         body = {k: rule.get(k) for k in ("name", "description", "precedence", "enabled",
                                          "action", "filters", "rule_settings")}
         body["traffic"] = traffic
