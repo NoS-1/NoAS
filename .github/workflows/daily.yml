@@ -108,6 +108,11 @@ jobs:
       - name: 3 · 编译三档（lite / mid / full）
         run: python3 tools/compile.py --force
 
+      - name: 3.05 · 规模骤降自愈（重抓一次；仍不达标交 guard 判红）
+        # 上游偶发返回半截内容会让总量掉 15%+ 并触发护栏红。抖动重抓即可恢复；
+        # 真失效重抓后仍低，guard 照红，不掩盖故障。
+        run: python3 tools/scale_heal.py
+
       - name: 3.55 · 标签台账重建（必须紧跟 compile，否则 guard 会判"标签域不在档位"）
         run: |
           python3 tools/build_tags.py

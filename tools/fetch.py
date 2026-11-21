@@ -42,6 +42,12 @@ def slug(name):
     return "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in name).lower()
 
 
+def _get(url, headers, timeout=45):
+    req = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read(), (r.headers.get("ETag") or ""), (r.headers.get("Last-Modified") or "")
+
+
 def fetch_one(src, state):
     dst = os.path.join(CACHE, slug(src["name"]) + ".txt")
     meta = state.get(src["name"]) or {}
@@ -52,16 +58,25 @@ def fetch_one(src, state):
         headers["If-Modified-Since"] = meta["last_modified"]
     t0 = time.time()
     try:
-        req = urllib.request.Request(src["url"], headers=headers)
-        with urllib.request.urlopen(req, timeout=45) as r:
-            body = r.read()
-            etag = r.headers.get("ETag") or ""
-            lm = r.headers.get("Last-Modified") or ""
+        body, etag, lm = _get(src["url"], headers)
+        prev_bytes = meta.get("bytes") or 0
+        shrunk = bool(prev_bytes) and len(body) < prev_bytes * 0.7
+        if shrunk:
+            # HTTP 200 但内容比上轮少三成以上：多半是 CDN 限流/截断（实测有源返回半截），
+            # 去掉条件头、绕开缓存重试一次，取到更完整的那份。
+            try:
+                b2, etag2, lm2 = _get(src["url"], {"User-Agent": UA + " retry", "Accept": "*/*",
+                                                   "Cache-Control": "no-cache"})
+                if len(b2) > len(body):
+                    body, etag, lm, shrunk = b2, etag2, lm2, (len(b2) < prev_bytes * 0.7)
+            except Exception:
+                pass
         if body and len(body) > 512:
             with open(dst, "wb") as f:
                 f.write(body)
             return {**src, "ok": True, "bytes": len(body), "sec": round(time.time() - t0, 2),
-                    "etag": etag, "last_modified": lm, "updated": int(time.time()), "new": True}
+                    "etag": etag, "last_modified": lm, "updated": int(time.time()), "new": True,
+                    "shrunk": shrunk}
         return {**src, "ok": False, "why": "响应太小（疑似错误页）", "sec": round(time.time() - t0, 2)}
     except urllib.error.HTTPError as e:
         if e.code == 304 and os.path.exists(dst):
@@ -104,6 +119,7 @@ def main():
             cached.append(r)
         else:
             fresh.append(r)
+    old_state = dict(state)   # 打印"上轮字节数"要用旧值，后面 state 会被覆盖
     for r in results:
         if r.get("ok"):
             state[r["name"]] = {k: r.get(k, "") for k in ("bytes", "etag", "last_modified", "updated")}
@@ -113,6 +129,11 @@ def main():
         len(fresh) + len(cached), len(fresh), len(cached), len(failed), len(results)))
     for r in failed:
         print("  ✗ %-22s %s" % (r["name"], r.get("why", "")))
+    # 内容比上轮缩水三成以上的源：重试后仍未恢复就点名，构建层面还有规模自愈兜底
+    for r in results:
+        if r.get("ok") and r.get("shrunk"):
+            print("  ⚠ %-22s 内容偏短 %d 字节（上轮 %d），重试后仍未恢复" % (
+                r["name"], r.get("bytes") or 0, (old_state.get(r["name"]) or {}).get("bytes") or 0))
     if len(failed) >= len(results):
         print("FAIL：所有源都拉不到（网络受限或上游集体故障）")
         return 1
