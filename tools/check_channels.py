@@ -162,8 +162,22 @@ def main():
 
     t0 = time.time()
     workers = min(8, max(1, len(rows)))      # 通道少就少开线程，不空转
-    with ThreadPoolExecutor(max_workers=workers) as pool:
-        results = dict(pool.map(one, rows))
+    pool = ThreadPoolExecutor(max_workers=workers)
+    futs = [(r, pool.submit(one, r)) for r in rows]
+    # 单探针有 6-8s 超时，但 DNS 解析卡在内核态时不受 socket timeout 管，
+    # 实测能把整个步骤拖到 workflow 的 180s 硬上限。这里给全局 15s 预算：
+    # 拿不到就先判"探测超时"，体检结果照样落盘，后面回退完整清单。
+    results = {}
+    budget = time.time() + 15
+    for row, f in futs:
+        try:
+            k, v = f.result(timeout=max(0.05, budget - time.time()))
+            results[k] = v
+        except Exception:
+            results[row["name"]] = {
+                "status": "down", "proto": row["proto"], "endpoint": row["endpoint"],
+                "rtt_ms": int((time.time() - t0) * 1000),
+                "detail": "探测超时（15s 总预算用尽）"}
     OUTDIR.mkdir(parents=True, exist_ok=True)
 
     real = [v for v in results.values() if v["status"] in ("ok", "down")]
@@ -224,4 +238,8 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    rc = main()
+    sys.stdout.flush()
+    # 卡在 DNS/TCP 里的探针线程不能拖住解释器退出（ThreadPoolExecutor 退出时会 join），
+    # 结论已经写盘，直接硬退出。
+    os._exit(rc)
