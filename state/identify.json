@@ -2,8 +2,8 @@
  "ts": "2026-11-21",
  "candidates": 50,
  "judged": 0,
- "calls": 0,
- "model": "",
+ "calls": 2,
+ "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
  "confirmed": [],
  "whitelisted": [],
  "shadow": [],
@@ -13,5 +13,5 @@
   "已在规则库": 0,
   "已否决": 10
  },
- "error": "缺少 CF_ACCOUNT_ID / CF_API_TOKEN，AI 直判不可用"
+ "error": "github-models: RuntimeError"
 }
