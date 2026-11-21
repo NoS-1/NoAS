@@ -3,7 +3,7 @@
 # 格式：hosts / adblock / domains / dnsmasq / wildcard
 # 只允许公开、可直接拉取的源；任何需要登录/密钥的源一律不收录。
 StevenBlack-all	https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts	hosts	block	综合广告+恶意域，最稳的基础盘
-antiAD-cn	https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-domains.txt	adblock	block	国内广告/追踪主力源
+antiAD-cn	https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-domains.txt	domains	block	国内广告/追踪主力源
 KADhosts	https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt	hosts	block	欧洲补充盘
 AdGuard-CN-adservers	https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/ChineseFilter/sections/adservers.txt	adblock	block	中文广告网络专章
 AdGuard-tracking	https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/SpywareFilter/sections/tracking_servers.txt	adblock	block	追踪/统计服务
