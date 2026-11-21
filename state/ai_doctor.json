@@ -7,13 +7,13 @@
   },
   {
    "name": "智谱 GLM",
-   "status": "ok",
-   "note": "glm-4.7-flash → 可用"
+   "status": "missing",
+   "note": "未配置 ZHIPU_API_KEY（智谱 BigModel）"
   },
   {
    "name": "硅基流动",
-   "status": "fail",
-   "note": "THUDM/GLM-4-9B-0414: HTTP Error 402: Payment Required"
+   "status": "missing",
+   "note": "未配置 SILICONFLOW_API_KEY（硅基流动）"
   },
   {
    "name": "阿里云百炼",
@@ -32,8 +32,8 @@
   },
   {
    "name": "Cloudflare AI",
-   "status": "ok",
-   "note": "@cf/meta/llama-3.3-70b-instruct-fp8-fast → 可用"
+   "status": "fail",
+   "note": "HTTPError: HTTP Error 429: Too Many Requests"
   }
  ]
 }
