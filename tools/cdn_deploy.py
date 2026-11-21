@@ -48,6 +48,10 @@ def collect():
             if f.is_file() and f.stat().st_size <= 25 * 1024 * 1024:
                 rel = f.relative_to(ROOT / "subs").as_posix()
                 files[f"/subs/{rel}"] = f.read_bytes()
+    # 构建指纹也发一份：Workers 的 cron 靠它判断规则新旧，比 GitHub raw 稳
+    mf = ROOT / "state" / "build_manifest.json"
+    if mf.exists():
+        files["/state/build_manifest.json"] = mf.read_bytes()
     return files
 
 
@@ -103,80 +107,93 @@ def main():
         except Exception as e:
             print("回读最新部署失败（%s），继续走正常部署" % type(e).__name__)
 
-    # 2) 上传变更资产
-    if todo:
+    def flush(batch, jwt):
+        if not batch:
+            return 0
+        resp = requests.post(ASSET_URL, headers={"Authorization": "Bearer " + jwt},
+                             json=batch, timeout=600)
+        if resp.status_code >= 300:
+            print("资产上传失败 HTTP", resp.status_code, resp.text[:400])
+            raise SystemExit(1)
+        return len(batch)
+
+    # 2) 上传资产 + 提交 manifest。做成可重入：Pages 的 assets 以 sha256 为键，
+    #    服务端淘汰旧哈希后，纯增量 manifest 会落成 0 文件的空站点（线上 500）。
+    def push(paths, tag):
         r = requests.get(f"{ACC_BASE}/pages/projects/{PROJECT}/upload-token", headers=auth, timeout=60)
         if r.status_code != 200:
             print("取 upload-token 失败", r.status_code, r.text[:300])
-            return 1
+            return None
         jwt = (r.json().get("result") or {}).get("jwt") or ""
         if not jwt:
             print("upload-token 为空")
-            return 1
+            return None
 
-        batch, size = [], 0
         sent = 0
-
-        def flush(batch, size):
-            if not batch:
-                return 0
-            resp = requests.post(ASSET_URL, headers={"Authorization": "Bearer " + jwt},
-                                 json=batch, timeout=600)
-            if resp.status_code >= 300:
-                print("资产上传失败 HTTP", resp.status_code, resp.text[:400])
-                raise SystemExit(1)
-            return len(batch)
-
-        for p in todo:
+        batch, size = [], 0
+        for p in paths:
             content = files[p]
-            item = {"key": hashes[p],
-                    "value": base64.b64encode(content).decode(),
-                    "metadata": {"contentType": ctype(p)}}
             # base64 后体积约 1.34 倍，按原始字节预算分批
             if size and size + len(content) > BATCH:
-                sent += flush(batch, size)
+                sent += flush(batch, jwt)
                 batch, size = [], 0
-            batch.append(item)
+            batch.append({"key": hashes[p],
+                          "value": base64.b64encode(content).decode(),
+                          "metadata": {"contentType": ctype(p)}})
             size += len(content)
-        sent += flush(batch, size)
-        print("资产已上传 %d 个（sha256 键）" % sent)
+        sent += flush(batch, jwt)
+        if paths:
+            print("资产已上传 %d 个%s" % (sent, tag))
 
-    # 2) 只提交 manifest
-    parts = [
-        ("manifest", (None, json.dumps({p: hashes[p] for p in files}))),
-        ("branch", (None, "main")),
-        ("commit_message", (None, "NoAS rules %s" % os.environ.get("NOAS_VER", "latest"))),
-    ]
-    r = requests.post(BASE, headers=auth, files=parts, timeout=600)
-    try:
-        body = r.json()
-    except Exception:
-        print("HTTP", r.status_code, r.text[:400])
-        return 1
-    print("HTTP", r.status_code, "success", body.get("success"))
-    res = body.get("result") or {}
-    for e in body.get("errors") or []:
-        print("ERR", e.get("code"), e.get("message"))
-    if not body.get("success"):
-        return 1
+        parts = [
+            ("manifest", (None, json.dumps({p: hashes[p] for p in files}))),
+            ("branch", (None, "main")),
+            ("commit_message", (None, "NoAS rules %s%s"
+                                % (os.environ.get("NOAS_VER", "latest"), tag))),
+        ]
+        r = requests.post(BASE, headers=auth, files=parts, timeout=600)
+        try:
+            body = r.json()
+        except Exception:
+            print("HTTP", r.status_code, r.text[:400])
+            return None
+        print("HTTP", r.status_code, "success", body.get("success"))
+        for e in body.get("errors") or []:
+            print("ERR", e.get("code"), e.get("message"))
+        if not body.get("success"):
+            return None
+
+        res = body.get("result") or {}
+        got = -1
+        try:
+            d = requests.get(f"{BASE}/{res.get('id') or ''}", headers=auth, timeout=60).json()
+            got = len((d.get("result") or {}).get("files") or {})
+        except Exception as e:
+            print("回读失败", e)
+        print("部署地址：", res.get("url") or "")
+        print("内容校验：线上 %d 个文件 / 预期 %d 个 -> %s"
+              % (got, len(files), "OK" if got == len(files) else "FAIL"))
+        return res if got == len(files) else None
+
+    res = push(todo, "")
+    if res is None:
+        # 自愈：旧哈希在 Pages 侧失效时，只传变更必然落成空站点。全量重传一次。
+        print("增量部署校验未过，改走全量上传自愈…")
+        res = push(list(files), "-full")
+        if res is None:
+            try:
+                d = requests.get(f"{BASE}?per_page=1", headers=auth, timeout=60).json()
+                latest = (d.get("result") or [{}])[0]
+                if len(latest.get("files") or {}) == len(files):
+                    print("全量重传回报失败，但线上已一致，按成功处理")
+                    res = latest
+            except Exception:
+                pass
+        if res is None:
+            print("全量自愈仍失败，需人工介入")
+            return 1
 
     url = res.get("url") or ""
-    dep_id = res.get("id") or ""
-
-    # 3) 回读 files 自校验：增量提交的 manifest 若没被接受，部署会是空的
-    got = -1
-    try:
-        d = requests.get(f"{BASE}/{dep_id}", headers=auth, timeout=60).json()
-        got = len((d.get("result") or {}).get("files") or {})
-    except Exception as e:
-        print("回读失败", e)
-    print("部署地址：", url)
-    print("内容校验：线上 %d 个文件 / 预期 %d 个 -> %s"
-          % (got, len(files), "OK" if got == len(files) else "FAIL"))
-
-    if got != len(files):
-        print("增量提交没被接受，请回退全量脚本（/tmp/cdn_deploy_v1.py）")
-        return 1
 
     # 4) 台账：资产哈希 + 部署信息
     STATE.parent.mkdir(parents=True, exist_ok=True)
