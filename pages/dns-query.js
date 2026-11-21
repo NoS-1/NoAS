@@ -114,41 +114,25 @@ function uaTier(ua) {
   return "lite";
 }
 
-// 返回 { tier, how }：显式（路径/头/参数）> KV 记忆 > UA 推断
-async function pickTier(request, url, pathTier, env) {
+// 档位来源：显式声明 > UA 推断。不读 KV —— 共享出口 IP 上读到别人写的档会串档，
+// 而 UA 本身就能区分手机(2万)/路由器(3万)/其它(1万)，稳定且零延迟。
+// KV 只在"客户端显式声明档位"时写一笔，纯粹留痕审计用，不参与判定。
+async function pickTier(request, url, pathTier) {
   const explicit = (pathTier || url.searchParams.get("tier") ||
                     request.headers.get("x-noas-tier") || "").toLowerCase();
   if (TIERS.includes(explicit)) return { tier: explicit, how: "explicit", persist: true };
-
-  const key = "t:" + ipHash(request) + ":" + uaHash(request);
-  const mc = TIER_MEM.get(key);
-  if (mc && Date.now() - mc.at < TIER_MEM_TTL) return { tier: mc.tier, how: "mem", persist: false };
-
-  if (env && env.STATS) {
-    try {
-      const v = await env.STATS.get("tier:" + key, { type: "text" });
-      if (v && TIERS.includes(v)) {
-        TIER_MEM.set(key, { tier: v, at: Date.now() });
-        return { tier: v, how: "kv", persist: false };
-      }
-    } catch (x) { /* KV 读失败就当没记忆 */ }
-  }
-
-  const t = uaTier(request.headers.get("user-agent"));
-  // UA 推断不落盘：同一个出口 IP 下 Android 手机和路由器 UA 不同，落盘会互相串档
-  TIER_MEM.set(key, { tier: t, at: Date.now() });
-  return { tier: t, how: "ua", persist: false };
+  return { tier: uaTier(request.headers.get("user-agent")), how: "ua", persist: false };
 }
 
 async function persistTier(request, tier, env) {
   if (!env || !env.STATS) return;
-  const key = "t:" + ipHash(request) + ":" + uaHash(request);
+  const key = "v2:t:" + ipHash(request) + ":" + uaHash(request);
   if (TIER_MEM.get(key) && TIER_MEM.get(key).tier === tier) {
     // isolate 内已记，只有首次或改档才写
     if (TIER_MEM.get(key).written) return;
   }
   try {
-    await env.STATS.put("tier:" + key, tier, { expirationTtl: 259200 });
+    await env.STATS.put(key, tier, { expirationTtl: 259200 });
     const e = TIER_MEM.get(key) || {};
     TIER_MEM.set(key, { ...e, tier, at: Date.now(), written: true });
   } catch (x) { /* 写失败不影响本次判定 */ }
@@ -186,23 +170,23 @@ function hitSet(set, name) {
 }
 
 function blockedResponse(bytes, qtype, end) {
-  const head = bytes.slice(0, end);
-  const withA = qtype === 1 || qtype === 28;
-  const out = new Uint8Array(head.length + (withA ? 16 : 0));
+  const head = new Uint8Array(bytes.slice(0, end));      // 头部 + 问题区原样带回
+  const answer = (qtype === 1 || qtype === 28) ? 1 : 0;
+  head[2] = 0x81; head[3] = 0x80;                        // QR=1 RD=1 RA=1 NOERROR
+  head[6] = 0; head[7] = answer ? 1 : 0;
+  head[8] = 0; head[9] = 0; head[10] = 0; head[11] = 0;
+  if (!answer) return head;
+  // ANSWER 区：NAME(2)+TYPE(2)+CLASS(2)+TTL(4)+RDLEN(2)+RDATA(4 或 16)
+  // 之前这里固定按 16 字节总长分配，AAAA 只写出 4 字节 rdata，报文是残的。
+  const rdlen = qtype === 1 ? 4 : 16;
+  const out = new Uint8Array(head.length + 12 + rdlen);  // RDATA 全 0 → A=0.0.0.0 / AAAA=::
   out.set(head, 0);
-  const flags = 0x8180;
-  out[2] = (flags >> 8) & 0xff; out[3] = flags & 0xff;
-  out[6] = 0; out[7] = withA ? 1 : 0;
-  out[8] = 0; out[9] = 0; out[10] = 0; out[11] = 0;
-  if (withA) {
-    const o = head.length;
-    out[o] = 0xc0; out[o + 1] = 0x0c;
-    out[o + 2] = 0; out[o + 3] = qtype === 1 ? 1 : 28;
-    out[o + 4] = 0; out[o + 5] = 1;
-    out[o + 6] = 0; out[o + 7] = 0; out[o + 8] = 0; out[o + 9] = 60;
-    out[o + 10] = 0;
-    out[o + 11] = qtype === 1 ? 4 : 16;
-  }
+  const p = head.length;
+  out[p] = 0xc0; out[p + 1] = 0x0c;
+  out[p + 2] = 0x00; out[p + 3] = qtype === 1 ? 0x01 : 0x1c;
+  out[p + 4] = 0x00; out[p + 5] = 0x01;
+  out[p + 6] = 0x00; out[p + 7] = 0x00; out[p + 8] = 0x00; out[p + 9] = 0x3c;   // TTL 60s
+  out[p + 10] = 0x00; out[p + 11] = rdlen;
   return out;
 }
 
@@ -244,7 +228,7 @@ export async function onRequest(context) {
 
   // 自查端点：/tier 或 /dns-query/...?info=1
   if (url.pathname === "/tier" || url.searchParams.get("info") === "1") {
-    const p = await pickTier(request, url, pathTier, env);
+    const p = await pickTier(request, url, pathTier);
     const set = await tierSet(p.tier, env);
     return new Response(JSON.stringify({
       tier: p.tier, label: LABEL[p.tier], count: set ? set.size : 0,
@@ -265,7 +249,7 @@ export async function onRequest(context) {
     return proxied(res);
   }
 
-  const p = await pickTier(request, url, pathTier, env);
+  const p = await pickTier(request, url, pathTier);
   if (p.persist && waitUntil) {
     try { waitUntil(persistTier(request, p.tier, env).catch(() => {})); } catch (x) {}
   }
