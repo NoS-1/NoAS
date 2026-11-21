@@ -86,13 +86,12 @@ jobs:
 
       # CF 令牌体检：CI 里只读不改（写 secret 需要 PAT，内置 token 无该权限）。
       # 真轮换在本地或凭据齐备时执行；未配置时脚本自行跳过，绝不阻塞构建。
-      - name: 0.3 · CF 令牌体检（轮换前先确认根令牌可用）
-        continue-on-error: true
+      - name: 0.3 · CF 令牌体检
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CF_USER_TOKEN: ${{ secrets.CF_USER_TOKEN }}
           CF_ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
-        run: python3 tools/cf_rotate.py --check
+        run: python3 tools/step_run.py --name "CF 令牌体检" --mode soft --retries 1 -- python3 tools/cf_rotate.py --check
 
       - name: 1 · 拉取公开规则源
         run: python3 tools/fetch.py
@@ -121,11 +120,10 @@ jobs:
           python3 tools/build_tags.py
           python3 tools/build_mixed.py
 
-      - name: 3.58 · D1 状态同步（可选层，额度耗尽自动跳过）
-        continue-on-error: true
+      - name: 3.58 · D1 状态同步
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        run: python3 tools/d1_init.py
+        run: python3 tools/step_run.py --name "D1 状态同步" --mode soft --retries 2 -- python3 tools/d1_init.py
 
       - name: 3.56 · 观察池影子计时 + 域名信誉评分
         run: |
@@ -160,54 +158,45 @@ jobs:
           node tests/standalone_check.mjs
           node tests/dns_features_check.mjs     # ECS/TTL/负缓存/v4only/CNAME 多跳/why
 
-      - name: 6.8 · 同步规则到 CF Pages（免费 CDN，不占 Worker 额度）
-        continue-on-error: true          # 没配 secret 也不该阻断每日构建
+      - name: 6.8 · 同步规则到 CF Pages
         env:
           CF_TOKEN: ${{ secrets.CF_API_TOKEN }}
           NOAS_VER: ${{ github.run_id }}
-        run: |
-          if [ -z "$CF_TOKEN" ]; then echo "无 CF_API_TOKEN，跳过 CDN 同步"; exit 0; fi
-          python3 -c "import requests" 2>/dev/null || pip install -q -r requirements.txt
-          python3 tools/cdn_deploy.py
+        run: python3 tools/step_run.py --name "同步规则到 CF Pages" --mode required --retries 2 -- python3 tools/cdn_deploy.py
 
-      - name: 6.85 · 部署 DoH Worker 到 Cloudflare（回读比对 sha）
-        continue-on-error: true
+      - name: 6.85 · 部署 DoH Worker
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        run: python3 tools/deploy_doh.py
+        run: python3 tools/step_run.py --name "部署 DoH Worker" --mode required --retries 2 -- python3 tools/deploy_doh.py
 
-      - name: 6.88 · Gateway 三档全量同步（lite/mid/full 各 10/20/30 片，幂等）
-        continue-on-error: true
+      - name: 6.88 · Gateway 三档全量同步
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        run: python3 tools/gateway_all.py --apply
+        run: python3 tools/step_run.py --name "Gateway 三档全量同步" --mode required --retries 2 -- python3 tools/gateway_all.py --apply
 
-      - name: 6.885 · Gateway 误拦剪枝（只删白名单冲突，幂等）
-        continue-on-error: true
+      - name: 6.885 · Gateway 误拦剪枝
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        run: python3 tools/gateway_prune.py --apply
+        run: python3 tools/step_run.py --name "Gateway 误拦剪枝" --mode soft --retries 1 -- python3 tools/gateway_prune.py --apply
 
-      - name: 6.89 · Gateway 对齐校验（只读，偏差写台账）
-        continue-on-error: true
+      - name: 6.89 · Gateway 对齐校验
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        run: python3 tools/gateway_align.py
+        run: python3 tools/step_run.py --name "Gateway 对齐校验" --mode soft --retries 1 -- python3 tools/gateway_align.py
 
-      - name: 6.9 · Analytics Engine 自检（每天只用 1 个数据点）
-        continue-on-error: true
+      - name: 6.9 · Analytics Engine 自检
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        run: python3 tools/ae_selfcheck.py
+        run: python3 tools/step_run.py --name "Analytics Engine 自检" --mode soft --retries 1 -- python3 tools/ae_selfcheck.py
 
-      - name: 6.95 · AI 复核观察池（免费 1 万 neurons/天，只出建议不进主表）
-        continue-on-error: true
+      - name: 6.95 · AI 复核观察池
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        run: python3 tools/ai_classify.py
+        run: python3 tools/step_run.py --name "AI 复核观察池" --mode soft --retries 1 -- python3 tools/ai_classify.py
 
-      # data 分支已停用：三档全格式由 CF Pages 承载（/subs/{lite,mid,full}/*），
-      # GitHub 不再做分发。需要离线单包的人走 Release（latest，固定一个 tag 不累积）。
+      - name: 6.98 · 部署健康汇总
+        if: always()
+        run: python3 tools/deploy_health.py
 
       - name: 8 · 生成站点数据与 Pages 镜像（含零误拦闭环页）
         run: |

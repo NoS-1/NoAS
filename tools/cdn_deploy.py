@@ -83,6 +83,32 @@ def ctype(path):
     return "application/octet-stream"
 
 
+def verify_tier_count(base):
+    """线上档位条数必须与本地 meta 一致。
+
+    200 + x-noas 只能证明函数活着，证明不了“新规则真的生效”：
+    上传中断、KV 缓存旧值、Pages 侧旧快照都会给出 200 却仍在跑老规则。"""
+    import json, pathlib
+    m = pathlib.Path("subs/lite/meta.json")
+    if not m.exists():
+        print("档位条数核对：本地无 meta.json，跳过")
+        return True
+    local = json.loads(m.read_text(encoding="utf-8")).get("count")
+    try:
+        r = requests.get(base.rstrip("/") + "/tier", timeout=30,
+                         proxies={"http": None, "https": None},
+                         headers={"user-agent": "Mozilla/5.0 NoAS"})
+        remote = r.json().get("count")
+    except Exception as e:
+        print("档位条数核对异常（%s）" % type(e).__name__)
+        return False
+    if local == remote:
+        print("档位条数核对：本地 %s = 线上 %s -> OK" % (local, remote))
+        return True
+    print("::error::档位条数不一致：本地 %s，线上 %s（部署可能没真正生效）" % (local, remote))
+    return False
+
+
 def verify_doh(base):
     """确认 Pages Function 真的被编译上线了。
 
@@ -102,7 +128,7 @@ def verify_doh(base):
             if r.status_code == 200 and r.headers.get("x-noas"):
                 print("DoH 端点验证：%d / x-noas=%s / %d 字节 -> OK"
                       % (r.status_code, r.headers.get("x-noas"), len(r.content)))
-                return True
+                return verify_tier_count(base)
             print("DoH 端点验证：HTTP %d（x-noas=%s）"
                   % (r.status_code, r.headers.get("x-noas")))
         except Exception as e:
