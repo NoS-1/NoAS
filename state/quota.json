@@ -1,12 +1,12 @@
 {
- "at": "2026-11-21T09:10:27Z",
+ "at": "2026-11-21T09:22:23Z",
  "ok": true,
  "utc_day_used": true,
  "used": {
-  "requests": 741,
-  "kv_requests": 753,
-  "ae_points": 214,
-  "d1_queries": 142
+  "requests": 1113,
+  "kv_requests": 798,
+  "ae_points": 218,
+  "d1_queries": 144
  },
  "limits": {
   "requests": 100000,
@@ -15,23 +15,27 @@
   "d1_queries": 5000000
  },
  "pct": {
-  "requests": 0.7,
+  "requests": 1.1,
   "kv_requests": 0.8,
   "ae_points": 0.2,
   "d1_queries": 0.0
  },
  "headroom": {
-  "requests": 99259,
-  "kv_requests": 99247,
-  "ae_points": 99786,
-  "d1_queries": 4999858
+  "requests": 98887,
+  "kv_requests": 99202,
+  "ae_points": 99782,
+  "d1_queries": 4999856
  },
- "subrequests": 720,
+ "subrequests": 733,
  "errors": 6,
- "cpu_ms_p50": 2.99,
- "cpu_ms_p99": 37.09,
+ "cpu_ms_p50": 1.41,
+ "cpu_ms_p99": 32.67,
  "cpu_limit_ms": 10,
  "by_script": {
-  "noas-doh": 741
+  "noas-doh": 1113
+ },
+ "coverage": {
+  "workers_dataset": true,
+  "pages_functions": "不在 workersInvocationsAdaptive 口径内（实测零计数）"
  }
 }
