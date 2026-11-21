@@ -60,33 +60,26 @@ def cf_get(path):
 def main():
     fails, notes = [], []
 
-    # 1) /tier 与三档条数
+    # 1) 单订阅条数核对（2026-11 起对外只有 subs/all，旧三档与 KV 历史值不再比对）
     try:
-        t = requests.get(f"{BASE}/tier", headers=UA, timeout=TIMEOUT).json()
-        if not t.get("set_loaded"):
-            fails.append(f"/tier 规则未加载：{t.get('err')}")
-        # /tier 只报当前档；条数用固定三档端点逐个核
-        for tier in ("lite", "mid", "full"):
-            m = pathlib.Path(f"subs/{tier}/meta.json")
-            want = json.loads(m.read_text(encoding="utf-8")).get("count") if m.exists() else None
-            r = requests.get(f"{BASE}/dns-query/{tier}?info=1&_t={int(time.time()*1000)}", headers=UA, timeout=TIMEOUT)
-            if r.status_code != 200:
-                fails.append(f"{tier} 端点 {r.status_code}")
-                continue
-            got = r.json().get("count")
-            # 线上 set 含该档通配条目（lite +4、mid +55 量级），允许该容差
-            if want and not (want - 40 <= got <= want + 60):
-                fails.append(f"{tier} 线上 {got} ≠ 仓库 {want}")
-            else:
-                notes.append(f"{tier}={got}(仓库{want})")
+        f = pathlib.Path("subs/all/adguard.txt")
+        want = sum(1 for l in f.read_text(encoding="utf-8").splitlines() if l.strip()) if f.exists() else None
+        r = requests.get(f"{BASE}/subs/all/adguard.txt?_t={int(time.time()*1000)}", headers=UA, timeout=TIMEOUT)
+        got = sum(1 for l in r.text.splitlines() if l.strip())
+        if want is None:
+            notes.append(f"subs/all 本地缺失，跳过（线上 {got}）")
+        elif got != want:
+            fails.append(f"subs/all 线上 {got} ≠ 仓库 {want}")
+        else:
+            notes.append(f"subs/all={got}(仓库{want})")
     except Exception as e:
-        fails.append(f"/tier 不可用：{e}")
+        fails.append(f"subs/all 核对失败：{e}")
 
     # 3) DoH 实测
     try:
-        blocked = dns_query("adsrvr.org")
+        blocked = dns_query("gdt.qq.com")
         if blocked.get("rdata") != "0.0.0.0":
-            fails.append(f"adsrvr.org 未拦截（rdata={blocked.get('rdata')} x={blocked.get('x')}）")
+            fails.append(f"gdt.qq.com 未拦截（rdata={blocked.get('rdata')} x={blocked.get('x')}）")
         allow = dns_query("www.qq.com")
         if allow.get("status") != 200 or allow.get("rdata") in (None, "0.0.0.0"):
             fails.append(f"www.qq.com 被误伤（rdata={allow.get('rdata')} x={allow.get('x')}）")
