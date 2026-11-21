@@ -11,11 +11,11 @@
 | 3 | `ali-dot` | dot | `tls://dns.alidns.com:853` | backup | unknown | 同上加密通道（DoT），客户端支持 TLS 时用 |
 | 4 | `tencent-dot` | dot | `tls://dot.pub:853` | backup | unknown | 腾讯 DoT，移动/联通线路稳 |
 | 5 | `aiodns-local` | aiodns | `127.0.0.1:5300` | local | absent | 本机 aiodns（honwen/aiodns），做国内分流 + 缓存，零额度 |
-| 6 | `gateway-doh` | doh | `https://oxyacq0a4t.cloudflare-gateway.com/dns-query` | gateway | ok · 42ms | 自建带规则 DoH（Zero Trust Gateway，7 条档位规则），免费额度远高于 Worker |
-| 7 | `gateway-dot` | dot | `tls://oxyacq0a4t.cloudflare-gateway.com:853` | gateway | ok · 91ms | 自建带规则 DoT；端点已启用且免 token，需 CI 干净网络验证 |
+| 6 | `gateway-doh` | doh | `https://oxyacq0a4t.cloudflare-gateway.com/dns-query` | gateway | ok · 152ms | 自建带规则 DoH（Zero Trust Gateway，7 条档位规则），免费额度远高于 Worker |
+| 7 | `gateway-dot` | dot | `tls://oxyacq0a4t.cloudflare-gateway.com:853` | gateway | ok · 100ms | 自建带规则 DoT；端点已启用且免 token，需 CI 干净网络验证 |
 | 8 | `cf-doh` | doh | `https://noas-doh.199999510.workers.dev/dns-query` | last | unknown | 自建规则层，仅兜底；10 万/天，90% 自动熔断 |
 
-健康检查时间：2026-11-21T07:19:32Z
+健康检查时间：2026-11-21T07:37:39Z
 ⚠️ 本次体检环境异常（判定为代理劫持/网络不可达），已回退为**完整清单**，未经在线验证。
 
 ## 三种用法（按精力选一种）

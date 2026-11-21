@@ -72,19 +72,19 @@
   "name": "NoAS 大档拦截",
   "description": "第 3 档：全量威胁域",
   "precedence": 4,
-  "enabled": true,
+  "enabled": false,
   "action": "override",
   "filters": [
    "dns"
   ],
   "created_at": "2026-11-18T09:46:36Z",
-  "updated_at": "2026-11-21T07:29:32Z",
+  "updated_at": "2026-11-21T07:34:03Z",
   "deleted_at": null,
   "identity": "",
   "device_posture": "",
-  "version": 133,
+  "version": 134,
   "sharable": true,
-  "traffic": "any(dns.domains[*] in $2e1a7d55-41c4-402c-a195-7aa5546ec530) or any(dns.domains[*] in $293e406a-282e-41a3-bf3b-a2855ad49909) or any(dns.domains[*] in $9b478fc4-26ef-4a9b-9658-89cd9594fce2) or any(dns.domains[*] in $d0aaae0c-726c-4b2f-b8f2-45ce28cd6a48) or any(dns.domains[*] in $b0b611f3-f46c-445a-80f1-0d1e369f95fd) or any(dns.domains[*] in $5b734de5-9228-491a-be3d-5d990105d783) or any(dns.domains[*] in $9bdd57c7-b16d-4b51-b36f-c5b4e3772873) or any(dns.domains[*] in $5cf5a325-4674-4b0b-92e4-b2e73e51f7cf) or any(dns.domains[*] in $8ff4768d-d641-4493-90c3-770ecad42291) or any(dns.domains[*] in $a9e45d5d-5a40-4265-b774-560b88032ba9) or any(dns.domains[*] in $48574380-877a-413d-8578-1f2cc3f69f3d) or any(dns.domains[*] in $fdd36a1b-6178-4433-b7f8-c0ee4b32d2b8) or any(dns.domains[*] in $6c8399dc-92f4-4b70-936c-1828f28a2f73) or any(dns.domains[*] in $5932d763-6fe1-434f-bb08-5ca7ecab3e41) or any(dns.domains[*] in $6481be60-c26b-49ed-83f8-a66f3253c890) or any(dns.domains[*] in $bab62f09-e67c-4dcd-bbc4-d9f35d16aab7) or any(dns.domains[*] in $57aa335e-fdf6-4318-b45e-e6fdff73a31c) or any(dns.domains[*] in $572921bf-30e7-4dfe-a382-99a1a3d7fb82) or any(dns.domains[*] in $1f420781-ff90-4885-925c-9bbcddbff305) or any(dns.domains[*] in $2a6c6bc9-162a-4d8a-84a1-5a2521b50bfa) or any(dns.domains[*] in $ff518b4f-f8f8-4da4-b70e-6714e9b56b2d) or any(dns.domains[*] in $ec14fbee-c6c9-4a95-a252-1ba85fdb4c1c) or any(dns.domains[*] in $27b0e028-e51f-4886-83a9-d56f0292f33f) or any(dns.domains[*] in $d9915356-7233-4133-b432-eb673cc94c90) or any(dns.domains[*] in $2648c074-8bd8-4476-b8aa-1fbf305f3324) or any(dns.domains[*] in $855345e7-d691-4aa5-b16f-d9b8733c307d) or any(dns.domains[*] in $f3e330ac-1078-4c55-910f-89b9150ce75c) or any(dns.domains[*] in $f3372772-36b9-47f9-ba10-1f2306dc56f9) or any(dns.domains[*] in $a0bf886d-c604-40ae-bd3c-9c628eb997df) or any(dns.domains[*] in $2adb0339-f671-4673-befb-b7042fd4d3ba) or any(dns.domains[*] in $c7c037cc-79e3-4ec4-b077-304a6e694c44) or any(dns.domains[*] in $f7eaf530-d7ec-45fa-b208-bda125348485) or any(dns.domains[*] in $a2066c59-8390-4e77-8a31-dce3fbff9f01) or any(dns.domains[*] in $b5834e65-f6e8-41c3-934b-6e497866cde4) or any(dns.domains[*] in $40ec310e-37d7-4087-9db4-8b9cbbc15f73) or any(dns.domains[*] in $f03021ac-3f98-45ce-a5f2-31d53d721472) or any(dns.domains[*] in $30a9bc1e-6fd6-48bb-9a08-8c1f1849d073) or any(dns.domains[*] in $ad0bf4f0-acc2-45fa-8678-6a504d8dd6f5) or any(dns.domains[*] in $8f259944-ac56-4666-8b3a-94b08a60b13f) or any(dns.domains[*] in $c28bd3e7-5875-4052-9419-403e1e091cef) or any(dns.domains[*] in $adb7bbab-2a23-40d9-9e9b-97a4b3991bc5)",
+  "traffic": "any(dns.domains[*] in $7fda177b-d042-45b2-9feb-fb6f17383f18)",
   "rule_settings": {
    "override_ips": [
     "0.0.0.0"
