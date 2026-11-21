@@ -395,10 +395,13 @@ function b64urlToBytes(s) {
 }
 
 /** 合成"拦截"应答：A→0.0.0.0，AAAA→::，其它类型→NOERROR 空答（NXDOMAIN 会误伤邮件/校验类客户端） */
-function blockedResponse(query, qtype, end) {
+function blockedResponse(query, qtype, end, mode) {
   const head = new Uint8Array(query.slice(0, end));   // 头部 + 问题区原样带回
-  const answer = (qtype === 1 || qtype === 28) ? 1 : 0;
-  head[2] = 0x81; head[3] = 0x80;                     // QR=1 RD=1 RA=1 NOERROR
+  // ?mode=nxdomain：回 NXDOMAIN(3) 而不是 0.0.0.0。少数客户端对 0.0.0.0 会回退 IPv6 或重试，
+  // NXDOMAIN 是"域名不存在"的确定性答案，重试更少；默认仍用 0.0.0.0（可用性更宽）。
+  const nx = mode === "nxdomain";
+  const answer = nx ? 0 : ((qtype === 1 || qtype === 28) ? 1 : 0);
+  head[2] = 0x81; head[3] = nx ? 0x83 : 0x80;          // QR=1 RD=1 RA=1 RCODE=0/3
   head[6] = 0; head[7] = answer ? 1 : 0;
   head[8] = 0; head[9] = 0; head[10] = 0; head[11] = 0;
   if (!answer) return head;
@@ -871,6 +874,7 @@ async function handle(request, env, ctx) {
   if (!name) return new Response("bad query", { status: 400 });
 
   // EDNS(0)：解析客户端 OPT —— ECS 子网（RFC 7871）与 DO 位（RFC 3225）都在这里
+  const mode = url.searchParams.get("mode") || "";   // "" | nxdomain
   const edns = parseEdns(bytes, end);
   const ecs = edns.ecs || clientPrefix(ip) || null;
   const doBit = edns.doBit;
@@ -895,7 +899,7 @@ async function handle(request, env, ctx) {
   if (!skipRules) await loadHot(env);
   if (!skipRules && blocked(name, tier)) {
     logHit(env, "block", name, tier, "");
-    return new Response(blockedResponse(bytes, qtype, end), {
+    return new Response(blockedResponse(bytes, qtype, end, mode), {
       headers: { "content-type": "application/dns-message", "x-noas": "blocked", "x-noas-ver": VERSION },
     });
   }
@@ -934,7 +938,7 @@ async function handle(request, env, ctx) {
     const t = await cnameDeep(buf, name, qtype, tier, ip, edns);
     if (t) {
       logHit(env, "cname", name, tier, t);
-      return new Response(blockedResponse(bytes, qtype, end), {
+      return new Response(blockedResponse(bytes, qtype, end, mode), {
         headers: { "content-type": "application/dns-message", "x-noas": "blocked-cname",
                    "x-noas-target": t, "x-noas-ver": VERSION },
       });

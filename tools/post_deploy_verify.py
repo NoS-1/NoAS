@@ -95,6 +95,11 @@ def main():
     # 4) Worker 在线（CF API 只在有令牌时查，本地/无密场景跳过）
     if os.environ.get("CF_API_TOKEN") or os.environ.get("CF_TOKEN"):
         try:
+            sz = pathlib.Path("doh/worker.js").stat().st_size if pathlib.Path("doh/worker.js").exists() else 0
+            if sz > 950_000:
+                fails.append(f"Worker 脚本 {sz}B 逼近 1MB 上限")
+            else:
+                notes.append(f"worker_bytes={sz}")
             r = cf_get("workers/scripts/noas-doh/settings")
             if r.status_code != 200:
                 fails.append(f"Worker settings {r.status_code}")
@@ -117,6 +122,8 @@ def main():
             rules = cf_get("gateway/rules").json().get("result", [])
             if len(rules) < 6:
                 fails.append(f"Gateway 规则 {len(rules)} < 6")
+            if len(names) > 90:
+                notes.append(f"warn:gapway_lists={len(names)} 逼近 100 上限")
             notes.append(f"lists={len(names)} rules={len(rules)}")
         except Exception as e:
             fails.append(f"Gateway 查询异常：{e}")

@@ -61,10 +61,26 @@ async function tierSet(tier, env) {
   const e = SETS.get(tier);
   if (e && Date.now() - e.at < TTL_MS) return e.s;
 
+  // KV 里是 Worker cron 写的 JSON（{ver,count,compact:"|a|b|c"}），静态文件是纯文本行。
+  // 原来的文本解析把整段 JSON 当成"一行"，size=1 永远不达标 → lite 每次冷启动都回源 195KB。
   const parse = (txt) => {
     if (!txt) return null;
+    const t = String(txt).trim();
+    if (t[0] === "{") {
+      try {
+        const j = JSON.parse(t);
+        if (j && typeof j.compact === "string" && j.compact) {
+          const set = new Set();
+          for (const d of j.compact.split("|")) {
+            const v = d.trim();
+            if (v) set.add(v);
+          }
+          return set.size > MIN[tier] ? set : null;
+        }
+      } catch (x) { /* 不是 JSON 就落回文本解析 */ }
+    }
     const set = new Set();
-    for (const line of txt.split("\n")) {
+    for (const line of t.split("\n")) {
       const d = line.trim();
       if (d && d[0] !== "#") set.add(d);
     }
@@ -176,10 +192,11 @@ function hitSet(set, name) {
   return false;
 }
 
-function blockedResponse(bytes, qtype, end) {
+function blockedResponse(bytes, qtype, end, mode) {
   const head = new Uint8Array(bytes.slice(0, end));      // 头部 + 问题区原样带回
-  const answer = (qtype === 1 || qtype === 28) ? 1 : 0;
-  head[2] = 0x81; head[3] = 0x80;                        // QR=1 RD=1 RA=1 NOERROR
+  const nx = mode === "nxdomain";
+  const answer = nx ? 0 : ((qtype === 1 || qtype === 28) ? 1 : 0);
+  head[2] = 0x81; head[3] = nx ? 0x83 : 0x80;                        // QR=1 RD=1 RA=1 NOERROR
   head[6] = 0; head[7] = answer ? 1 : 0;
   head[8] = 0; head[9] = 0; head[10] = 0; head[11] = 0;
   if (!answer) return head;
@@ -303,7 +320,7 @@ export async function onRequest(context) {
 
   const set = await tierSet(p.tier, env);
   if (q && set && hitSet(set, q.name)) {
-    return new Response(blockedResponse(bytes, q.qtype, q.end), {
+    return new Response(blockedResponse(bytes, q.qtype, q.end, url.searchParams.get("mode") || ""), {
       headers: {
         "content-type": "application/dns-message",
         "x-noas": "blocked", "x-noas-path": "pages-local", "x-noas-ver": p.tier,

@@ -160,6 +160,11 @@ mock(answer('f.example.com', 28, 300));
 seen = []; await doh(query('g.example.com', 255, { edns: true }), '');
 { ok(seen.length === 0, 'ANY 不打上游'); }
 
+// 6.5) ?mode=nxdomain → RCODE 3 且无答案
+{ const r = await doh(query('doubleclick.net', 1), '?mode=nxdomain');
+  const b = new Uint8Array(await r.arrayBuffer());
+  ok((b[3] & 0xf) === 3 && new DataView(b.buffer).getUint16(6) === 0, 'mode=nxdomain 回 NXDOMAIN'); }
+
 // 7) /why 分层理由
 { const r = await handler(new Request('https://x.dev/why?d=doubleclick.net&tier=2'), {}, ctx);
   const j = await r.json(); ok(j.blocked === true && j.why === 'rule', '/why 命中 rule 层'); }
