@@ -1,28 +1,28 @@
 {
- "checked_at": "2026-11-21T02:39:03Z",
+ "checked_at": "2026-11-21T02:43:14Z",
  "probe": "www.baidu.com",
- "elapsed_ms": 599,
+ "elapsed_ms": 953,
  "env": "suspect",
  "channels": {
   "ali-doh": {
    "status": "unknown",
    "proto": "ndoh",
    "endpoint": "https://dns.alidns.com/dns-query",
-   "rtt_ms": 452,
+   "rtt_ms": 399,
    "detail": "疑似本机代理劫持，未计入通道死亡：HTTPError: HTTP Error 500: Internal Server Error"
   },
   "tencent-doh": {
    "status": "unknown",
    "proto": "ndoh",
    "endpoint": "https://doh.pub/dns-query",
-   "rtt_ms": 390,
+   "rtt_ms": 952,
    "detail": "疑似本机代理劫持，未计入通道死亡：HTTPError: HTTP Error 502: Bad Gateway"
   },
   "ali-dot": {
    "status": "unknown",
    "proto": "dot",
    "endpoint": "tls://dns.alidns.com:853",
-   "rtt_ms": 596,
+   "rtt_ms": 579,
    "rcode": -5,
    "detail": "疑似本机代理劫持，未计入通道死亡：解析未通过（rcode=-5）"
   },
@@ -30,7 +30,7 @@
    "status": "unknown",
    "proto": "dot",
    "endpoint": "tls://dot.pub:853",
-   "rtt_ms": 35,
+   "rtt_ms": 359,
    "rcode": 5,
    "detail": "疑似本机代理劫持，未计入通道死亡：解析未通过（rcode=5）"
   },
@@ -45,14 +45,14 @@
    "status": "unknown",
    "proto": "doh",
    "endpoint": "https://noas-doh.199999510.workers.dev/dns-query",
-   "rtt_ms": 429,
+   "rtt_ms": 264,
    "detail": "疑似本机代理劫持，未计入通道死亡：HTTPError: HTTP Error 400: Bad Request"
   },
   "gateway-doh": {
    "status": "ok",
    "proto": "doh",
    "endpoint": "https://oxyacq0a4t.cloudflare-gateway.com/dns-query",
-   "rtt_ms": 59,
+   "rtt_ms": 84,
    "rcode": 4,
    "detail": "verify：拦广告→0.0.0.0 / 正常域→真实 IP（oxyacq0a4t.cloudflare-gateway.com）"
   },
@@ -60,7 +60,7 @@
    "status": "ok",
    "proto": "dot",
    "endpoint": "tls://oxyacq0a4t.cloudflare-gateway.com:853",
-   "rtt_ms": 104,
+   "rtt_ms": 170,
    "rcode": 4,
    "detail": "verify：拦广告→0.0.0.0 / 正常域→真实 IP（oxyacq0a4t.cloudflare-gateway.com）"
   }
