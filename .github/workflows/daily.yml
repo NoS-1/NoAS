@@ -105,6 +105,9 @@ jobs:
         # 老顺序是"编译 → 晋级 → 再全量编译一遍"，等于把最重的编译白跑两次。
         run: python3 tools/promote.py
 
+      - name: 2.9 · 跨层回灌（L2 路径层 / L3 uBO → L1 DNS 端点例外）
+        run: python3 tools/layer_backfill.py --write
+
       - name: 3 · 编译三档（lite / mid / full）
         run: python3 tools/compile.py --force
 

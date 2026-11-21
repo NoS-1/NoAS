@@ -1,4 +1,4 @@
-# NoAS RPZ（20261121-5985d0c1）
+# NoAS RPZ（20261121-6a8498f1）
 ; $TTL 300
 0017c6c37c.com CNAME .
 00a39e6dfd.com CNAME .
@@ -2520,6 +2520,7 @@ adversaldisplay.com CNAME .
 adversalservers.com CNAME .
 advertica.com CNAME .
 adverticum.net CNAME .
+advertise.bczeducation.cn CNAME .
 advertise.com CNAME .
 advertiserubyproximity.com CNAME .
 advertiserurl.com CNAME .
@@ -6967,7 +6968,6 @@ culsucqivn.in CNAME .
 cultivated-cell.com CNAME .
 cultivated-guitar.com CNAME .
 cultivateddecrepitcoolest.com CNAME .
-cultivatelimbharvest.com CNAME .
 culturaltracking.ru CNAME .
 cupid.iqiyi.com CNAME .
 customads.co CNAME .
@@ -7533,6 +7533,7 @@ dyh1wzegu1j6z.cloudfront.net CNAME .
 dyj8pbcnat4xv.cloudfront.net CNAME .
 dyn.empflix.com CNAME .
 dyn.tnaflix.com CNAME .
+dynamicad.kfc.com.cn CNAME .
 dyntrk.com CNAME .
 dyodrs1kxvg6o.cloudfront.net CNAME .
 dyrfxuvraq0fk.cloudfront.net CNAME .
@@ -8209,6 +8210,7 @@ optad360.io CNAME .
 optimisation.coop.co.uk CNAME .
 optimisation.data.lloydsbankinggroup.com CNAME .
 optimix.asia CNAME .
+optimus-ads.amap.com CNAME .
 os.fandango.com CNAME .
 os.shutterfly.com CNAME .
 osimg.nbcuni.com CNAME .
@@ -9910,7 +9912,6 @@ zxrrop.musely.com CNAME .
 *.ads-twitter.com CNAME .
 *.ads.tiktok.com CNAME .
 *.adsafeprotected.com CNAME .
-*.adsrvr.org CNAME .
 *.alimama.com CNAME .
 *.amazon-adsystem.com CNAME .
 *.analytics.tiktok.com CNAME .
@@ -9921,7 +9922,6 @@ zxrrop.musely.com CNAME .
 *.casalemedia.com CNAME .
 *.chartboost.com CNAME .
 *.cnzz.com CNAME .
-*.criteo.com CNAME .
 *.criteo.net CNAME .
 *.csjplatform.com CNAME .
 *.doubleclick.net CNAME .

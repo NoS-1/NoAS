@@ -1,4 +1,4 @@
-# NoAS 20261121-5985d0c1 rule-provider payload
+# NoAS 20261121-6a8498f1 rule-provider payload
 payload:
   - DOMAIN-SUFFIX,0017c6c37c.com
   - DOMAIN-SUFFIX,00a39e6dfd.com
@@ -2520,6 +2520,7 @@ payload:
   - DOMAIN-SUFFIX,adversalservers.com
   - DOMAIN-SUFFIX,advertica.com
   - DOMAIN-SUFFIX,adverticum.net
+  - DOMAIN-SUFFIX,advertise.bczeducation.cn
   - DOMAIN-SUFFIX,advertise.com
   - DOMAIN-SUFFIX,advertiserubyproximity.com
   - DOMAIN-SUFFIX,advertiserurl.com
@@ -6967,7 +6968,6 @@ payload:
   - DOMAIN-SUFFIX,cultivated-cell.com
   - DOMAIN-SUFFIX,cultivated-guitar.com
   - DOMAIN-SUFFIX,cultivateddecrepitcoolest.com
-  - DOMAIN-SUFFIX,cultivatelimbharvest.com
   - DOMAIN-SUFFIX,culturaltracking.ru
   - DOMAIN-SUFFIX,cupid.iqiyi.com
   - DOMAIN-SUFFIX,customads.co
@@ -7533,6 +7533,7 @@ payload:
   - DOMAIN-SUFFIX,dyj8pbcnat4xv.cloudfront.net
   - DOMAIN-SUFFIX,dyn.empflix.com
   - DOMAIN-SUFFIX,dyn.tnaflix.com
+  - DOMAIN-SUFFIX,dynamicad.kfc.com.cn
   - DOMAIN-SUFFIX,dyntrk.com
   - DOMAIN-SUFFIX,dyodrs1kxvg6o.cloudfront.net
   - DOMAIN-SUFFIX,dyrfxuvraq0fk.cloudfront.net
@@ -8209,6 +8210,7 @@ payload:
   - DOMAIN-SUFFIX,optimisation.coop.co.uk
   - DOMAIN-SUFFIX,optimisation.data.lloydsbankinggroup.com
   - DOMAIN-SUFFIX,optimix.asia
+  - DOMAIN-SUFFIX,optimus-ads.amap.com
   - DOMAIN-SUFFIX,os.fandango.com
   - DOMAIN-SUFFIX,os.shutterfly.com
   - DOMAIN-SUFFIX,osimg.nbcuni.com

@@ -1861,7 +1861,7 @@ ad.kugou.com	ad-label,cn-endpoint
 ad.l2b.co.za	ad-label
 ad.letv.com	ad-label,cn-endpoint
 ad.magokoro-care-shoku.com	ad-label
-ad.maoyan.com	ad-label,cn-endpoint
+ad.maoyan.com	ad-label,layer-backfill
 ad.mediamixer.co.kr	ad-label
 ad.moji.com	ad-label,cn-endpoint
 ad.mox.tv	ad-label
@@ -2429,7 +2429,7 @@ adslots.com	consensus
 adsmeasurement.com	consensus
 adsmediabox.com	consensus
 adsmg.fanfox.net	consensus
-adsmind.gdtimg.com	cn-endpoint
+adsmind.gdtimg.com	layer-backfill
 adsmoloco.com	consensus
 adsnative.com	consensus
 adsnid.wagyushop.com	consensus
@@ -2448,7 +2448,7 @@ adsquash.info	consensus
 adsquasher.com	consensus
 adsquasher.pro	consensus
 adsratcarp.com	consensus
-adsrvr.org	ad-network
+adsrvr.org	ad-network,layer-backfill
 adsterraserver.com	consensus
 adstik.click	consensus
 adstook.com	consensus
@@ -2525,6 +2525,7 @@ adversaldisplay.com	consensus
 adversalservers.com	consensus
 advertica.com	consensus
 adverticum.net	consensus
+advertise.bczeducation.cn	layer-backfill
 advertise.com	consensus
 advertiserubyproximity.com	consensus
 advertiserurl.com	consensus
@@ -5588,7 +5589,7 @@ cbdedibles.site	consensus
 cbe3ab8bc7.com	consensus
 cbhadfiwcdgsl.space	consensus
 cbjmoseezbnbe.online	consensus
-cbjs.baidu.com	cn-endpoint
+cbjs.baidu.com	layer-backfill
 cbl6.destinia.gt	consensus
 cbluygxyvtfhv.site	consensus
 cbogxhsvaqfxd.website	consensus
@@ -6687,7 +6688,7 @@ cpmmedia.net	consensus
 cpmrevenuegate.com	consensus
 cpmstar.com	consensus
 cpnsbxkibvbhw.space	consensus
-cpro.baidu.com	cn-endpoint
+cpro.baidu.com	layer-backfill
 cpro.baidustatic.com	cn-endpoint
 cpsumpgbxqhid.space	consensus
 cpu-api.infor.pl	consensus
@@ -6808,7 +6809,7 @@ crisisinanehalted.com	consensus
 crisistuesdayartillery.com	consensus
 crisp-freedom.com	consensus
 cristochris.com	consensus
-criteo.com	ad-network
+criteo.com	ad-network,layer-backfill
 criticalaeroplanepleat.com	consensus
 critictruck.com	consensus
 crittereasilyhangover.com	consensus
@@ -6984,7 +6985,6 @@ culsucqivn.in	consensus
 cultivated-cell.com	consensus
 cultivated-guitar.com	consensus
 cultivateddecrepitcoolest.com	consensus
-cultivatelimbharvest.com	consensus
 culturaltracking.ru	consensus
 culture.intermedes.com	consensus
 cumbersomeplenty.com	consensus
@@ -8775,6 +8775,7 @@ dyj8pbcnat4xv.cloudfront.net	consensus
 dymwfbufbwtwc.site	consensus
 dyn.empflix.com	consensus
 dyn.tnaflix.com	consensus
+dynamicad.kfc.com.cn	layer-backfill
 dynamitedata.com	consensus
 dynatrace.att.com	consensus
 dynbanners.netlify.app	consensus
@@ -8961,7 +8962,7 @@ echoacloud.com	consensus
 ecjhgxpqqpuzu.website	consensus
 ecjrzisfqedcu.space	consensus
 ecknbonfiftad.website	consensus
-eclick.baidu.com	cn-endpoint
+eclick.baidu.com	layer-backfill
 eclkmpsa.com	consensus
 eclzoaiippely.site	consensus
 ecma.bdimg.com	consensus
@@ -10782,7 +10783,7 @@ gdmgsecure.com	consensus
 gdnkdthyotnkk.site	consensus
 gdqmnvweycjnl.website	consensus
 gdsfkwghjspep.site	consensus
-gdt.qq.com	cn-endpoint,sdk
+gdt.qq.com	layer-backfill,sdk
 gearcambridge.com	consensus
 geastyetis.com	consensus
 gebir.xyz	consensus
@@ -11310,7 +11311,7 @@ grnezkzjgcwvs.space	consensus
 grnvvxcjpbokg.site	consensus
 groinenamel.com	consensus
 groleegni.net	consensus
-gromore.com	ad-network,cn-endpoint
+gromore.com	ad-network,layer-backfill
 grookilteepsou.net	consensus
 groovespacing.com	consensus
 grop.net	consensus
@@ -15563,13 +15564,11 @@ marketing.ompimail.com	consensus
 marketing.orolia.com	consensus
 marketing.orthofi.com	consensus
 marketing.pac.com	consensus
-marketing.papersave.com	consensus
 marketing.pcsww.com	consensus
 marketing.petsit.com	consensus
 marketing.profmi.org	consensus
 marketing.pronaca.com	consensus
 marketing.realcomm.com	consensus
-marketing.recarroll.com	consensus
 marketing.redlion.net	consensus
 marketing.revparts.com	consensus
 marketing.rmhoist.com	consensus
@@ -16565,7 +16564,7 @@ mo.kugou.com	consensus
 moaningfoe.com	consensus
 moatads.com	ad-network
 mobads-logs.baidu.com	cn-endpoint
-mobads.baidu.com	ad-label,cn-endpoint
+mobads.baidu.com	ad-label,layer-backfill
 mobfox.com	consensus
 mobilead.kuwo.cn	consensus
 mobilefuse.com	consensus
@@ -18244,6 +18243,7 @@ optimisation.coop.co.uk	consensus
 optimisation.data.lloydsbankinggroup.com	consensus
 optimisticcapital.pro	consensus
 optimix.asia	consensus
+optimus-ads.amap.com	layer-backfill
 optionascertained.com	consensus
 optmnstr.com	consensus
 optungjyfustb.space	consensus
@@ -18891,7 +18891,7 @@ pfwufhoblovfz.website	consensus
 pfzxtzpzfrify.website	consensus
 pgabbgqhenhxu.space	consensus
 pganwasqoeibh.website	consensus
-pgdt.gtimg.cn	cn-endpoint
+pgdt.gtimg.cn	layer-backfill
 pgeevebcbzzcm.site	consensus
 pgfviujllriob.website	consensus
 pghpmvqssfiae.website	consensus
@@ -19318,7 +19318,7 @@ portionsmeltdown.com	consensus
 portnell.com	consensus
 portptfeyfcnx.space	consensus
 portslocked.com	consensus
-pos.baidu.com	cn-endpoint
+pos.baidu.com	layer-backfill
 positivelong.com	consensus
 posopts.com	consensus
 possessedrehearsal.com	consensus
@@ -21716,7 +21716,7 @@ sdftjepmiwcwq.space	consensus
 sdg.desihamster.pro	consensus
 sdhgvevmmaxxy.website	consensus
 sdhhhqcqewyvb.site	consensus
-sdk.e.qq.com	cn-endpoint
+sdk.e.qq.com	layer-backfill
 sdk.starbolt.io	consensus
 sdk4push.com	consensus
 sdkl.info	consensus
@@ -25003,7 +25003,7 @@ tangyamount.com	consensus
 tankfangspain.com	consensus
 tankroyaldivide.com	consensus
 tanvvybruhuju.website	consensus
-tanx.com	ad-network,cn-endpoint
+tanx.com	ad-network,layer-backfill
 taobljybvgouh.online	consensus
 taoyinbiacid.com	consensus
 taperlyiuds.com	consensus
@@ -25917,7 +25917,7 @@ tradbypass.com	consensus
 tradeadexchange.com	consensus
 tradeshows.aem.org	consensus
 traditionblindness.com	consensus
-tradplusad.com	cn-endpoint
+tradplusad.com	layer-backfill
 traffdaq.com	consensus
 traffic-c.com	consensus
 traffic.club	consensus

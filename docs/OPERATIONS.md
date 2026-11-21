@@ -99,6 +99,24 @@ cd /home/user/NoAS && python3 tools/cf_rotate.py --doctor
 3. **Worker 判定**：只有 Gateway 覆盖不到的长尾才走；
 4. **国内 DoH 回落**：阿里 / 腾讯 / 360，额度不归我们。
 
+### 跨层回灌（L2/L3 → L1）
+
+`tools/layer_backfill.py` 每天在编译前跑一次，把「更准但更窄」的层的判定升级成 DNS 规则：
+
+| 来源 | 抽取口径 | 落点 |
+|---|---|---|
+| L2 路径层 `lists/ad_paths.tsv` | 只取 **host 本身带广告语义**（ad / ads / adx / track / splash / cpro / pos / dynamicad / advertise…） | 三档（lite 优先） |
+| L3 uBO `subs/paths/ubo/*.txt` | 只取网络层 `||domain^`；元素规则 `site##selector` 不收（拦站点会误伤正文） | 三档 |
+| L4 GKD（已下线） | **规则是 UI 选择器（text/id/vid），物理上没有域名**，无法变成解析规则 | 只留 `lists/l4_apps_legacy.txt` 做覆盖度审计 |
+
+落档方式：回灌域以 **端点例外（ep）** 身份进入，与 `union.baidu.com` / `ad.qq.com` 同语义 ——
+即使父域在白名单（`amap.com`、`qq.com`、`baidu.com` 都是热门大盘），该端点照样拦。
+四处口径必须一致，否则同一份规则在不同校验器里结论不同：`compile.py`、`build_doh.py`（Worker 内嵌）、
+`precision.py`（误伤审计）、`tests/worker_check.mjs`（回归）。
+
+排除项：`dead.txt`（解析不出地址，拦了也没流量）、精确命中白名单的域、两段以内的良性/热门根域。
+台账里打 `layer-backfill` 标签，与 `cn-endpoint` 区分来源。
+
 ### 分档端点（DoH 客户端「知道自己用哪一档」）
 
 Pages 的 DoH 端点按档位服务，客户端在配置 URL 里写档位即声明：

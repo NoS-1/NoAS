@@ -1,4 +1,4 @@
-# NoAS 20261121-5985d0c1（9902 条 + 通配 21）
+# NoAS 20261121-6a8498f1（9904 条 + 通配 21）
 host-suffix, 0017c6c37c.com, reject
 host-suffix, 00a39e6dfd.com, reject
 host-suffix, 01168nl.com, reject
@@ -2519,6 +2519,7 @@ host-suffix, adversaldisplay.com, reject
 host-suffix, adversalservers.com, reject
 host-suffix, advertica.com, reject
 host-suffix, adverticum.net, reject
+host-suffix, advertise.bczeducation.cn, reject
 host-suffix, advertise.com, reject
 host-suffix, advertiserubyproximity.com, reject
 host-suffix, advertiserurl.com, reject
@@ -6966,7 +6967,6 @@ host-suffix, culsucqivn.in, reject
 host-suffix, cultivated-cell.com, reject
 host-suffix, cultivated-guitar.com, reject
 host-suffix, cultivateddecrepitcoolest.com, reject
-host-suffix, cultivatelimbharvest.com, reject
 host-suffix, culturaltracking.ru, reject
 host-suffix, cupid.iqiyi.com, reject
 host-suffix, customads.co, reject
@@ -7532,6 +7532,7 @@ host-suffix, dyh1wzegu1j6z.cloudfront.net, reject
 host-suffix, dyj8pbcnat4xv.cloudfront.net, reject
 host-suffix, dyn.empflix.com, reject
 host-suffix, dyn.tnaflix.com, reject
+host-suffix, dynamicad.kfc.com.cn, reject
 host-suffix, dyntrk.com, reject
 host-suffix, dyodrs1kxvg6o.cloudfront.net, reject
 host-suffix, dyrfxuvraq0fk.cloudfront.net, reject
@@ -8208,6 +8209,7 @@ host-suffix, optad360.io, reject
 host-suffix, optimisation.coop.co.uk, reject
 host-suffix, optimisation.data.lloydsbankinggroup.com, reject
 host-suffix, optimix.asia, reject
+host-suffix, optimus-ads.amap.com, reject
 host-suffix, os.fandango.com, reject
 host-suffix, os.shutterfly.com, reject
 host-suffix, osimg.nbcuni.com, reject

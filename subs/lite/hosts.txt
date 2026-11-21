@@ -1,4 +1,4 @@
-# NoAS 20261121-5985d0c1（9902 条）
+# NoAS 20261121-6a8498f1（9904 条）
 0.0.0.0 0017c6c37c.com
 0.0.0.0 00a39e6dfd.com
 0.0.0.0 01168nl.com
@@ -2519,6 +2519,7 @@
 0.0.0.0 adversalservers.com
 0.0.0.0 advertica.com
 0.0.0.0 adverticum.net
+0.0.0.0 advertise.bczeducation.cn
 0.0.0.0 advertise.com
 0.0.0.0 advertiserubyproximity.com
 0.0.0.0 advertiserurl.com
@@ -6966,7 +6967,6 @@
 0.0.0.0 cultivated-cell.com
 0.0.0.0 cultivated-guitar.com
 0.0.0.0 cultivateddecrepitcoolest.com
-0.0.0.0 cultivatelimbharvest.com
 0.0.0.0 culturaltracking.ru
 0.0.0.0 cupid.iqiyi.com
 0.0.0.0 customads.co
@@ -7532,6 +7532,7 @@
 0.0.0.0 dyj8pbcnat4xv.cloudfront.net
 0.0.0.0 dyn.empflix.com
 0.0.0.0 dyn.tnaflix.com
+0.0.0.0 dynamicad.kfc.com.cn
 0.0.0.0 dyntrk.com
 0.0.0.0 dyodrs1kxvg6o.cloudfront.net
 0.0.0.0 dyrfxuvraq0fk.cloudfront.net
@@ -8208,6 +8209,7 @@
 0.0.0.0 optimisation.coop.co.uk
 0.0.0.0 optimisation.data.lloydsbankinggroup.com
 0.0.0.0 optimix.asia
+0.0.0.0 optimus-ads.amap.com
 0.0.0.0 os.fandango.com
 0.0.0.0 os.shutterfly.com
 0.0.0.0 osimg.nbcuni.com

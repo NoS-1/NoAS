@@ -12,7 +12,11 @@ const load = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8').split('\n')
 const lite = load('subs/lite/domains.txt');
 const mid = load('subs/mid/domains.txt');
 const benign = [...load('tests/benign_baseline.txt'), ...load('lists/benign_top.txt')];
-const endpoints = new Set(load('lists/ad_endpoints.txt'));
+const endpoints = new Set([
+  ...load('lists/ad_endpoints.txt'),
+  ...load('lists/cn_ad_endpoints.txt'),
+  ...load('lists/layer_backfill.txt'),   // L2/L3 回灌的端点例外，与 compile 同口径
+]);
 
 let miss = [], fp = [];
 for (const d of lite) {

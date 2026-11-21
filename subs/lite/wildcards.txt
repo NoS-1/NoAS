@@ -1,4 +1,4 @@
-# NoAS 通配清单（20261121-5985d0c1）：*.域 = 该域任意多级子域
+# NoAS 通配清单（20261121-6a8498f1）：*.域 = 该域任意多级子域
 *.adchina.cn
 *.adcolony.com
 *.adjust.com
@@ -7,7 +7,6 @@
 *.ads-twitter.com
 *.ads.tiktok.com
 *.adsafeprotected.com
-*.adsrvr.org
 *.alimama.com
 *.amazon-adsystem.com
 *.analytics.tiktok.com
@@ -18,7 +17,6 @@
 *.casalemedia.com
 *.chartboost.com
 *.cnzz.com
-*.criteo.com
 *.criteo.net
 *.csjplatform.com
 *.doubleclick.net

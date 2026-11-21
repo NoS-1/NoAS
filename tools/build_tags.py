@@ -46,10 +46,13 @@ def main():
     lite = set(lines_of(SUBS / "lite" / "domains.txt"))
     mid = set(lines_of(SUBS / "mid" / "domains.txt"))
     full = set(lines_of(SUBS / "full" / "domains.txt"))
-    ep = set(lines_of(LISTS / "ad_endpoints.txt")) | set(lines_of(LISTS / "cn_ad_endpoints.txt"))
+    ep = (set(lines_of(LISTS / "ad_endpoints.txt"))
+          | set(lines_of(LISTS / "cn_ad_endpoints.txt"))
+          | set(lines_of(LISTS / "layer_backfill.txt")))
     watch = set(lines_of(LISTS / "cn_ad_watch.txt"))
     core = set(lines_of(LISTS / "core_ad_networks.txt"))
     miner = set(lines_of(LISTS / "miner.txt"))
+    backfill = set(lines_of(LISTS / "layer_backfill.txt"))
     aff = set(lines_of(LISTS / "affiliate.txt"))
     tel = set(lines_of(LISTS / "telemetry.txt"))
     sdk = set(lines_of(LISTS / "sdk_ads.txt"))
@@ -75,7 +78,9 @@ def main():
         labels = d.split(".")[:-2]
         if any(x in AD_LABELS for x in labels):
             add(d, "ad-label")
-        if d in ep:
+        if d in backfill:
+            add(d, "layer-backfill")     # L2 路径层 / L3 uBO 融合进来的广告端点
+        elif d in ep:
             add(d, "cn-endpoint")
         if d in watch:
             add(d, "cn-watch")

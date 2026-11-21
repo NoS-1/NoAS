@@ -57,10 +57,13 @@ def main():
         "t2": sorted(set(mid)),
         "allow": allow,
         "wild": wild,
-        "ep": sorted({
-            l.split("#", 1)[0].strip().lower()
-            for l in open(os.path.join(ROOT, "lists", "ad_endpoints.txt"), encoding="utf-8")
-            if l.split("#", 1)[0].strip()}),
+        # 端点例外：ad_endpoints + 国内发现端点 + 跨层回灌（L2/L3 → L1），
+        # 与 compile.py 的 ep 同口径 —— Worker 侧 blocked() 会先查这份再查白名单
+        "ep": sorted(
+            {l.split("#", 1)[0].strip().split()[0].lower()
+             for fn in ("ad_endpoints.txt", "cn_ad_endpoints.txt", "layer_backfill.txt")
+             for l in open(os.path.join(ROOT, "lists", fn), encoding="utf-8")
+             if l.split("#", 1)[0].strip()}),
     }
     # 规则以换行分隔纯文本内嵌：模块级同步切分，避免顶层 await 异步 I/O（CF 禁止）
     js = (open(TPL, encoding="utf-8").read()

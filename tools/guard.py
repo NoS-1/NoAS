@@ -189,6 +189,16 @@ def check_threat_isolation():
         if hit:
             fails.append("%s：混入威胁分类域 %d 条：%s" % (tier, len(hit), ", ".join(hit[:5])))
     full = set(domains_of("full", "domains.txt") or [])
+    # 跨层回灌（L2/L3 → L1）必须真的落到 DNS 层，否则"融合"就是空话
+    backfill = set(read_first_col("layer_backfill.txt"))
+    if backfill:
+        gap = sorted(backfill - full)
+        if gap:
+            fails.append("跨层回灌未落地 %d 条（应在三档内，至少 full）：%s"
+                         % (len(gap), ", ".join(gap[:5])))
+        in_lite = sorted(backfill - set(domains_of("lite", "domains.txt") or []))
+        if in_lite and len(in_lite) == len(backfill):
+            fails.append("跨层回灌 %d 条一条都没进 lite（端点例外应优先小档）" % len(backfill))
     missing = sorted(miner - set(full))
     if missing:
         fails.append("full：分类域缺失 %d 条（应全部强制进 full）：%s"
@@ -618,11 +628,19 @@ def _check_tier(tier):
             fails.append("%s/%s 条数 %d，应为 %d" % (tier, f, len(d), want))
     if len(base) < 100:
         fails.append("%s：条数过少 %d" % (tier, len(base)))
+    # 端点例外集合：ad_endpoints + 国内发现端点 + 跨层回灌（L2/L3 → L1）。
+    # 它们即使落在白名单父域下也允许拦（union.baidu.com / optimus-ads.amap.com 同一语义）。
     ep_all = set()
-    epp = os.path.join(ROOT, "lists", "ad_endpoints.txt")
-    if os.path.exists(epp):
-        for line in open(epp, encoding="utf-8"):
+    for fn in ("ad_endpoints.txt", "cn_ad_endpoints.txt", "layer_backfill.txt"):
+        p2 = os.path.join(ROOT, "lists", fn)
+        if not os.path.exists(p2):
+            continue
+        for line in open(p2, encoding="utf-8"):
             x = line.split("#", 1)[0].strip().lower()
+            if not x:
+                continue
+            if fn == "cn_ad_endpoints.txt":
+                x = x.split()[0] if x.split() else ""
             if x and "." in x:
                 ep_all.add(x)
     hit = sorted({d for d in set(base) if protected(d, allow) and d not in ep_all})
