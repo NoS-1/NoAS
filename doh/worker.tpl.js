@@ -233,6 +233,38 @@ function cnameTargets(buf) {
   return out;
 }
 
+// 把应答解析成结构化记录（/resolve 与 dns-json 用）
+function rrList(buf, qend) {
+  const out = [];
+  try {
+    const dv = new DataView(buf.buffer || buf, buf.byteOffset || 0);
+    const total = dv.byteLength;
+    let off = qend;
+    const an = dv.getUint16(6);
+    for (let i = 0; i < an && off < total; i++) {
+      const name = readName(dv, off);
+      off = skipName(dv, off);
+      const type = dv.getUint16(off);
+      const ttl = dv.getUint32(off + 4);
+      const rdlen = dv.getUint16(off + 8);
+      const rd = off + 10;
+      let data = "";
+      if (type === 1 && rdlen === 4) data = Array.from(new Uint8Array(dv.buffer, dv.byteOffset + rd, 4)).join(".");
+      else if (type === 28 && rdlen === 16) {
+        const b = new Uint8Array(dv.buffer, dv.byteOffset + rd, 16);
+        const seg = [];
+        for (let k = 0; k < 16; k += 2) seg.push(((b[k] << 8) | b[k + 1]).toString(16));
+        data = seg.join(":");
+      } else if (type === 5) data = readName(dv, rd);
+      else if (type === 16) data = String.fromCharCode(...new Uint8Array(dv.buffer, dv.byteOffset + rd, Math.min(rdlen, 40)));
+      else data = Buffer.from ? "" : "";
+      out.push({ name, type, ttl, data });
+      off = rd + rdlen;
+    }
+  } catch (e) { /* 畸形报文就返回已解析部分 */ }
+  return out;
+}
+
 // 自建最小查询（用于 CNAME 深追）：RD=1，问题区 1 条，其余留空
 function buildProbe(name, qtype, ecs, edns) {
   const head = new Uint8Array(12);
@@ -400,8 +432,11 @@ function blockedResponse(query, qtype, end, mode) {
   // ?mode=nxdomain：回 NXDOMAIN(3) 而不是 0.0.0.0。少数客户端对 0.0.0.0 会回退 IPv6 或重试，
   // NXDOMAIN 是"域名不存在"的确定性答案，重试更少；默认仍用 0.0.0.0（可用性更宽）。
   const nx = mode === "nxdomain";
-  const answer = nx ? 0 : ((qtype === 1 || qtype === 28) ? 1 : 0);
-  head[2] = 0x81; head[3] = nx ? 0x83 : 0x80;          // QR=1 RD=1 RA=1 RCODE=0/3
+  const refused = mode === "refused";      // RCODE 5：明确"策略拒绝"，比 SERVFAIL 更少被重试
+  const servfail = mode === "servfail";    // RCODE 2：部分解析器把 NXDOMAIN 当"域名不存在"而永久负缓存
+  const answer = (nx || refused || servfail) ? 0 : ((qtype === 1 || qtype === 28) ? 1 : 0);
+  const rc = nx ? 3 : refused ? 5 : servfail ? 2 : 0;
+  head[2] = 0x81; head[3] = 0x80 | rc;
   head[6] = 0; head[7] = answer ? 1 : 0;
   head[8] = 0; head[9] = 0; head[10] = 0; head[11] = 0;
   if (!answer) return head;
@@ -500,7 +535,7 @@ function clientPrefix(ip) {
 // 覆盖会让上游按错误的地区返回 IP，CDN 就近调度直接失效（这是最难察觉的一类问题）。
 function parseEdns(bytes, qend) {
   const dv = new DataView(bytes.buffer || bytes, bytes.byteOffset || 0);
-  const res = { present: false, doBit: 0, ecs: null, optStart: -1, optRdlen: 0, tail: true };
+  const res = { present: false, doBit: 0, ecs: null, optStart: -1, optRdlen: 0, tail: true, version: 0 };
   if (bytes.byteLength < 12) return res;
   const ar = dv.getUint16(10);
   if (!ar) return res;
@@ -527,6 +562,8 @@ function parseEdns(bytes, qend) {
         res.optStart = off;
         res.optRdlen = rdlen;
         res.doBit = (dv.getUint32(off + 4) >> 15) & 1;
+        // OPT 的 TTL 四字节 = ext-rcode(1) + version(1) + flags(2)，version 在第 2 字节
+        res.version = dv.getUint8(off + 5);
         res.tail = rdStart + rdlen === bytes.byteLength;
         let o = rdStart;
         while (o + 4 <= rdStart + rdlen) {
@@ -551,6 +588,32 @@ function parseEdns(bytes, qend) {
 }
 
 // 把 ECS 写进 outgoing 报文：客户端自带就沿用，没有就补，完全没有 OPT 就新建。
+// ?ecs=off 用：把客户端报文里的 ECS option 真删掉（只置空 ecs 变量并不够，原报文仍会透传）
+function stripEcs(bytes, edns) {
+  if (!edns || !edns.present || !edns.optRdlen) return bytes;
+  const src = new DataView(bytes.buffer || bytes, bytes.byteOffset || 0);
+  const rd = edns.optStart + 10;
+  const rdEnd = rd + edns.optRdlen;
+  const keep = [];
+  let o = rd;
+  while (o + 4 <= rdEnd) {
+    const code = src.getUint16(o), len = src.getUint16(o + 2);
+    if (o + 4 + len > rdEnd) break;
+    if (code !== 8) keep.push([o, 4 + len]);
+    o += 4 + len;
+  }
+  const out = new Uint8Array(bytes.byteLength);
+  out.set(new Uint8Array(bytes.buffer || bytes, bytes.byteOffset || 0, bytes.byteLength), 0);
+  const dv = new DataView(out.buffer, out.byteOffset, out.byteLength);
+  let w = rd;
+  for (const [off, len] of keep) {
+    out.copyWithin ? out.set(out.subarray(off, off + len), w) : 0;
+    w += len;
+  }
+  dv.setUint16(edns.optStart + 8, w - rd);
+  return out.subarray(0, w);
+}
+
 function applyEdns(bytes, ecs, edns) {
   if (!ecs) return bytes;
   if (edns && edns.ecs) return bytes;                 // 客户端已声明 ECS，原样透传
@@ -573,7 +636,7 @@ function applyEdns(bytes, ecs, edns) {
     dv.setUint16(po + 2, 4 + addrLen);
     dv.setUint16(po + 4, ecs.family);
     out[po + 6] = ecs.prefix;
-    out[po + 7] = 0;
+    out[po + 7] = ecs.prefix;         // SCOPE PREFIX-LENGTH 回填：应答只对该网段有效，客户端按同粒度缓存
     out.set(new Uint8Array(ecs.addr.slice(0, addrLen)), po + 8);
     return out;
   }
@@ -668,6 +731,10 @@ function soaMin(buf, qend) {
     off += 10 + rdlen;
   }
   return 0;
+}
+
+function doBitOf(buf) {
+  try { return ((new DataView(buf).getUint16(2) >> 4) & 1) === 1; } catch (e) { return false; }
 }
 
 function rcodeOf(buf) {
@@ -818,6 +885,28 @@ async function handle(request, env, ctx) {
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
                            soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
   }
+  // /resolve?name=&type=  或  /dns-query?name=&type=（Google JSON API 兼容）
+  const jname = (url.searchParams.get("name") || "").toLowerCase();
+  if (jname && (url.pathname === "/resolve" || url.pathname === "/dns-query")) {
+    const TYPES = { a: 1, aaaa: 28, cname: 5, mx: 15, txt: 16, ns: 2, srv: 33, ptr: 12, soa: 6 };
+    const tname = (url.searchParams.get("type") || "A").toLowerCase();
+    const qtype = TYPES[tname] || 1;
+    const tier = Number(url.searchParams.get("tier") || 2);
+    const ipJ = request.headers.get("x-noas-cip") || request.headers.get("cf-connecting-ip") || "unknown";
+    await loadHot(env);
+    if (blocked(jname, tier)) {
+      return json({ Status: 0, AD: false, blocked: true, tier,
+                    Answer: qtype === 1 ? [{ name: jname, type: 1, TTL: 60, data: "0.0.0.0" }]
+                          : qtype === 28 ? [{ name: jname, type: 28, TTL: 60, data: "::" }] : [] });
+    }
+    const edns2 = { present: false, doBit: 0, ecs: null };
+    const probe = buildProbe(jname, qtype, null, edns2);
+    const rbuf = await upstream(probe, jname, ipJ, edns2);
+    if (!rbuf) return json({ Status: 2, error: "upstream-unavailable" }, 502);
+    const rr = rrList(rbuf, qendOf(rbuf)).filter((r) => r.type === qtype || r.type === 5);
+    return json({ Status: 0, AD: !!doBitOf(rbuf), tier, Answer: rr.map((r) => ({
+      name: r.name, type: r.type, TTL: r.ttl, data: r.data })) });
+  }
   if (url.pathname === "/why") {
     const d = (url.searchParams.get("d") || url.searchParams.get("domain") || "").toLowerCase();
     const tier = Number(url.searchParams.get("tier") || 2);
@@ -874,10 +963,34 @@ async function handle(request, env, ctx) {
   if (!name) return new Response("bad query", { status: 400 });
 
   // EDNS(0)：解析客户端 OPT —— ECS 子网（RFC 7871）与 DO 位（RFC 3225）都在这里
-  const mode = url.searchParams.get("mode") || "";   // "" | nxdomain
+  const mode = url.searchParams.get("mode") || "";   // "" | nxdomain | refused | servfail
   const edns = parseEdns(bytes, end);
-  const ecs = edns.ecs || clientPrefix(ip) || null;
+  // ?ecs=off：尊重客户端"不要带我的网络前缀"的要求（隐私优先），代价可能拿到较远的 CDN 节点
+  const ecsOff = url.searchParams.get("ecs") === "off";
+  const ecs = ecsOff ? null : (edns.ecs || clientPrefix(ip) || null);
+  let qbytes = bytes;
+  if (ecsOff) qbytes = stripEcs(bytes, edns);
   const doBit = edns.doBit;
+
+  // EDNS version > 0：RFC 6891 要求回 BADVERS(ext-rcode 16)，否则客户端会反复重试
+  if (edns.version > 0) {
+    const q = new Uint8Array(bytes.slice(0, end));
+    const total = end + 11;
+    const out = new Uint8Array(total);
+    out.set(q, 0);
+    out[2] = 0x81; out[3] = 0x80;                 // QR=1 RD=1 RA=1，低 4 位 RCODE=0
+    out[6] = 0; out[7] = 0; out[8] = 0; out[9] = 0;
+    out[10] = 0; out[11] = 1;                     // ARCOUNT=1
+    const p = end;
+    out[p] = 0;                                   // root
+    out[p + 1] = 0; out[p + 2] = 41;              // TYPE=OPT
+    out[p + 3] = 0x10; out[p + 4] = 0x00;         // CLASS=4096
+    out[p + 5] = 0x01; out[p + 6] = 0x00;         // ext-rcode=1 → 1<<4 = 16
+    out[p + 7] = 0; out[p + 8] = 0;               // version=0, flags=0
+    out[p + 9] = 0; out[p + 10] = 0;              // RDLEN=0
+    return new Response(out, { headers: { "content-type": "application/dns-message",
+      "x-noas": "badvers", "x-noas-ver": VERSION } });
+  }
 
   // ANY / CHAOS：经典反射放大面，直接 NOTIMP(4)，不花上游往返也不进规则判定
   if (qtype === 255 || qtype === 3) {
@@ -915,14 +1028,14 @@ async function handle(request, env, ctx) {
     if (ctx && ctx.waitUntil) {
       ctx.waitUntil((async () => {
         try {
-          const b = await upstream(bytes, name, ip, edns);
+          const b = await upstream(qbytes, name, ip, edns);
           if (b) await cachePut(name, qtype, b, ecs, doBit);
         } catch (e) { /* 后台刷新失败保留旧值 */ }
       })());
     }
     return dnsReply(cached.buf, "cache-stale");
   }
-  const buf = await upstream(bytes, name, ip, edns);
+  const buf = await upstream(qbytes, name, ip, edns);
   if (!buf) {
     degrade("upstream-down");
     const h = { "x-noas": "upstream-fail" };
@@ -1125,7 +1238,10 @@ async function guarded(request, env, ctx) {
     const dbg = new URL(request.url).searchParams.get("debug");
     const h = { "x-noas": "error", "content-type": "text/plain; charset=utf-8" };
     if (dbg) h["x-noas-err"] = msg;
-    return new Response("内部错误", { status: 500, headers: h });
+    // 畸形/截断报文（越界读）属于客户端错误：回 400，不要伪装成服务端故障刷告警
+    const isBadReq = e instanceof RangeError || /out of ?range|offset|bounds|detached|undefined is not|Cannot read/i.test(msg);
+    return new Response(isBadReq ? "报文无法解析" : "内部错误",
+      { status: isBadReq ? 400 : 500, headers: isBadReq ? { ...h, "x-noas": "bad-request" } : h });
   }
 }
 

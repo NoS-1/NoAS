@@ -1,0 +1,20 @@
+name: 误报（业务域被拦）
+description: 某个正常使用的域名被误拦
+labels: ["misblock"]
+body:
+  - type: input
+    id: domain
+    attributes: { label: 被误拦的域名, placeholder: "www.example.com" }
+    validations: { required: true }
+  - type: dropdown
+    id: tier
+    attributes:
+      label: 哪个档位
+      options: ["lite", "mid", "full", "auto", "不确定"]
+    validations: { required: true }
+  - type: textarea
+    id: why
+    attributes: { label: /why 输出, description: "访问 https://noas-cdn.pages.dev/why?d=域名&tier=2 把 JSON 贴进来" }
+  - type: textarea
+    id: impact
+    attributes: { label: 影响, description: "哪个 App / 哪个功能不可用" }

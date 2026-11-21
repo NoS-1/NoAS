@@ -147,8 +147,17 @@ async function pickTier(request, url, pathTier) {
   return { tier: uaTier(request.headers.get("user-agent")), how: "ua", persist: false };
 }
 
+function isPreview(request) {
+  try {
+    const h = new URL(request.url).hostname;
+    // 生产域恒为 noas-cdn.pages.dev；任何"前缀.生产域"都是预览分支
+    return h !== "noas-cdn.pages.dev";
+  } catch (e) { return true; }
+}
+
 async function persistTier(request, tier, env) {
   if (!env || !env.STATS) return;
+  if (isPreview(request)) return;   // 预览环境与生产共用同一 KV，写入会污染生产统计：预览一律只读
   const key = "v2:t:" + ipHash(request) + ":" + uaHash(request);
   if (TIER_MEM.get(key) && TIER_MEM.get(key).tier === tier) {
     // isolate 内已记，只有首次或改档才写
@@ -195,8 +204,11 @@ function hitSet(set, name) {
 function blockedResponse(bytes, qtype, end, mode) {
   const head = new Uint8Array(bytes.slice(0, end));      // 头部 + 问题区原样带回
   const nx = mode === "nxdomain";
-  const answer = nx ? 0 : ((qtype === 1 || qtype === 28) ? 1 : 0);
-  head[2] = 0x81; head[3] = nx ? 0x83 : 0x80;                        // QR=1 RD=1 RA=1 NOERROR
+  const refused = mode === "refused";
+  const servfail = mode === "servfail";
+  const answer = (nx || refused || servfail) ? 0 : ((qtype === 1 || qtype === 28) ? 1 : 0);
+  const rc = nx ? 3 : refused ? 5 : servfail ? 2 : 0;
+  head[2] = 0x81; head[3] = 0x80 | rc;                               // QR=1 RD=1 RA=1 + RCODE
   head[6] = 0; head[7] = answer ? 1 : 0;
   head[8] = 0; head[9] = 0; head[10] = 0; head[11] = 0;
   if (!answer) return head;

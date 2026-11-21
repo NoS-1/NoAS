@@ -1,0 +1,16 @@
+name: 漏报（广告没拦住）
+description: 某个广告域名没被拦截
+labels: ["miss"]
+body:
+  - type: input
+    id: domain
+    attributes: { label: 广告域名, placeholder: "ads.example.com" }
+    validations: { required: true }
+  - type: textarea
+    id: evidence
+    attributes: { label: 证据, description: "在哪个 App/页面出现、抓到的请求域名" }
+  - type: dropdown
+    id: tier
+    attributes:
+      label: 期望档位
+      options: ["lite", "mid", "full"]

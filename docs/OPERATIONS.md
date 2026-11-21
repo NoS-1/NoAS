@@ -190,3 +190,22 @@ AE 自检：`tools/ae_selfcheck.py`（daily 第 6.9 步），每轮发 1 个真�
   把整段 JSON 当成一行 → `size=1` 永不达标 → lite 每次冷启动都回源 195KB。已改为识别 JSON 的 `compact` 字段，
   现在 lite 直接吃 KV，`/tier` 的 `err` 为空。
 - Actions 全部按 commit SHA 固定（tag 注释保留版本号），由 dependabot 提 PR 更新。
+
+## 协议层补齐（2026-11-21 第二批）
+
+本轮把 DoH 端点的"协议完备度"补齐，全部有回归覆盖（`tests/dns_features_check.mjs` 18 项）：
+
+| 能力 | 端点/参数 | 作用 | 回归 |
+|---|---|---|---|
+| EDNS BADVERS | 报文 OPT version>0 | RFC 6891 要求回 ext-rcode 16，否则老客户端会无限重试 | `x-noas: badvers` + 不转上游 |
+| ECS 隐私开关 | `?ecs=off` | **真删**报文里的 ECS option（`stripEcs`），不是只回填空值 | 上游报文不含 ECS |
+| ECS scope 回填 | 自建 OPT 时 | SCOPE 长度=请求前缀，客户端按同粒度缓存，减少跨网段串味 | — |
+| 拦截语义 | `?mode=nxdomain\|refused\|servfail` | 四选一：0.0.0.0 / NXDOMAIN / REFUSED(5) / SERVFAIL(2) | 各自 RCODE |
+| JSON 解析视图 | `/resolve?name=&type=&tier=`（或 `/dns-query?name=`） | 字段对齐 Google DoH JSON，脚本可直接用 | 命中/放行两路 |
+| 畸形报文 | 任意垃圾字节 | 越界读归 400 `bad-request`，不再伪装成 500 服务端故障 | 500 个随机输入 0 异常 |
+| 缓存隔离 | — | 缓存键含 ECS 子网 + DO 位 + SWR 影子键 | 不同子网不共用应答 |
+
+配套治理：`tools/sources_guard.py`（源清单卫生 + 内容形状 + 单源 ±60% 突变，CI 1.5 步 required；
+基线在 `state/source_counts.json`，只有全绿才推进基线）、`tools/build_status_page.py`（`docs/status.html`
+一张页看全部通道）、`tests/fuzz_check.mjs`、`tests/cache_iso_check.mjs` 已进 6 步回归、
+`eslint.config.mjs` + `ruff.toml` + 3.95 步 soft 静态检查、`tools/legacy/` 收纳已退役脚本。

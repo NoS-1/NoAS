@@ -4,6 +4,7 @@
  "/index.html": "a58b287af77e39bb91646a1b35fe713f15c676e8783ceac0bdf9118ca375884a",
  "/precision.html": "a23f0faee2a0906b5448397c8ac164a1a7d887d5aadfdc65879ab4dd1b1339fa",
  "/stack.html": "cc8b6f3dc4db0b63abf8c512c09896c473921d989fc25e1f8e62f2385fdb3259",
+ "/status.html": "fed89bb51da46423a7c2c671d391e4f9b8b6065a8dd8d18665037a0baae2d1ef",
  "/tasks.html": "4035b523e2253f5be860943a6ee7701c0405b3d31b91698eec75f776095e95f6",
  "/subs/lite/adguard.txt": "59961e75cbd3ba8be1032dcd040e83cc1bad5c019e76e848dda9b1c646f18c50",
  "/subs/lite/allow.txt": "c816e735be02bd38286c6e3504130733ed5b5fb48a2215d0025c293e133c5e44",
@@ -63,7 +64,7 @@
  "/subs/channels/adguardhome-upstream.yaml": "d066ea881a826110dc8a17fd81f56a3591241a308892f39eb944e5a68d0c7297",
  "/subs/channels/aiodns.sh": "11b2bf46a097ceb8ee0c04db2336796beb3f1317f611838df4fd70ea45b0fbbf",
  "/subs/channels/aiodns.special.txt": "56064ae5145111b724e62fc3c37497365896624ad41d73731d9dd554c828f84b",
- "/subs/channels/cdn.json": "a79c4b44b8e66b42c579d8947a7bb3e9566ad39739b147b6537a93285c749432",
+ "/subs/channels/cdn.json": "e588a6edb5b0cc3aedd2cdf5aa741226e5bcb3d4815714ce9acf0dd27d7bcb9b",
  "/subs/channels/doh.txt": "fb7b4d5a65577ec99f38fd2e2dbaab4af4f2e612575c521a4dfb6e56ab4e0088",
  "/subs/channels/dot-preferred.txt": "4616d2973ef72fd5179f16193ac04d3d2967bb8905a4d3ab9eefa4e17379e2b1",
  "/subs/channels/dot.txt": "94bfca2f9f790b97a2006017439255df4fced207a345ced8341571012eff74a1",
@@ -73,8 +74,9 @@
  "/subs/mixed/noas-all.conf": "a00d7f975f8507e909c6452b1f35c19a594091d0e0501e6142b6dfd90bdaf644",
  "/subs/mixed/noas-all.plugin": "fafc87603f564fd0945c685e7e713408a6e8f17e1f02d1a20b92380b2f49b71d",
  "/subs/mixed/noas-all.sgmodule": "7e5e54755d65e654c10677e8058b9bb43426f7fa932ce92d7ca0691089667abc",
- "/state/build_manifest.json": "e752ee6960b25f55ebe6387b4e3b8e3ff337f1b396f56f96c6a8452d6b96424b",
- "/functions/dns-query/[[tier]].js": "daf594c9e5cc1fd6da8443de74efa8c9304cab1e5a501e352588f2af2667de68",
+ "/state/build_manifest.json": "bf893dc5b26fba810a321c0101f18c7198faceeb37e88270576870f2b0ecf228",
+ "/functions/dns-query/[[tier]].js": "f0f76b36f9eebdfb47408be602f36993a05db1fb335946d28feab7ad21dba2b2",
  "/functions/why.js": "acaa745d92a60a2775fe3e96c8d27fe18e5e63598adcdd3bf09014baf3f9c38f",
+ "/functions/resolve.js": "94c06f9365c6eb447a2bb233996aa366ea32053eeeea91a3da0813f63e40011b",
  "/functions/tier.js": "335b22785331b95db2158ea49471210333c6c38853d354cce75ea5add1f81784"
 }

@@ -1,0 +1,10 @@
+# 只开"会真出 bug"的规则；格式化交给人，不交给工具。
+line-length = 120
+target-version = "py312"
+
+[lint]
+select = ["E9", "F63", "F7", "F82", "B006", "B008"]
+ignore = ["E501"]
+
+[lint.per-file-ignores]
+"tools/legacy/*" = ["ALL"]

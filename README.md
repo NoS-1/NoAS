@@ -7,7 +7,7 @@
 
 | 档位 | 条数 | 说明 | 地址 |
 |---|---|---|---|
-| lite | 9,903（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断；**零误伤最小集**，设备算力很弱时用这档 | `https://noas-cdn.pages.dev/subs/lite/adguard.txt` |
+| lite | 9,904（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断；**误伤最低档**：4444 条业务主域样本实测 0 误伤，且为 CI 硬门禁 | `https://noas-cdn.pages.dev/subs/lite/adguard.txt` |
 | mid | 19,959 | 跨 2 源共识 + 广告 SDK/贴片专项；**日常默认就用这档**，覆盖与误伤的平衡点 | `https://noas-cdn.pages.dev/subs/mid/adguard.txt` |
 | full | 29,990 | 21 源并集，最激进 | `https://noas-cdn.pages.dev/subs/full/adguard.txt` |
 
@@ -100,6 +100,8 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 - 白名单是保守的：写了 `baidu.com` 就保护所有 `*.baidu.com`；只有人工审计过的广告端点（`lists/ad_endpoints.txt`）能穿透这层保护。
 - lite 里除共识条目外，还包含 `lists/promoted.txt` 自动晋级的域名结构即广告条目，规则见 `tools/promote.py`，误伤可直接在台账里加白。
 - full 档很激进（含大量长尾域），对极少数站点可能有误伤；介意就用 lite。
+- 误伤的量化口径：`tests/benign_5000.txt` 内置 **4444 条真实可解析的业务主域样本**（门户/支付/物流/政务/医院/银行等 572 个基座 × 20 个常见子域前缀），`tests/benign_fp.py` 用**真产物**逐档跑判定，结果写 `state/benign_fp.json`；lite 档 FP≠0 直接判定 CI 红。三档当前均为 0 误伤。
+- 「100% 准确」不承诺：新上线的业务域永远可能被某条源误标，这是域名层信息论的边界；能做的是**把误伤压到可测、可回归、可一键加白**（`lists/service_allow.txt`），而不是宣称零误差。
 
 ## DNS 通道（国内主用 + 自建兜底）
 

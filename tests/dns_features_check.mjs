@@ -171,6 +171,15 @@ seen = []; await doh(query('g.example.com', 255, { edns: true }), '');
 { const r = await handler(new Request('https://x.dev/why?d=www.qq.com&tier=2'), {}, ctx);
   const j = await r.json(); ok(j.blocked === false, '/why 白名单放行'); }
 
+// 统一的上游打桩：记录收到的报文，并返回固定应答
+const recMock = (mk) => { globalThis.fetch = async (u) => {
+  const url = typeof u === 'string' ? u : (u.url || '');
+  let b = new Uint8Array(0);
+  try { const d = new URL(url).searchParams.get('dns'); if (d) b = new Uint8Array(Buffer.from(d.replace(/-/g, '+').replace(/_/g, '/'), 'base64')); } catch (e) {}
+  seen.push(b);
+  return new Response(mk(), { headers: { 'content-type': 'application/dns-message' } });
+}; };
+
 // 8) CNAME 多跳：上游第一次只给一跳（中间域不在规则里），第二跳才到追踪域 → 必须拦
 {
   const qn = (b) => { let o = 12, l = []; while (b[o]) { l.push(Buffer.from(b.slice(o + 1, o + 1 + b[o])).toString('latin1')); o += b[o] + 1; } return l.join('.').toLowerCase(); };
@@ -185,13 +194,51 @@ seen = []; await doh(query('g.example.com', 255, { edns: true }), '');
     const d = new URL(typeof u === 'string' ? u : u.url).searchParams.get('dns');
     const b = new Uint8Array(Buffer.from(d.replace(/-/g, '+').replace(/_/g, '/'), 'base64'));
     const q = qn(b);
-        const body = q === 'lp.example.com' ? cn('lp.example.com', 'mid.hop.example.net')
-      : cn(q, 'adsrvr.org');
+    const body = q === 'lp.example.com' ? cn('lp.example.com', 'mid.hop.example.net') : cn(q, 'adsrvr.org');
     return new Response(body, { headers: { 'content-type': 'application/dns-message' } });
   };
   const r = await doh(query('lp.example.com', 1));
   ok(r.headers.get('x-noas') === 'blocked-cname' && r.headers.get('x-noas-target') === 'adsrvr.org', 'CNAME 多跳反隐蔽');
 }
+
+// 9) EDNS version>0 → BADVERS(ext-rcode 高位 1)，不转上游
+{
+  const q0 = query('v.example.com', 1, { edns: true });
+  const b = Buffer.from(q0); b.writeUInt32BE(0x00010000, b.length - 11 + 5);   // version=1
+  seen = [];
+  const r = await handler(new Request('https://x.dev/dns-query', { method: 'POST', body: b,
+    headers: { 'cf-connecting-ip': '198.51.100.9' } }), {}, ctx);
+  const rb = Buffer.from(await r.arrayBuffer());
+  const opt = rb.readUInt16BE(10) ? rb.length - 11 : -1;
+  const hiBit = opt >= 0 ? (rb[opt + 5] & 0x01) : 0;
+  ok(r.headers.get('x-noas') === 'badvers' && seen.length === 0 && hiBit === 1, 'EDNS BADVERS 回 ext-rcode=16 且不转上游');
+}
+
+// 10) ?ecs=off → 上游查询不得带 ECS；默认必须带
+recMock(() => answer('p.example.com', 1, 300));
+{
+  seen = [];
+  await doh(query('p.example.com', 1, { edns: true, ecs: { prefix: 24, addr: [203, 0, 113, 7] } }), '?ecs=off');
+  ok(seen.length > 0 && !hasECS(seen.at(-1)), '?ecs=off 不向上游泄露子网');
+}
+{ seen = [];
+  await doh(query('p.example.com', 1, { edns: true, ecs: { prefix: 24, addr: [203, 0, 113, 7] } }), '');
+  ok(seen.length > 0 && !!hasECS(seen.at(-1)), '默认仍透传 ECS'); }
+
+// 11) /resolve 与 dns-json
+{ const r = await handler(new Request('https://x.dev/resolve?name=doubleclick.net&type=A&tier=2'), {}, ctx);
+  const j = await r.json();
+  ok(j.blocked === true && j.Answer[0].data === '0.0.0.0', '/resolve 命中返回 0.0.0.0'); }
+{ const r = await handler(new Request('https://x.dev/dns-query?name=doubleclick.net&type=AAAA'), {}, ctx);
+  const j = await r.json();
+  ok(j.Status === 0 && j.Answer[0].data === '::', 'dns-json AAAA 命中返回 ::'); }
+{ recMock(() => answer('www.qq.com', 1, 300));
+  const r = await handler(new Request('https://x.dev/resolve?name=www.qq.com&type=A&tier=2'), {}, ctx);
+  ok(r.status === 200, '/resolve 200');
+  const j = await r.json();
+  ok(j.blocked !== true && j.Status === 0 && /^\d+\.\d+\.\d+\.\d+$/.test(j.Answer[0].data) && j.Answer[0].TTL === 300,
+     '/resolve 解析 A 记录与 TTL');
+  globalThis.fetch = origFetch; }
 
 globalThis.fetch = origFetch;
 console.log(`${pass} 项通过｜失败 ${fail.length}`);

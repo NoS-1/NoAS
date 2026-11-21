@@ -1,0 +1,16 @@
+name: 接入问题
+description: 客户端配置不生效 / 连不上
+labels: ["access"]
+body:
+  - type: input
+    id: client
+    attributes: { label: 客户端与版本, placeholder: "AdGuard Home 0.107.x / sing-box 1.x" }
+    validations: { required: true }
+  - type: dropdown
+    id: channel
+    attributes:
+      label: 用的哪条通道
+      options: ["Pages DoH", "Gateway DoH", "本地订阅", "不确定"]
+  - type: textarea
+    id: detail
+    attributes: { label: 现象与日志 }

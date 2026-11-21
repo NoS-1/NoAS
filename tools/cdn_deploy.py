@@ -67,6 +67,9 @@ def collect():
     wf = ROOT / "pages" / "why.js"
     if wf.exists():
         files["/functions/why.js"] = wf.read_bytes()
+    rf = ROOT / "pages" / "resolve.js"
+    if rf.exists():
+        files["/functions/resolve.js"] = rf.read_bytes()
     tf = ROOT / "pages" / "tier.js"
     if tf.exists():
         files["/functions/tier.js"] = tf.read_bytes()

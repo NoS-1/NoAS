@@ -96,6 +96,10 @@ jobs:
       - name: 1 · 拉取公开规则源
         run: python3 tools/fetch.py
 
+      - name: 1.5 · 源投毒防护（清单卫生 / 内容形状 / 单源 ±60% 突变）
+        # 拉完立刻校验形状：源被接管时最典型的特征就是"一夜灌进几十万条"，这一步不通过就不编译。
+        run: python3 tools/sources_guard.py --mode required
+
       - name: 2 · 自我体检（按本轮真实拉取结果淘汰坏源 / 吸收合格新源）
         run: python3 tools/evolve.py
 
@@ -144,6 +148,13 @@ jobs:
           python3 tools/build_paths.py
           python3 tests/paths_check.py
 
+      - name: 3.95 · 静态检查（soft：风格问题从不上红，只记日志）
+        continue-on-error: true
+        run: |
+          python3 -m tabnanny tools/ tests/ 2>&1 | tail -20
+          node --check doh/worker.tpl.js
+          npx --yes eslint@9 --config eslint.config.mjs doh/worker.tpl.js pages tests serve 2>&1 | tail -30
+
       - name: 4 · 发布前硬校验
         run: python3 tools/guard.py
 
@@ -158,6 +169,8 @@ jobs:
           node tests/standalone_check.mjs
           node tests/dns_features_check.mjs     # ECS/TTL/负缓存/v4only/CNAME 多跳/why
           python3 tests/benign_fp.py            # 4444 条业务主域大样本，lite 误伤必须为 0
+          node tests/fuzz_check.mjs             # 500 个畸形/截断报文：不得出现未捕获异常
+          node tests/cache_iso_check.mjs        # 不同客户端子网不得共用同一条缓存应答
 
       - name: 6.8 · 同步规则到 CF Pages
         env:
@@ -208,6 +221,7 @@ jobs:
         run: |
           python3 tools/report.py
           python3 tools/build_precision_page.py
+          python3 tools/build_status_page.py || true   # 状态页生成失败不阻断发布（soft）
 
       - name: 8.5 · 更新成长账本（趋势 / 源贡献 / 学习事件）
         run: python3 tools/growth.py
