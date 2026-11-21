@@ -183,3 +183,10 @@ AE 自检：`tools/ae_selfcheck.py`（daily 第 6.9 步），每轮发 1 个真�
 配套：`tools/step_run.py` 的 `required` 模式（重试 3 次 → 仍失败则红），
 `soft` 模式只记 `out/deploy_warnings.json` 的统一告警。Gateway 对齐校验已从 soft 升为 required。
 
+## DoH 响应模式与 lite 快路径（2026-11-21）
+
+- `?mode=nxdomain`：拦截时回 NXDOMAIN(3) 而不是 `0.0.0.0`，客户端重试更少；默认仍是 `0.0.0.0`（兼容性更宽）。
+- KV `lite_v1` 是 Worker cron 写的 JSON（`{ver,count,compact:"|a|b|c"}`），Pages 侧曾按纯文本行解析，
+  把整段 JSON 当成一行 → `size=1` 永不达标 → lite 每次冷启动都回源 195KB。已改为识别 JSON 的 `compact` 字段，
+  现在 lite 直接吃 KV，`/tier` 的 `err` 为空。
+- Actions 全部按 commit SHA 固定（tag 注释保留版本号），由 dependabot 提 PR 更新。
