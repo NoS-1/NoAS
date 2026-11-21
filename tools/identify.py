@@ -229,6 +229,7 @@ def parse_verdicts(text, allowed):
 def judge(domains, hits):
     """把候选分批交给 AI，返回 (verdicts, calls, model_used, err)"""
     verdicts, calls, used_model, err = [], 0, MODEL, ""
+    trusted = bool(ARK_KEY)
     if not (ACC and TOK) and not ARK_KEY:
         return verdicts, 0, "", "缺少 CF_ACCOUNT_ID / CF_API_TOKEN，AI 直判不可用"
     usage = load_json(USAGE, {})
@@ -438,9 +439,15 @@ def main():
             if model_used == "main-brain":
                 # 主脑模型逐条审过，不再用词元闸兜底；只要求置信达标 + 有真实请求痕迹
                 ok = it["c"] >= 85 and (todo.get(d, 0) >= 3 or parent_hit(d, known_ad))
-            else:
+            elif ARK_KEY:
+                # 豆包接口判：可信，但保留词元/已知网络作为结构证据
                 ok = (todo.get(d, 0) >= HOT and it["c"] >= 85
                       and (name_ad or parent_hit(d, known_ad)))
+            else:
+                # 兜底小模型（CF llama）不可直接进 mid：它把业务 API 判成广告的实录太多，
+                # 只放行"广告词元 + 已知广告网络 + 高频"三重确证。
+                ok = (todo.get(d, 0) >= HOT and it["c"] >= 85 and name_ad
+                      and parent_hit(d, known_ad))
             if ok:
                 conf.append(d)
             else:
