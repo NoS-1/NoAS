@@ -50,11 +50,11 @@ SUBS = ROOT / "subs"
 
 ACC = os.environ.get("CF_ACCOUNT_ID", "").strip()
 TOK = os.environ.get("CF_API_TOKEN", "").strip()
-MODEL = os.environ.get("AI_MODEL", "@cf/meta/llama-3.1-8b-instruct").strip()
-FALLBACK_MODEL = "@cf/meta/llama-3.2-3b-instruct"
-BATCH = int(os.environ.get("AI_BATCH", "25"))
-RUN_CAP = int(os.environ.get("AI_RUN_CALL_CAP", "8"))
-DAY_CAP = int(os.environ.get("AI_DAY_CALL_CAP", "60"))
+MODEL = os.environ.get("AI_MODEL", "@cf/meta/llama-3.3-70b-instruct-fp8-fast").strip()
+FALLBACK_MODEL = "@cf/meta/llama-3.1-8b-instruct"
+BATCH = int(os.environ.get("AI_BATCH", "20"))
+RUN_CAP = int(os.environ.get("AI_RUN_CALL_CAP", "4"))
+DAY_CAP = int(os.environ.get("AI_DAY_CALL_CAP", "24"))
 
 DCONF = LISTS / "device_confirmed.txt"
 SHADOW = LISTS / "shadow.txt"
@@ -163,6 +163,10 @@ def from_pool():
 
 
 # ── AI 直判 ────────────────────────────────────────────────────────────────
+DS_KEY = (os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("DEEPSEEK_KEY") or "").strip()
+DS_BASE = os.environ.get("DEEPSEEK_BASE", "https://api.deepseek.com").strip()
+DS_MODEL = os.environ.get("DEEPSEEK_MODEL", "deepseek-chat").strip()
+
 ARK_KEY = (os.environ.get("ARK_API_KEY") or os.environ.get("DOUBAO_API_KEY") or "").strip()
 ARK_BASE = os.environ.get("ARK_BASE", "https://ark.cn-beijing.volces.com/api/v3").strip()
 ARK_MODEL = os.environ.get("ARK_MODEL", "doubao-seed-1-6-250615").strip()
@@ -178,7 +182,23 @@ def ark_call(prompt, max_tokens=2000):
     return ((d.get("choices") or [{}])[0].get("message") or {}).get("content", "")
 
 
+def ds_call(prompt, max_tokens=2000):
+    body = json.dumps({"model": DS_MODEL, "messages": [{"role": "user", "content": prompt}],
+                       "max_tokens": max_tokens, "temperature": 0.1,
+                       "response_format": {"type": "json_object"}}).encode()
+    req = urllib.request.Request(DS_BASE.rstrip("/") + "/chat/completions", data=body,
+                                 headers={"Authorization": "Bearer " + DS_KEY,
+                                          "Content-Type": "application/json"})
+    d = json.loads(urllib.request.urlopen(req, timeout=120).read().decode())
+    return ((d.get("choices") or [{}])[0].get("message") or {}).get("content", "")
+
+
 def ai_call(prompt, model, max_tokens=1200):
+    if DS_KEY:
+        try:
+            return ds_call(prompt, max_tokens)
+        except Exception:
+            pass
     if ARK_KEY:
         try:
             return ark_call(prompt, max_tokens)
@@ -230,7 +250,7 @@ def judge(domains, hits):
     """把候选分批交给 AI，返回 (verdicts, calls, model_used, err)"""
     verdicts, calls, used_model, err = [], 0, MODEL, ""
     trusted = bool(ARK_KEY)
-    if not (ACC and TOK) and not ARK_KEY:
+    if not (ACC and TOK) and not ARK_KEY and not DS_KEY:
         return verdicts, 0, "", "缺少 CF_ACCOUNT_ID / CF_API_TOKEN，AI 直判不可用"
     usage = load_json(USAGE, {})
     day = today()
@@ -270,19 +290,27 @@ def judge(domains, hits):
             '{"d":"a1b2c3.xn--xyz.com","v":"unknown","c":40,"t":"full"}]\n'
             "待判域名（域名   请求次数）：\n" + "\n".join(lines)
         )
-        models = [used_model, FALLBACK_MODEL] if used_model != FALLBACK_MODEL else [used_model]
+        # 判定源优先级：DeepSeek > 豆包 Ark > CF（70B 优先，8B 兜底）
+        if DS_KEY:
+            providers = [("deepseek", lambda: ds_call(prompt))]
+        elif ARK_KEY:
+            providers = [("ark", lambda: ark_call(prompt))]
+        else:
+            providers = [(used_model, lambda m=used_model: ai_call(prompt, m))]
+            if used_model != FALLBACK_MODEL:
+                providers.append((FALLBACK_MODEL, lambda: ai_call(prompt, FALLBACK_MODEL)))
         got = []
-        for mdl in models:
+        for pname, fn in providers:
             try:
-                raw = ai_call(prompt, mdl)
+                raw = fn()
                 if os.environ.get("IDENTIFY_DEBUG"):
-                    print("[debug] %s -> %s" % (mdl, raw[:700]))
+                    print("[debug] %s -> %s" % (pname, raw[:500]))
                 got = parse_verdicts(raw, set(chunk))
                 calls += 1
-                used_model = mdl
+                used_model = pname
                 break
             except Exception as e:
-                err = "%s: %s" % (mdl, type(e).__name__)
+                err = "%s: %s" % (pname, type(e).__name__)
                 calls += 1
         verdicts.extend(got)
     usage[day] = used + calls
@@ -439,7 +467,7 @@ def main():
             if model_used == "main-brain":
                 # 主脑模型逐条审过，不再用词元闸兜底；只要求置信达标 + 有真实请求痕迹
                 ok = it["c"] >= 85 and (todo.get(d, 0) >= 3 or parent_hit(d, known_ad))
-            elif ARK_KEY:
+            elif DS_KEY or ARK_KEY or "70b" in (model_used or "").lower():
                 # 豆包接口判：可信，但保留词元/已知网络作为结构证据
                 ok = (todo.get(d, 0) >= HOT and it["c"] >= 85
                       and (name_ad or parent_hit(d, known_ad)))

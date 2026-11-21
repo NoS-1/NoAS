@@ -1,0 +1,24 @@
+{
+ "sources": [
+  {
+   "name": "主脑模型（会话内逐条判）",
+   "status": "ok",
+   "note": "无需凭据：--verdicts 传入即可，优先级最高"
+  },
+  {
+   "name": "DeepSeek",
+   "status": "missing",
+   "note": "未配置 DEEPSEEK_API_KEY"
+  },
+  {
+   "name": "豆包 Ark",
+   "status": "missing",
+   "note": "未配置 ARK_API_KEY"
+  },
+  {
+   "name": "Cloudflare AI",
+   "status": "ok",
+   "note": "@cf/meta/llama-3.3-70b-instruct-fp8-fast → 可用"
+  }
+ ]
+}

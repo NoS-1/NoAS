@@ -1789,5 +1789,85 @@
   "t": "none",
   "ts": "2026-11-21",
   "by": "ai"
+ },
+ "market.uxin.com": {
+  "d": "market.uxin.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "op-api.docer.wps.cn": {
+  "d": "op-api.docer.wps.cn",
+  "v": "benign",
+  "c": 80,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "op-baoxiao-ng-bj.yuanfudao.com": {
+  "d": "op-baoxiao-ng-bj.yuanfudao.com",
+  "v": "benign",
+  "c": 80,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "op.dongchedi.com": {
+  "d": "op.dongchedi.com",
+  "v": "benign",
+  "c": 80,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "op.zongheng.com": {
+  "d": "op.zongheng.com",
+  "v": "benign",
+  "c": 80,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "shop-op.guazi.com": {
+  "d": "shop-op.guazi.com",
+  "v": "benign",
+  "c": 80,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "union.gome.com.cn": {
+  "d": "union.gome.com.cn",
+  "v": "benign",
+  "c": 80,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "union.jdcloud.com": {
+  "d": "union.jdcloud.com",
+  "v": "benign",
+  "c": 80,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "union.m.smzdm.com": {
+  "d": "union.m.smzdm.com",
+  "v": "benign",
+  "c": 80,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "union.smzdm.com": {
+  "d": "union.smzdm.com",
+  "v": "benign",
+  "c": 80,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
  }
 }

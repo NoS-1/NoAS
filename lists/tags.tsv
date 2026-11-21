@@ -2126,11 +2126,14 @@ acxajt.jimmykey.com	consensus
 acxcfztcvheoa.space	consensus
 acyxssqjdvfaj.space	consensus
 ad-a8.www.zeiri4.com	consensus
+ad-admin.immomo.com	cn-watch
+ad-advertiser.soulapp.cn	cn-watch
 ad-api.gl-inet.com	consensus
 ad-back.net	consensus
 ad-balancer.net	consensus
 ad-channel.wikawika.xyz	consensus
 ad-cheers.com	consensus
+ad-console.jdcloud.com	cn-watch
 ad-delivery.net	consensus
 ad-display.wikawika.xyz	consensus
 ad-ebis.bookpass.auone.jp	consensus
@@ -2138,6 +2141,7 @@ ad-ebis.mynavi-job20s.jp	consensus
 ad-experience.bytedance.com	cn-endpoint
 ad-fam.com	consensus
 ad-flow.com	consensus
+ad-h5-cdn.soulapp.cn	cn-watch
 ad-maven.com	consensus
 ad-mixr.com	consensus
 ad-nex.com	consensus
@@ -2149,6 +2153,7 @@ ad-splash.hktvmall.com	consensus
 ad-srv.net	consensus
 ad-stir.com	consensus
 ad-vortex.com	consensus
+ad-www.guazi.com	cn-watch
 ad.10jqka.com.cn	ad-label,cn-endpoint
 ad.22betpartners.com	ad-label
 ad.about.co.kr	ad-label
@@ -2804,6 +2809,7 @@ ads.privacy.qq.com	ad-label,cn-endpoint
 ads.scored.co	ad-label
 ads.sina.com	ad-label
 ads.sportradar.com	ad-label
+ads.st.maoyan.com	ad-label,cn-watch
 ads.talksport.com	ad-label
 ads.tiktok.com	ad-label,ad-network
 ads.twdcgrid.com	ad-label
@@ -4173,6 +4179,7 @@ apfjzhkkbguoc.site	consensus
 apfqoakmqrpqv.site	consensus
 api-access.pangolin-sdk-toutiao.com	cn-endpoint,sdk
 api-access.pangolin-sdk-toutiao1.com	cn-endpoint
+api-log.immomo.com	cn-watch
 api.140proof.com	consensus
 api.ad.intl.xiaomi.com	ad-label,cn-endpoint
 api.ad.xiaomi.com	ad-label,cn-endpoint,sdk
@@ -4198,6 +4205,7 @@ apkyeimuizlax.space	consensus
 aplobv.xexymix.com	consensus
 aplpmvfnyoxji.space	consensus
 aplytazqgfoup.online	consensus
+apm-log-upload-v6.mihoyo.com	cn-watch
 apmplus.volces.com	consensus
 apnpr.com	consensus
 apologiesoccursdepressed.com	consensus
@@ -4206,6 +4214,7 @@ aporiaecabda.com	consensus
 aporodiko.com	consensus
 apozemzebrule.com	consensus
 app-ads-services.com	consensus
+app-log.immomo.com	cn-watch
 app-momentum.com	consensus
 app-stats.supernotes.app	consensus
 app.189tutors.com	consensus
@@ -13656,6 +13665,7 @@ galopelikeantelope.com	consensus
 galrnswqwqlik.site	consensus
 galybgqqxjhil.space	consensus
 gambar123.com	consensus
+game-ad.immomo.com	cn-watch
 game-clicks.com	consensus
 game.51yund.com	consensus
 gameads.io	consensus
@@ -14480,6 +14490,7 @@ groutoozy.com	consensus
 grow.business.xerox.com	consensus
 groweyelid.com	consensus
 grownwrecking.com	consensus
+growth-tracker.guazi.com	cn-watch
 growthbuddy.app	consensus
 grqrkjxpltwso.site	consensus
 grtexch.com	consensus
@@ -15935,6 +15946,7 @@ ilxfndokexkxi.online	consensus
 ilyf4amifh.com	consensus
 ilzualntjfjjd.online	consensus
 im-apps.net	consensus
+image.ads.yidianzixun.com	ad-label,cn-watch
 image.mdr.de	consensus
 imageadvantage.net	consensus
 imagebuffer.com	consensus
@@ -18863,6 +18875,7 @@ litterworerabbit.com	consensus
 littlecutelions.com	consensus
 littlevigorously.com	consensus
 livableprelacy.com	consensus
+live-log.immomo.com	cn-watch
 live.chartboost.com	cn-endpoint
 liveadexchanger.com	consensus
 liveadoptimizer.com	consensus
@@ -19044,6 +19057,8 @@ lofcdljzqswbs.online	consensus
 loftyknifeeducate.com	consensus
 log-ads.r7.com	consensus
 log-auth.zztfly.com	consensus
+log-report.17zuoye.com	cn-watch
+log-sc.qutoutiao.net	cn-watch
 log-stats.weathercn.com	consensus
 log.api.zaloapp.com	consensus
 log.apk.v-mate.mobi	consensus
@@ -19369,6 +19384,7 @@ lwwthwxurerat.online	consensus
 lwxoothcoq.com	consensus
 lwxqoxksaruzc.space	consensus
 lwywgysunkygy.site	consensus
+lx-upload-log.yidianzixun.com	cn-watch
 lx2rv.com	consensus
 lxadqdidnsnzd.online	consensus
 lxbwquyuoovrx.space	consensus
@@ -19437,6 +19453,7 @@ lzxdx24yib.com	consensus
 lzybyzttqdrzq.online	consensus
 m-rtb.com	consensus
 m.acmgloballab.com	consensus
+m.ad.zhangyue.com	ad-label,cn-watch
 m.delltechnologies.com	consensus
 m.edweek.org	consensus
 m.evolutiondigital.com	consensus
@@ -21459,6 +21476,7 @@ metrics.syf.com	ad-label
 metrics.synopsys.com	ad-label
 metrics.sysco.com	ad-label
 metrics.t-mobile.com	ad-label
+metrics.t3go.cn	ad-label,cn-watch
 metrics.takami-labo.com	ad-label
 metrics.talbots.com	ad-label
 metrics.tamiflu.com	ad-label
@@ -24448,6 +24466,7 @@ p7h1silo3f.app.cainthus.com	consensus
 pa-cd.com	consensus
 pa.pinpoll.com	consensus
 paaeeets.net	consensus
+paas-push-api-log.immomo.com	cn-watch
 pabidding.io	consensus
 pacaka.conxxx.pro	consensus
 pacekami.com	consensus
@@ -32407,6 +32426,7 @@ stat.m.360.cn	ad-label
 stat.media	consensus
 stat.moji.com	ad-label
 stat.mydaddy.cc	ad-label
+stat.myzaker.com	ad-label,cn-watch
 stat.outrigger.com	ad-label
 stat.tildacdn.com	ad-label
 stat.vocus.com	ad-label
@@ -34967,6 +34987,7 @@ tracker.financialcontent.com	ad-label
 tracker.gamemonkey.org	ad-label
 tracker.gleanview.com	ad-label
 tracker.icerocket.com	ad-label
+tracker.jx3.kingsoft.com	ad-label,cn-watch
 tracker.kantan-access.com	ad-label
 tracker.metricool.com	ad-label
 tracker.multisearch.io	ad-label
@@ -35005,6 +35026,9 @@ tracking.fanbridge.com	consensus
 tracking.g2crowd.com	consensus
 tracking.hivecloud.net	consensus
 tracking.hsn.com	consensus
+tracking.ib24384.news.my.luckincoffee.com	cn-watch
+tracking.ib71536.user.my.luckincoffee.com	cn-watch
+tracking.ib85264.order.my.luckincoffee.com	cn-watch
 tracking.immobilienscout24.de	consensus
 tracking.insperity.com	consensus
 tracking.intentsify.io	consensus
@@ -35017,8 +35041,10 @@ tracking.mathworks.com	consensus
 tracking.musixmatch.com	consensus
 tracking.myregus.com	consensus
 tracking.netsuite.com	consensus
+tracking.news.sg.luckincoffee.com	cn-watch
 tracking.offerista.com	consensus
 tracking.olx-st.com	consensus
+tracking.order.sg.luckincoffee.com	cn-watch
 tracking.pepsicopartners.com	consensus
 tracking.prepr.io	consensus
 tracking.ptc.com	consensus
@@ -35027,6 +35053,7 @@ tracking.rogers.com	consensus
 tracking.sembox.it	consensus
 tracking.sexcash.com	consensus
 tracking.sezzle.com	consensus
+tracking.sgmkt.luckincoffee.com	cn-watch
 tracking.skyword.com	consensus
 tracking.solutions.parker.com	consensus
 tracking.tchibo.sk	consensus
@@ -35036,6 +35063,7 @@ tracking.umbrella.com	consensus
 tracking.univtec.com	consensus
 tracking.unrealengine.com	consensus
 tracking.upfluence.co	consensus
+tracking.user.sg.luckincoffee.com	cn-watch
 tracking.vertiv.com	consensus
 tracking.voxeus.com	consensus
 tracking.wao-corp.com	consensus
@@ -35964,7 +35992,13 @@ union.6.cn	ad-label
 union.baidu.com	ad-label,cn-endpoint,sdk
 union.bytedance.com	ad-label,cn-endpoint
 union.china.com.cn	ad-label
+union.fun.tv	ad-label,cn-watch
+union.futunn.com	ad-label,cn-watch
 union.img.alimama.com	ad-label,cn-endpoint
+union.t3go.cn	ad-label,cn-watch
+union.tuniu.com	ad-label,cn-watch
+union.vip.com	ad-label,cn-watch
+union.wps.cn	ad-label,cn-watch
 uniondistinction.com	consensus
 unionimage.baidu.com	cn-endpoint
 uniqodo.com	consensus
@@ -36528,6 +36562,8 @@ uzvvqnaqblxvx.online	consensus
 uzxksecxqrchr.online	consensus
 uzzxkatxegdzh.website	consensus
 v.oui.sncf	consensus
+v1.log.moji.com	cn-watch
+v2.log.moji.com	cn-watch
 v2006.com	consensus
 v2mi.gdt.qq.com	cn-endpoint
 v3.gdt.qq.com	cn-endpoint

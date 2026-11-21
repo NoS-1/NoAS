@@ -119,6 +119,15 @@ jobs:
         # 老顺序是"编译 → 晋级 → 再全量编译一遍"，等于把最重的编译白跑两次。
         run: python3 tools/promote.py
 
+      - name: 2.83 · AI 判定源体检（DeepSeek / 豆包 / Cloudflare 谁在判）
+        continue-on-error: true
+        env:
+          CF_ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          ARK_API_KEY: ${{ secrets.ARK_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: python3 tools/ai_doctor.py
+
       - name: 2.85 · AI 直判（观察池 → 三档表，自动落盘）
         # AI 的裁决直接写 lists/device_confirmed.txt 与 lists/shadow.txt：
         # 影子先进 full 观察，观察期满由 --promote 转正进 mid。
@@ -128,6 +137,7 @@ jobs:
           CF_ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           ARK_API_KEY: ${{ secrets.ARK_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
           python3 tools/identify.py --pool --verify
           python3 tools/identify.py --promote
