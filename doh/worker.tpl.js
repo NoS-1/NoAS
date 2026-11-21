@@ -141,6 +141,21 @@ function ipBurst(ip) {
   return rec.n > PER_IP_PER_MIN;
 }
 
+// 限流优先用平台原生 Rate Limiting binding（Free 计划可用、不额外计费）：
+// 它按 colo 精确计数，不像内存计数那样每个 isolate 各算一份。
+// 绑定缺失或调用异常时退回本地令牌计数，保证任何情况下都有限流。
+async function ipLimited(env, ip) {
+  if (!ip || ip === "unknown") return false;
+  const lim = env && env.LIMITER;
+  if (lim && lim.limit) {
+    try {
+      const r = await lim.limit({ key: ip });
+      return !r.success;
+    } catch (e) { /* 退回内存计数 */ }
+  }
+  return ipBurst(ip);
+}
+
 function degrade(reason) {
   degraded = reason;
 }
@@ -374,6 +389,7 @@ async function handle(request, env, ctx) {
                   rules_stale: rulesStale, rules_manifest: MANIFEST_URLS[0],
                   hot: hot ? { ver: hot.ver, count: hot.count } : null, hot_url: HOT_URLS[0],
                   ae_points_local: aePoints, ae_cap_per_isolate: AE_DAILY_CAP,
+                  limiter: !!(env && env.LIMITER),
                   cache: hasCache(),
                   upstream_order: (upOrder || UPSTREAM),
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
@@ -382,7 +398,7 @@ async function handle(request, env, ctx) {
   if (url.pathname === "/check") {
     // 调试端点也按 IP 限速：只对有真实来源 IP 的线上请求生效，本地/CI 测试不受影响
     const cip = request.headers.get("cf-connecting-ip");
-    if (cip && ipBurst(cip)) {
+    if (cip && await ipLimited(env, cip)) {
       return json({ error: "rate-limited", retry_after_s: 60 }, 429);
     }
     const q = (url.searchParams.get("q") || "").toLowerCase();
@@ -402,7 +418,7 @@ async function handle(request, env, ctx) {
   // 熔断不返回 503：503 会让客户端直接断服。改为"降级直转"——
   // 跳过规则匹配省 CPU，DNS 照常应答，恢复靠 UTC 换日 + cron 自检复位。
   const ip = request.headers.get("cf-connecting-ip") || "unknown";
-  if (ipBurst(ip)) degrade("ip-burst " + PER_IP_PER_MIN + "/min");
+  if (await ipLimited(env, ip)) degrade("ip-burst " + PER_IP_PER_MIN + "/min");
   if (!takeQuota()) degrade("quota 90%");
   const skipRules = !!degraded;
 

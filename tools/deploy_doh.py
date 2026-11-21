@@ -66,6 +66,14 @@ def main():
     if KV_NS and KV_NS.lower() != "off":
         binds.append({"type": "kv_namespace", "name": "RULES", "namespace_id": KV_NS})
         print("绑定 KV 热规则：RULES → %s" % KV_NS)
+    # 原生 Rate Limiting binding（Free 计划可用、不计额外费用）：period 只能是 10 或 60。
+    # DOH_RATELIMIT=off 可关闭；关闭后 Worker 自动退回本地内存计数。
+    RL = os.environ.get("DOH_RATELIMIT", "300").strip()
+    if RL.lower() != "off":
+        binds.append({"type": "ratelimit", "name": "LIMITER",
+                      "namespace_id": "3001",
+                      "simple": {"limit": int(RL), "period": 60}})
+        print("绑定 Rate Limiting：LIMITER → %s 次/60s" % RL)
     if binds:
         meta_obj["bindings"] = binds
     meta = json.dumps(meta_obj).encode()
