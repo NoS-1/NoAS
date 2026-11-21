@@ -20,3 +20,8 @@ branch.io
 # 国内行为分析
 growingio.com
 sensorsdata.cn
+
+# 移动厂商系统遥测（三档都不拦，避免影响系统服务）
+abtest.mistat.xiaomi.com
+mistat.xiaomi.com
+tracking.miui.com

@@ -62,3 +62,23 @@ tradplusad.com
 atm.youku.com
 cupid.iqiyi.com
 ads.mgtv.com
+
+# ── 白名单父域下的精确广告端点（端点表可突破父域白名单）──
+ad.xiaomi.com
+sdkconfig.ad.xiaomi.com
+globalapi.ad.xiaomi.com
+api.ad.xiaomi.com
+ads.heytapmobile.com
+adx-in.ads.heytapmobile.com
+adsp.baidu.com
+ndsp.baidu.com
+sdsp.baidu.com
+nsclick.baidu.com
+afd.baidu.com
+als.baidu.com
+bgg.baidu.com
+yingxiao.baidu.com
+nadvideo2.baidu.com
+ad.toutiao.com
+adshare.toutiao.com
+scc.bytedance.com
