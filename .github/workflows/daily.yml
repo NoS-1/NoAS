@@ -124,6 +124,14 @@ jobs:
         # 真失效重抓后仍低，guard 照红，不掩盖故障。
         run: python3 tools/scale_heal.py
 
+      - name: 3.7 · mid/full 推进 KV（Worker 只内嵌 lite，体积换覆盖）
+        # 顺序必须是"编译完 → 推 KV → 构建 Worker"：Worker 只读 KV 里的分档，
+        # 推晚了线上会出现"新代码 + 旧规则"。回读 count 不一致直接红。
+        env:
+          CF_ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: python3 tools/kv_push.py
+
       - name: 3.55 · 标签台账重建（必须紧跟 compile，否则 guard 会判"标签域不在档位"）
         run: |
           python3 tools/build_tags.py

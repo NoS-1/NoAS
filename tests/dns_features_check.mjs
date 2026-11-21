@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
+import { makeEnv } from './_rules_env.mjs';
+const ENV = makeEnv();
 const mod = await import(path.join(ROOT, 'doh/worker.js'));
 const handler = mod.default.fetch;
 const ctx = { waitUntil(p) { return p; } };
@@ -67,7 +69,7 @@ function answer(n, qtype, ttl, { rcode = 0, answers = 1, minSOA = null } = {}) {
 const doh = (bytes, extra = '') => {
   const r = new Request('https://x.dev/dns-query' + extra, { method: 'POST', body: bytes,
     headers: { 'content-type': 'application/dns-message', 'cf-connecting-ip': '203.0.113.77' } });
-  return handler(r, {}, ctx);
+  return handler(r, ENV, ctx);
 };
 // 解出上游收到的报文
 let seen = [];
@@ -166,9 +168,9 @@ seen = []; await doh(query('g.example.com', 255, { edns: true }), '');
   ok((b[3] & 0xf) === 3 && new DataView(b.buffer).getUint16(6) === 0, 'mode=nxdomain 回 NXDOMAIN'); }
 
 // 7) /why 分层理由
-{ const r = await handler(new Request('https://x.dev/why?d=doubleclick.net&tier=2'), {}, ctx);
+{ const r = await handler(new Request('https://x.dev/why?d=doubleclick.net&tier=2'), ENV, ctx);
   const j = await r.json(); ok(j.blocked === true && j.why === 'rule', '/why 命中 rule 层'); }
-{ const r = await handler(new Request('https://x.dev/why?d=www.qq.com&tier=2'), {}, ctx);
+{ const r = await handler(new Request('https://x.dev/why?d=www.qq.com&tier=2'), ENV, ctx);
   const j = await r.json(); ok(j.blocked === false, '/why 白名单放行'); }
 
 // 统一的上游打桩：记录收到的报文，并返回固定应答
@@ -207,7 +209,7 @@ const recMock = (mk) => { globalThis.fetch = async (u) => {
   const b = Buffer.from(q0); b.writeUInt32BE(0x00010000, b.length - 11 + 5);   // version=1
   seen = [];
   const r = await handler(new Request('https://x.dev/dns-query', { method: 'POST', body: b,
-    headers: { 'cf-connecting-ip': '198.51.100.9' } }), {}, ctx);
+    headers: { 'cf-connecting-ip': '198.51.100.9' } }), ENV, ctx);
   const rb = Buffer.from(await r.arrayBuffer());
   const opt = rb.readUInt16BE(10) ? rb.length - 11 : -1;
   const hiBit = opt >= 0 ? (rb[opt + 5] & 0x01) : 0;
@@ -226,14 +228,14 @@ recMock(() => answer('p.example.com', 1, 300));
   ok(seen.length > 0 && !!hasECS(seen.at(-1)), '默认仍透传 ECS'); }
 
 // 11) /resolve 与 dns-json
-{ const r = await handler(new Request('https://x.dev/resolve?name=doubleclick.net&type=A&tier=2'), {}, ctx);
+{ const r = await handler(new Request('https://x.dev/resolve?name=doubleclick.net&type=A&tier=2'), ENV, ctx);
   const j = await r.json();
   ok(j.blocked === true && j.Answer[0].data === '0.0.0.0', '/resolve 命中返回 0.0.0.0'); }
-{ const r = await handler(new Request('https://x.dev/dns-query?name=doubleclick.net&type=AAAA'), {}, ctx);
+{ const r = await handler(new Request('https://x.dev/dns-query?name=doubleclick.net&type=AAAA'), ENV, ctx);
   const j = await r.json();
   ok(j.Status === 0 && j.Answer[0].data === '::', 'dns-json AAAA 命中返回 ::'); }
 { recMock(() => answer('www.qq.com', 1, 300));
-  const r = await handler(new Request('https://x.dev/resolve?name=www.qq.com&type=A&tier=2'), {}, ctx);
+  const r = await handler(new Request('https://x.dev/resolve?name=www.qq.com&type=A&tier=2'), ENV, ctx);
   ok(r.status === 200, '/resolve 200');
   const j = await r.json();
   ok(j.blocked !== true && j.Status === 0 && /^\d+\.\d+\.\d+\.\d+$/.test(j.Answer[0].data) && j.Answer[0].TTL === 300,

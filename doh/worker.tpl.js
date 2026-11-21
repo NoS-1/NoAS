@@ -290,10 +290,13 @@ function buildProbe(name, qtype, ecs, edns) {
 //   上游通常把整条链放在 ANSWER 段，一轮就够；只返一跳时再自建查询追，
 //   最多 4 跳并带 seen 集合防环 —— 否则 first-party 子域 → 中间域 → 追踪域这种
 //   三段链只要上游偷懒只给一段，就会被绕过。
-async function cnameDeep(baseBuf, name, qtype, tier, ip, edns) {
+async function cnameDeep(baseBuf, name, qtype, tier, ip, edns, maxHop) {
   const seen = new Set([name]);
   let pending = name, buf = baseBuf;
-  for (let hop = 0; hop < 4; hop++) {
+  // 默认 3 跳：每跳都是一次上游 + 一次报文解析，4 跳把 CPU p99 顶到 13ms（超免费 10ms 线）。
+  // ?deep=1 保留 4 跳，给"确实需要更深链路"的人用。
+  const hops = maxHop || 3;
+  for (let hop = 0; hop < hops; hop++) {
     const targets = cnameTargets(buf);
     for (const t of targets) if (blocked(t, tier)) return t;
     const next = targets.length ? targets[targets.length - 1] : null;
@@ -343,6 +346,27 @@ function isEndpoint(name) {
 }
 
 let HOT_SET = null;
+let MID_SET = null;      // mid 档：不再内嵌（规则搬进 KV，Worker 体积从 646KB 回到 ~200KB）
+let FULL_SET = null;     // full 档：同样走 KV；KV 不可用时两者都回退到内嵌 lite
+
+async function loadTier(env, tier) {
+  if (!env || !env.RULES) return;
+  try {
+    if (tier >= 3 && !FULL_SET) {
+      const rec = await env.RULES.get("full_v1", { type: "json", cacheTtl: 300 });
+      if (rec && rec.compact) FULL_SET = new Set(rec.compact.split("|").filter(Boolean));
+    } else if (tier === 2 && !MID_SET) {
+      const rec = await env.RULES.get("mid_v1", { type: "json", cacheTtl: 300 });
+      if (rec && rec.compact) MID_SET = new Set(rec.compact.split("|").filter(Boolean));
+    }
+  } catch (e) { /* KV 不可用＝该档退化成 lite，不挂 */ }
+}
+
+function tierSet(tier) {
+  if (tier >= 3) return FULL_SET || MID_SET || TIER2;
+  if (tier >= 2) return MID_SET || TIER2;
+  return TIER1;
+}
 
 function hotSetOf(rec) {
   // compact = "|a|b|c"：冷启动时切一次，之后每次判定都是 O(层数) 的 Set 查找。
@@ -385,9 +409,8 @@ function blocked(name, tier) {
   // 端点例外：人工审计过的纯广告端点，父域在白名单里也照拦
   if (isEndpoint(name)) return true;
   if (allowed(name)) return false;
-  const set = tier >= 2 ? TIER2 : TIER1;
-  if (matchSet(set, name)) return true;
-  return hotHit(name);          // 云端热规则只做增量补充
+  if (matchSet(tierSet(tier), name)) return true;
+  return hotHit(name);          // 云端热规则只做增量补充（lite 增量，任何档都生效）
 }
 
 // 给 /why 用：命中理由分层，运维排查时不用再翻规则表
@@ -399,8 +422,7 @@ function blockedInfo(name, tier) {
     return out;
   }
   if (allowed(name)) { out.why = "allowlist"; out.layer = "allow"; return out; }
-  const set = tier >= 2 ? TIER2 : TIER1;
-  if (matchSet(set, name)) {
+  if (matchSet(tierSet(tier), name)) {
     out.blocked = true; out.why = "rule"; out.layer = "L" + (tier >= 2 ? 2 : 1) + "-embedded";
     out.source = tier >= 2 ? "tier2/mid+full" : "tier1/lite";
     return out;
@@ -910,6 +932,7 @@ async function handle(request, env, ctx) {
     const tier = Number(url.searchParams.get("tier") || 2);
     const ipJ = request.headers.get("x-noas-cip") || request.headers.get("cf-connecting-ip") || "unknown";
     await loadHot(env);
+    await loadTier(env, tier);
     if (blocked(jname, tier)) {
       return json({ Status: 0, AD: false, blocked: true, tier,
                     Answer: qtype === 1 ? [{ name: jname, type: 1, TTL: 60, data: "0.0.0.0" }]
@@ -927,6 +950,7 @@ async function handle(request, env, ctx) {
     const d = (url.searchParams.get("d") || url.searchParams.get("domain") || "").toLowerCase();
     const tier = Number(url.searchParams.get("tier") || 2);
     await loadHot(env);
+    await loadTier(env, tier);
     const info = blockedInfo(d, tier);
     const cname = (url.searchParams.get("cname") || "").toLowerCase();
     if (cname) info.cname = cname;
@@ -943,6 +967,7 @@ async function handle(request, env, ctx) {
     const tier = Number(url.searchParams.get("tier") || 2);   // 默认走 mid：lite 只是零误伤最小集
     const cn = (url.searchParams.get("cname") || "").toLowerCase();
     await loadHot(env);
+    await loadTier(env, tier);
     const viaCname = cn ? blocked(cn, tier) : false;
     return json({ domain: q, blocked: blocked(q, tier), cname: cn || null,
                   cname_blocked: cn ? viaCname : null, tier, version: VERSION });
@@ -1026,6 +1051,7 @@ async function handle(request, env, ctx) {
   }
 
   if (!skipRules) await loadHot(env);
+  if (!skipRules) await loadTier(env, tier);   // mid/full 走 KV，冷启动只读一次
   if (!skipRules && blocked(name, tier)) {
     logHit(env, "block", name, tier, "");
     return new Response(blockedResponse(bytes, qtype, end, mode), {
@@ -1064,7 +1090,8 @@ async function handle(request, env, ctx) {
   }
   if (!skipRules) {
     // CNAME 反隐蔽：第一方子域 CNAME 到追踪者时，按追踪者判定并直接拦掉（支持多跳）
-    const t = await cnameDeep(buf, name, qtype, tier, ip, edns);
+    const t = await cnameDeep(buf, name, qtype, tier, ip, edns,
+      url.searchParams.get("deep") === "1" ? 4 : 3);
     if (t) {
       logHit(env, "cname", name, tier, t);
       return new Response(blockedResponse(bytes, qtype, end, mode), {
@@ -1187,7 +1214,7 @@ async function scheduled(event, env, ctx) {
   logHit(env, "cron", "heartbeat", 0, "v" + VERSION);
 
   // 规则金丝雀：纯本地判定（零网络），确认内置表真的还能拦住已知广告域。
-  const miss = CANARY_DOMAINS.filter((d) => !blocked(d, 2));
+  const miss = CANARY_DOMAINS.filter((d) => !blocked(d, 1));
   canaryOk = miss.length === 0;
   if (!canaryOk) logHit(env, "canary", "miss", 0, miss.join(","));
 

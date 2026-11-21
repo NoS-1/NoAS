@@ -239,3 +239,29 @@ Cloudflare 官方 Limits 页（2026-11 版）。
 **没做的、以及为什么**：Gateway 前置分流（额度只用了 0.5%，收益为零，且 Gateway 免费版
 列表上限 100、已用 62，留给后续新增源更值）；AE 动态降采样（日写点 166，离 10 万差 600 倍）；
 observability 1%→0.1%（20 万日志额度，1% 于 10 万请求仅 1000 条）。都不值得动。
+
+## 规则分层：内嵌只留 lite，mid/full 走 KV（2026-11-21 第四批）
+
+1MB 部署上限与"覆盖要涨"直接冲突：三档全内嵌做到 3 万条就 646KB，再涨必撞墙。
+所以把规则拆成"保底 + 分档"：
+
+| 层 | 存放 | 内容 | 体积 |
+|---|---|---|---|
+| 内嵌 | `doh/worker.tpl.js` | lite 9904 + 白名单 137 + 端点 111 + 通配 56 | 454KB（原 646KB） |
+| KV `mid_v1` | Workers KV（namespace `1e20a4a1…`） | mid 19959 条 | 351KB |
+| KV `full_v1` | 同上 | full 29990 条 | 558KB |
+
+- **写入**：`tools/kv_push.py`，CI 3.7 步（编译之后、构建 Worker 之前），写完回读 count 比对，
+  不一致直接红。这样"新代码 + 旧规则"不可能上线。
+- **读取**：Worker 冷启动按档读一次（`cacheTtl 300`），isolate 内存缓存。KV 实测日读 420 / 10 万。
+- **降级**：KV 不可用时 tier2/3 自动退回内嵌 lite（少拦不误拦，也不 500）。
+- **代价**：mid/full 首次请求多一次 KV 往返（边缘缓存命中时 <5ms）；`serve/standalone.mjs` 无 KV，
+  只能跑 lite —— 它本来就是离线兜底，定位不变。
+- **收益**：体积墙从 3 万条推到"1MB 内 lite 保底 + KV 上限 25MB/键"，mid 未来能上 4 万；
+  改规则不再需要重新部署 Worker。
+
+实测验证（线上，`/why`）：`cunealwolvish.com`（mid 独有）tier1 放行、tier2/3 拦截；
+`www.qq.com` 三档 `allowlist`；`2345.com` 三档放行。
+
+另：CNAME 深追默认 4 跳 → **3 跳**（`?deep=1` 恢复 4 跳），因为 4 跳把 CPU p99 顶到 13ms。
+`tools/quota_water.py` 现在同时覆盖 请求 / KV / AE / **D1**（当日 118 次）与 CPU p50/p99。

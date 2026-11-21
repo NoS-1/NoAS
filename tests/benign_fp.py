@@ -28,10 +28,19 @@ def run_tier(domains, tier):
 const mod = await import('file://ROOTP/doh/worker.js');
 const h = mod.default.fetch;
 const ctx = { waitUntil() {} };
+// mid/full 已移到 KV：这里从 subs 读出来当 KV 替身，否则 tier2/3 会退化成 lite，
+// 误伤统计就失真了（会"看起来更安全"，其实测的不是同一份规则）。
+import fs from 'fs';
+const NL = String.fromCharCode(10);
+const readTier = (t) => { const p = 'ROOTP/subs/' + t + '/domains.txt'; if (!fs.existsSync(p)) return null;
+  const ds = [...new Set(fs.readFileSync(p, 'utf8').split(NL).map((l) => l.split('#')[0].trim())
+    .filter((l) => l && !l.startsWith('!')).map((l) => l.toLowerCase()).filter((l) => l.includes('.')))];
+  return { ver: 'local', count: ds.length, compact: '|' + ds.join('|') + '|' }; };
+const env = { RULES: { async get(k) { return k === 'mid_v1' ? readTier('mid') : k === 'full_v1' ? readTier('full') : null; }, async put() {} } };
 const tier = TIERP;
 let out = [];
 for (const d of require_domains) {
-  const r = await h(new Request('https://x.dev/check?q=' + d + '&tier=' + tier), {}, ctx);
+  const r = await h(new Request('https://x.dev/check?q=' + d + '&tier=' + tier), env, ctx);
   const j = await r.json();
   if (j.blocked) out.push(d);
 }
@@ -44,7 +53,7 @@ console.log(JSON.stringify(out));
                        text=True, cwd=str(ROOT), env={"PATH": "/usr/bin:/bin:/usr/local/bin"},
                        timeout=600)
     if p.returncode != 0:
-        print(p.stderr[-400:], file=sys.stderr)
+        print(p.stderr[:1200], file=sys.stderr)
         return None
     return json.loads(p.stdout.strip().splitlines()[-1])
 

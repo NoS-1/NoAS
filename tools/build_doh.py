@@ -54,7 +54,9 @@ def main():
     ver = time.strftime("%Y%m%d-%H%M")
     payload = {
         "t1": sorted(set(lite)),
-        "t2": sorted(set(mid)),
+        # t2 只内嵌 lite：mid/full 全部走 KV（mid_v1 / full_v1）。
+        # KV 不可用时 tier2/3 退化成 lite —— 降级但不断服，这是体积换覆盖的代价。
+        "t2": sorted(set(lite)),
         "allow": allow,
         "wild": wild,
         # 端点例外：ad_endpoints + 国内发现端点 + 跨层回灌（L2/L3 → L1），

@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
+import { makeEnv } from './_rules_env.mjs';
+const ENV = makeEnv();
 const mod = await import(path.join(ROOT, 'doh/worker.js'));
 const handler = mod.default.fetch;
 const ctx = { waitUntil() {} };
@@ -20,33 +22,33 @@ const endpoints = new Set([
 
 let miss = [], fp = [];
 for (const d of lite) {
-  const r = await handler(new Request(`https://x.dev/check?q=${d}&tier=1`), {}, ctx);
+  const r = await handler(new Request(`https://x.dev/check?q=${d}&tier=1`), ENV, ctx);
   if (!(await r.json()).blocked) miss.push('lite:' + d);
 }
 const sample = [...mid.slice(0, 300), ...mid.slice(-300)];
 for (const d of sample) {
-  const r = await handler(new Request(`https://x.dev/check?q=${d}&tier=2`), {}, ctx);
+  const r = await handler(new Request(`https://x.dev/check?q=${d}&tier=2`), ENV, ctx);
   if (!(await r.json()).blocked) miss.push('mid:' + d);
 }
 for (const d of benign) {
   if (endpoints.has(d)) continue;   // 端点表是"父域在白名单里也照拦"的人工例外
   for (const t of [1, 2]) {
-    const r = await handler(new Request(`https://x.dev/check?q=${d}&tier=${t}`), {}, ctx);
+    const r = await handler(new Request(`https://x.dev/check?q=${d}&tier=${t}`), ENV, ctx);
     if ((await r.json()).blocked) fp.push(`t${t}:${d}`);
   }
 }
 
 // CNAME 反隐蔽：第一方子域 CNAME 到广告域时，必须判为拦截
-const cn = await handler(new Request('https://x.dev/check?q=stats.someblog.org&cname=doubleclick.net&tier=1'), {}, ctx);
+const cn = await handler(new Request('https://x.dev/check?q=stats.someblog.org&cname=doubleclick.net&tier=1'), ENV, ctx);
 const cnj = await cn.json();
 if (cnj.cname_blocked !== true) { miss.push('cname:doubleclick.net'); }
-const cn2 = await handler(new Request('https://x.dev/check?q=stats.someblog.org&cname=api.someblog.org&tier=1'), {}, ctx);
+const cn2 = await handler(new Request('https://x.dev/check?q=stats.someblog.org&cname=api.someblog.org&tier=1'), ENV, ctx);
 if ((await cn2.json()).cname_blocked !== false) { fp.push('cname-benign'); }
 
 // 通配回归：纯广告网根域的深层子域必须拦；白名单父域下的子域必须放
-const wc = await handler(new Request('https://x.dev/check?q=a.b.c.doubleclick.net&tier=1'), {}, ctx);
+const wc = await handler(new Request('https://x.dev/check?q=a.b.c.doubleclick.net&tier=1'), ENV, ctx);
 if (!(await wc.json()).blocked) miss.push('wild:deep-subdomain');
-const wok = await handler(new Request('https://x.dev/check?q=a.b.taobao.com&tier=1'), {}, ctx);
+const wok = await handler(new Request('https://x.dev/check?q=a.b.taobao.com&tier=1'), ENV, ctx);
 if ((await wok.json()).blocked) fp.push('wild:benign-subdomain');
 
 console.log(`lite ${lite.length} 全量｜mid 抽样 ${sample.length}｜良性 ${benign.length}`);

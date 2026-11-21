@@ -22,6 +22,8 @@ LIMITS = {
     "requests": 100000,   # Workers + Pages Functions 共用这一个池
     "kv_requests": 100000,
     "ae_points": 100000,
+    # D1 免费口径是"行读/行写"，GraphQL 这里拿到的是查询次数，只能当参考水位，不当硬阈值
+    "d1_queries": 5000000,
 }
 
 GQL = "https://api.cloudflare.com/client/v4/graphql"
@@ -35,6 +37,8 @@ query($acc: String!, $from: String!, $to: String!) {
       sum { requests } dimensions { date } }
     workersAnalyticsEngineAdaptiveGroups(limit: 1000, filter: {date_geq: $from, date_leq: $to}) {
       count dimensions { date dataset } }
+    d1AnalyticsAdaptiveGroups(limit: 1000, filter: {date_geq: $from, date_leq: $to}) {
+      count dimensions { date } }
   } }
 }
 """
@@ -76,8 +80,9 @@ def fetch():
     kv = sum(int((x.get("sum") or {}).get("requests") or 0)
              for x in a.get("kvOperationsAdaptiveGroups") or [])
     ae = sum(int(x.get("count") or 0) for x in a.get("workersAnalyticsEngineAdaptiveGroups") or [])
+    d1 = sum(int(x.get("count") or 0) for x in a.get("d1AnalyticsAdaptiveGroups") or [])
     return {"requests": req, "subrequests": sub, "errors": err,
-            "kv_requests": kv, "ae_points": ae, "by_script": by_script,
+            "kv_requests": kv, "ae_points": ae, "d1_queries": d1, "by_script": by_script,
             "cpu_ms_p50": round((cpu50 or 0) / 1000, 2), "cpu_ms_p99": round((cpu99 or 0) / 1000, 2)}, None
 
 
