@@ -341,11 +341,20 @@ function blockedResponse(query, qtype, end) {
   return out;                                          // RDATA 全 0 → A=0.0.0.0 / AAAA=::
 }
 
-// 阶梯竞速（hedged requests）：原实现是"一个上游 5s 超时才换下一个"，
-// 一旦主上游抽风，用户要等满 5 秒。改为错峰并发：
-//   0ms 发 A，300ms 未回再发 B，800ms 未回再发 C；先回来且 HTTP 200 的那份胜出，
-//   其余立刻 abort。常态仍然只打 1 个上游，尾部延迟从 5000ms 压到 ~800ms。
-const HEDGE_MS = [0, 300, 900];
+// 边缘实测（?probe=1）：CF 边缘 → cloudflare-dns.com = 1ms，→ 阿里 600ms，→ 腾讯 943ms。
+// 结论：国内上游在"境外边缘"身上是跨境链路，快不了；但它的解析结果对国内站点更准。
+// 所以按域名分流，各自把最快的那家放第一：
+//   · .cn 域名 → 阿里优先（结果为准），150ms 时 CF 兜底（避免用户等满 600ms）
+//   · 其他域名 → CF 优先（1ms 出结果），150ms 时阿里兜底
+const HEDGE_MS = [0, 150, 450];
+const CF_UP = "https://cloudflare-dns.com/dns-query";
+const CN_TLDS = new Set(["cn"]);
+
+function preference(name) {
+  const tld = (name || "").split(".").pop() || "";
+  if (CN_TLDS.has(tld)) return [UPSTREAM[0], CF_UP, UPSTREAM[2]];
+  return [CF_UP, UPSTREAM[0], UPSTREAM[2]];
+}
 
 function fetchUpstream(u, bytes, ctrl) {
   return fetch(u, {
@@ -359,8 +368,8 @@ function fetchUpstream(u, bytes, ctrl) {
   });
 }
 
-async function upstream(bytes) {
-  const list = upOrder || (upOrder = UPSTREAM.slice());
+async function upstream(bytes, qname) {
+  const list = preference(qname).slice();
   const ctrls = list.map(() => new AbortController());
   const hard = setTimeout(() => ctrls.forEach((c) => c.abort()), UPSTREAM_TIMEOUT_MS);
   try {
@@ -449,7 +458,7 @@ async function handle(request, env, ctx) {
                   limiter: !!(env && env.LIMITER),
                   cache: hasCache(), cache_hits: cacheHits,
                   cache_ttl_s: [CACHE_FRESH_S, CACHE_STALE_S],
-                  upstream_order: (upOrder || UPSTREAM), probe: probe,
+                  upstream_order: preference(""), cn_order: preference("x.cn"), hedge_ms: HEDGE_MS, probe: probe,
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
                            soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
   }
@@ -515,14 +524,14 @@ async function handle(request, env, ctx) {
     if (ctx && ctx.waitUntil) {
       ctx.waitUntil((async () => {
         try {
-          const b = await upstream(bytes);
+          const b = await upstream(bytes, name);
           if (b) await cachePut(name, qtype, b);
         } catch (e) { /* 后台刷新失败保留旧值 */ }
       })());
     }
     return dnsReply(cached.buf, "cache-stale");
   }
-  const buf = await upstream(bytes);
+  const buf = await upstream(bytes, name);
   if (!buf) {
     degrade("upstream-down");
     return new Response("上游不可用", { status: 502, headers: { "x-noas": "upstream-fail" } });
