@@ -134,7 +134,7 @@ def deploy_wrangler(stage):
     env["CLOUDFLARE_API_TOKEN"] = os.environ.get("CF_TOKEN") or os.environ.get("CF_API_TOKEN") or ""
     env["CLOUDFLARE_ACCOUNT_ID"] = ACCT
     env.setdefault("NO_COLOR", "1")
-    cmd = ["npx", "-y", "wrangler@4", "pages", "deploy", ".",
+    cmd = ["npx", "-y", "wrangler@4.166.0", "pages", "deploy", ".",
            "--project-name", PROJECT, "--branch", "main", "--commit-dirty=true"]
     print("执行：", " ".join(cmd), "（cwd=%s）" % stage)
     try:

@@ -13,7 +13,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOK = os.environ.get("CF_API_TOKEN", "").strip()
 ACC = os.environ.get("CF_ACCOUNT_ID", "226431c8f431ebb75d82dd5dbd5e8d86").strip()
 NAME = os.environ.get("DOH_SCRIPT", "noas-doh").strip()
-COMPAT = "2025-09-01"
+COMPAT = "2026-11-21"
 # Analytics Engine 数据集：绑上即自动建表（CF 官方行为），首次写点后可在 SQL API 里 SHOW TABLES 看到。
 # DOH_AE_DATASET=off 可临时关掉绑定（应急时一行环境变量即可退回到“纯解析、零日志”）。
 AE_DATASET = os.environ.get("DOH_AE_DATASET", "noas_dns").strip()

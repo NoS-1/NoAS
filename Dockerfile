@@ -1,5 +1,5 @@
 # 自建 DoH 服务镜像（零外部依赖，只用仓库产物）
-FROM node:20-alpine
+FROM node:24-alpine
 WORKDIR /app
 COPY serve/standalone.mjs doh/worker.js ./
 ENV PORT=8053

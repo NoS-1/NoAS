@@ -42,11 +42,11 @@ jobs:
 
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: "3.15"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
 
       # 令牌失效是最安静的故障：CF 步骤历来 continue-on-error，token 过期后构建照样绿、
       # 线上照样跑旧规则。放在最前面显式校验，失效直接红。
@@ -166,7 +166,7 @@ jobs:
           NOAS_VER: ${{ github.run_id }}
         run: |
           if [ -z "$CF_TOKEN" ]; then echo "无 CF_API_TOKEN，跳过 CDN 同步"; exit 0; fi
-          python3 -c "import requests" 2>/dev/null || pip install -q requests
+          python3 -c "import requests" 2>/dev/null || pip install -q requests==2.34.2
           python3 tools/cdn_deploy.py
 
       - name: 6.85 · 部署 DoH Worker 到 Cloudflare（回读比对 sha）
@@ -271,7 +271,7 @@ jobs:
         run: python3 tools/quota_check.py
 
       - name: 12 · 留档
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: noas-subs-and-reports
           path: |
