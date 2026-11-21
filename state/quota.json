@@ -1,12 +1,12 @@
 {
- "at": "2026-11-21T08:58:06Z",
+ "at": "2026-11-21T09:10:27Z",
  "ok": true,
  "utc_day_used": true,
  "used": {
-  "requests": 707,
-  "kv_requests": 714,
-  "ae_points": 208,
-  "d1_queries": 140
+  "requests": 741,
+  "kv_requests": 753,
+  "ae_points": 214,
+  "d1_queries": 142
  },
  "limits": {
   "requests": 100000,
@@ -16,22 +16,22 @@
  },
  "pct": {
   "requests": 0.7,
-  "kv_requests": 0.7,
+  "kv_requests": 0.8,
   "ae_points": 0.2,
   "d1_queries": 0.0
  },
  "headroom": {
-  "requests": 99293,
-  "kv_requests": 99286,
-  "ae_points": 99792,
-  "d1_queries": 4999860
+  "requests": 99259,
+  "kv_requests": 99247,
+  "ae_points": 99786,
+  "d1_queries": 4999858
  },
- "subrequests": 689,
+ "subrequests": 720,
  "errors": 6,
  "cpu_ms_p50": 2.99,
  "cpu_ms_p99": 37.09,
  "cpu_limit_ms": 10,
  "by_script": {
-  "noas-doh": 707
+  "noas-doh": 741
  }
 }
