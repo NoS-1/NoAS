@@ -7,10 +7,6 @@ name: Daily Build (每日重建 · 发布 · 站点)
 # 编排口径：产物提交带跳过标记（避免自触发）｜回归 6 项并行｜push 与定时分离并发｜pip 缓存
 # 写操作全程走 git push 与 gh CLI，不消耗 API 配额，也不依赖外部账号。
 
-permissions:
-  contents: write
-  models: read
-
 on:
   schedule:
     - cron: "17 19 * * *"   # 北京 03:17
@@ -29,6 +25,7 @@ on:
 
 permissions:
   contents: write
+  models: read
   pages: write
   id-token: write
 
