@@ -63,12 +63,17 @@ def load_local():
 
 
 def load_creds():
+    """凭据：环境变量优先，其次本地 600 文件（不存在就跳过，CI 只靠 Secrets）。"""
     env = {}
-    p = pathlib.Path("/home/user/.noas/creds.env")
-    for line in p.read_text().splitlines():
-        if "=" in line and not line.strip().startswith("#"):
-            k, v = line.split("=", 1)
-            env[k.strip()] = v.strip()
+    p = pathlib.Path(os.environ.get("NOAS_CREDS", "/home/user/.noas/creds.env"))
+    if p.exists():
+        for line in p.read_text(encoding="utf-8").splitlines():
+            if "=" in line and not line.strip().startswith("#"):
+                k, v = line.split("=", 1)
+                env[k.strip()] = v.strip()
+    for k in ("CF_ACCOUNT_ID", "CF_API_TOKEN"):
+        if os.environ.get(k):
+            env[k] = os.environ[k]
     return env
 
 
@@ -92,6 +97,9 @@ def main():
             print("白名单未变（%s），跳过 Gateway 剪枝（--force 可强制）" % fp_now)
             return 0
     env = load_creds()
+    if not env.get("CF_ACCOUNT_ID") or not env.get("CF_API_TOKEN"):
+        print("缺少凭据：本地写 /home/user/.noas/creds.env，CI 配 CF_API_TOKEN / CF_ACCOUNT_ID secrets")
+        return 2
     acct = env["CF_ACCOUNT_ID"]
     tok = env["CF_API_TOKEN"]
     base = "https://api.cloudflare.com/client/v4/accounts/%s" % acct
