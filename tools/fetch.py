@@ -9,6 +9,10 @@
   4. 记录每个源的字节数/耗时/新鲜度，供"上游新鲜度"判定（源挂掉当天就能发现）
 """
 import concurrent.futures as cf
+import http.client
+import shutil
+import subprocess
+import tempfile
 import json
 import os
 import sys
@@ -42,10 +46,73 @@ def slug(name):
     return "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in name).lower()
 
 
-def _get(url, headers, timeout=45):
-    req = urllib.request.Request(url, headers=headers)
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read(), (r.headers.get("ETag") or ""), (r.headers.get("Last-Modified") or "")
+def _get(url, headers, timeout=45, tries=3):
+    """拉一个源：分块读 + 断流重试 + 截断时保留已读部分。
+
+    实测 PhishingArmy / NoS-antiAD 这类大文件会被 CDN 中途掐断抛 IncompleteRead。
+    旧实现用单次 r.read()，一断就整源丢，full 凭空少 10 万条，guard 报"规模骤降"；
+    自愈重抓走同一 CDN 又复现，真假故障混在一起。现在：
+      · 分块读，断在半途也能留下已经到手的字节；
+      · 重试时去掉 If-None-Match / If-Modified-Since（否则第二次仍回 304，等于没重取）。
+    """
+    last = None
+    for i in range(tries):
+        h = dict(headers)
+        if i:
+            h.pop("If-None-Match", None)
+            h.pop("If-Modified-Since", None)
+            h["Cache-Control"] = "no-cache"
+            h["User-Agent"] = UA + " retry%d" % i
+        try:
+            req = urllib.request.Request(url, headers=h)
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                buf = bytearray()
+                while True:
+                    chunk = r.read(65536)
+                    if not chunk:
+                        break
+                    buf += chunk
+                return bytes(buf), (r.headers.get("ETag") or ""), (r.headers.get("Last-Modified") or "")
+        except urllib.error.HTTPError:
+            raise                     # 304/403/404 交给上层按状态码处理，重试没意义
+        except http.client.IncompleteRead as e:
+            part = bytes(getattr(e, "partial", b"") or b"")
+            last = e
+            if len(part) > 200000:    # 主体已到手，尾部噪声不影响规则解析
+                return part, "", ""
+            time.sleep(0.4 * (2 ** i))
+        except Exception as e:
+            last = e
+            if i + 1 < tries:
+                time.sleep(0.4 * (2 ** i))
+    # urllib 三次都断流：换 curl 兜底。curl 对半途断流更宽容，能续传完整文件。
+    try:
+        return _curl_get(url, timeout * 2)
+    except Exception:
+        raise last
+
+
+def _curl_get(url, timeout=90):
+    exe = shutil.which("curl")
+    if not exe:
+        raise RuntimeError("curl 不可用")
+    fd, path = tempfile.mkstemp(suffix=".bin")
+    os.close(fd)
+    try:
+        r = subprocess.run(
+            [exe, "-fsSL", "--retry", "2", "--retry-connrefused", "-m", str(int(timeout)),
+             "-A", UA, "-H", "Accept-Encoding: identity", "-H", "Cache-Control: no-cache",
+             "-o", path, url],
+            capture_output=True, timeout=timeout + 20)
+        size = os.path.getsize(path) if os.path.exists(path) else 0
+        if r.returncode != 0 or size < 512:
+            raise RuntimeError("curl rc=%s size=%d %s" % (r.returncode, size,
+                                                          (r.stderr or b"").decode()[:80]))
+        with open(path, "rb") as f:
+            return f.read(), "", ""
+    finally:
+        if os.path.exists(path):
+            os.unlink(path)
 
 
 def fetch_one(src, state):
