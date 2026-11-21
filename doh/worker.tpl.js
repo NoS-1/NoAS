@@ -233,6 +233,44 @@ function cnameTargets(buf) {
   return out;
 }
 
+// 自建最小查询（用于 CNAME 深追）：RD=1，问题区 1 条，其余留空
+function buildProbe(name, qtype, ecs, edns) {
+  const head = new Uint8Array(12);
+  head[2] = 0x01;                        // RD
+  head[5] = 1;                           // QDCOUNT
+  const labels = name.split(".").filter(Boolean);
+  let len = 12 + 1 + 4;
+  for (const l of labels) len += l.length + 1;
+  const out = new Uint8Array(len);
+  out.set(head, 0);
+  let o = 12;
+  for (const l of labels) { out[o++] = l.length; for (let i = 0; i < l.length; i++) out[o++] = l.charCodeAt(i); }
+  out[o++] = 0;
+  out[o++] = (qtype >> 8) & 0xff; out[o++] = qtype & 0xff;
+  out[o++] = 0; out[o++] = 1;
+  return applyEdns(out, ecs, edns);
+}
+
+// CNAME 多跳反隐蔽（P0）：
+//   上游通常把整条链放在 ANSWER 段，一轮就够；只返一跳时再自建查询追，
+//   最多 4 跳并带 seen 集合防环 —— 否则 first-party 子域 → 中间域 → 追踪域这种
+//   三段链只要上游偷懒只给一段，就会被绕过。
+async function cnameDeep(baseBuf, name, qtype, tier, ip, edns) {
+  const seen = new Set([name]);
+  let pending = name, buf = baseBuf;
+  for (let hop = 0; hop < 4; hop++) {
+    const targets = cnameTargets(buf);
+    for (const t of targets) if (blocked(t, tier)) return t;
+    const next = targets.length ? targets[targets.length - 1] : null;
+    if (!next || seen.has(next)) return null;
+    seen.add(next);
+    pending = next;
+    buf = await upstream(buildProbe(pending, qtype, edns && edns.ecs, edns), pending, ip, edns);
+    if (!buf) return null;
+  }
+  return null;
+}
+
 function readName(dv, off) {
   const labels = [];
   let p = off, jumps = 0;
@@ -302,6 +340,33 @@ function blocked(name, tier) {
   const set = tier >= 2 ? TIER2 : TIER1;
   if (matchSet(set, name)) return true;
   return hotHit(name);          // 云端热规则只做增量补充
+}
+
+// 给 /why 用：命中理由分层，运维排查时不用再翻规则表
+function blockedInfo(name, tier) {
+  const out = { domain: name || null, tier, blocked: false, why: "none", layer: null, source: null };
+  if (!name) return out;
+  if (isEndpoint(name)) {
+    out.blocked = true; out.why = "endpoint"; out.layer = "L1-embedded"; out.source = "ad_endpoints/cn_ad_endpoints/layer_backfill";
+    return out;
+  }
+  if (allowed(name)) { out.why = "allowlist"; out.layer = "allow"; return out; }
+  const set = tier >= 2 ? TIER2 : TIER1;
+  if (matchSet(set, name)) {
+    out.blocked = true; out.why = "rule"; out.layer = "L" + (tier >= 2 ? 2 : 1) + "-embedded";
+    out.source = tier >= 2 ? "tier2/mid+full" : "tier1/lite";
+    return out;
+  }
+  if (hotHit(name)) {
+    out.blocked = true; out.why = "hot"; out.layer = "hot-KV";
+    return out;
+  }
+  return out;
+}
+
+// 从应答报文反推问题区结束位置（缓存里只有整包，没有 parseQuery 的结果）
+function qendOf(buf) {
+  try { return parseQuery(new Uint8Array(buf)).end; } catch (e) { return 12 + 5; }
 }
 
 function parseQuery(bytes) {
@@ -391,7 +456,238 @@ function bytesToB64url(b) {
   return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+// ── 解析质量：ECS / TTL 钳制 / 负缓存 / AAAA 策略 ──────────────────────
+// ECS：把客户端前 24 位（IPv6 前 48 位）带给上游，否则国内 CDN 按解析器出口返回
+// 远端节点，手机拿到跨省 IP，首屏明显变慢。只在报文无 OPT 时追加，不破坏已有 EDNS 参数。
+const TTL_MIN_S = 60;
+const TTL_MAX_S = 3600;
+const NEG_TTL_S = 300;          // NXDOMAIN 负缓存（RFC 2308，取保守值）
+const V6_DEFAULT = "pass";      // pass | v4only
+const TTL_MIN = 60;             // 上游给更短就抬到 60s，挡缓存风暴
+const TTL_MAX = 3600;           // 上游给更长就压到 1h，挡 IP 漂移
+const ECS_CACHE = new Map();    // ip 前缀 → {family,prefix,addr}
+const ECS_BROKEN = new Map();   // 上游 host → true（该上游对 ECS 回 FORMERR，之后不再加）
+
+function clientPrefix(ip) {
+  if (!ip) return null;
+  const cached = ECS_CACHE.get(ip);
+  if (cached) return cached;
+  let ecs = null;
+  const v4 = ip.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (v4) {
+    ecs = { family: 1, prefix: 24,
+            addr: [Number(v4[1]) & 0xff, Number(v4[2]) & 0xff, Number(v4[3]) & 0xff, 0] };
+  } else if (ip.includes(":")) {
+    const head = ip.split("::")[0].split(":").filter(Boolean);
+    const g = [0, 1, 2].map((i) => parseInt(head[i] || "0", 16) & 0xffff);
+    const addr = [];
+    for (const x of g) addr.push((x >> 8) & 0xff, x & 0xff);
+    while (addr.length < 16) addr.push(0);
+    ecs = { family: 2, prefix: 48, addr: addr.slice(0, 16) };
+  }
+  if (ecs) {
+    if (ECS_CACHE.size > 2000) ECS_CACHE.clear();
+    ECS_CACHE.set(ip, ecs);
+  }
+  return ecs;
+}
+
+// ── EDNS(0) 解析（RFC 6891 / ECS RFC 7871）──────────────────────────────
+// 客户端自带 ECS 时必须沿用它的子网，而不是用自己的 cf-connecting-ip 覆盖 ——
+// 覆盖会让上游按错误的地区返回 IP，CDN 就近调度直接失效（这是最难察觉的一类问题）。
+function parseEdns(bytes, qend) {
+  const dv = new DataView(bytes.buffer || bytes, bytes.byteOffset || 0);
+  const res = { present: false, doBit: 0, ecs: null, optStart: -1, optRdlen: 0, tail: true };
+  if (bytes.byteLength < 12) return res;
+  const ar = dv.getUint16(10);
+  if (!ar) return res;
+  const skipName = (o) => {
+    while (o < bytes.byteLength) {
+      const l = bytes[o];
+      if (l === 0) return o + 1;
+      if ((l & 0xc0) === 0xc0) return o + 2;
+      o += l + 1;
+    }
+    return bytes.byteLength;
+  };
+  const counts = [dv.getUint16(6), dv.getUint16(8), ar];
+  let off = qend;
+  for (let sec = 0; sec < 3; sec++) {
+    for (let i = 0; i < counts[sec]; i++) {
+      off = skipName(off);
+      if (off + 10 > bytes.byteLength) return res;
+      const type = dv.getUint16(off);
+      const rdlen = dv.getUint16(off + 8);
+      const rdStart = off + 10;
+      if (sec === 2 && type === 41) {
+        res.present = true;
+        res.optStart = off;
+        res.optRdlen = rdlen;
+        res.doBit = (dv.getUint32(off + 4) >> 15) & 1;
+        res.tail = rdStart + rdlen === bytes.byteLength;
+        let o = rdStart;
+        while (o + 4 <= rdStart + rdlen) {
+          const code = dv.getUint16(o);
+          const len = dv.getUint16(o + 2);
+          if (code === 8 && len >= 4) {
+            const fam = dv.getUint16(o + 4);
+            res.ecs = {
+              family: fam,
+              prefix: bytes[o + 6],
+              scope: bytes[o + 7],
+              addr: Array.from(bytes.slice(o + 8, o + 8 + Math.min(len - 4, 16))),
+            };
+          }
+          o += 4 + len;
+        }
+      }
+      off = rdStart + rdlen;
+    }
+  }
+  return res;
+}
+
+// 把 ECS 写进 outgoing 报文：客户端自带就沿用，没有就补，完全没有 OPT 就新建。
+function applyEdns(bytes, ecs, edns) {
+  if (!ecs) return bytes;
+  if (edns && edns.ecs) return bytes;                 // 客户端已声明 ECS，原样透传
+  const addrLen = ecs.family === 2 ? 16 : 4;
+  const build = (base, extra) => {
+    const out = new Uint8Array(base.byteLength + extra);
+    out.set(base, 0);
+    return out;
+  };
+  if (edns && edns.present && edns.tail) {
+    // OPT 在报文末尾：直接把它后面追加一个 ECS option（改 RDLEN 与 OPTION-LEN）
+    const optlen = 4 + 4 + addrLen;
+    const out = build(bytes, optlen);
+    const o = edns.optStart;
+    const rdl = edns.optRdlen + optlen;
+    const dv = new DataView(out.buffer);
+    dv.setUint16(o + 8, rdl);
+    const po = o + 10 + edns.optRdlen;
+    dv.setUint16(po, 8);
+    dv.setUint16(po + 2, 4 + addrLen);
+    dv.setUint16(po + 4, ecs.family);
+    out[po + 6] = ecs.prefix;
+    out[po + 7] = 0;
+    out.set(new Uint8Array(ecs.addr.slice(0, addrLen)), po + 8);
+    return out;
+  }
+  if (edns && edns.present) return bytes;             // OPT 不在末尾：不动，宁可少 ECS 也不破坏报文
+  const optlen = 4 + 4 + addrLen;
+  const out = build(bytes, 11 + optlen);
+  const o = bytes.byteLength;
+  const dv = new DataView(out.buffer);
+  out[o] = 0;
+  dv.setUint16(o + 1, 41);                 // TYPE OPT
+  dv.setUint16(o + 3, 4096);               // CLASS = UDP payload 4096（EDNS0 推荐值）
+  dv.setUint16(o + 5, 0);                  // ext-rcode / version
+  dv.setUint16(o + 7, 0);                  // flags：DO=0
+  dv.setUint16(o + 9, optlen);
+  dv.setUint16(o + 11, 8);                 // OPTION-CODE ECS
+  dv.setUint16(o + 13, 4 + addrLen);
+  dv.setUint16(o + 15, ecs.family);
+  out[o + 17] = ecs.prefix;
+  out[o + 18] = 0;
+  out.set(new Uint8Array(ecs.addr.slice(0, addrLen)), o + 19);
+  dv.setUint16(10, 1);                     // ARCOUNT = 1
+  return out;
+}
+
+// ── TTL 钳制（RFC 1035 的 RR 布局；跳过压缩名）────────────────────────
+// 上游给 5s → 缓存风暴；给 7 天 → IP 换了还发旧地址。统一压到 [60, 3600]。
+function clampTTL(buf, qend, lo, hi) {
+  let dv;
+  try { dv = new DataView(buf.buffer || buf, buf.byteOffset || 0); } catch (e) { return null; }
+  if (buf.byteLength < 12) return null;
+  const counts = [dv.getUint16(6), dv.getUint16(8), dv.getUint16(10)];
+  const skipName = (o) => {
+    let guard = 0;
+    while (o < buf.byteLength && guard++ < 40) {
+      const l = buf[o];
+      if (l === 0) return o + 1;
+      if ((l & 0xc0) === 0xc0) return o + 2;
+      o += l + 1;
+    }
+    return buf.byteLength;
+  };
+  let off = qend;
+  let minRaw = null;
+  for (let sec = 0; sec < 3; sec++) {
+    for (let i = 0; i < counts[sec]; i++) {
+      off = skipName(off);
+      if (off + 10 > buf.byteLength) return minRaw;
+      const type = dv.getUint16(off);
+      const rdStart = off + 10;
+      if (!(sec === 2 && type === 41)) {          // OPT 的 TTL 字段是 flags，不能改
+        const ttl = dv.getUint32(off + 4);
+        if (minRaw === null || ttl < minRaw) minRaw = ttl;
+        dv.setUint32(off + 4, Math.max(lo, Math.min(hi, ttl)));
+      }
+      off = rdStart + dv.getUint16(off + 8);
+    }
+  }
+  return minRaw;
+}
+
+// NXDOMAIN 的负缓存时长取 SOA minimum（RFC 2308），拿不到就 300s
+function soaMin(buf, qend) {
+  const dv = new DataView(buf.buffer || buf, buf.byteOffset || 0);
+  const an = dv.getUint16(6);
+  const ns = dv.getUint16(8);
+  if (!ns) return 0;
+  const skipName = (o) => {
+    let guard = 0;
+    while (o < buf.byteLength && guard++ < 40) {
+      const l = buf[o];
+      if (l === 0) return o + 1;
+      if ((l & 0xc0) === 0xc0) return o + 2;
+      o += l + 1;
+    }
+    return buf.byteLength;
+  };
+  let off = qend;
+  for (let i = 0; i < an; i++) {
+    off = skipName(off);
+    if (off + 10 > buf.byteLength) return 0;
+    off += 10 + dv.getUint16(off + 8);
+  }
+  for (let i = 0; i < ns; i++) {
+    off = skipName(off);
+    if (off + 10 > buf.byteLength) return 0;
+    const type = dv.getUint16(off);
+    const rdlen = dv.getUint16(off + 8);
+    if (type === 6 && rdlen >= 20) {
+      // SOA RDATA 最后 4 字节是 minimum
+      return dv.getUint32(off + 10 + rdlen - 4);
+    }
+    off += 10 + rdlen;
+  }
+  return 0;
+}
+
+function rcodeOf(buf) {
+  try { return new DataView(buf.buffer || buf, buf.byteOffset || 0).getUint16(2) & 0x000f; }
+  catch (e) { return 0; }
+}
+
+// AAAA 策略 v4only：直接回 NOERROR + 0 条答案，客户端立刻回退 A 记录，
+// 不会在 IPv6 黑洞网络里干等 30 秒。
+function emptyAnswer(bytes, end) {
+  const head = bytes.slice(0, end);
+  const out = new Uint8Array(head.length);
+  out.set(head, 0);
+  out[2] = 0x81; out[3] = 0x80;
+  for (let i = 6; i < 12; i++) out[i] = 0;
+  return out;
+}
+
 function fetchUpstream(u, bytes, ctrl) {
+  const h = hostOf(u);
+  if (!ECS_BROKEN.get(h)) {
+    bytes = applyEdns(bytes, bytes.__ecs, bytes.__edns);
+  }
   // 用 RFC 8484 的 GET 形态而不是 POST：报文进 ?dns= 查询串，没有请求体。
   // 实测 POST body 从 Pages Function 中转过来后，三家上游一致回 400——
   // 报文本身没坏（hex 已核对），是中转链路上请求体被改写；GET 彻底绕开这一步。
@@ -408,7 +704,12 @@ function fetchUpstream(u, bytes, ctrl) {
   });
 }
 
-async function upstream(bytes, qname) {
+async function upstream(bytes, qname, ip, edns) {
+  // 客户端自带 ECS（RFC 7871）优先：那是它自己声明的地理位置，比我们按出口 IP 猜的准
+  const ecs = (edns && edns.ecs) ? edns.ecs : clientPrefix(ip);
+  const send = new Uint8Array(bytes);
+  send.__edns = edns || null;
+  if (ecs) send.__ecs = ecs;
   const t0 = Date.now();
   const list = preference(qname).slice();
   const ctrls = list.map(() => new AbortController());
@@ -418,7 +719,7 @@ async function upstream(bytes, qname) {
     const attempts = list.map((u, i) => new Promise((resolve, reject) => {
       const delay = HEDGE_MS[i] !== undefined ? HEDGE_MS[i] : i * 500;
       const kick = () => {
-        fetchUpstream(u, bytes, ctrls[i]).then(
+        fetchUpstream(u, send, ctrls[i]).then(
           (buf) => resolve({ u, buf }),
           (e) => { errs[i] = hostOf(u) + ":" + String(e).slice(0, 60); reject(e); },
         );
@@ -514,6 +815,16 @@ async function handle(request, env, ctx) {
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
                            soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
   }
+  if (url.pathname === "/why") {
+    const d = (url.searchParams.get("d") || url.searchParams.get("domain") || "").toLowerCase();
+    const tier = Number(url.searchParams.get("tier") || 2);
+    await loadHot(env);
+    const info = blockedInfo(d, tier);
+    const cname = (url.searchParams.get("cname") || "").toLowerCase();
+    if (cname) info.cname = cname;
+    info.version = VERSION;
+    return json(info);
+  }
   if (url.pathname === "/check") {
     // 调试端点也按 IP 限速：只对有真实来源 IP 的线上请求生效，本地/CI 测试不受影响
     const cip = request.headers.get("cf-connecting-ip");
@@ -529,14 +840,16 @@ async function handle(request, env, ctx) {
                   cname_blocked: cn ? viaCname : null, tier, version: VERSION });
   }
   if (!/^\/dns-query$/.test(url.pathname)) {
-    return new Response("NoAS · /dns-query 或 /check 或 /health", {
+    return new Response("NoAS · /dns-query 或 /check 或 /why 或 /health", {
       status: 404, headers: { "content-type": "text/plain; charset=utf-8" },
     });
   }
 
   // 熔断不返回 503：503 会让客户端直接断服。改为"降级直转"——
   // 跳过规则匹配省 CPU，DNS 照常应答，恢复靠 UTC 换日 + cron 自检复位。
-  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  // Pages 转发时 Worker 只看到 Pages 自己的出口 IP，真实客户端 IP 由 x-noas-cip 带过来；
+  // 用错 IP 会让 ECS 声明错地域，上游按错误地区返回 CDN 节点。
+  const ip = request.headers.get("x-noas-cip") || request.headers.get("cf-connecting-ip") || "unknown";
   if (await ipLimited(env, ip)) degrade("ip-burst " + PER_IP_PER_MIN + "/min");
   if (!takeQuota()) degrade("quota 90%", 3600000);
   const skipRules = isDegraded();
@@ -557,6 +870,28 @@ async function handle(request, env, ctx) {
   const tier = Number(url.searchParams.get("tier") || 2);   // 默认走 mid：lite 只是零误伤最小集
   if (!name) return new Response("bad query", { status: 400 });
 
+  // EDNS(0)：解析客户端 OPT —— ECS 子网（RFC 7871）与 DO 位（RFC 3225）都在这里
+  const edns = parseEdns(bytes, end);
+  const ecs = edns.ecs || clientPrefix(ip) || null;
+  const doBit = edns.doBit;
+
+  // ANY / CHAOS：经典反射放大面，直接 NOTIMP(4)，不花上游往返也不进规则判定
+  if (qtype === 255 || qtype === 3) {
+    const head = new Uint8Array(bytes.slice(0, end));
+    head[2] = 0x81; head[3] = 0x84;      // QR=1 RD=1 RA=1 RCODE=4
+    for (let i = 6; i < 12; i++) head[i] = 0;
+    return new Response(head, { headers: { "content-type": "application/dns-message",
+      "x-noas": "notimp", "x-noas-ver": VERSION } });
+  }
+
+  // AAAA 策略：v4only 时回 NOERROR 空答，客户端立刻回退 A，不在 IPv6 黑洞里干等
+  const v6mode = url.searchParams.get("v6") || V6_DEFAULT;
+  if (qtype === 28 && v6mode === "v4only") {
+    const empty = emptyAnswer(bytes, end);
+    return new Response(empty, { headers: { "content-type": "application/dns-message",
+      "x-noas": "v4only", "x-noas-ver": VERSION } });
+  }
+
   if (!skipRules) await loadHot(env);
   if (!skipRules && blocked(name, tier)) {
     logHit(env, "block", name, tier, "");
@@ -566,7 +901,7 @@ async function handle(request, env, ctx) {
   }
   // 缓存优先：fresh 命中直接返（0 上游 RTT）；stale 命中先返旧值、后台刷新。
   // 旧实现只有"上游全挂"才读缓存，等于每次解析都白付 10-110ms 的上游往返。
-  const cached = await cacheLookup(name, qtype);
+  const cached = await cacheLookup(name, qtype, ecs, doBit);
   if (cached && !cached.stale) {
     cacheHits += 1;
     return dnsReply(cached.buf, "cache-hit");
@@ -576,14 +911,14 @@ async function handle(request, env, ctx) {
     if (ctx && ctx.waitUntil) {
       ctx.waitUntil((async () => {
         try {
-          const b = await upstream(bytes, name);
-          if (b) await cachePut(name, qtype, b);
+          const b = await upstream(bytes, name, ip, edns);
+          if (b) await cachePut(name, qtype, b, ecs, doBit);
         } catch (e) { /* 后台刷新失败保留旧值 */ }
       })());
     }
     return dnsReply(cached.buf, "cache-stale");
   }
-  const buf = await upstream(bytes, name);
+  const buf = await upstream(bytes, name, ip, edns);
   if (!buf) {
     degrade("upstream-down");
     const h = { "x-noas": "upstream-fail" };
@@ -595,28 +930,51 @@ async function handle(request, env, ctx) {
     return new Response("上游不可用", { status: 502, headers: h });
   }
   if (!skipRules) {
-    // CNAME 反隐蔽：第一方子域 CNAME 到追踪者时，按追踪者判定并直接拦掉
-    const chain = cnameTargets(buf);
-    for (const t of chain) {
-      if (blocked(t, tier)) {
-        logHit(env, "cname", name, tier, t);
-        return new Response(blockedResponse(bytes, qtype, end), {
-          headers: { "content-type": "application/dns-message", "x-noas": "blocked-cname",
-                     "x-noas-target": t, "x-noas-ver": VERSION },
-        });
-      }
+    // CNAME 反隐蔽：第一方子域 CNAME 到追踪者时，按追踪者判定并直接拦掉（支持多跳）
+    const t = await cnameDeep(buf, name, qtype, tier, ip, edns);
+    if (t) {
+      logHit(env, "cname", name, tier, t);
+      return new Response(blockedResponse(bytes, qtype, end), {
+        headers: { "content-type": "application/dns-message", "x-noas": "blocked-cname",
+                   "x-noas-target": t, "x-noas-ver": VERSION },
+      });
     }
     if (Math.random() < 0.05) logHit(env, "pass", name, tier, "");   // 放行只留 5% 样本，省 AE 点数
   }
-  if (ctx && ctx.waitUntil && !skipRules) ctx.waitUntil(cachePut(name, qtype, buf.slice(0)));
-  return new Response(buf, {
+  // TTL 钳制（60s ~ 3600s）：压掉 5s 的缓存风暴与 7 天的 IP 漂移
+  const rc = rcodeOf(buf);
+  let finalBuf = buf;
+  let clamped = null;
+  if (rc === 0 || rc === 3) {
+    try {
+      const copy = new Uint8Array(buf.slice(0));
+      clamped = clampTTL(copy, end, TTL_MIN, TTL_MAX);
+      finalBuf = copy;
+    } catch (e) { finalBuf = buf; }
+  }
+  const neg = rc === 3 || rc === 2;
+  if (ctx && ctx.waitUntil && !skipRules) ctx.waitUntil(cachePut(name, qtype, finalBuf.slice(0), ecs, doBit));
+  return new Response(finalBuf, {
     headers: { "content-type": "application/dns-message",
-               "x-noas": skipRules ? "degraded" : "pass", "x-noas-ver": VERSION },
+               "x-noas": skipRules ? "degraded" : (neg ? "negcache" : "pass"),
+               "x-noas-ttl": clamped === null ? "-" : String(clamped),
+               "x-noas-ecs": ecs ? String(ecs.family) + "/" + String(ecs.prefix) : "-",
+               "x-noas-ver": VERSION },
   });
 }
 
-function cacheKey(name, qtype) {
-  return CACHE_BASE + encodeURIComponent(name) + "/" + qtype;
+function ecsKey(ecs) {
+  if (!ecs) return "e:n";
+  const a = (ecs.addr || []).slice(0, ecs.family === 2 ? 8 : 3)
+    .map((x) => (x | 0).toString(16).padStart(2, "0")).join("");
+  return "e:" + ecs.family + "-" + ecs.prefix + "-" + a;
+}
+
+// 缓存键必须带 ECS 子网与 DO 位：
+//   · 不同子网 → 上游可能返回不同 CDN 节点，共用缓存会把别人的地址发给你
+//   · DO=0/1 → DNSSEC 视图不同（AD 位、RRSIG 有无），共用会把 RRSIG 塞给不识 DNSSEC 的客户端
+function cacheKey(name, qtype, ecs, doBit) {
+  return CACHE_BASE + encodeURIComponent(name) + "/" + qtype + "/" + ecsKey(ecs) + "/d" + (doBit ? 1 : 0);
 }
 
 let cacheReady = null;
@@ -628,27 +986,35 @@ function hasCache() {
   return cacheReady;
 }
 
-async function cacheLookup(name, qtype) {
+async function cacheLookup(name, qtype, ecs, doBit) {
   if (!hasCache()) return null;
   try {
-    const fresh = await caches.default.match(cacheKey(name, qtype));
+    const fresh = await caches.default.match(cacheKey(name, qtype, ecs, doBit));
     if (fresh) return { buf: await fresh.arrayBuffer(), stale: false };
   } catch (e) { /* 继续尝试 stale */ }
   try {
-    const old = await caches.default.match(cacheKey(name, qtype) + "#swr");
+    const old = await caches.default.match(cacheKey(name, qtype, ecs, doBit) + "#swr");
     if (old) return { buf: await old.arrayBuffer(), stale: true };
   } catch (e) { /* 无缓存 */ }
   return null;
 }
 
-async function cachePut(name, qtype, buf) {
+async function cachePut(name, qtype, buf, ecs, doBit) {
   if (!hasCache()) return;
-  // 两份：fresh 300s（命中直返）+ stale 24h（fresh 过期后先返旧值、后台刷新）
+  // 负缓存（NXDOMAIN / SERVFAIL）用短 TTL：上游说"没有"不代表永远没有，别把故障固化一天
+  const rc = rcodeOf(buf);
+  const neg = rc === 3 || rc === 2;
+  let fresh = CACHE_FRESH_S;
+  if (neg) {
+    const m = soaMin(buf, qendOf(buf));
+    fresh = Math.max(60, Math.min(600, m || 300));
+  }
+  // 两份：fresh（命中直返）+ stale 24h（fresh 过期后先返旧值、后台刷新）
   const put = (key, maxAge) => caches.default.put(key, new Response(buf.slice(0), {
     headers: { "content-type": "application/dns-message", "cache-control": "max-age=" + maxAge },
   }));
-  try { await put(cacheKey(name, qtype), CACHE_FRESH_S); } catch (e) { /* 忽略 */ }
-  try { await put(cacheKey(name, qtype) + "#swr", CACHE_STALE_S); } catch (e) { /* 忽略 */ }
+  try { await put(cacheKey(name, qtype, ecs, doBit), fresh); } catch (e) { /* 忽略 */ }
+  try { await put(cacheKey(name, qtype, ecs, doBit) + "#swr", neg ? 3600 : CACHE_STALE_S); } catch (e) { /* 忽略 */ }
 }
 
 function dnsReply(buf, tag) {

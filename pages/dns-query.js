@@ -35,6 +35,13 @@ const MEM_MAX = 800;
 const MEM_TTL_MS = 30000;
 const MEM = new Map();
 
+// 客户端子网（/24 v4、/48 v6）：缓存必须按子网分段，否则不同地域共用同一条应答
+function netKey(cip) {
+  if (!cip) return "n";
+  if (cip.includes(".")) return cip.split(".").slice(0, 3).join(".");
+  return cip.split(":").slice(0, 3).join(":");
+}
+
 function memGet(key) {
   const e = MEM.get(key);
   if (!e) return null;
@@ -277,8 +284,9 @@ export async function onRequest(context) {
   if (bytes.length < 17) return new Response("报文过短", { status: 400 });
 
   const q = parseQuery(bytes);
+  const cip = request.headers.get("cf-connecting-ip") || "";
   if (q) {
-    const mem = memGet(p.tier + "|" + q.name + "|" + q.qtype);
+    const mem = memGet(p.tier + "|" + q.name + "|" + q.qtype + "|" + netKey(cip));
     if (mem) return new Response(mem, {
       headers: { "content-type": "application/dns-message", "x-noas": "cache-hit",
                  "x-noas-path": "pages-mem", "x-noas-ver": "lite", "x-noas-tier": p.tier },
@@ -309,6 +317,8 @@ export async function onRequest(context) {
       "content-type": request.headers.get("content-type") || "application/dns-message",
       accept: "application/dns-message",
       "user-agent": "NoAS-pages",
+      // Worker 侧看不到真实客户端 IP（只剩 Pages 出口），显式带过去给 ECS 用
+      "x-noas-cip": request.headers.get("cf-connecting-ip") || "",
     },
     body: request.method === "POST" ? bytes : undefined,
     cache: "no-store",
@@ -316,7 +326,7 @@ export async function onRequest(context) {
   const headers = pickHeaders(res);
   const buf = await res.arrayBuffer();
   const ok = res.status === 200 && buf.byteLength > 17;
-  if (ok && q) memPut(p.tier + "|" + q.name + "|" + q.qtype, buf);
+  if (ok && q) memPut(p.tier + "|" + q.name + "|" + q.qtype + "|" + netKey(cip), buf);
   const out = new Response(buf, { status: res.status, headers });
   if (ok && ck && typeof caches !== "undefined" && caches.default && waitUntil) {
     try {
