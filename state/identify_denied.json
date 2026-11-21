@@ -1869,5 +1869,133 @@
   "t": "none",
   "ts": "2026-11-21",
   "by": "ai"
+ },
+ "ice-stunserver-v6.xdrtc.com": {
+  "d": "ice-stunserver-v6.xdrtc.com",
+  "v": "benign",
+  "c": 90,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v26-cold.douyinvod.com": {
+  "d": "v26-cold.douyinvod.com",
+  "v": "benign",
+  "c": 93,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "lf-sourcecdn-tos.bytegecko.com": {
+  "d": "lf-sourcecdn-tos.bytegecko.com",
+  "v": "benign",
+  "c": 85,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "sf3-cdn-tos.toutiaostatic.com": {
+  "d": "sf3-cdn-tos.toutiaostatic.com",
+  "v": "benign",
+  "c": 92,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "ice-starrydyn.xdrtc.com": {
+  "d": "ice-starrydyn.xdrtc.com",
+  "v": "benign",
+  "c": 85,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "wx.qlogo.cn": {
+  "d": "wx.qlogo.cn",
+  "v": "benign",
+  "c": 90,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "api.guazi.fun": {
+  "d": "api.guazi.fun",
+  "v": "benign",
+  "c": 60,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "stars.shuqireader.com": {
+  "d": "stars.shuqireader.com",
+  "v": "benign",
+  "c": 55,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cdn-api-auth.zztfly.com": {
+  "d": "cdn-api-auth.zztfly.com",
+  "v": "benign",
+  "c": 62,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v05.alllook.tv": {
+  "d": "v05.alllook.tv",
+  "v": "benign",
+  "c": 60,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v06.alllook.tv": {
+  "d": "v06.alllook.tv",
+  "v": "benign",
+  "c": 60,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "videoali.dgsltx.com": {
+  "d": "videoali.dgsltx.com",
+  "v": "benign",
+  "c": 55,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "videoty.dgsltx.com": {
+  "d": "videoty.dgsltx.com",
+  "v": "benign",
+  "c": 55,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "vivo8.go2yd.com": {
+  "d": "vivo8.go2yd.com",
+  "v": "benign",
+  "c": 55,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "vmp.vidcube.cn": {
+  "d": "vmp.vidcube.cn",
+  "v": "benign",
+  "c": 52,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "vsp.vidcube.cn": {
+  "d": "vsp.vidcube.cn",
+  "v": "benign",
+  "c": 52,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
  }
 }

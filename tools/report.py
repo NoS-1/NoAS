@@ -42,6 +42,11 @@ def main():
     if os.path.isdir(p_src):
         shutil.copytree(p_src, os.path.join(DOCS, "subs", "paths"), dirs_exist_ok=True)
 
+    # 唯一 DNS 订阅 subs/all 镜像进站点（DNS-only：黑名单 + @@ 白名单）
+    a_src = os.path.join(SUBS, "all")
+    if os.path.isdir(a_src):
+        shutil.copytree(a_src, os.path.join(DOCS, "subs", "all"), dirs_exist_ok=True)
+
     # 已下线的 L4（GKD）镜像目录清理，避免 Pages 残留旧订阅
     old_gkd = os.path.join(DOCS, "subs", "gkd")
     if os.path.isdir(old_gkd):
@@ -60,6 +65,7 @@ def main():
         }
 
     compile_report = read_json(os.path.join(ROOT, "out", "compile.json"), {})
+    all_meta = read_json(os.path.join(SUBS, "all", "meta.json"), {})
     health = read_json(os.path.join(ROOT, "history", "health.json"), {})
     evo = read_json(os.path.join(ROOT, "history", "evolution.json"), [])
     scale = read_json(os.path.join(ROOT, "history", "scale.json"), {})
@@ -67,6 +73,12 @@ def main():
     data = {
         "repo": REPO,
         "updated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "all": {
+            "blacklist": all_meta.get("blacklist"),
+            "whitelist": all_meta.get("whitelist"),
+            "exceptions": all_meta.get("exceptions"),
+            "generated_at": all_meta.get("generated_at"),
+        },
         "tiers": tiers,
         "sources": {
             "count": len(compile_report.get("sources", {})),

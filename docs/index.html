@@ -48,13 +48,14 @@
 
   <div class="cards" id="top"></div>
 
-  <h2>直接接入</h2>
+  <h2>直接接入（一条订阅）</h2>
+  <p class="note">只做 DNS 层：广告/追踪/威胁域名进黑名单，正常业务域名进白名单，智能识别自动维护。
+    订阅地址：<code id="pagesbase">/subs/all/adguard.txt</code>（AdGuard for Android / AdGuard Home / Pi-hole / mosdns / sing-box 等 DNS 类客户端直接导入）；
+    纯域名版 <code>/subs/all/domains.txt</code>，白名单 <code>/subs/all/whitelist.txt</code>。</p>
   <div id="tiers"></div>
-  <p class="note">国内访问 raw 慢时，可改用本页所在站点的镜像地址（同一份文件，另一个通道）：
-    <code id="pagesbase">/subs/lite/…</code>。</p>
 
-  <h2>四层叠加去广告</h2>
-  <p>DNS 只是第一层。<a href="stack.html" style="color:var(--accent)">三层叠加方案与订阅入口 →</a>　·　<a href="dns-channels.html" style="color:var(--accent)">通道与额度 →</a>　·　<a href="precision.html" style="color:var(--accent)">零误拦闭环 →</a>　·　<a href="dns-latency.html" style="color:var(--accent)">延迟实测与最优方案 →</a></p>
+  <h2>能力与通道</h2>
+  <p><a href="dns-channels.html" style="color:var(--accent)">通道与额度 →</a>　·　<a href="precision.html" style="color:var(--accent)">零误拦闭环 →</a>　·　<a href="dns-latency.html" style="color:var(--accent)">延迟实测与最优方案 →</a></p>
 
   <h2>自建 DoH（不需要任何服务器租用）</h2>
   <p>本仓库自带零依赖 DoH 服务，规则与订阅同源，不会出现"订阅拦了但 DoH 没拦"：</p>
@@ -85,38 +86,36 @@
   </footer>
 </div>
 <script>
-const FMT = ["adguard.txt","domains.txt","hosts.txt","dnsmasq.conf","clash.yaml","singbox.json","surge.list"];
-const NAME = {lite:"lite · 日常默认",mid:"mid · 更广覆盖",full:"full · 最激进"};
 const el = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 fetch("data.json", {cache:"no-store"}).then(r => r.json()).then(d => {
   const t = d.tiers || {};
   const base = location.href.replace(/\/[^/]*$/, "/");
-  el("pagesbase").textContent = base + "subs/lite/adguard.txt";
+  el("pagesbase").textContent = base + "subs/all/adguard.txt";
 
+  const A = d.all || {};
+  const black = (A.blacklist != null ? A.blacklist : (t.full && t.full.count));
   el("top").innerHTML = [
-    ["lite", t.lite && t.lite.count],
-    ["mid", t.mid && t.mid.count],
-    ["full", t.full && t.full.count],
-    ["规则源", d.sources && d.sources.count],
-  ].map(([k,v]) => `<div class="card"><div class="k">${k.toUpperCase()}</div>
+    ["订阅黑名单", black, "条 DNS 拦截规则 · 三档已合并为一条"],
+    ["白名单", A.whitelist, "条正常业务域放行（另含父域保护）"],
+    ["规则源", d.sources && d.sources.count, "个公开源每日重建"],
+  ].map(([k,v,n]) => `<div class="card"><div class="k">${k}</div>
       <div class="v">${v==null?"—":Number(v).toLocaleString()}</div>
-      <div class="n">条域名规则</div></div>`).join("");
+      <div class="n">${n}</div></div>`).join("");
 
-  el("tiers").innerHTML = ["lite","mid","full"].map(tier => {
-    const m = t[tier]; if (!m) return "";
-    const rawBase = `https://raw.githubusercontent.com/${d.repo}/${tier==="lite"?"main":"data"}/subs/${tier}/`;
-    const rows = FMT.map(f => {
-      const bytes = m.files?.[f]?.bytes;
-      const kb = bytes ? (bytes/1024).toFixed(0) + " KB" : "—";
-      const mirror = tier === "lite" ? `<a href="${base}subs/lite/${f}">镜像</a>` : `<span class="m">—</span>`;
-      return `<div><a href="${rawBase}${f}">${f}</a></div><div><span class="m">${kb}</span> · ${mirror}</div>`;
-    }).join("");
-    return `<div class="tier"><div class="hd"><b>${NAME[tier]}</b>
-      <span>${(m.count||0).toLocaleString()} 条 · 版本 ${esc(m.version||"—")} · 通配 ${m.wildcards||0}</span></div>
-      <div class="fmt">${rows}</div></div>`;
-  }).join("");
+  const allFiles = [
+    ["adguard.txt", "主订阅 · AdGuard / AdGuard Home / Pi-hole / sing-box"],
+    ["domains.txt", "纯域名版 · mosdns / 自写脚本"],
+    ["whitelist.txt", "白名单 · 可单独审计或引用"],
+  ];
+  const rawAll = `https://raw.githubusercontent.com/${d.repo}/main/subs/all/`;
+  el("tiers").innerHTML = `<div class="tier"><div class="hd"><b>唯一 DNS 订阅 · subs/all（三档合一）</b>
+      <span>黑名单 ${black==null?"—":Number(black).toLocaleString()} · 白名单 ${A.whitelist??"—"} · lite/mid/full 仅作 Worker/KV 内部分档</span></div>
+      <div class="fmt">${allFiles.map(([f,desc]) =>
+        `<div><a href="subs/all/${f}">${f}</a></div>
+         <div><span class="m">${desc}</span> · <a href="${rawAll}${f}">GitHub raw</a></div>`).join("")}
+      </div></div>`;
 
   const evo = (d.evolution || []).slice().reverse();
   el("evo").innerHTML = evo.length ? `<table><tr><th>时间</th><th>动作</th><th>对象</th><th>结果</th></tr>${

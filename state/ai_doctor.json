@@ -7,8 +7,13 @@
   },
   {
    "name": "智谱 GLM",
-   "status": "missing",
-   "note": "未配置 ZHIPU_API_KEY（智谱 BigModel）"
+   "status": "ok",
+   "note": "glm-4.7-flash → 可用"
+  },
+  {
+   "name": "硅基流动",
+   "status": "fail",
+   "note": "THUDM/GLM-4-9B-0414: HTTP Error 402: Payment Required"
   },
   {
    "name": "阿里云百炼",

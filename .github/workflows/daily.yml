@@ -7,6 +7,10 @@ name: Daily Build (每日重建 · 发布 · 站点)
 # 编排口径：产物提交带跳过标记（避免自触发）｜回归 6 项并行｜push 与定时分离并发｜pip 缓存
 # 写操作全程走 git push 与 gh CLI，不消耗 API 配额，也不依赖外部账号。
 
+permissions:
+  contents: write
+  models: read
+
 on:
   schedule:
     - cron: "17 19 * * *"   # 北京 03:17
@@ -136,6 +140,10 @@ jobs:
         # 预算自限：单轮 8 次调用、每天 60 次；没凭据时自动跳过，不阻断构建。
         continue-on-error: true
         env:
+          # 第一优先级：GitHub Models（仓库内置 GITHUB_TOKEN + models:read，永久免费、零外购）
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           CF_ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           ARK_API_KEY: ${{ secrets.ARK_API_KEY }}
@@ -145,9 +153,6 @@ jobs:
         run: |
           python3 tools/identify.py --pool --verify
           python3 tools/identify.py --promote
-
-      - name: 2.9 · 跨层回灌（L2 路径层 / L3 uBO → L1 DNS 端点例外）
-        run: python3 tools/layer_backfill.py --write
 
       - name: 3 · 编译三档（lite / mid / full）
         run: python3 tools/compile.py --force
@@ -166,9 +171,7 @@ jobs:
         run: python3 tools/kv_push.py
 
       - name: 3.55 · 标签台账重建（必须紧跟 compile，否则 guard 会判"标签域不在档位"）
-        run: |
-          python3 tools/build_tags.py
-          python3 tools/build_mixed.py
+        run: python3 tools/build_tags.py
 
       - name: 3.58 · D1 状态同步
         env:
@@ -189,13 +192,9 @@ jobs:
           # 否则一条通道能吃掉十几分钟，把整轮构建拖死。
           timeout 60 python3 tools/check_channels.py || true   # 恒返回 0，环境异常只标注不阻断
           python3 tools/gen_channels.py
-      - name: 3.9 · 生成路径层规则（端点表 → L2，可重复生成）
-        run: python3 tools/gen_ad_paths.py
-
-      - name: 4 · 路径层（L2）重建与体检
-        run: |
-          python3 tools/build_paths.py
-          python3 tests/paths_check.py
+      # 只做 DNS 层：L2 路径层与 L3 内容层已下线，不再生成/发布
+      - name: 4.05 · 生成一体化订阅（DNS + 路径 + 内容，单一链接）
+        run: python3 tools/build_all.py
 
       - name: 3.95 · 静态检查（soft：风格问题从不上红，只记日志）
         continue-on-error: true
@@ -375,7 +374,6 @@ jobs:
           name: noas-subs-and-reports
           path: |
             subs/lite/
-            subs/mixed/
             subs/channels/
             out/compile.json
             history/health.json

@@ -1,15 +1,15 @@
 {
  "project": "noas-cdn",
  "production": "https://noas-cdn.pages.dev",
- "latest_deployment": "https://cfc7fa8f.noas-cdn.pages.dev",
- "files": 80,
- "bytes": 32487055,
- "uploaded_this_run": 10,
- "updated_at": "2026-11-21T11:25:38Z",
+ "latest_deployment": "https://5c7c8207.noas-cdn.pages.dev",
+ "files": 83,
+ "bytes": 34247797,
+ "uploaded_this_run": 2,
+ "updated_at": "2026-11-21T12:46:53Z",
  "entry": {
-  "lite": "https://noas-cdn.pages.dev/subs/lite/adguard.txt",
-  "mid": "https://noas-cdn.pages.dev/subs/mid/adguard.txt",
-  "mixed_surge": "https://noas-cdn.pages.dev/subs/mixed/noas-all.sgmodule",
+  "all_adguard": "https://noas-cdn.pages.dev/subs/all/adguard.txt",
+  "all_domains": "https://noas-cdn.pages.dev/subs/all/domains.txt",
+  "all_whitelist": "https://noas-cdn.pages.dev/subs/all/whitelist.txt",
   "doh_list": "https://noas-cdn.pages.dev/subs/channels/doh.txt",
   "aiodns": "https://noas-cdn.pages.dev/subs/channels/aiodns.sh",
   "tasks": "https://noas-cdn.pages.dev/tasks.html"

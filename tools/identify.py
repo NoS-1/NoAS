@@ -15,9 +15,10 @@ AI 一次判一批（默认 25 域/次），直接输出每个域的：
   c = 0~100 置信
   t = lite | mid | full | none            它认为该放哪一档
 裁决映射（不再打本地分数）：
-  t=lite/mid 且 v in (ad,tracker) → lists/device_confirmed.txt（强制进 mid，不挤名额）
-  t=full                         → lists/shadow.txt（只进 full，不拦，观察）
-  其余（benign/unknown/none）     → state/identify_denied.json（永不再自动加）
+  v=benign 且 c>=90             → lists/ai_whitelist.txt（精准白名单：编译期放行 + 父域保护）
+  t=lite/mid 且 v in (ad,tracker) → lists/device_confirmed.txt（黑名单，强制进拦截）
+  t=full 或 v=unknown           → lists/shadow.txt（只记录不拦，观察）
+  其余                         → state/identify_denied.json（永不再自动加）
 
 硬边界（AI 也不能越过，一票否决，写进代码而不是靠提示词）：
   · 白名单父域、service_allow、telemetry：绝不进任何拦截档
@@ -41,23 +42,98 @@ import pathlib
 import re
 import subprocess
 import sys
+import urllib.error
 import urllib.request
+
+
+def _load_local_creds():
+    """裸机本地运行时自动加载 ~/.noas/creds.env（不覆盖已有环境变量；CI 无此文件则跳过）。"""
+    p = os.path.expanduser("~/.noas/creds.env")
+    if not os.path.exists(p):
+        return
+    for line in open(p, encoding="utf-8"):
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        k, v = k.strip(), v.strip().strip('"').strip("'")
+        if k and k not in os.environ:
+            os.environ[k] = v
+
+
+_load_local_creds()
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 LISTS = ROOT / "lists"
 STATE = ROOT / "state"
+
+# ── 判定源休眠（额度用完自动休眠，下次再来）────────────────────────────
+AI_COOLDOWN = STATE / "ai_cooldown.json"
+
+
+def _cool_read():
+    try:
+        return json.loads(AI_COOLDOWN.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def cool_active(name):
+    e = (_cool_read().get(name) or {})
+    try:
+        return datetime.datetime.fromisoformat(str(e.get("until", ""))) > datetime.datetime.now()
+    except Exception:
+        return False
+
+
+def cool_remaining(name):
+    e = (_cool_read().get(name) or {})
+    try:
+        d = datetime.datetime.fromisoformat(str(e.get("until", ""))) - datetime.datetime.now()
+        return max(0, int(d.total_seconds() // 60))
+    except Exception:
+        return 0
+
+
+def cool_mark(name, minutes, reason):
+    d = _cool_read()
+    until = (datetime.datetime.now() + datetime.timedelta(minutes=minutes)).isoformat(timespec="seconds")
+    d[name] = {"until": until, "minutes": minutes, "reason": str(reason)[:140],
+               "marked_at": datetime.datetime.now().isoformat(timespec="seconds")}
+    try:
+        AI_COOLDOWN.parent.mkdir(parents=True, exist_ok=True)
+        AI_COOLDOWN.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+    except Exception:
+        pass
+    print("  [休眠] %s：额度/鉴权休止，%d 分钟后自动恢复（下次运行再来）" % (name, minutes),
+          file=sys.stderr, flush=True)
+
+
+def quota_sleep_minutes(err):
+    """错误归类：余额/欠费 24h，限流 3h，鉴权 24h，其余不休眠。"""
+    t = str(err).lower()
+    if any(k in t for k in ("402", "30001", "insufficient", "balance", "quota", "overdue", "exhaust")):
+        return 24 * 60
+    if "429" in t or "rate limit" in t or "too many" in t:
+        return 3 * 60
+    if any(k in t for k in ("401", "403", "invalid api", "incorrect api")):
+        return 24 * 60
+    return 0
+
+
 SUBS = ROOT / "subs"
 
 ACC = os.environ.get("CF_ACCOUNT_ID", "226431c8f431ebb75d82dd5dbd5e8d86").strip()  # 账号 ID 非密钥，公开可查
 TOK = os.environ.get("CF_API_TOKEN", "").strip()
 MODEL = os.environ.get("AI_MODEL", "@cf/meta/llama-3.3-70b-instruct-fp8-fast").strip()
 FALLBACK_MODEL = "@cf/meta/llama-3.1-8b-instruct"
-BATCH = int(os.environ.get("AI_BATCH", "20"))
+BATCH = int(os.environ.get("AI_BATCH", "10"))
 RUN_CAP = int(os.environ.get("AI_RUN_CALL_CAP", "4"))
 DAY_CAP = int(os.environ.get("AI_DAY_CALL_CAP", "24"))
 
 DCONF = LISTS / "device_confirmed.txt"
 SHADOW = LISTS / "shadow.txt"
+AIWL = LISTS / "ai_whitelist.txt"
 DENIED = STATE / "identify_denied.json"
 REPORT = STATE / "identify.json"
 USAGE = STATE / "ai_usage.json"
@@ -165,7 +241,12 @@ def from_pool():
 # ── AI 直判 ────────────────────────────────────────────────────────────────
 ZP_KEY = (os.environ.get("ZHIPU_API_KEY") or os.environ.get("GLM_API_KEY") or os.environ.get("BIGMODEL_API_KEY") or "").strip()
 ZP_BASE = os.environ.get("ZP_BASE", "https://open.bigmodel.cn/api/paas/v4").strip()
+# 用户指定主用 glm-4.7-flash；若它繁忙(1305)/限流/不可用，自动按 ZP_FALLBACK_MODELS 降级并记住可用模型
 ZP_MODEL = os.environ.get("ZP_MODEL", "glm-4.7-flash").strip()
+ZP_FALLBACKS = [m.strip() for m in
+                os.environ.get("ZP_FALLBACK_MODELS", "glm-5.3-flash").split(",") if m.strip()]
+ZP_MODELS = [ZP_MODEL] + [m for m in ZP_FALLBACKS if m and m != ZP_MODEL]
+_ZP_GOOD = {"model": None}
 
 ALI_KEY = (os.environ.get("DASHSCOPE_API_KEY") or os.environ.get("ALIYUN_API_KEY") or "").strip()
 ALI_BASE = os.environ.get("ALI_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1").strip()
@@ -178,6 +259,53 @@ DS_MODEL = os.environ.get("DEEPSEEK_MODEL", "deepseek-chat").strip()
 ARK_KEY = (os.environ.get("ARK_API_KEY") or os.environ.get("DOUBAO_API_KEY") or "").strip()
 ARK_BASE = os.environ.get("ARK_BASE", "https://ark.cn-beijing.volces.com/api/v3").strip()
 ARK_MODEL = os.environ.get("ARK_MODEL", "doubao-seed-1-6-250615").strip()
+
+SF_KEY = (os.environ.get("SILICONFLOW_API_KEY") or os.environ.get("SF_API_KEY") or "").strip()
+SF_BASE = os.environ.get("SF_BASE", "https://api.siliconflow.cn/v1").strip()
+# 2026-11 实测 Qwen/Qwen3.5-9B 可用（默认带思考，sf_call 给足预算）；失败按 SF_FALLBACK_MODELS 降级并记忆
+SF_MODEL = os.environ.get("SF_MODEL", "Qwen/Qwen3.5-9B").strip()
+SF_FALLBACKS = [m.strip() for m in os.environ.get(
+    "SF_FALLBACK_MODELS", "Qwen/Qwen3-8B,Qwen/Qwen2.5-7B-Instruct,THUDM/GLM-4-9B-0414").split(",") if m.strip()]
+SF_MODELS = [SF_MODEL] + [m for m in SF_FALLBACKS if m and m != SF_MODEL]
+_SF_GOOD = {"model": None}
+_SF_DEAD = {"dead": False}  # 402 余额不足属账户级，一次判定后本进程不再尝试
+
+# 百度千帆 v2（OpenAI 兼容；Bearer 直接放 bce-v3/ALTAK-... 形式的 API Key）
+QF_KEY = (os.environ.get("QIANFAN_API_KEY") or os.environ.get("QIANFAN_AK") or "").strip()
+QF_BASE = os.environ.get("QF_BASE", "https://qianfan.baidubce.com/v2").strip()
+QF_MODEL = os.environ.get("QF_MODEL", "ernie-light-dt-1.0").strip()  # ERNIE 轻量免费系，实测出文正常
+QF_FALLBACKS = [m.strip() for m in os.environ.get(
+    "QF_FALLBACK_MODELS", "ernie-5.5-flash-preview,qwen3.5-27b,glm-5.3-flash").split(",") if m.strip()]
+QF_MODELS = [QF_MODEL] + [m for m in QF_FALLBACKS if m and m != QF_MODEL]
+_QF_GOOD = {"model": None}
+_QF_DEAD = {"dead": False}
+
+# GitHub Models（GitHub 官方免费模型网关，走 GH_PAT 鉴权；质量远高于 Workers AI 小模型）
+GH_KEY = (os.environ.get("GITHUB_MODELS_TOKEN") or os.environ.get("GH_PAT") or os.environ.get("GITHUB_TOKEN") or "").strip()
+GH_BASE = os.environ.get("GH_MODELS_BASE", "https://models.github.ai/inference").strip()
+GH_MODEL = os.environ.get("GH_MODEL", "openai/gpt-4o-mini").strip()
+GH_FALLBACKS = [m.strip() for m in os.environ.get(
+    "GH_FALLBACK_MODELS", "openai/gpt-4.1-mini,openai/gpt-4.1,deepseek/DeepSeek-V3").split(",") if m.strip()]
+GH_MODELS = [GH_MODEL] + [m for m in GH_FALLBACKS if m and m != GH_MODEL]
+_GH_GOOD = {"model": None}
+_GH_DEAD = {"dead": False}
+
+# OpenRouter 免费模型（:free 后缀 = $0 计价，20 RPM / 50 RPD；境外网络下可用，本地不配则跳过）
+OR_KEY = (os.environ.get("OPENROUTER_API_KEY") or "").strip()
+OR_BASE = os.environ.get("OPENROUTER_BASE", "https://openrouter.ai/api/v1").strip()
+OR_MODELS = [m.strip() for m in os.environ.get(
+    "OPENROUTER_MODELS",
+    "baidu/ernie-5.5-flash-preview:free,nvidia/nemotron-3.5-super-vl:free").split(",") if m.strip()]
+_OR_GOOD = {"model": None}
+_OR_DEAD = {"dead": False}
+
+# Groq 免费档（30 RPM / 1000 次每天，OpenAI 兼容；低延迟，境外网络下可用）
+GR_KEY = (os.environ.get("GROQ_API_KEY") or "").strip()
+GR_BASE = os.environ.get("GROQ_BASE", "https://api.groq.com/openai/v1").strip()
+GR_MODELS = [m.strip() for m in os.environ.get(
+    "GROQ_MODELS", "openai/gpt-oss-120b,qwen/qwen3.8-27b").split(",") if m.strip()]
+_GR_GOOD = {"model": None}
+_GR_DEAD = {"dead": False}
 
 
 def ark_call(prompt, max_tokens=2000):
@@ -201,15 +329,47 @@ def ds_call(prompt, max_tokens=2000):
     return ((d.get("choices") or [{}])[0].get("message") or {}).get("content", "")
 
 
-def zp_call(prompt, max_tokens=2000):
-    """智谱开放平台（BigModel）OpenAI 兼容端点，默认 glm-4.7-flash（常驻免费模型）"""
-    body = json.dumps({"model": ZP_MODEL, "messages": [{"role": "user", "content": prompt}],
-                       "max_tokens": max_tokens, "temperature": 0.1}).encode()
+def _zp_once(prompt, model, mt):
+    body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}],
+                       "max_tokens": mt, "temperature": 0.1}).encode()
     req = urllib.request.Request(ZP_BASE.rstrip("/") + "/chat/completions", data=body,
                                  headers={"Authorization": "Bearer " + ZP_KEY,
                                           "Content-Type": "application/json"})
-    d = json.loads(urllib.request.urlopen(req, timeout=120).read().decode())
-    return ((d.get("choices") or [{}])[0].get("message") or {}).get("content", "")
+    with urllib.request.urlopen(req, timeout=120) as r:
+        d = json.loads(r.read().decode())
+    ch = (d.get("choices") or [{}])[0]
+    return (ch.get("message") or {}).get("content", "") or ""
+
+
+def zp_call(prompt, max_tokens=2000):
+    """智谱 OpenAI 兼容端点。主模型 glm-4.7-flash；失败/空内容自动降级备用模型。
+
+    glm-5.x 始终开启思考，reasoning 会吃 max_tokens，故对 5.x 强制 ≥6000 预算并在首次空内容时 1.5x 重试；
+    4.7-flash 为普通对话模型，按批次给足 JSON 输出预算即可。某个模型一旦成功就被记住，后续批次优先复用，
+    避免每批都先在繁忙主模型上等超时。全部模型失败时抛出最后一个异常，交由上层重试。
+    """
+    order = list(ZP_MODELS)
+    if _ZP_GOOD["model"] in order:
+        order = [_ZP_GOOD["model"]] + [m for m in order if m != _ZP_GOOD["model"]]
+    last_err = None
+    for idx, model in enumerate(order):
+        think = model.startswith("glm-5")
+        mt = max(int(max_tokens), 6000) if think else max(int(max_tokens), 4000)
+        try:
+            txt = _zp_once(prompt, model, mt)
+            if not txt.strip() and think:
+                txt = _zp_once(prompt, model, int(mt * 1.5))
+            if txt.strip():
+                if idx > 0 or model != ZP_MODEL:
+                    print("  [zhipu] 实际使用模型 %s（主模型 %s 不可用或已降级）" % (model, ZP_MODEL),
+                          file=sys.stderr, flush=True)
+                _ZP_GOOD["model"] = model
+                return txt
+            last_err = "empty content"
+        except Exception as e:  # 1305 繁忙 / 429 / 5xx / 超时 / 参数：都尝试下一个模型
+            last_err = e
+            print("  [zhipu] %s 调用失败，尝试下一模型：%r" % (model, e), file=sys.stderr, flush=True)
+    raise RuntimeError("all zhipu models failed: %r" % (last_err,))
 
 
 def ali_call(prompt, max_tokens=2000):
@@ -222,6 +382,200 @@ def ali_call(prompt, max_tokens=2000):
     d = json.loads(urllib.request.urlopen(req, timeout=120).read().decode())
     return ((d.get("choices") or [{}])[0].get("message") or {}).get("content", "")
 
+
+def _sf_once(prompt, model, mt):
+    body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}],
+                       "max_tokens": mt, "temperature": 0.1}).encode()
+    req = urllib.request.Request(SF_BASE.rstrip("/") + "/chat/completions", data=body,
+                                 headers={"Authorization": "Bearer " + SF_KEY,
+                                          "Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        d = json.loads(r.read().decode())
+    ch = (d.get("choices") or [{}])[0]
+    return ((ch.get("message") or {}).get("content", "") or "")
+
+
+def sf_call(prompt, max_tokens=2000):
+    """硅基流动 OpenAI 兼容端点：模型链降级 + 进程内记忆；思考模型也给足输出预算，空内容扩容重试一次。"""
+    order = list(SF_MODELS)
+    if _SF_GOOD["model"] in order:
+        order = [_SF_GOOD["model"]] + [m for m in order if m != _SF_GOOD["model"]]
+    last_err = None
+    for idx, model in enumerate(order):
+        mt = max(int(max_tokens), 6000)
+        try:
+            txt = _sf_once(prompt, model, mt)
+            if not txt.strip():
+                txt = _sf_once(prompt, model, int(mt * 1.5))
+            if txt.strip():
+                if idx > 0 or model != SF_MODEL:
+                    print("  [siliconflow] 实际使用模型 %s（主模型 %s 不可用或已降级）" % (model, SF_MODEL),
+                          file=sys.stderr, flush=True)
+                _SF_GOOD["model"] = model
+                return txt
+            last_err = "empty content"
+        except urllib.error.HTTPError as e:
+            body = ""
+            try:
+                body = e.read().decode()[:200]
+            except Exception:
+                pass
+            if e.code in (401, 402, 403):
+                # 鉴权/计费是账户级问题，换模型无意义，立即上抛交由上层熔断/提示
+                if e.code == 402:
+                    _SF_DEAD["dead"] = True
+                raise RuntimeError("siliconflow %s 账户/鉴权错误 HTTP%s %s" % (model, e.code, body)) from None
+            last_err = e
+            print("  [siliconflow] %s HTTP%s，尝试下一模型" % (model, e.code), file=sys.stderr, flush=True)
+        except Exception as e:  # 5xx/超时/参数：尝试下一模型
+            last_err = e
+            print("  [siliconflow] %s 调用失败，尝试下一模型：%r" % (model, e), file=sys.stderr, flush=True)
+    raise RuntimeError("all siliconflow models failed: %r" % (last_err,))
+
+
+def _qf_once(prompt, model, mt):
+    body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}],
+                       "max_tokens": mt, "temperature": 0.1}).encode()
+    req = urllib.request.Request(QF_BASE.rstrip("/") + "/chat/completions", data=body,
+                                 headers={"Authorization": "Bearer " + QF_KEY,
+                                          "Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        d = json.loads(r.read().decode())
+    ch = (d.get("choices") or [{}])[0]
+    return ((ch.get("message") or {}).get("content", "") or "")
+
+
+def qianfan_call(prompt, max_tokens=2000):
+    """百度千帆 v2（OpenAI 兼容）。ERNIE 轻量系为长期免费档，作为主力免费源。
+    模型链降级 + 进程内记忆；401/402/403 为账户级错误立即上抛熔断。"""
+    order = list(QF_MODELS)
+    if _QF_GOOD["model"] in order:
+        order = [_QF_GOOD["model"]] + [m for m in order if m != _QF_GOOD["model"]]
+    last_err = None
+    for idx, model in enumerate(order):
+        mt = max(int(max_tokens), 1200)
+        try:
+            txt = _qf_once(prompt, model, mt)
+            if not txt.strip():
+                txt = _qf_once(prompt, model, int(mt * 1.5))
+            if txt.strip():
+                if idx > 0 or model != QF_MODEL:
+                    print("  [qianfan] 实际使用模型 %s（主模型 %s 不可用或已降级）" % (model, QF_MODEL),
+                          file=sys.stderr, flush=True)
+                _QF_GOOD["model"] = model
+                return txt
+            last_err = "empty content"
+        except urllib.error.HTTPError as e:
+            body = ""
+            try:
+                body = e.read().decode()[:200]
+            except Exception:
+                pass
+            if e.code in (401, 402, 403):
+                if e.code in (402, 403):
+                    _QF_DEAD["dead"] = True
+                raise RuntimeError("qianfan %s 账户/鉴权错误 HTTP%s %s" % (model, e.code, body)) from None
+            last_err = e
+            print("  [qianfan] %s HTTP%s，尝试下一模型" % (model, e.code), file=sys.stderr, flush=True)
+        except Exception as e:
+            last_err = e
+            print("  [qianfan] %s 调用失败，尝试下一模型：%r" % (model, e), file=sys.stderr, flush=True)
+    raise RuntimeError("all qianfan models failed: %r" % (last_err,))
+
+
+def _gh_once(prompt, model, mt):
+    body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}],
+                       "max_tokens": mt, "temperature": 0}).encode()
+    req = urllib.request.Request(GH_BASE.rstrip("/") + "/chat/completions", data=body,
+                                 headers={"Authorization": "Bearer " + GH_KEY,
+                                          "Accept": "application/json",
+                                          "Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        d = json.loads(r.read().decode())
+    ch = (d.get("choices") or [{}])[0]
+    return ((ch.get("message") or {}).get("content", "") or "")
+
+
+def gh_call(prompt, max_tokens=2000):
+    """GitHub Models（OpenAI 兼容）。temperature=0 保证同一域名判定可复现；
+    free 计划有每分钟/每日限额，遇 429 抛错交由上层退避或换源。"""
+    order = list(GH_MODELS)
+    if _GH_GOOD["model"] in order:
+        order = [_GH_GOOD["model"]] + [m for m in order if m != _GH_GOOD["model"]]
+    last_err = None
+    for idx, model in enumerate(order):
+        mt = max(int(max_tokens), 1200)
+        try:
+            txt = _gh_once(prompt, model, mt)
+            if txt.strip():
+                if idx > 0 or model != GH_MODEL:
+                    print("  [github-models] 实际使用 %s（主模型 %s 不可用或已降级）" % (model, GH_MODEL),
+                          file=sys.stderr, flush=True)
+                _GH_GOOD["model"] = model
+                return txt
+            last_err = "empty content"
+        except urllib.error.HTTPError as e:
+            body = ""
+            try:
+                body = e.read().decode()[:200]
+            except Exception:
+                pass
+            if e.code in (401, 403):
+                _GH_DEAD["dead"] = True
+                raise RuntimeError("github-models %s 鉴权失败 HTTP%s %s" % (model, e.code, body)) from None
+            last_err = e
+            print("  [github-models] %s HTTP%s，尝试下一模型" % (model, e.code), file=sys.stderr, flush=True)
+        except Exception as e:
+            last_err = e
+            print("  [github-models] %s 调用失败：%r" % (model, e), file=sys.stderr, flush=True)
+    raise RuntimeError("all github models failed: %r" % (last_err,))
+
+
+
+def _oai_once(base, key, model, prompt, mt, extra=None):
+    body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}],
+                       "max_tokens": max(1200, int(mt)), "temperature": 0}).encode()
+    h = {"Authorization": "Bearer " + key, "Content-Type": "application/json"}
+    h.update(extra or {})
+    req = urllib.request.Request(base.rstrip("/") + "/chat/completions", data=body, headers=h)
+    d = json.loads(urllib.request.urlopen(req, timeout=120).read().decode())
+    return (((d.get("choices") or [{}])[0].get("message") or {}).get("content", "") or "")
+
+
+def _multi_model(provider, models, good, dead, call):
+    order = ([good["model"]] + [m for m in models if m != good["model"]]
+             if good["model"] in models else list(models))
+    last = None
+    for model in order:
+        try:
+            txt = call(model)
+            if txt.strip():
+                good["model"] = model
+                return txt
+            last = "empty content"
+        except urllib.error.HTTPError as e:
+            if e.code in (401, 403):
+                dead["dead"] = True
+                raise RuntimeError("%s 鉴权失败 HTTP%s" % (provider, e.code)) from None
+            last = e
+            print("  [%s] %s HTTP%s，换下一模型" % (provider, model, e.code), file=sys.stderr, flush=True)
+        except Exception as e:
+            last = e
+    raise RuntimeError("%s all models failed: %r" % (provider, last))
+
+
+def openrouter_call(prompt, max_tokens=2000):
+    """OpenRouter :free 模型：$0 计价，未充值 50 次/天、20 次/分。"""
+    return _multi_model("openrouter", OR_MODELS, _OR_GOOD, _OR_DEAD,
+                        lambda m: _oai_once(OR_BASE, OR_KEY, m, prompt, max_tokens,
+                                            {"HTTP-Referer": "https://github.com/NoS-1/NoAS",
+                                             "X-Title": "NoAS domain judge"}))
+
+
+def groq_call(prompt, max_tokens=2000):
+    """Groq 免费档：30 次/分、1000 次/天（大模型档）。"""
+    return _multi_model("groq", GR_MODELS, _GR_GOOD, _GR_DEAD,
+                        lambda m: _oai_once(GR_BASE, GR_KEY, m, prompt, max_tokens))
 
 def ai_call(prompt, model, max_tokens=1200):
     if DS_KEY:
@@ -280,7 +634,7 @@ def judge(domains, hits):
     """把候选分批交给 AI，返回 (verdicts, calls, model_used, err)"""
     verdicts, calls, used_model, err = [], 0, MODEL, ""
     trusted = bool(ARK_KEY)
-    if not (ACC and TOK) and not ARK_KEY and not DS_KEY and not ALI_KEY and not ZP_KEY:
+    if not (ACC and TOK) and not ARK_KEY and not DS_KEY and not ALI_KEY and not SF_KEY and not QF_KEY and not ZP_KEY:
         return verdicts, 0, "", "缺少 CF_ACCOUNT_ID / CF_API_TOKEN，AI 直判不可用"
     usage = load_json(USAGE, {})
     day = today()
@@ -320,16 +674,27 @@ def judge(domains, hits):
             '{"d":"a1b2c3.xn--xyz.com","v":"unknown","c":40,"t":"full"}]\n'
             "待判域名（域名   请求次数）：\n" + "\n".join(lines)
         )
-        # 判定源优先级：DeepSeek > 豆包 Ark > CF（70B 优先，8B 兜底）
+        # 判定源：已配置的国产源按序作为故障转移（各 call 内部还有模型链降级）；全都没有才用 CF
+        providers = []
+        if GH_KEY and not _GH_DEAD["dead"] and not cool_active("github-models"):
+            providers.append(("github-models", lambda: gh_call(prompt)))
+        if OR_KEY and not _OR_DEAD["dead"] and not cool_active("openrouter"):
+            providers.append(("openrouter", lambda: openrouter_call(prompt)))
+        if GR_KEY and not _GR_DEAD["dead"] and not cool_active("groq"):
+            providers.append(("groq", lambda: groq_call(prompt)))
         if ZP_KEY:
-            providers = [("zhipu", lambda: zp_call(prompt))]
-        elif ALI_KEY:
-            providers = [("aliyun", lambda: ali_call(prompt))]
-        elif DS_KEY:
-            providers = [("deepseek", lambda: ds_call(prompt))]
-        elif ARK_KEY:
-            providers = [("ark", lambda: ark_call(prompt))]
-        else:
+            providers.append(("zhipu", lambda: zp_call(prompt)))
+        if SF_KEY and not _SF_DEAD["dead"]:
+            providers.append(("siliconflow", lambda: sf_call(prompt)))
+        if QF_KEY and not _QF_DEAD["dead"]:
+            providers.append(("qianfan", lambda: qianfan_call(prompt)))
+        if ALI_KEY:
+            providers.append(("aliyun", lambda: ali_call(prompt)))
+        if DS_KEY:
+            providers.append(("deepseek", lambda: ds_call(prompt)))
+        if ARK_KEY:
+            providers.append(("ark", lambda: ark_call(prompt)))
+        if not providers:
             providers = [(used_model, lambda m=used_model: ai_call(prompt, m))]
             if used_model != FALLBACK_MODEL:
                 providers.append((FALLBACK_MODEL, lambda: ai_call(prompt, FALLBACK_MODEL)))
@@ -340,12 +705,17 @@ def judge(domains, hits):
                 if os.environ.get("IDENTIFY_DEBUG"):
                     print("[debug] %s -> %s" % (pname, raw[:500]))
                 got = parse_verdicts(raw, set(chunk))
+                if not got:
+                    raise ValueError("%s 返回不可解析（%d 字节）" % (pname, len(raw)))
                 calls += 1
                 used_model = pname
                 break
             except Exception as e:
                 err = "%s: %s" % (pname, type(e).__name__)
                 calls += 1
+                _m = quota_sleep_minutes(e)
+                if _m:
+                    cool_mark(pname, _m, e)
         verdicts.extend(got)
     usage[day] = used + calls
     USAGE.write_text(json.dumps(usage, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -486,7 +856,7 @@ def main():
     if err:
         print("AI 提示：%s" % err)
 
-    conf, shadow, deny = [], [], []
+    conf, shadow, deny, white = [], [], [], []
     HOT = int(os.environ.get("IDENTIFY_CONF_HITS", "5"))
     ad_tok = {l.split("#")[0].strip().lower() for l in (LISTS / "ad_tokens.txt").read_text(encoding="utf-8").splitlines()}
     biz_tok = {l.split("#")[0].strip().lower() for l in (LISTS / "biz_tokens.txt").read_text(encoding="utf-8").splitlines()}
@@ -494,6 +864,10 @@ def main():
                 | read_first_col(LISTS / "ad_endpoints.txt") | read_first_col(LISTS / "cn_ad_endpoints.txt"))
     for it in verdicts:
         d = it["d"]
+        if it["v"] == "benign" and it["c"] >= 90:
+            # AI 高置信判为正常业务域 → 精准进白名单（编译期放行 + 父域保护）
+            white.append(d)
+            continue
         if it["v"] in ("ad", "tracker") and it["t"] in ("lite", "mid"):
             # AI 说该拦 ≠ 就能直接进 mid。三个条件同时成立才升级：
             #   1) 真实高频请求（≥HOT 次）  2) 名字带广告词元且不带业务词元，或根域已知广告网络  3) AI 置信 ≥85
@@ -501,7 +875,7 @@ def main():
             if model_used == "main-brain":
                 # 主脑模型逐条审过，不再用词元闸兜底；只要求置信达标 + 有真实请求痕迹
                 ok = it["c"] >= 85 and (todo.get(d, 0) >= 3 or parent_hit(d, known_ad))
-            elif ZP_KEY or DS_KEY or ALI_KEY or ARK_KEY or "70b" in (model_used or "").lower():
+            elif ZP_KEY or QF_KEY or SF_KEY or DS_KEY or ALI_KEY or ARK_KEY or "70b" in (model_used or "").lower():
                 # 豆包接口判：可信，但保留词元/已知网络作为结构证据
                 ok = (todo.get(d, 0) >= HOT and it["c"] >= 85
                       and (name_ad or parent_hit(d, known_ad)))
@@ -521,17 +895,19 @@ def main():
 
     if a.dry_run:
         print("AI 直判 %d 个（调用 %d 次，模型 %s）" % (len(verdicts), calls, model_used or "-"))
-        for group, name in ((conf, "进 mid（强制）"), (shadow, "仅 full 观察"), ([x["d"] for x in deny], "否决")):
+        for group, name in ((conf, "进黑名单（拦截）"), (white, "进白名单（放行）"),
+                            (shadow, "仅 full 观察"), ([x["d"] for x in deny], "否决")):
             print("%s %d 条：%s" % (name, len(group), ", ".join(group[:12]) + (" …" if len(group) > 12 else "")))
         return 0
 
     backup = None
-    if a.verify and (conf or shadow):
-        backup = {p: p.read_text(encoding="utf-8") if p.exists() else "" for p in (DCONF, SHADOW)}
+    if a.verify and (conf or shadow or white):
+        backup = {p: p.read_text(encoding="utf-8") if p.exists() else "" for p in (DCONF, SHADOW, AIWL)}
 
     stamp = "# AI 直判 %s  model=%s  calls=%d" % (today(), model_used or "-", calls)
     append_block(DCONF, conf, stamp)
     append_block(SHADOW, shadow, stamp)
+    append_block(AIWL, white, stamp)
 
     sstate = load_json(SHADOW_STATE, {})
     for d in shadow:
@@ -542,12 +918,12 @@ def main():
     DENIED.write_text(json.dumps(denied, ensure_ascii=False, indent=1), encoding="utf-8")
     REPORT.write_text(json.dumps({
         "ts": today(), "candidates": len(cand), "judged": len(verdicts), "calls": calls,
-        "model": model_used, "confirmed": sorted(conf), "shadow": sorted(shadow),
-        "denied": [x["d"] for x in deny], "skipped": skipped, "error": err,
+        "model": model_used, "confirmed": sorted(conf), "whitelisted": sorted(white),
+        "shadow": sorted(shadow), "denied": [x["d"] for x in deny], "skipped": skipped, "error": err,
     }, ensure_ascii=False, indent=1), encoding="utf-8")
 
-    print("AI 直判完成：调用 %d 次｜强制进 mid %d｜仅 full %d｜否决 %d"
-          % (calls, len(conf), len(shadow), len(deny)))
+    print("AI 直判完成：调用 %d 次｜黑名单 %d｜白名单 %d｜仅 full %d｜否决 %d"
+          % (calls, len(conf), len(white), len(shadow), len(deny)))
 
     if a.verify and backup:
         r = subprocess.run([sys.executable, str(ROOT / "tests" / "benign_fp.py")],

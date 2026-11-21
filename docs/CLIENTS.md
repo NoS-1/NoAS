@@ -62,11 +62,9 @@ dnsmasq 本身不支持 DoH。两条路：
 
 | 通道 | 粘贴这个 | 适合 |
 |---|---|---|
-| 订阅 · lite | `https://noas-cdn.pages.dev/subs/lite/adguard.txt` | 老设备/内存紧张，误伤最低 |
-| 订阅 · mid | `https://noas-cdn.pages.dev/subs/mid/adguard.txt` | 日常主力（订阅默认选这个） |
-| 订阅 · full | `https://noas-cdn.pages.dev/subs/full/adguard.txt` | 覆盖优先，接受长尾误伤 |
-| DoH · 自动分档 | `https://noas-cdn.pages.dev/dns-query/auto` | 一个地址搞定，UA 自动判档 |
-| DoH · 固定 mid | `https://noas-cdn.pages.dev/dns-query/mid` | 不想让客户端猜 |
+| 订阅 · 唯一 | `https://noas-cdn.pages.dev/subs/all/adguard.txt` | **只此一条**，黑白名单一体，客户端无需选档 |
+| 订阅 · 纯域名 | `https://noas-cdn.pages.dev/subs/all/domains.txt` | Pi-hole / mosdns / sing-box 等只吃域名的客户端 |
+| DoH · 统一入口 | `https://noas-cdn.pages.dev/dns-query` | 一个地址，服务端自动匹配，客户端不用猜 |
 | DoH · Gateway | `https://oxyacq0a4t.cloudflare-gateway.com/dns-query` | 想要网络层拦截（含 DoT 853，国内被封） |
 
 > 都是 GET/POST 双支持的 RFC 8484 端点，`content-type: application/dns-message`。

@@ -58,7 +58,7 @@ li{margin:4px 0}
 <ul>
 <li>AdGuard Home 上游填 <code>https://dns.alidns.com/dns-query</code>，过滤器订阅 mid 档</li>
 <li>规则和通道都在本地，AGH 免费无额度，最稳</li>
-<li>过滤器：<code>https://noas-cdn.pages.dev/subs/mid/adguard.txt</code></li>
+<li>过滤器：<code>https://noas-cdn.pages.dev/subs/all/adguard.txt</code></li>
 </ul>
 </div>
 
@@ -82,13 +82,14 @@ li{margin:4px 0}
 <tr><td>阿里 / 腾讯 DoH</td><td>无公开调用上限</td><td>日常主力通道</td></tr>
 </table>
 
-<h2>4 · 分发地址</h2>
+<h2>4 · 分发地址（只做 DNS 层）</h2>
 <table>
-<tr><th>档位</th><th>条数</th><th>CF Pages CDN（推荐）</th><th>GitHub raw（备用）</th></tr>
-<tr><td>lite</td><td>9,962</td><td><code>https://noas-cdn.pages.dev/subs/lite/adguard.txt</code></td><td><code>https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt</code></td></tr>
-<tr><td>mid</td><td>184,941</td><td><code>https://noas-cdn.pages.dev/subs/mid/adguard.txt</code></td><td>GitHub data 分支</td></tr>
-<tr><td>full</td><td>415,758</td><td>超单文件上限，不上 CDN</td><td>GitHub data 分支</td></tr>
-<tr><td>L1+L2 合并</td><td>DNS 9,962 + 路径 14</td><td><code>https://noas-cdn.pages.dev/subs/mixed/noas-all.sgmodule</code></td><td>GitHub Pages</td></tr>
+<tr><th>产物</th><th>规模（硬上限）</th><th>主地址</th><th>备用 / 内部</th></tr>
+<tr><td><b>唯一订阅 all</b></td><td>黑名单 28,235 + 白名单 234</td><td><code>https://noas-cdn.pages.dev/subs/all/adguard.txt</code></td><td>GitHub raw：<code>subs/all/adguard.txt</code></td></tr>
+<tr><td>纯域名 / 白名单</td><td>28,235 / 234</td><td><code>/subs/all/domains.txt</code> · <code>/subs/all/whitelist.txt</code></td><td>GitHub raw</td></tr>
+<tr><td>唯一订阅 subs/all</td><td>全量（当前约 2.8 万）</td><td>Pages：<code>subs/all/adguard.txt</code></td><td>Worker 内嵌</td></tr>
+<tr><td>mid（内部档）</td><td>≤ 2 万行（当前约 1.8 万）</td><td>KV 键 <code>mid_v1</code></td><td>Worker <code>/dns-query/mid</code></td></tr>
+<tr><td>full（内部档）</td><td>≤ 3 万行（当前约 3.0 万）</td><td>KV 键 <code>full_v1</code></td><td>Worker <code>/dns-query/full</code></td></tr>
 </table>
 
 <h2>5 · 踩过的坑（别再踩）</h2>
@@ -100,7 +101,7 @@ li{margin:4px 0}
 </ul>
 
 <p style="color:#8b949e;font-size:12.5px;margin-top:36px">
-← <a href="stack.html">返回三层叠加指引</a>　|　<a href="index.html">返回首页</a>
+← <a href="index.html">返回首页</a>
 </p>
 </div>
 </body>

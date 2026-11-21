@@ -17,7 +17,7 @@
 
 - 构建是否正常：[github.com/NoS-1/NoAS/actions](https://github.com/NoS-1/NoAS/actions) —— 每日 4 轮，每轮 30 步全绿即没问题
 - 失败告警：[Issues](https://github.com/NoS-1/NoAS/issues) —— 只有 `failure/timed_out/action_required` 才开单，`cancelled` 不再误报；恢复后自动评论并关闭
-- 误拦率与规模：[precision.html](https://noas-cdn.pages.dev/precision.html) —— 三档误拦率、规则条数、黄金集通过情况
+- 误拦率与规模：[precision.html](https://noas-cdn.pages.dev/precision.html) —— 单订阅误拦率、规则条数、黄金集通过情况
 - 构建明细：[tasks.html](https://noas-cdn.pages.dev/tasks.html) · DNS 延迟：[dns-latency.html](https://noas-cdn.pages.dev/dns-latency.html)
 - CF Pages 部署历史：[dash.cloudflare.com/?to=/:account/pages/view/noas-cdn](https://dash.cloudflare.com/?to=/:account/pages/view/noas-cdn)
 - CF Worker（DoH）：[dash.cloudflare.com/?to=/:account/workers-and-pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages)
@@ -99,18 +99,15 @@ cd /home/user/NoAS && python3 tools/cf_rotate.py --doctor
 3. **Worker 判定**：只有 Gateway 覆盖不到的长尾才走；
 4. **国内 DoH 回落**：阿里 / 腾讯 / 360，额度不归我们。
 
-### 跨层回灌（L2/L3 → L1）
+### 端点例外（ep）与白名单父域保护
 
-`tools/layer_backfill.py` 每天在编译前跑一次，把「更准但更窄」的层的判定升级成 DNS 规则：
+正常业务根域（`amap.com`、`qq.com`、`baidu.com` 等热门大盘）默认受白名单父域保护，其子域不进黑名单；
+但纯广告端点以 **端点例外（ep）** 身份进入 `lists/ad_endpoints.txt` / `lists/cn_ad_endpoints.txt`，
+与 `union.baidu.com` / `gdt.qq.com` 同语义 —— 即使父域在白名单，该端点照样拦。
 
-| 来源 | 抽取口径 | 落点 |
-|---|---|---|
-| L2 路径层 `lists/ad_paths.tsv` | 只取 **host 本身带广告语义**（ad / ads / adx / track / splash / cpro / pos / dynamicad / advertise…） | 三档（lite 优先） |
-| L3 uBO `subs/paths/ubo/*.txt` | 只取网络层 `||domain^`；元素规则 `site##selector` 不收（拦站点会误伤正文） | 三档 |
-| L4 GKD（已下线） | **规则是 UI 选择器（text/id/vid），物理上没有域名**，无法变成解析规则 | 只留 `lists/l4_apps_legacy.txt` 做覆盖度审计 |
+> 2026-11 起只做 DNS 层：旧 L2 路径层、L3 uBO 内容层、L4 GKD 与 `layer_backfill.py` 已物理删除，
+> 原跨层回灌的 18 个广告主机已并入 `lists/ad_endpoints.txt`。
 
-落档方式：回灌域以 **端点例外（ep）** 身份进入，与 `union.baidu.com` / `ad.qq.com` 同语义 ——
-即使父域在白名单（`amap.com`、`qq.com`、`baidu.com` 都是热门大盘），该端点照样拦。
 四处口径必须一致，否则同一份规则在不同校验器里结论不同：`compile.py`、`build_doh.py`（Worker 内嵌）、
 `precision.py`（误伤审计）、`tests/worker_check.mjs`（回归）。
 

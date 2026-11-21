@@ -21,9 +21,9 @@
 
 ## 这一轮改了什么
 
-1. **data 分支停用**。三档全格式（lite/mid/full × 9 种格式）由 CF Pages 承载（`/subs/{tier}/*`），GitHub 不再做分发。省掉每轮 25s 的 git push，也不再往仓库写 MB 级二进制。
+1. **data 分支停用**。单订阅全格式（`subs/all` × 多种格式）由 CF Pages 承载（`/subs/all/*`），GitHub 不再做分发。省掉每轮 25s 的 git push，也不再往仓库写 MB 级二进制。
 2. **GitHub Pages 部署停用**。站点走 CF Pages（`https://noas-cdn.pages.dev`），免费无限流量、国内可达。省掉 configure/upload/deploy 三步约 15s。
-3. **入库清单瘦身**。`subs/mid`、`subs/full`（本来就不入库）、`subs/mixed`（1.2 MB）、`subs/paths`、`docs/`（3.5 MB）全部不再提交；只留规则源、`subs/lite`（克隆即用）、代码、`state`/`history` 台账。
+3. **入库清单瘦身**。`subs/mid`、`subs/full`（本来就不入库）、`docs/`（3.5 MB）不提交；旧 `subs/mixed`、`subs/paths` 已随 DNS-only 改造物理删除；只留规则源、`subs/lite` 与 `subs/all`（克隆即用）、代码、`state`/`history` 台账。
 4. **提交降频到每天一次**。4 轮/天里只有 03:17 那轮落 git，其余三轮产物直接进 CF。历史增长从 ~1 MB/轮降到 ~1 MB/天（降 75%）。
 5. **Artifact retention 14 → 7 天**。
 6. **Release 只保留一个 `latest` tag**（`--clobber` 覆盖），不会按月累积。
@@ -33,9 +33,9 @@
 
 ```
 GitHub                         Cloudflare（免费档）
-├─ Actions：拉源 → 编译 → 校验  →  Pages：三档全格式订阅 + 站点 + DoH 端点（分档）
+├─ Actions：拉源 → 编译 → 校验  →  Pages：单订阅全格式 + 站点 + DoH 统一入口
 ├─ 仓库：规则源 + lite + 代码    →  Workers：DoH 判定 / 上游竞速 / KV 热规则
-└─ Release：latest 单包（留档）   →  Gateway：60 片云列表（三档全量，最快通道）
+└─ Release：latest 单包（留档）   →  Gateway：60 片云列表（单订阅全量，最快通道）
 ```
 
 GitHub 只负责「算」，CF 负责「发」。仓库里除了必须的数据（规则源、lite、代码、台账），不再有任何分发产物。

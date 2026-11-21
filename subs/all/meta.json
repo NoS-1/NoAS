@@ -1,0 +1,12 @@
+{
+  "files": [
+    "adguard.txt",
+    "domains.txt",
+    "whitelist.txt"
+  ],
+  "blacklist": 28156,
+  "whitelist": 640,
+  "exceptions": 0,
+  "note": "单一 DNS 订阅：黑名单拦截 + @@ 白名单放行，只做 DNS 层",
+  "generated_at": "2026-11-21 15:06:05 UTC"
+}

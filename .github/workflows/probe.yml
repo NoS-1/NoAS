@@ -38,7 +38,6 @@ jobs:
           probe "raw-lite"  "https://noas-cdn.pages.dev/subs/lite/adguard.txt"
           probe "raw-mid"   "https://noas-cdn.pages.dev/subs/mid/adguard.txt"
           probe "pages-data" "https://noas-cdn.pages.dev/data.json"
-          probe "pages-path" "https://noas-cdn.pages.dev/subs/paths/full/noas-path.sgmodule"
           probe "release"   "https://github.com/NoS-1/NoAS/releases/latest/download/noas-snapshot.zip"
           echo "fail=$fail" >> "$GITHUB_OUTPUT"
           exit 0

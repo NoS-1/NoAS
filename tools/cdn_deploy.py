@@ -39,16 +39,20 @@ BATCH = 8 * 1024 * 1024
 
 
 def collect():
-    """收集要发布的文件：页面 + 三档订阅 + 通道 + 路径 + 混合。排除 meta/history 之类。"""
+    """收集要发布的文件：站点(docs 全部静态资源) + 唯一 DNS 订阅 subs/all + 通道 + Pages Functions。"""
     files = {}
-    for f in sorted((ROOT / "docs").glob("*.html")):
-        files[f"/{f.name}"] = f.read_bytes()
-    for tier in ("lite", "mid", "full"):   # 三档都要发：full 是路由器/桌面档，缺了等于没这档
-        d = ROOT / "subs" / tier
-        for f in sorted(d.iterdir()):
-            if f.is_file():
-                files[f"/subs/{tier}/{f.name}"] = f.read_bytes()
-    for sub in ("paths", "channels", "mixed"):
+    docsdir = ROOT / "docs"
+    for f in sorted(docsdir.rglob("*")):
+        if not f.is_file():
+            continue
+        rel = f.relative_to(docsdir).as_posix()
+        # docs/subs 是 report.py 的本地镜像（体积大），订阅本体由下面 subs/all 发布，不重复传
+        if rel.startswith("subs/"):
+            continue
+        if f.stat().st_size <= 25 * 1024 * 1024:
+            files[f"/{rel}"] = f.read_bytes()
+    # 只做 DNS 层：单一订阅 subs/all + 通道健康文件，其余层不再发布
+    for sub in ("all", "channels"):
         d = ROOT / "subs" / sub
         for f in sorted(d.rglob("*")):
             if f.is_file() and f.stat().st_size <= 25 * 1024 * 1024:
@@ -78,11 +82,30 @@ def collect():
 
 
 def ctype(path):
-    if path.endswith(".html"):
+    low = path.lower()
+    if low.endswith(".html") or low.endswith(".htm"):
         return "text/html; charset=utf-8"
-    if path.endswith(".json"):
-        return "application/json"
-    if path.endswith(".txt") or path.endswith(".list") or path.endswith(".sh"):
+    if low.endswith(".json"):
+        return "application/json; charset=utf-8"
+    if low.endswith(".js") or low.endswith(".mjs"):
+        return "text/javascript; charset=utf-8"
+    if low.endswith(".css"):
+        return "text/css; charset=utf-8"
+    if low.endswith(".svg"):
+        return "image/svg+xml"
+    if low.endswith(".png"):
+        return "image/png"
+    if low.endswith(".jpg") or low.endswith(".jpeg"):
+        return "image/jpeg"
+    if low.endswith(".gif"):
+        return "image/gif"
+    if low.endswith(".ico"):
+        return "image/x-icon"
+    if low.endswith(".woff2"):
+        return "font/woff2"
+    if low.endswith(".txt") or low.endswith(".list") or low.endswith(".sh"):
+        return "text/plain; charset=utf-8"
+    if low.endswith(".yaml") or low.endswith(".yml"):
         return "text/plain; charset=utf-8"
     return "application/octet-stream"
 
@@ -340,9 +363,9 @@ def main():
         "uploaded_this_run": len(todo),
         "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "entry": {
-            "lite": f"https://{PROJECT}.pages.dev/subs/lite/adguard.txt",
-            "mid": f"https://{PROJECT}.pages.dev/subs/mid/adguard.txt",
-            "mixed_surge": f"https://{PROJECT}.pages.dev/subs/mixed/noas-all.sgmodule",
+            "all_adguard": f"https://{PROJECT}.pages.dev/subs/all/adguard.txt",
+            "all_domains": f"https://{PROJECT}.pages.dev/subs/all/domains.txt",
+            "all_whitelist": f"https://{PROJECT}.pages.dev/subs/all/whitelist.txt",
             "doh_list": f"https://{PROJECT}.pages.dev/subs/channels/doh.txt",
             "aiodns": f"https://{PROJECT}.pages.dev/subs/channels/aiodns.sh",
             "tasks": f"https://{PROJECT}.pages.dev/tasks.html",

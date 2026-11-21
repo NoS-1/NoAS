@@ -451,7 +451,7 @@ function blockedInfo(name, tier) {
   const out = { domain: name || null, tier, blocked: false, why: "none", layer: null, source: null };
   if (!name) return out;
   if (isEndpoint(name)) {
-    out.blocked = true; out.why = "endpoint"; out.layer = "L1-embedded"; out.source = "ad_endpoints/cn_ad_endpoints/layer_backfill";
+    out.blocked = true; out.why = "endpoint"; out.layer = "L1-embedded"; out.source = "ad_endpoints/cn_ad_endpoints";
     return out;
   }
   if (allowed(name)) { out.why = "allowlist"; out.layer = "allow"; return out; }

@@ -3,35 +3,29 @@
 免费、可审计、每天自动重建的**广告 / 追踪 / 威胁域拦截规则**。
 不依赖任何云平台、不需要账号或密钥：规则以「订阅」形式发布，GitHub 自己就是文件服务器。
 
-## 直接可用（订阅地址）
+## 直接可用（唯一订阅地址）
 
-| 档位 | 条数 | 说明 | 地址 |
-|---|---|---|---|
-| lite | 9,904（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断；**误伤最低档**：4444 条业务主域样本实测 0 误伤，且为 CI 硬门禁 | `https://noas-cdn.pages.dev/subs/lite/adguard.txt` |
-| mid | 19,959 | 跨 2 源共识 + 广告 SDK/贴片专项；**日常默认就用这档**，覆盖与误伤的平衡点 | `https://noas-cdn.pages.dev/subs/mid/adguard.txt` |
-| full | 29,990 | 21 源并集，最激进 | `https://noas-cdn.pages.dev/subs/full/adguard.txt` |
+**只做 DNS 层，一条订阅。** 广告/追踪/威胁域名进黑名单，正常业务域名进白名单，全部由智能识别自动维护；路径层（开屏接口）与内容层（网页元素）已删除：
 
-> 上面三个数字取自 CI 每日重建后的**线上实际产物**（`main` 分支 lite、`data` 分支 mid/full）。CI 出网能拉到 21 个源，本机受限网络只到 19 个，所以本地复跑会比线上小 20% 左右——这不是丢规则，是源可达性差异。任何时刻以 `precision.html` 上的实时数字为准。
+```
+https://noas-cdn.pages.dev/subs/all/adguard.txt
+```
 
-每档都有 7 种格式，把上表地址里的文件名换掉即可：
+- 黑名单：4 万条 DNS 域名拦截规则；白名单：234 条正常业务域放行 + 父域保护
+- 客户端：AdGuard for Android / AdGuard Home / Pi-hole / mosdns / sing-box 等 DNS 类客户端直接导入
+- 纯域名版（给 mosdns / 自写脚本）：`https://noas-cdn.pages.dev/subs/all/domains.txt`
+- 白名单单独一份（可审计）：`https://noas-cdn.pages.dev/subs/all/whitelist.txt`
+- 镜像通道：`https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/all/adguard.txt`
 
-| 格式 | 客户端 | 文件名 |
-|---|---|---|
-| AdGuard / uBlock | AdGuard Home、uBlock Origin | `adguard.txt` |
-| 纯域名 | mosdns、自写脚本 | `domains.txt` |
-| hosts | 路由器、老 App | `hosts.txt` |
-| dnsmasq | OpenWrt / dnsmasq | `dnsmasq.conf` |
-| Clash | Clash / Mihomo rule-provider（behavior: domain） | `clash.yaml` |
-| sing-box | rule_set（format: source），**仅 L1**；内核无 MITM，不能跑 L2 路径改写 | `singbox.json` |
-| Surge / Loon | DOMAIN-SUFFIX 列表 | `surge.list` |
+> 只保留 DNS 层，其余层（路径/内容/分档）已从发布面删除。
 
 四通道，全部是自家免费能力（GitHub + 自建 CF Pages），不挂任何第三方 CDN：
 
 | 通道 | 用法 | 说明 |
 |---|---|---|
-| raw | 上表地址 | 随仓库提交即时生效 |
-| Pages | `https://noas-cdn.pages.dev/subs/lite/adguard.txt` | 站点镜像，带宽由 GitHub 承担，与 raw 互为备份 |
-| **CF Pages** | `https://noas-cdn.pages.dev/subs/mid/adguard.txt` | **国内推荐**：CF 边缘静态分发，免费、带宽不限，**不占 Worker 额度** |
+| raw | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/all/adguard.txt` | 随仓库提交即时生效 |
+| Pages | `https://noas-cdn.pages.dev/subs/all/adguard.txt` | 站点镜像，带宽由 GitHub 承担，与 raw 互为备份 |
+| **CF Pages** | `https://noas-cdn.pages.dev/subs/all/adguard.txt` | **国内推荐**：CF 边缘静态分发，免费、带宽不限，**不占 Worker 额度** |
 | Release | `https://github.com/NoS-1/NoAS/releases/latest/download/noas-snapshot.zip` | 单包下载（三档 + DoH + 通道产物），长期留档 |
 
 站点首页 `https://noas-cdn.pages.dev/` 有实时条数、各格式校验值、源健康度与自我成长记录。
@@ -111,9 +105,9 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 
 | 场景 | 通道 | 地址 | 拦广告 | 额度 |
 |---|---|---|---|---|
-| 本地过滤（推荐） | AGH / sing-box + 国内上游 | 规则用 `subs/lite/adguard.txt`，上游填下面任一条 | 是 | 0 |
-| 手机直填 DoH | **首选**：Gateway（已装全三档 60 片 6 万条，首包 382ms） | `https://oxyacq0a4t.cloudflare-gateway.com/dns-query` | 是（已实测） | 免费 10 seats ≈ 5,000/seat/天，不占 Worker 请求额度 |
-| 手机直填 DoH | **分档（Pages 端点）**：`/dns-query/lite` 1 万 · `/dns-query/mid` 2 万 · `/dns-query/full` 3 万 · `/dns-query` 按 UA 自动选档 | `https://noas-cdn.pages.dev/dns-query/full` | 是（已实测） | 10 万/天，90% 自动降级直转；`GET /tier` 自查当前档 |
+| 本地过滤（推荐） | AGH / sing-box + 国内上游 | 规则用唯一订阅 `subs/all/adguard.txt`，上游填下面任一条 | 是 | 0 |
+| 手机直填 DoH | **首选**：Gateway（三档云列表，随发布对齐到 1/2/3 万上限） | `https://oxyacq0a4t.cloudflare-gateway.com/dns-query` | 是（已实测） | 免费 seats 额度，不占 Worker 请求额度 |
+| 手机直填 DoH | **云端端点（Pages Function 代理 Worker）**：`/dns-query/full` 全集，另有 `/dns-query/lite`、`/dns-query/mid` 内部分档 | `https://noas-cdn.pages.dev/dns-query/full` | 是（已实测） | 10 万/天，90% 自动降级直转；`GET /tier` 自查当前档 |
 | 手机直填 DoH | 自建 Worker 原生域名（**国内不可达**，仅境外） | `https://noas-doh.199999510.workers.dev/dns-query` | 是 | 同上 |
 | 纯解析 | 阿里 / 腾讯 DoH | `https://dns.alidns.com/dns-query`、`https://doh.pub/dns-query` | 否 | 0 |
 | 纯解析 | 阿里/腾讯 DoT | `tls://dns.alidns.com:853`、`tls://dot.pub:853` | 否 | 0 |
@@ -129,29 +123,30 @@ CF 侧运行期只读一份 KB 级构建指纹，规则本体内嵌，GitHub 全
 延迟不是拍脑袋定的：`tools/bench_dns.py` 按真实 DNS wire query 实测各家首包与复用耗时，结论和取舍写在 [`dns-latency.html`](https://noas-cdn.pages.dev/dns-latency.html)。
 一句话：延迟大头是每次重做 TLS 握手，所以主用常连的国内 DoH（复用后 9–16ms），自建只兜底。
 
-## 三层叠加（DNS 只是第一层）
+## 只做 DNS 层：黑白名单 + 三档上限
 
-单层做不到 100%。完整方案见站点 `docs/stack.html`：
+NoAS 只在 DNS 解析层工作：广告/追踪/威胁域名进黑名单，正常业务域名进白名单；不做 MITM 路径层，也不做浏览器内容过滤层（旧 L2/L3/L4 已物理删除）。
 
-| 层 | 产物 | 作用 |
+| 产物 | 规模（硬上限） | 用途 |
 | --- | --- | --- |
-| L1 DNS | `subs/{lite,mid,full}/` | 拦广告/追踪域名，全设备生效 |
-| L2 路径 | `subs/paths/{core,full}/noas-path.{sgmodule,plugin,conf}` | MITM 后拦开屏/广告接口（Surge/Loon/QX） |
-| L3 内容 | `subs/paths/ubo/noas-ubo.txt` | 浏览器内隐藏广告位、拦广告脚本 |
+| `subs/all/adguard.txt` | 黑名单 2.8 万 + 白名单例外 | 唯一对外订阅，DNS 类客户端直接导入 |
+| `subs/lite/` | ≤ 1 万行 | 最轻档，仅高置信规则 |
+| `subs/mid/` | ≤ 2 万行 | 均衡档 |
+| `subs/full/` | ≤ 3 万行 | 最全档（域名 + 通配合计守顶），Worker/KV/Gateway 使用 |
+
+编译期另有两道闸：白名单父域保护（正常业务根域的子域默认不拦，端点表可豁免）；上游境外无用域（`lists/foreign_useless.txt` 与纯境外国家后缀、且不属国内清单/核心 SDK/设备实测）直接不进入产物。
 
 **国内首方广告子域（自动发现，累积不覆盖）**：`tools/discover_cn_ads.py` 以证书透明度 + 被动 DNS + 广告前缀枚举三条通道收集子域，再用 DoH 逐个解析；先探泛解析（随机子域也解析得出来就整根域丢弃），再按证据分两档：
 
-- **端点表 `lists/cn_ad_endpoints.txt`**：解析链落到已知广告网络（穿山甲/优量汇/阿里妈妈/快手/Mintegral…），或域名最左标签就是 `ad/ads/adx/adapi/adserver/splash/gromore/pangolin…` 这类品牌自有广告前缀（带连字符的广告主后台除外）。全档强制拦；
+- **端点表 `lists/ad_endpoints.txt` + `lists/cn_ad_endpoints.txt`**：解析链落到已知广告网络（穿山甲/优量汇/阿里妈妈/快手/Mintegral…），或域名最左标签就是 `ad/ads/adx/adapi/adserver/splash/gromore/pangolin…` 这类品牌自有广告前缀（带连字符的广告主后台除外）。全档强制拦，且可豁免白名单父域保护；
 - **观察池 `lists/cn_ad_watch.txt`**：广告词元出现在中间标签、或 `union/track/stat/log/metrics` 这类歧义前缀。仅 mid/full，lite 不引入。
 
-产物按轮累积：本轮没重新探到的旧条目保留，不会被覆盖写冲掉；根域清单 `lists/cn_roots.txt`（188 个国内 App/品牌注册域）由游标轮换分批覆盖，每周随 Discover 流水线刷新。
-
-路径层源表是 `lists/ad_paths.tsv`，每行带 App 与用途；`core` 只打单主机端点，`full` 才启用通用路径（范围由 MITM 白名单兜住）。
+产物按轮累积：本轮没重新探到的旧条目保留，不会被覆盖写冲掉；根域清单 `lists/cn_roots.txt`（206 个国内 App/品牌注册域）由游标轮换分批覆盖，每周随 Discover 流水线刷新。
 
 ## 运行监控
 
-- `Daily Build`：每日 4 轮重建 + 发布（03/09/15/21 点）
-- `Availability Probe`：每 3 小时探测 raw / Pages / Release / 路径层四条通道，失败开 Issue、恢复自动关
+- `Daily Build`：每日定时重建 + 发布
+- `Availability Probe`：定时探测 raw / Pages / Release 通道，失败开 Issue、恢复自动关
 - `Discover` / `Maintain`：每周两次（周一、周四）
 
 

@@ -25,11 +25,9 @@ CF 侧**运行期只依赖自身内嵌制品**（worker.js 里已编译进 lite+
 ## 三、单向数据流（谁只读谁）
 
 ```
-上游清单 ──► lists/ ──► subs/lite ─┐
-                      subs/mid  ──┼─► doh/worker.js ──► CF Worker（内嵌，运行期零外呼）
-                      subs/full ──┘
-                      subs/lite ──► CF Gateway 列表（规则镜像）
-                      subs/paths / ubo ──► Pages
+上游清单 ──► lists/ ──► subs/all ──► doh/worker.js ──► CF Worker（内嵌，运行期零外呼）
+                      subs/all ──► CF Gateway 列表（规则镜像）
+                      subs/all  ──► Pages 唯一 DNS 订阅（黑白名单）
 CF AE / Logs / Cron ──► 只读观测（不进构建判定）
 ```
 

@@ -111,3 +111,13 @@ unionimage.baidu.com
 v2mi.gdt.qq.com
 v3.gdt.qq.com
 win.gdt.qq.com
+adx.jd.com
+
+# 2026-11 DNS-only 改造：原 layer_backfill.txt（L2/L3 跨层回灌）18 条并入本表，
+# 路径层/内容层已物理删除，这些纯 DNS 广告端点继续按 ep 身份豁免白名单父域保护。
+ad.maoyan.com
+adsrvr.org
+advertise.bczeducation.cn
+criteo.com
+dynamicad.kfc.com.cn
+optimus-ads.amap.com

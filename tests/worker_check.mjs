@@ -17,7 +17,6 @@ const benign = [...load('tests/benign_baseline.txt'), ...load('lists/benign_top.
 const endpoints = new Set([
   ...load('lists/ad_endpoints.txt'),
   ...load('lists/cn_ad_endpoints.txt'),
-  ...load('lists/layer_backfill.txt'),   // L2/L3 回灌的端点例外，与 compile 同口径
 ]);
 
 let miss = [], fp = [];

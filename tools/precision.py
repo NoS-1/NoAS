@@ -58,8 +58,7 @@ def main():
         load(os.path.join(ROOT, "lists", "whitelist.txt")) | \
         load(os.path.join(ROOT, "tests", "benign_baseline.txt"))
     endpoints = load(os.path.join(ROOT, "lists", "ad_endpoints.txt")) | \
-        load(os.path.join(ROOT, "lists", "cn_ad_endpoints.txt")) | \
-        load(os.path.join(ROOT, "lists", "layer_backfill.txt"))
+        load(os.path.join(ROOT, "lists", "cn_ad_endpoints.txt"))
 
     report = {}
     total_risky = 0

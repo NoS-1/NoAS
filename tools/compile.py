@@ -175,7 +175,8 @@ def load_whitelist():
     只是维护视角不同：台账按"事故"记，服务表按"功能"记。
     """
     wl = set()
-    for fn, first_col_only in (("whitelist.txt", False), ("service_allow.txt", True)):
+    for fn, first_col_only in (("whitelist.txt", False), ("service_allow.txt", True),
+                               ("ai_whitelist.txt", True)):
         p = os.path.join(LISTS, fn)
         if not os.path.exists(p):
             continue
@@ -237,8 +238,27 @@ PARSERS = {"hosts": parse_hosts, "adblock": parse_adblock, "domains": parse_doma
 # 三档硬上限（2026-11-21 定档）：lite 1 万 / mid 2 万 / full 3 万。
 # 只留国内设备真会请求的域 + 国际大广告 SDK，其余长尾一律删 —— 规则不是越多越好，
 # 每条都要占额度（KV、Gateway 100×1000、Worker bundle），换不来拦截收益就是负债。
+# AI_ONLY 模式（2026-11-21 用户要求：清零旧三档、只放真识别结果、智能分区）
+AI_ONLY = os.environ.get("NOAS_AI_ONLY") == "1"
+
+
+def ai_tiers():
+    """智能分区表：域名 -> lite/mid/full（由主脑判定导出，按真实请求频次切档）"""
+    p = os.path.join(LISTS, "ai_partition.tsv")
+    m = {}
+    if os.path.exists(p):
+        for line in open(p, encoding="utf-8"):
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            c = line.split("\t")
+            if len(c) >= 2 and "." in c[0]:
+                m[c[0].lower()] = c[1]
+    return m
+
+
 LITE_CAP = 10000
-MID_CAP = 40000   # L2 把 mid 搬进 KV 后，体积墙从 3 万条推到 KV 上限，mid 扩到 4 万
+MID_CAP = 20000   # 2026-11 用户定死：三档只保留 1 万 / 2 万 / 3 万，超出直接丢弃
 FULL_CAP = 30000
 
 HEAVY_HINTS = ("AdGuard", "HaGeZi", "hagezi", "OISD", "oisd", "1Hosts", "KADhosts", "antiAD")
@@ -464,13 +484,15 @@ def main():
             return 0
 
     exact, wild, per_source, _, consensus, hitn = collect()
+    if AI_ONLY:
+        # 上游 21 源一律不用：三档只由主脑真识别结果构成
+        exact, wild, consensus, hitn = set(), set(), {}, {}
+        per_source = {"ai-brain": 1}
     wl = load_whitelist()
     # 端点表 = 人工审计的国内广告端点 + 自动发现的高置信首方广告子域（解析链落在广告网络）
     # ep = 端点例外集合：白名单父域下仍然要拦的纯广告端点，免疫白名单剔除。
-    # 跨层回灌（L2 路径层 / L3 uBO 已验证的广告主机）按同一语义并入 ep，
-    # 这样它们在 DNS 层不只知道"存在"，而且真的会被拦。
-    ep = (load_list_file("ad_endpoints.txt") | load_first_col("cn_ad_endpoints.txt")
-          | load_list_file("layer_backfill.txt"))
+    # DNS-only 改造后，原 L2/L3 跨层回灌表已并入 ad_endpoints.txt。
+    ep = load_list_file("ad_endpoints.txt") | load_first_col("cn_ad_endpoints.txt")
     # 观察池：只靠前缀命中、链上无广告落点，仅进 mid/full，绝不进 lite
     # 观察池两条来源：① 自动发现的低置信首方广告子域；② 用户报的漏拦域（misses.txt）。
     # 两者都只进 mid/full：单条反馈不足以进默认档，但也不该石沉大海。
@@ -485,10 +507,10 @@ def main():
     wl = wl | lallow | cooldown
     exact = drop_children(exact) | ep
 
-    if len(per_source) < 8:
+    if len(per_source) < 8 and not AI_ONLY:
         print("FAIL：可用源只剩 %d 个（下限 8），疑似批量失效，拒绝发布" % len(per_source))
         return 1
-    if len(exact) < 500:
+    if len(exact) < 500 and not AI_ONLY:
         print("FAIL：规则太少（%d），疑似所有源都失效，拒绝发布" % len(exact))
         return 1
 
@@ -565,6 +587,8 @@ def main():
     consensus_keep = set(ordered[:max(0, slots)])
     # 威胁分类（挖矿/返利/遥测）严禁出现在 lite/mid：即便上游源带了也强制剔除
     lite = drop_children(forced | promoted_keep | consensus_keep) - threat_all
+    if AI_ONLY:
+        lite = drop_children({d for d, t in ai_tiers().items() if t == "lite"} | ep) - threat_all
     # 观察池只进 mid / full：这些是自动发现的"前缀像广告、但链上没有广告落点"的域
     # 档位必须严格包含：lite ⊆ mid ⊆ full。否则用户从 lite 升到 mid 会突然漏拦（体验倒退）。
     # 「国内优先」：这些域是国内设备真的会查的 —— 国内观察池 / 国内发现端点 / 国内根域 /
@@ -596,6 +620,15 @@ def main():
     mid_raw = mid_raw - shadow
     mid_extra = sorted(mid_raw - mid_keep, key=rank)[:max(0, MID_CAP - len(mid_keep))]
     mid = drop_children((mid_keep | set(mid_extra)) - threat_all)
+    if AI_ONLY:
+        mid = drop_children({d for d, t in ai_tiers().items() if t in ("lite", "mid")} | lite | ep | sdk_video) - threat_all
+    # 硬上限保底：drop_children 与必留集合叠加后仍可能越过 MID_CAP，
+    # 这里按"lite 先保、必留其次、其余按国内优先+共识分"的顺序硬截到 2 万，超出直接丢。
+    if len(mid) > MID_CAP:
+        pin = (mid & (ep | sdk | video | core | lite)) | mid_keep
+        pin = {d for d in pin if d in mid}
+        rest = sorted(mid - pin, key=rank)
+        mid = pin | set(rest[:max(0, MID_CAP - len(pin))])
 
     full_raw = exact | watch | sdk_video | threat_extra | mid | shadow
     # 影子域必须真的留在 full（否则被 rank 截掉，观察期形同虚设）
@@ -603,19 +636,59 @@ def main():
     full_extra = sorted(full_raw - full_keep, key=rank)[:max(0, FULL_CAP - len(full_keep))]
     # 挖矿/恶意域必须留在 full（拦掉才算真防护），归因/统计域三档都不进
     full = (full_keep | set(full_extra)) - threat_all | miner
+    if AI_ONLY:
+        full = (drop_children({d for d, t in ai_tiers().items()}
+                              | lite | mid | ep | sdk_video | miner | threat_extra) - threat_all) | miner
+    # 硬上限保底：full 同样可能被必留集合撑破 3 万，超出按"mid 先保、威胁/挖矿其次、
+    # 其余按国内优先+共识分"硬截，丢弃的部分不进产物。
+    if len(full) > FULL_CAP:
+        pin = ((full & (ep | sdk | video | core | mid | threat_extra | miner)) | full_keep)
+        pin = {d for d in pin if d in full}
+        rest = sorted(full - pin, key=rank)
+        full = pin | set(rest[:max(0, FULL_CAP - len(pin))])
+
+    # 上游"对国内没用"的域名直接不进入产物（2026-11 用户要求）：
+    #   1) 命中 lists/foreign_useless.txt 父域（纯海外广告/追踪网络）；
+    #   2) 纯境外国家/地区后缀（.ca/.au/.de …）且不在国内清单。
+    # 豁免：must（端点/核心SDK/贴片/本地拦截）与 cn（国内根域/发现端点/观察池）及其父域，
+    # 保证国内 App 真会请求的海外 SDK（AdMob/Unity/AppLovin 等）与设备实测域不被误删。
+    fuse_roots = load_list_file("foreign_useless.txt")
+
+    def _hit_root(d, roots):
+        parts = d.split(".")
+        return any(".".join(parts[i:]) in roots for i in range(len(parts) - 1))
+
+    def cn_useless(d):
+        # ① 显式「境外无用广告/追踪网络」清单最高优先级：
+        #    用户 2026-11 拍板连 Google/Meta/AppLovin 等海外广告网也不发布，故压过 ep/core/设备确认豁免。
+        if _hit_root(d, fuse_roots):
+            return True
+        # ② 必留（端点/国内核心SDK/贴片/本地拦截）与国内清单（含父域）豁免纯后缀判定，防国内 App 内嵌 SDK 被误删
+        if d in must or d in cn or _hit_root(d, must) or _hit_root(d, cn):
+            return False
+        # ③ 纯境外国家/地区后缀（.ca/.au/.de …）且无国内业务归属 → 不进入产物
+        return d.rsplit(".", 1)[-1] in FOREIGN_CC
+
+    fuse = {d for d in (lite | mid | full) if cn_useless(d)}
+    if fuse:
+        lite, mid, full = lite - fuse, mid - fuse, full - fuse
+    # 档位包含是硬契约：drop_children 会在 mid 里删掉"父域已覆盖的子域"，
+    # 而 lite 保留了该子域时，包含性就被破坏（用户从 lite 升 mid 反而漏拦）。这里无条件补齐。
+    mid, full = mid | lite, full | mid | lite | miner
 
     prov = {d: round(consensus.get(d, 0), 2) for d in lite}
     json.dump({"lite": prov, "core": sorted(core & lite), "endpoints": sorted(ep & lite)},
               open(os.path.join(ROOT, "out", "lite_provenance.json"), "w", encoding="utf-8"),
               ensure_ascii=False)
 
-    report = {"dead_dropped": len(dropped_dead), "sources": per_source,
+    report = {"ai_only": AI_ONLY, "dead_dropped": len(dropped_dead), "sources": per_source,
               "full": len(full), "lite": len(lite), "mid": len(mid),
               "cn_discovered": len(ep - load_list_file("ad_endpoints.txt")), "cn_watch": len(watch),
               "lite_cap": LITE_CAP, "mid_cap": MID_CAP, "full_cap": FULL_CAP, "lite_pool": len(promoted) + len(consensus_pool),
               "wildcards": len(wild), "whitelist_blocked": len(blocked_wl),
               "ad_endpoints": len(ep), "promoted": len(promoted),
-              "device_confirmed": len(dconf), "shadow": len(shadow), "benign_dropped": len(benign_dropped)}
+              "device_confirmed": len(dconf), "shadow": len(shadow), "benign_dropped": len(benign_dropped),
+              "foreign_dropped": len(fuse), "foreign_dropped_domains": sorted(fuse)}
     print("编译完成：full %d ／mid %d ／lite %d 条（通配 %d）｜白名单剔除 %d｜源 %d 个｜国内发现端点 %d＋观察 %d" % (
         len(full), len(mid), len(lite), len(wild | wild_safe), len(blocked_wl), len(per_source),
         len(ep - load_list_file("ad_endpoints.txt")), len(watch)))
@@ -635,9 +708,10 @@ def main():
         ver, changed, meta = write_formats(mid, wild_safe, os.path.join(SUBS, "mid"), "mid")
         results["mid"] = {"version": ver, "changed": changed, "count": meta["count"]}
     if args.only in (None, "full"):
-        # full 通配上限 3000：通配一条覆盖整棵子树，价值高但也最容易误伤，只留国内可查的前 3000 条
+        # full 通配上限 3000，且必须连通配一起守住 3 万总额：域名 + 通配 ≤ FULL_CAP
+        wild_cap = max(0, min(3000, FULL_CAP - len(full) - len(wild_safe)))
         wild_full = set(sorted([w for w in wild if not foreign(w)],
-                               key=lambda d: (0 if d in cn else 1, -consensus.get(d, 0), len(d), d))[:3000])
+                               key=lambda d: (0 if d in cn else 1, -consensus.get(d, 0), len(d), d))[:wild_cap])
         ver, changed, meta = write_formats(full, wild_full | wild_safe, os.path.join(SUBS, "full"), "full")
         results["full"] = {"version": ver, "changed": changed, "count": meta["count"]}
     for k, v in results.items():

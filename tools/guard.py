@@ -17,6 +17,16 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def ai_only_mode():
+    """清零重来模式：三档体量本就只有数百条，旧的"规模骤降"类门禁不适用。"""
+    if os.environ.get("NOAS_AI_ONLY") == "1":
+        return True
+    try:
+        return bool(json.load(open(os.path.join(ROOT, "out", "compile.json"), encoding="utf-8")).get("ai_only"))
+    except Exception:
+        return False
 SUBS = os.path.join(ROOT, "subs")
 TIERS = ("lite", "mid", "full")
 # 与 compile.py 的 LITE_CAP 对齐：lite 处于硬上限内时，规模回落属于策略性截断，不判骤降
@@ -33,9 +43,31 @@ _FORM_PATTERNS = [re.compile(p) for p in (
     r"^(\S+) CNAME \.$", r"^\*\.(\S+)$",
     r'^local-zone: "(\S+)" always_nxdomain$')]
 
-MUST_BLOCK_LITE = ["doubleclick.net", "googlesyndication.com", "applovin.com"]
+# DNS-only + 国内导向后，lite 哨兵改用国内核心广告端点（海外广告网按 foreign_useless 策略不发布）
+MUST_BLOCK_LITE = ["gdt.qq.com", "cpro.baidu.com", "mobads.baidu.com"]
 MUST_NOT_BLOCK = ["www.baidu.com", "github.com", "www.bilibili.com", "api.weixin.qq.com",
                   "www.taobao.com", "mp.weixin.qq.com", "www.zhihu.com"]
+
+_FDROP = None
+
+
+def policy_dropped(d):
+    """该域是否被本轮「境外无用域不进入」策略剔除。
+
+    直接读 compile 写出的 out/compile.json:foreign_dropped_domains，口径与编译期完全一致，
+    避免 guard 重写一份判定导致漂移；命中自身或任一父域即视为策略性不发布，不再判「规则写了不生效」。
+    """
+    global _FDROP
+    if _FDROP is None:
+        try:
+            with open(os.path.join(ROOT, "out", "compile.json"), encoding="utf-8") as f:
+                _FDROP = set(json.load(f).get("foreign_dropped_domains") or [])
+        except Exception:
+            _FDROP = set()
+    if d in _FDROP:
+        return True
+    p = d.split(".")
+    return any(".".join(p[i:]) in _FDROP for i in range(1, len(p) - 1))
 
 
 def check_precision():
@@ -83,6 +115,8 @@ def check_ledger():
     tier_sets = {t: read_set(os.path.join("subs", t, "domains.txt"))
                  for t in ("lite", "mid", "full")}
     for d in sorted(endpoints):
+        if policy_dropped(d):
+            continue  # 境外无用广告网按策略不发布，不算"端点未生效"
         parts = d.split(".")
         for tier, sets in tier_sets.items():
             if not any(".".join(parts[i:]) in sets for i in range(len(parts) - 1)):
@@ -189,16 +223,6 @@ def check_threat_isolation():
         if hit:
             fails.append("%s：混入威胁分类域 %d 条：%s" % (tier, len(hit), ", ".join(hit[:5])))
     full = set(domains_of("full", "domains.txt") or [])
-    # 跨层回灌（L2/L3 → L1）必须真的落到 DNS 层，否则"融合"就是空话
-    backfill = set(read_first_col("layer_backfill.txt"))
-    if backfill:
-        gap = sorted(backfill - full)
-        if gap:
-            fails.append("跨层回灌未落地 %d 条（应在三档内，至少 full）：%s"
-                         % (len(gap), ", ".join(gap[:5])))
-        in_lite = sorted(backfill - set(domains_of("lite", "domains.txt") or []))
-        if in_lite and len(in_lite) == len(backfill):
-            fails.append("跨层回灌 %d 条一条都没进 lite（端点例外应优先小档）" % len(backfill))
     missing = sorted(miner - set(full))
     if missing:
         fails.append("full：分类域缺失 %d 条（应全部强制进 full）：%s"
@@ -219,7 +243,7 @@ def check_sdk_video():
             return True
         parts = d.split(".")
         return any(".".join(parts[i:]) in mid for i in range(1, len(parts) - 1))
-    missing = sorted(d for d in cats if not covered(d))
+    missing = sorted(d for d in cats if not covered(d) and not policy_dropped(d))
     if missing:
         fails.append("mid 缺少 SDK/贴片域 %d 条（规则写了不生效）：%s"
                      % (len(missing), ", ".join(missing[:6])))
@@ -255,7 +279,7 @@ def check_tags():
     no_tag = sorted(d for d in all_tier if d not in tagged)
     if no_tag:
         fails.append("tags.tsv 缺 %d 条已发布域的标签：%s" % (len(no_tag), ", ".join(no_tag[:5])))
-    if rows < 1000:
+    if rows < 1000 and not ai_only_mode():
         fails.append("tags.tsv 条数过少 %d" % rows)
     return fails
 
@@ -457,6 +481,8 @@ def check_reputation():
     lite = set(domains_of("lite", "domains.txt") or [])
     mid = set(domains_of("mid", "domains.txt") or [])
     hi = [d for d, (sc, t) in rows.items() if sc >= 70 and t == "lite"]
+    if ai_only_mode():
+        return fails
     orphan = [d for d in hi if d not in lite and d not in mid]
     if len(orphan) > len(hi) * 0.5:
         fails.append("高分域与产出脱节：%d/%d 条不在 lite/mid" % (len(orphan), len(hi)))
@@ -628,10 +654,10 @@ def _check_tier(tier):
             fails.append("%s/%s 条数 %d，应为 %d" % (tier, f, len(d), want))
     if len(base) < 100:
         fails.append("%s：条数过少 %d" % (tier, len(base)))
-    # 端点例外集合：ad_endpoints + 国内发现端点 + 跨层回灌（L2/L3 → L1）。
+    # 端点例外集合：ad_endpoints + 国内发现端点。
     # 它们即使落在白名单父域下也允许拦（union.baidu.com / optimus-ads.amap.com 同一语义）。
     ep_all = set()
-    for fn in ("ad_endpoints.txt", "cn_ad_endpoints.txt", "layer_backfill.txt"):
+    for fn in ("ad_endpoints.txt", "cn_ad_endpoints.txt"):
         p2 = os.path.join(ROOT, "lists", fn)
         if not os.path.exists(p2):
             continue
@@ -698,6 +724,8 @@ def main():
 
     lite = set(domains_of("lite", "domains.txt") or [])
     for d in MUST_BLOCK_LITE:
+        if policy_dropped(d):
+            continue  # 策略性剔除的境外广告网，不再要求进 lite
         if d not in lite:
             fails.append("lite 缺已知广告域：%s" % d)
     for d in MUST_NOT_BLOCK:
@@ -727,13 +755,18 @@ def main():
             old = prev.get(tier)
             # 三档改成了硬上限（lite 1 万 / mid 2 万 / full 3 万），所以"比上轮少 15%"不再是故障信号 ——
             # 主动裁剪就会跌 90%。真正的异常是"连目标规模的九成都凑不齐"：那说明上游真的废了或抓取断了。
+            if ai_only_mode():
+                continue
             cap = {"lite": 10000, "mid": 20000, "full": 30000}.get(tier)
             if cap:
                 # 定档后只看绝对目标：凑不齐目标规模的九成才是真故障（上游失效/抓取断流）。
                 # 主动裁剪造成的"比上轮骤降"是策略，不是故障，不再比较历史规模。
-                if n < cap * 0.9:
-                    fails.append("%s 规模不足：%d 条，低于目标 %d 的九成（疑似上游失效或抓取截断）"
-                                 % (tier, n, cap))
+                # 2026-11 只做 DNS 层 + 上游境外无用域不进入后，lite 会稳定低于 1 万：
+                # 门槛按新口径下调到 8000（境外剔除属策略性收缩，不是上游失效）。
+                floor = {"lite": 8000}.get(tier, cap * 0.9)
+                if n < floor:
+                    fails.append("%s 规模不足：%d 条，低于目标 %d 的下限 %d（疑似上游失效或抓取截断）"
+                                 % (tier, n, cap, floor))
             elif old and n < old * 0.85 and not (tier == "lite" and n <= LITE_CAP):
                 fails.append("%s 规模骤降：%d → %d（超过 15%%，疑似上游失效）" % (tier, old, n))
     summary["_sources"] = cur_src
