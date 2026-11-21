@@ -276,3 +276,10 @@ full 不进 Gateway（full 只在 DoH 精细通道生效），「NoAS 大档拦�
 
 配套口径同步：`gateway_all.py` 的 `TIERS` 只有 lite/mid（`NOAS_GATEWAY_FULL=1` 可临时恢复三档）、
 `gateway_align.py` 无 l3 列表时跳过 t3 校验、`post_deploy_verify.py` 期望片数改成按 `subs/*/meta.json` 的 `ceil(count/1000)` 推算（不再写死 10/20/30），列表数 >95 才预警。
+
+## CI 编排收口（第六批）
+
+- **断自触发**：产物提交 `build: 每日重建 …` 结尾带跳过标记；`paths-ignore` 追加 `state/**`（只忽略流程自写台账，`lists/ tools/ doh/ sources.tsv` 必须触发，否则手改规则不会重建）。注意：提交消息里出现该跳过字面会让 GitHub 整条跳过本轮，写说明文字时要避开。
+- **回归提速的真实瓶颈是 fuzz**：6 项里其余 5 项都在 1.5s 内，`fuzz_check.mjs` 串行 500 例要 81s（每例触发一次上游解析约 160ms）。改成 50 并发抢队列后 1.9s，500 例一条不少。6 项并行保留作兜底。
+- **分支保护不能设 required status checks**：CI 用内置令牌直推 main，一旦要求 4/4 检查会直接被拒（`9 · 提交` 重试 5 次后红）。现在只保留"禁强推 + 禁删除"，不设 required checks。
+- **编译三档并行不采用**：实测串行 23s / 三进程并行 21s（每个进程都重算全量，只摊到写盘），收益 2s 但会三进程同时写 `out/*.json`，写竞争损坏产物的风险不值。

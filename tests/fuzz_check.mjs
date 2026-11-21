@@ -20,7 +20,9 @@ for (let i = 0; i < 100; i++) {           // 正常头 + 随机尾
   const c = new Uint8Array(base.length + 20); c.set(base, 0);
   const tail = rnd(20); c.set(tail, base.length); cases.push(c);
 }
-for (const c of cases) {
+// 每个畸形报文都会触发一次上游解析（失败约 160ms），500 例串行要 80s。
+// 改成 50 并发抢队列：仍跑满 500 例，门禁一条不少，耗时降到 3s 级。
+const runOne = async (c) => {
   n++;
   try {
     const r = await h(new Request('https://x.dev/dns-query', {
@@ -28,7 +30,14 @@ for (const c of cases) {
     // 只有"未捕获异常"(x-noas=error) 或真的抛出来才算失败；502 upstream-fail 是本次 mock 上游断开的预期语义
     if (r.headers.get('x-noas') === 'error') { bad++; const t = await r.text(); if (bad <= 3) console.log('SAMPLE', r.status, r.headers.get('x-noas-err'), t.slice(0,60)); }
   } catch (e) { bad++; }
-}
+};
+let cursor = 0;
+await Promise.all(Array.from({ length: 50 }, async () => {
+  while (cursor < cases.length) {
+    const c = cases[cursor++];
+    await runOne(c);
+  }
+}));
 console.log(`${n} 个畸形输入｜500 或抛异常 ${bad}`);
 if (bad) { console.log('FAIL'); process.exit(1); }
 console.log('PASS 模糊测试');
