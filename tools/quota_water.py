@@ -46,8 +46,8 @@ query($acc: String!, $from: String!, $to: String!) {
 
 def fetch():
     import requests
-    acc = os.environ.get("CF_ACCOUNT_ID")
-    tok = os.environ.get("CF_API_TOKEN")
+    acc = os.environ.get("CF_ACCOUNT_ID") or "226431c8f431ebb75d82dd5dbd5e8d86"
+    tok = os.environ.get("CF_API_TOKEN") or os.environ.get("CF_TOKEN")
     if not acc or not tok:
         return None, "缺少 CF_ACCOUNT_ID / CF_API_TOKEN"
     today = datetime.datetime.now(datetime.timezone.utc).date()

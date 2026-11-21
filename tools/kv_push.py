@@ -53,8 +53,9 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
-    acc = os.environ.get("CF_ACCOUNT_ID")
-    tok = os.environ.get("CF_API_TOKEN")
+    # CI 里 CF_ACCOUNT_ID 是 vars、令牌有时叫 CF_TOKEN：两种都接，账号回退到仓库已知值
+    acc = os.environ.get("CF_ACCOUNT_ID") or "226431c8f431ebb75d82dd5dbd5e8d86"
+    tok = os.environ.get("CF_API_TOKEN") or os.environ.get("CF_TOKEN")
     if not a.dry_run and (not acc or not tok):
         print("FAIL 缺少 CF_ACCOUNT_ID / CF_API_TOKEN")
         sys.exit(1)
