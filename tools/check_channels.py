@@ -190,6 +190,22 @@ def main():
                 v["status"] = "unknown"
                 v["detail"] = "疑似本机代理劫持，未计入通道死亡：" + v.get("detail", "")
 
+    # Gateway 状态以真实双向实测为准：probe 走本机代理会被伪造，恒 unknown；
+    # verify_gateway.py 用 no_proxy 直连 + 断言 0.0.0.0/真实 IP，结论更可信。
+    vp = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                      "state", "gateway_verify.json")
+    if os.path.exists(vp):
+        try:
+            vf = json.load(open(vp, encoding="utf-8"))
+            if vf.get("ok"):
+                for k in list(results):
+                    if k.startswith("gateway"):
+                        results[k]["status"] = "ok"
+                        results[k]["detail"] = ("verify：拦广告→0.0.0.0 / 正常域→真实 IP（%s）"
+                                                % vf.get("host", ""))
+        except Exception:
+            pass
+
     payload = {
         "checked_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "probe": PROBE_HOST,

@@ -497,11 +497,37 @@ def check_dead():
     return fails
 
 
+def _covered(d, s):
+    """等效覆盖：域本身在集合里，或它的某个父域在集合里（DNS 按父域命中即等效拦住）。"""
+    if d in s:
+        return True
+    parts = d.split(".")
+    return any(".".join(parts[i:]) in s for i in range(1, len(parts) - 1))
+
+
+def check_hierarchy():
+    """档位严格包含：lite ⊆ mid ⊆ full。
+
+    用户从 lite 升到 mid 若突然漏拦，就是体验倒退（历史上出现过 82 条）。这条防回归。
+    """
+    fails = []
+    lite = set(domains_of("lite", "domains.txt") or [])
+    mid = set(domains_of("mid", "domains.txt") or [])
+    full = set(domains_of("full", "domains.txt") or [])
+    miss_mid = sorted(d for d in lite if not _covered(d, mid))
+    if miss_mid:
+        fails.append("lite 有 %d 条未被 mid 覆盖：%s" % (len(miss_mid), ", ".join(miss_mid[:6])))
+    miss_full = sorted(d for d in mid if not _covered(d, full))
+    if miss_full:
+        fails.append("mid 有 %d 条未被 full 覆盖：%s" % (len(miss_full), ", ".join(miss_full[:6])))
+    return fails
+
+
 def main():
     fails = (check_ledger() + check_precision() + check_cooldown() + check_threat_isolation()
              + check_tags() + check_channel_artifacts() + check_sdk_video()
              + check_golden() + check_service_allow() + check_reputation() + check_shadow()
-             + check_dead())
+             + check_dead() + check_hierarchy())
     allow = load_allow()
     summary = {}
 

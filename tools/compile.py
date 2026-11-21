@@ -551,9 +551,11 @@ def main():
     # 威胁分类（挖矿/返利/遥测）严禁出现在 lite/mid：即便上游源带了也强制剔除
     lite = drop_children(forced | promoted_keep | consensus_keep) - threat_all
     # 观察池只进 mid / full：这些是自动发现的"前缀像广告、但链上没有广告落点"的域
-    mid = (drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted)
-           | ep | watch | sdk_video | (lblock - lallow)) - threat_all
-    full = exact | watch | sdk_video | threat_extra
+    # 档位必须严格包含：lite ⊆ mid ⊆ full。否则用户从 lite 升到 mid 会突然漏拦（体验倒退）。
+    mid = drop_children(
+        drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted)
+        | ep | watch | sdk_video | (lblock - lallow) | lite) - threat_all
+    full = exact | watch | sdk_video | threat_extra | mid
 
     prov = {d: round(consensus.get(d, 0), 2) for d in lite}
     json.dump({"lite": prov, "core": sorted(core & lite), "endpoints": sorted(ep & lite)},
