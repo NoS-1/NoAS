@@ -634,8 +634,9 @@ def judge(domains, hits):
     """把候选分批交给 AI，返回 (verdicts, calls, model_used, err)"""
     verdicts, calls, used_model, err = [], 0, MODEL, ""
     trusted = bool(ARK_KEY)
-    if not (ACC and TOK) and not ARK_KEY and not DS_KEY and not ALI_KEY and not SF_KEY and not QF_KEY and not ZP_KEY:
-        return verdicts, 0, "", "缺少 CF_ACCOUNT_ID / CF_API_TOKEN，AI 直判不可用"
+    if not (ACC and TOK) and not GH_KEY and not OR_KEY and not GR_KEY and not ARK_KEY and not DS_KEY and not ALI_KEY and not SF_KEY and not QF_KEY and not ZP_KEY:
+        return verdicts, 0, "", ("没有任何可用的判定源（GitHub Models / OpenRouter / Groq / "
+                                  "智谱 / 硅基 / 千帆 / 阿里 / DeepSeek / 方舟 / CF 均未配置）")
     usage = load_json(USAGE, {})
     day = today()
     used = int(usage.get(day, 0))
