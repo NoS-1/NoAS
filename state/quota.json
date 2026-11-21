@@ -1,12 +1,12 @@
 {
- "at": "2026-11-21T15:45:52Z",
+ "at": "2026-11-21T15:49:59Z",
  "ok": true,
  "utc_day_used": true,
  "used": {
-  "requests": 1370,
+  "requests": 1377,
   "kv_requests": 1213,
-  "ae_points": 324,
-  "d1_queries": 182
+  "ae_points": 329,
+  "d1_queries": 184
  },
  "limits": {
   "requests": 100000,
@@ -21,18 +21,18 @@
   "d1_queries": 0.0
  },
  "headroom": {
-  "requests": 98630,
+  "requests": 98623,
   "kv_requests": 98787,
-  "ae_points": 99676,
-  "d1_queries": 4999818
+  "ae_points": 99671,
+  "d1_queries": 4999816
  },
- "subrequests": 1025,
+ "subrequests": 1029,
  "errors": 6,
- "cpu_ms_p50": 2.05,
+ "cpu_ms_p50": 2.07,
  "cpu_ms_p99": 37.09,
  "cpu_limit_ms": 10,
  "by_script": {
-  "noas-doh": 1370
+  "noas-doh": 1377
  },
  "coverage": {
   "workers_dataset": true,
