@@ -51,7 +51,7 @@ CF AE / Logs / Cron ──► 只读观测（不进构建判定）
   - 心跳写 AE（GitHub Actions 挂了也能看出 Worker 活着）；
   - 版本哨兵：读 `build_manifest.json` 比对 `VERSION`，落后则写 `stale` 点并使 `/health.rules_stale=true`；
   - 上游自检：内置最小 A 报文直问上游（绕过自身规则层），成功则自动解除降级，失败写 `upstream-dead`。
-- **熔断不再断服**：额度到 90% 或单 IP 超 300/min 时，**跳过规则匹配直接转发**，响应头 `x-noas: degraded`，客户端无感；UTC 换日或 cron 自检成功后自动恢复。
+- **熔断不再断服**：额度到 90% 或单 IP 超 300/min（原生 Rate Limiting binding 按 colo 精确计数，绑定缺失时自动退回 isolate 内存计数）时，**跳过规则匹配直接转发**，响应头 `x-noas: degraded`，客户端无感；UTC 换日或 cron 自检成功后自动恢复。
 - **上游容错**：阿里 / 腾讯 / 360 三条 DoH，单条 5s 超时即切换。
 - **热规则自更新**（KV `RULES`）：cron 读 manifest 发现版本变化时，才拉 `subs/lite/domains.txt` → 条数/金丝雀双校验 → 存 KV；请求 isolate 冷启动读一次 KV，之后全走内存。**不重部署也能换规则**，校验不过就丢弃、继续用内嵌基线。源是 Pages 优先、raw 兜底；解析用一次换行替换 + 计数，避免 Free cron 的 10ms CPU 被上万行 split/join 吃掉。
 - **每日自检**（UTC 0 点那一轮）：只读本 isolate 状态，写一条 `diag` 点，内容包括三档条数、热规则条数、当前版本、上游失败数、是否降级。一条日志就能回答"线上到底装的是什么"。
@@ -73,7 +73,20 @@ CF AE / Logs / Cron ──► 只读观测（不进构建判定）
 | Pages 部署异常 | 站点回到 500，规则分发中断；DoH/Gateway 不受影响 | `cdn_deploy.py` 用 wrangler 重发 + 取文验证，不通过即红 |
 | 触发 1,000 次/分钟准入 | 部分请求被平台直接拒绝，Worker 内无法自救 | 靠 Gateway 分流 + 本地规则把请求量压下来 |
 
-## 七、明确不做
+## 七、2026 平台新能力评估（官方口径，均已逐条核对文档）
+
+| 能力 | 免费额度 / 限制（官方） | 结论 |
+|---|---|---|
+| Rate Limiting binding | Free 可用、**不额外计费**；period 仅 10 或 60 秒 | **已采用**：`LIMITER` 300 次/60s，按 colo 精确计数；绑定缺失或异常自动回退内存计数 |
+| Workflows | Free 10 万调用/天共享 + 3,000 steps/天 | 不采用：与 cron 职责重叠，只增状态机复杂度 |
+| Vectorize | 35M 查询/月免费 | 不采用：向量相似度打分天然带误判，违背"零误拦" |
+| Queues | 1 万 ops/天 | 不采用：本场景无异步解耦需求 |
+| Containers | Free 计划不提供 | 不采用 |
+| Workers Logs / Observability | 2026-12-01 起 Free 0.5 GB/天摄取、保留 7 天 | 维持 1% 采样，额度内 |
+| Gateway Lists | 100 个列表、每表 1,000 条；List API 600 次/分 | 已用 92/100，lite 用 10 片分片承载；不再新增列表 |
+| Gateway DNS64 / 自然语言建策略 | — | 不采用：与广告拦截无关 |
+
+## 八、明确不做
 
 - 多账户刷额度（违规且互相拖累）
 - KV 当请求计数器（1000 写/天会被瞬间打爆）
