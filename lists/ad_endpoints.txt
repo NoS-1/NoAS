@@ -84,3 +84,30 @@ adshare.toutiao.com
 scc.bytedance.com
 
 p3-ad-sign.byteimg.com
+
+# 白名单根域下的精确广告子域（端点表突破父域保护）
+ad.kugou.com
+ads.privacy.qq.com
+ads.uc.cn
+ads.uc.cn
+adscdn.baidu.com
+adservice.kugou.com
+adservice.kuwo.cn
+adv.kuwo.cn
+adx.oppomobile.com
+api.ad.intl.xiaomi.com
+appc.baidu.com
+c2.gdt.qq.com
+c3.gdt.qq.com
+cpro.zhidao.baidu.com
+cpro2.baidu.com
+mi.gdt.qq.com
+qzs.gdt.qq.com
+rdelivery.qq.com
+sdk.gdt.qq.com
+splash.quark.cn
+ttc.gdt.qq.com
+unionimage.baidu.com
+v2mi.gdt.qq.com
+v3.gdt.qq.com
+win.gdt.qq.com

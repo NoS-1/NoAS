@@ -1,4 +1,4 @@
-# NoAS 20261121-9f0d5f27（9901 条）
+# NoAS 20261121-3cebb5ad（9892 条）
 0.0.0.0 0017c6c37c.com
 0.0.0.0 00a39e6dfd.com
 0.0.0.0 01168nl.com
@@ -2342,6 +2342,7 @@
 0.0.0.0 ads.ipfighter.com
 0.0.0.0 ads.maoyan.com
 0.0.0.0 ads.mgtv.com
+0.0.0.0 ads.privacy.qq.com
 0.0.0.0 ads.scored.co
 0.0.0.0 ads.sportradar.com
 0.0.0.0 ads.talksport.com
@@ -2373,6 +2374,7 @@
 0.0.0.0 adsbuddy.net
 0.0.0.0 adsbyt1.titus.one
 0.0.0.0 adscale.de
+0.0.0.0 adscdn.baidu.com
 0.0.0.0 adschill.com
 0.0.0.0 adscienceltd.com
 0.0.0.0 adsco.re
@@ -2527,6 +2529,7 @@
 0.0.0.0 adx.hupu.com
 0.0.0.0 adx.ke.com
 0.0.0.0 adx.opera.com
+0.0.0.0 adx.oppomobile.com
 0.0.0.0 adx.wifi.com
 0.0.0.0 adx.xiaojukeji.com
 0.0.0.0 adx.yidianzixun.com
@@ -3471,6 +3474,7 @@
 0.0.0.0 apfjzhkkbguoc.site
 0.0.0.0 apfqoakmqrpqv.site
 0.0.0.0 api-access.pangolin-sdk-toutiao1.com
+0.0.0.0 api.ad.intl.xiaomi.com
 0.0.0.0 api.digitalpiloten.org
 0.0.0.0 api.elliehuxtable.com
 0.0.0.0 api.pingstart.com
@@ -3500,6 +3504,7 @@
 0.0.0.0 app03.ikk-classic.de
 0.0.0.0 apparatusvoyage.com
 0.0.0.0 appboycdn.com
+0.0.0.0 appc.baidu.com
 0.0.0.0 appearedon.com
 0.0.0.0 appendad.com
 0.0.0.0 appetitecamisolereawake.com
@@ -6617,6 +6622,8 @@
 0.0.0.0 cpnsbxkibvbhw.space
 0.0.0.0 cpro.baidu.com
 0.0.0.0 cpro.baidustatic.com
+0.0.0.0 cpro.zhidao.baidu.com
+0.0.0.0 cpro2.baidu.com
 0.0.0.0 cpsumpgbxqhid.space
 0.0.0.0 cpu-api.infor.pl
 0.0.0.0 cpuzspopetlsg.space
@@ -7028,24 +7035,6 @@
 0.0.0.0 cxiegxvvbtmxo.space
 0.0.0.0 cxivcfnaivzmj.online
 0.0.0.0 cxmonbsehjanc.space
-0.0.0.0 cxnp-protect.pro
-0.0.0.0 cxofostbnjehi.website
-0.0.0.0 cxrfns.gu-global.com
-0.0.0.0 cxuhnlvxuxskw.online
-0.0.0.0 cxussqzuffumy.site
-0.0.0.0 cxutqsjbwtkth.website
-0.0.0.0 cxvklaosnwgae.online
-0.0.0.0 cxvuaexnqejex.site
-0.0.0.0 cxyilbdocnfsi.space
-0.0.0.0 cyachalbbofrw.online
-0.0.0.0 cyaijllypnzgl.online
-0.0.0.0 cyberfluxer.com
-0.0.0.0 cybkit.com
-0.0.0.0 cyclinghere.com
-0.0.0.0 cyf9.destinia.cl
-0.0.0.0 cyfyxkqvqfvfm.space
-0.0.0.0 cygalwwkhhimv.space
-0.0.0.0 cyhanjealyojs.space
 0.0.0.0 d0.xcar.com.cn
 0.0.0.0 d10ce3z4vbhcdd.cloudfront.net
 0.0.0.0 d10zmv6hrj5cx1.cloudfront.net
@@ -8386,6 +8375,7 @@
 0.0.0.0 rcm.shinobi.jp
 0.0.0.0 rcvlink.com
 0.0.0.0 rd.autohome.com.cn
+0.0.0.0 rdelivery.qq.com
 0.0.0.0 rdtk.io
 0.0.0.0 rdx.autohome.com.cn
 0.0.0.0 realizationnewestfangs.com
@@ -9714,6 +9704,7 @@
 0.0.0.0 union.6.cn
 0.0.0.0 union.baidu.com
 0.0.0.0 union.bytedance.com
+0.0.0.0 unionimage.baidu.com
 0.0.0.0 unityads.unity3d.com
 0.0.0.0 unrulymedia.com
 0.0.0.0 unseenreport.com

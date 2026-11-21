@@ -1,4 +1,4 @@
-# NoAS RPZ（20261121-9f0d5f27）
+# NoAS RPZ（20261121-3cebb5ad）
 ; $TTL 300
 0017c6c37c.com CNAME .
 00a39e6dfd.com CNAME .
@@ -2343,6 +2343,7 @@ ads.house365.com CNAME .
 ads.ipfighter.com CNAME .
 ads.maoyan.com CNAME .
 ads.mgtv.com CNAME .
+ads.privacy.qq.com CNAME .
 ads.scored.co CNAME .
 ads.sportradar.com CNAME .
 ads.talksport.com CNAME .
@@ -2374,6 +2375,7 @@ adsbtrk.com CNAME .
 adsbuddy.net CNAME .
 adsbyt1.titus.one CNAME .
 adscale.de CNAME .
+adscdn.baidu.com CNAME .
 adschill.com CNAME .
 adscienceltd.com CNAME .
 adsco.re CNAME .
@@ -2528,6 +2530,7 @@ adx.fulcrum.com.fj CNAME .
 adx.hupu.com CNAME .
 adx.ke.com CNAME .
 adx.opera.com CNAME .
+adx.oppomobile.com CNAME .
 adx.wifi.com CNAME .
 adx.xiaojukeji.com CNAME .
 adx.yidianzixun.com CNAME .
@@ -3472,6 +3475,7 @@ apewirelessdiscard.com CNAME .
 apfjzhkkbguoc.site CNAME .
 apfqoakmqrpqv.site CNAME .
 api-access.pangolin-sdk-toutiao1.com CNAME .
+api.ad.intl.xiaomi.com CNAME .
 api.digitalpiloten.org CNAME .
 api.elliehuxtable.com CNAME .
 api.pingstart.com CNAME .
@@ -3501,6 +3505,7 @@ app.phimvu.app CNAME .
 app03.ikk-classic.de CNAME .
 apparatusvoyage.com CNAME .
 appboycdn.com CNAME .
+appc.baidu.com CNAME .
 appearedon.com CNAME .
 appendad.com CNAME .
 appetitecamisolereawake.com CNAME .
@@ -6618,6 +6623,8 @@ cpmstar.com CNAME .
 cpnsbxkibvbhw.space CNAME .
 cpro.baidu.com CNAME .
 cpro.baidustatic.com CNAME .
+cpro.zhidao.baidu.com CNAME .
+cpro2.baidu.com CNAME .
 cpsumpgbxqhid.space CNAME .
 cpu-api.infor.pl CNAME .
 cpuzspopetlsg.space CNAME .
@@ -7029,24 +7036,6 @@ cxgznmgoawvwj.site CNAME .
 cxiegxvvbtmxo.space CNAME .
 cxivcfnaivzmj.online CNAME .
 cxmonbsehjanc.space CNAME .
-cxnp-protect.pro CNAME .
-cxofostbnjehi.website CNAME .
-cxrfns.gu-global.com CNAME .
-cxuhnlvxuxskw.online CNAME .
-cxussqzuffumy.site CNAME .
-cxutqsjbwtkth.website CNAME .
-cxvklaosnwgae.online CNAME .
-cxvuaexnqejex.site CNAME .
-cxyilbdocnfsi.space CNAME .
-cyachalbbofrw.online CNAME .
-cyaijllypnzgl.online CNAME .
-cyberfluxer.com CNAME .
-cybkit.com CNAME .
-cyclinghere.com CNAME .
-cyf9.destinia.cl CNAME .
-cyfyxkqvqfvfm.space CNAME .
-cygalwwkhhimv.space CNAME .
-cyhanjealyojs.space CNAME .
 d0.xcar.com.cn CNAME .
 d10ce3z4vbhcdd.cloudfront.net CNAME .
 d10zmv6hrj5cx1.cloudfront.net CNAME .
@@ -8387,6 +8376,7 @@ rbthre.work CNAME .
 rcm.shinobi.jp CNAME .
 rcvlink.com CNAME .
 rd.autohome.com.cn CNAME .
+rdelivery.qq.com CNAME .
 rdtk.io CNAME .
 rdx.autohome.com.cn CNAME .
 realizationnewestfangs.com CNAME .
@@ -9715,6 +9705,7 @@ union.2345.com CNAME .
 union.6.cn CNAME .
 union.baidu.com CNAME .
 union.bytedance.com CNAME .
+unionimage.baidu.com CNAME .
 unityads.unity3d.com CNAME .
 unrulymedia.com CNAME .
 unseenreport.com CNAME .

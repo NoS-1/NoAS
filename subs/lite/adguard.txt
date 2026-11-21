@@ -1,10 +1,10 @@
 ! Title: NoAS 拦截订阅（lite）
 ! Description: 免费公开源并集，白名单硬闸过滤后发布；每日自动重建
-! Version: 20261121-9f0d5f27
-! Last modified: Sat, 21 Nov 2026 10:56:55 GMT
+! Version: 20261121-3cebb5ad
+! Last modified: Sat, 21 Nov 2026 11:05:53 GMT
 ! Expires: 12 hours
 ! Homepage: https://github.com/NoS-1/NoAS
-! 条数: 9901（含通配 55）
+! 条数: 9892（含通配 55）
 
 ||0017c6c37c.com^
 ||00a39e6dfd.com^
@@ -2349,6 +2349,7 @@
 ||ads.ipfighter.com^
 ||ads.maoyan.com^
 ||ads.mgtv.com^
+||ads.privacy.qq.com^
 ||ads.scored.co^
 ||ads.sportradar.com^
 ||ads.talksport.com^
@@ -2380,6 +2381,7 @@
 ||adsbuddy.net^
 ||adsbyt1.titus.one^
 ||adscale.de^
+||adscdn.baidu.com^
 ||adschill.com^
 ||adscienceltd.com^
 ||adsco.re^
@@ -2534,6 +2536,7 @@
 ||adx.hupu.com^
 ||adx.ke.com^
 ||adx.opera.com^
+||adx.oppomobile.com^
 ||adx.wifi.com^
 ||adx.xiaojukeji.com^
 ||adx.yidianzixun.com^
@@ -3478,6 +3481,7 @@
 ||apfjzhkkbguoc.site^
 ||apfqoakmqrpqv.site^
 ||api-access.pangolin-sdk-toutiao1.com^
+||api.ad.intl.xiaomi.com^
 ||api.digitalpiloten.org^
 ||api.elliehuxtable.com^
 ||api.pingstart.com^
@@ -3507,6 +3511,7 @@
 ||app03.ikk-classic.de^
 ||apparatusvoyage.com^
 ||appboycdn.com^
+||appc.baidu.com^
 ||appearedon.com^
 ||appendad.com^
 ||appetitecamisolereawake.com^
@@ -6624,6 +6629,8 @@
 ||cpnsbxkibvbhw.space^
 ||cpro.baidu.com^
 ||cpro.baidustatic.com^
+||cpro.zhidao.baidu.com^
+||cpro2.baidu.com^
 ||cpsumpgbxqhid.space^
 ||cpu-api.infor.pl^
 ||cpuzspopetlsg.space^
@@ -7035,24 +7042,6 @@
 ||cxiegxvvbtmxo.space^
 ||cxivcfnaivzmj.online^
 ||cxmonbsehjanc.space^
-||cxnp-protect.pro^
-||cxofostbnjehi.website^
-||cxrfns.gu-global.com^
-||cxuhnlvxuxskw.online^
-||cxussqzuffumy.site^
-||cxutqsjbwtkth.website^
-||cxvklaosnwgae.online^
-||cxvuaexnqejex.site^
-||cxyilbdocnfsi.space^
-||cyachalbbofrw.online^
-||cyaijllypnzgl.online^
-||cyberfluxer.com^
-||cybkit.com^
-||cyclinghere.com^
-||cyf9.destinia.cl^
-||cyfyxkqvqfvfm.space^
-||cygalwwkhhimv.space^
-||cyhanjealyojs.space^
 ||d0.xcar.com.cn^
 ||d10ce3z4vbhcdd.cloudfront.net^
 ||d10zmv6hrj5cx1.cloudfront.net^
@@ -8393,6 +8382,7 @@
 ||rcm.shinobi.jp^
 ||rcvlink.com^
 ||rd.autohome.com.cn^
+||rdelivery.qq.com^
 ||rdtk.io^
 ||rdx.autohome.com.cn^
 ||realizationnewestfangs.com^
@@ -9721,6 +9711,7 @@
 ||union.6.cn^
 ||union.baidu.com^
 ||union.bytedance.com^
+||unionimage.baidu.com^
 ||unityads.unity3d.com^
 ||unrulymedia.com^
 ||unseenreport.com^

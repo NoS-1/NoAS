@@ -1,4 +1,4 @@
-# NoAS 20261121-9f0d5f27（9901 条 + 通配 21）
+# NoAS 20261121-3cebb5ad（9892 条 + 通配 21）
 host-suffix, 0017c6c37c.com, reject
 host-suffix, 00a39e6dfd.com, reject
 host-suffix, 01168nl.com, reject
@@ -2342,6 +2342,7 @@ host-suffix, ads.house365.com, reject
 host-suffix, ads.ipfighter.com, reject
 host-suffix, ads.maoyan.com, reject
 host-suffix, ads.mgtv.com, reject
+host-suffix, ads.privacy.qq.com, reject
 host-suffix, ads.scored.co, reject
 host-suffix, ads.sportradar.com, reject
 host-suffix, ads.talksport.com, reject
@@ -2373,6 +2374,7 @@ host-suffix, adsbtrk.com, reject
 host-suffix, adsbuddy.net, reject
 host-suffix, adsbyt1.titus.one, reject
 host-suffix, adscale.de, reject
+host-suffix, adscdn.baidu.com, reject
 host-suffix, adschill.com, reject
 host-suffix, adscienceltd.com, reject
 host-suffix, adsco.re, reject
@@ -2527,6 +2529,7 @@ host-suffix, adx.fulcrum.com.fj, reject
 host-suffix, adx.hupu.com, reject
 host-suffix, adx.ke.com, reject
 host-suffix, adx.opera.com, reject
+host-suffix, adx.oppomobile.com, reject
 host-suffix, adx.wifi.com, reject
 host-suffix, adx.xiaojukeji.com, reject
 host-suffix, adx.yidianzixun.com, reject
@@ -3471,6 +3474,7 @@ host-suffix, apewirelessdiscard.com, reject
 host-suffix, apfjzhkkbguoc.site, reject
 host-suffix, apfqoakmqrpqv.site, reject
 host-suffix, api-access.pangolin-sdk-toutiao1.com, reject
+host-suffix, api.ad.intl.xiaomi.com, reject
 host-suffix, api.digitalpiloten.org, reject
 host-suffix, api.elliehuxtable.com, reject
 host-suffix, api.pingstart.com, reject
@@ -3500,6 +3504,7 @@ host-suffix, app.phimvu.app, reject
 host-suffix, app03.ikk-classic.de, reject
 host-suffix, apparatusvoyage.com, reject
 host-suffix, appboycdn.com, reject
+host-suffix, appc.baidu.com, reject
 host-suffix, appearedon.com, reject
 host-suffix, appendad.com, reject
 host-suffix, appetitecamisolereawake.com, reject
@@ -6617,6 +6622,8 @@ host-suffix, cpmstar.com, reject
 host-suffix, cpnsbxkibvbhw.space, reject
 host-suffix, cpro.baidu.com, reject
 host-suffix, cpro.baidustatic.com, reject
+host-suffix, cpro.zhidao.baidu.com, reject
+host-suffix, cpro2.baidu.com, reject
 host-suffix, cpsumpgbxqhid.space, reject
 host-suffix, cpu-api.infor.pl, reject
 host-suffix, cpuzspopetlsg.space, reject
@@ -7028,24 +7035,6 @@ host-suffix, cxgznmgoawvwj.site, reject
 host-suffix, cxiegxvvbtmxo.space, reject
 host-suffix, cxivcfnaivzmj.online, reject
 host-suffix, cxmonbsehjanc.space, reject
-host-suffix, cxnp-protect.pro, reject
-host-suffix, cxofostbnjehi.website, reject
-host-suffix, cxrfns.gu-global.com, reject
-host-suffix, cxuhnlvxuxskw.online, reject
-host-suffix, cxussqzuffumy.site, reject
-host-suffix, cxutqsjbwtkth.website, reject
-host-suffix, cxvklaosnwgae.online, reject
-host-suffix, cxvuaexnqejex.site, reject
-host-suffix, cxyilbdocnfsi.space, reject
-host-suffix, cyachalbbofrw.online, reject
-host-suffix, cyaijllypnzgl.online, reject
-host-suffix, cyberfluxer.com, reject
-host-suffix, cybkit.com, reject
-host-suffix, cyclinghere.com, reject
-host-suffix, cyf9.destinia.cl, reject
-host-suffix, cyfyxkqvqfvfm.space, reject
-host-suffix, cygalwwkhhimv.space, reject
-host-suffix, cyhanjealyojs.space, reject
 host-suffix, d0.xcar.com.cn, reject
 host-suffix, d10ce3z4vbhcdd.cloudfront.net, reject
 host-suffix, d10zmv6hrj5cx1.cloudfront.net, reject
@@ -8386,6 +8375,7 @@ host-suffix, rbthre.work, reject
 host-suffix, rcm.shinobi.jp, reject
 host-suffix, rcvlink.com, reject
 host-suffix, rd.autohome.com.cn, reject
+host-suffix, rdelivery.qq.com, reject
 host-suffix, rdtk.io, reject
 host-suffix, rdx.autohome.com.cn, reject
 host-suffix, realizationnewestfangs.com, reject
@@ -9714,6 +9704,7 @@ host-suffix, union.2345.com, reject
 host-suffix, union.6.cn, reject
 host-suffix, union.baidu.com, reject
 host-suffix, union.bytedance.com, reject
+host-suffix, unionimage.baidu.com, reject
 host-suffix, unityads.unity3d.com, reject
 host-suffix, unrulymedia.com, reject
 host-suffix, unseenreport.com, reject

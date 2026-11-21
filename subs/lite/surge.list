@@ -2341,6 +2341,7 @@ DOMAIN-SUFFIX,ads.house365.com
 DOMAIN-SUFFIX,ads.ipfighter.com
 DOMAIN-SUFFIX,ads.maoyan.com
 DOMAIN-SUFFIX,ads.mgtv.com
+DOMAIN-SUFFIX,ads.privacy.qq.com
 DOMAIN-SUFFIX,ads.scored.co
 DOMAIN-SUFFIX,ads.sportradar.com
 DOMAIN-SUFFIX,ads.talksport.com
@@ -2372,6 +2373,7 @@ DOMAIN-SUFFIX,adsbtrk.com
 DOMAIN-SUFFIX,adsbuddy.net
 DOMAIN-SUFFIX,adsbyt1.titus.one
 DOMAIN-SUFFIX,adscale.de
+DOMAIN-SUFFIX,adscdn.baidu.com
 DOMAIN-SUFFIX,adschill.com
 DOMAIN-SUFFIX,adscienceltd.com
 DOMAIN-SUFFIX,adsco.re
@@ -2526,6 +2528,7 @@ DOMAIN-SUFFIX,adx.fulcrum.com.fj
 DOMAIN-SUFFIX,adx.hupu.com
 DOMAIN-SUFFIX,adx.ke.com
 DOMAIN-SUFFIX,adx.opera.com
+DOMAIN-SUFFIX,adx.oppomobile.com
 DOMAIN-SUFFIX,adx.wifi.com
 DOMAIN-SUFFIX,adx.xiaojukeji.com
 DOMAIN-SUFFIX,adx.yidianzixun.com
@@ -3470,6 +3473,7 @@ DOMAIN-SUFFIX,apewirelessdiscard.com
 DOMAIN-SUFFIX,apfjzhkkbguoc.site
 DOMAIN-SUFFIX,apfqoakmqrpqv.site
 DOMAIN-SUFFIX,api-access.pangolin-sdk-toutiao1.com
+DOMAIN-SUFFIX,api.ad.intl.xiaomi.com
 DOMAIN-SUFFIX,api.digitalpiloten.org
 DOMAIN-SUFFIX,api.elliehuxtable.com
 DOMAIN-SUFFIX,api.pingstart.com
@@ -3499,6 +3503,7 @@ DOMAIN-SUFFIX,app.phimvu.app
 DOMAIN-SUFFIX,app03.ikk-classic.de
 DOMAIN-SUFFIX,apparatusvoyage.com
 DOMAIN-SUFFIX,appboycdn.com
+DOMAIN-SUFFIX,appc.baidu.com
 DOMAIN-SUFFIX,appearedon.com
 DOMAIN-SUFFIX,appendad.com
 DOMAIN-SUFFIX,appetitecamisolereawake.com
@@ -6616,6 +6621,8 @@ DOMAIN-SUFFIX,cpmstar.com
 DOMAIN-SUFFIX,cpnsbxkibvbhw.space
 DOMAIN-SUFFIX,cpro.baidu.com
 DOMAIN-SUFFIX,cpro.baidustatic.com
+DOMAIN-SUFFIX,cpro.zhidao.baidu.com
+DOMAIN-SUFFIX,cpro2.baidu.com
 DOMAIN-SUFFIX,cpsumpgbxqhid.space
 DOMAIN-SUFFIX,cpu-api.infor.pl
 DOMAIN-SUFFIX,cpuzspopetlsg.space
@@ -7027,24 +7034,6 @@ DOMAIN-SUFFIX,cxgznmgoawvwj.site
 DOMAIN-SUFFIX,cxiegxvvbtmxo.space
 DOMAIN-SUFFIX,cxivcfnaivzmj.online
 DOMAIN-SUFFIX,cxmonbsehjanc.space
-DOMAIN-SUFFIX,cxnp-protect.pro
-DOMAIN-SUFFIX,cxofostbnjehi.website
-DOMAIN-SUFFIX,cxrfns.gu-global.com
-DOMAIN-SUFFIX,cxuhnlvxuxskw.online
-DOMAIN-SUFFIX,cxussqzuffumy.site
-DOMAIN-SUFFIX,cxutqsjbwtkth.website
-DOMAIN-SUFFIX,cxvklaosnwgae.online
-DOMAIN-SUFFIX,cxvuaexnqejex.site
-DOMAIN-SUFFIX,cxyilbdocnfsi.space
-DOMAIN-SUFFIX,cyachalbbofrw.online
-DOMAIN-SUFFIX,cyaijllypnzgl.online
-DOMAIN-SUFFIX,cyberfluxer.com
-DOMAIN-SUFFIX,cybkit.com
-DOMAIN-SUFFIX,cyclinghere.com
-DOMAIN-SUFFIX,cyf9.destinia.cl
-DOMAIN-SUFFIX,cyfyxkqvqfvfm.space
-DOMAIN-SUFFIX,cygalwwkhhimv.space
-DOMAIN-SUFFIX,cyhanjealyojs.space
 DOMAIN-SUFFIX,d0.xcar.com.cn
 DOMAIN-SUFFIX,d10ce3z4vbhcdd.cloudfront.net
 DOMAIN-SUFFIX,d10zmv6hrj5cx1.cloudfront.net
@@ -8385,6 +8374,7 @@ DOMAIN-SUFFIX,rbthre.work
 DOMAIN-SUFFIX,rcm.shinobi.jp
 DOMAIN-SUFFIX,rcvlink.com
 DOMAIN-SUFFIX,rd.autohome.com.cn
+DOMAIN-SUFFIX,rdelivery.qq.com
 DOMAIN-SUFFIX,rdtk.io
 DOMAIN-SUFFIX,rdx.autohome.com.cn
 DOMAIN-SUFFIX,realizationnewestfangs.com
@@ -9713,6 +9703,7 @@ DOMAIN-SUFFIX,union.2345.com
 DOMAIN-SUFFIX,union.6.cn
 DOMAIN-SUFFIX,union.baidu.com
 DOMAIN-SUFFIX,union.bytedance.com
+DOMAIN-SUFFIX,unionimage.baidu.com
 DOMAIN-SUFFIX,unityads.unity3d.com
 DOMAIN-SUFFIX,unrulymedia.com
 DOMAIN-SUFFIX,unseenreport.com

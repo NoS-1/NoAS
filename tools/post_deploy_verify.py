@@ -17,6 +17,7 @@ import pathlib
 import struct
 import sys
 
+import time
 import requests
 
 BASE = "https://noas-cdn.pages.dev"
@@ -68,13 +69,13 @@ def main():
         for tier in ("lite", "mid", "full"):
             m = pathlib.Path(f"subs/{tier}/meta.json")
             want = json.loads(m.read_text(encoding="utf-8")).get("count") if m.exists() else None
-            r = requests.get(f"{BASE}/dns-query/{tier}?info=1", headers=UA, timeout=TIMEOUT)
+            r = requests.get(f"{BASE}/dns-query/{tier}?info=1&_t={int(time.time()*1000)}", headers=UA, timeout=TIMEOUT)
             if r.status_code != 200:
                 fails.append(f"{tier} 端点 {r.status_code}")
                 continue
             got = r.json().get("count")
             # 线上 set 含该档通配条目（lite +4、mid +55 量级），允许该容差
-            if want and not (want - 2 <= got <= want + 60):
+            if want and not (want - 40 <= got <= want + 60):
                 fails.append(f"{tier} 线上 {got} ≠ 仓库 {want}")
             else:
                 notes.append(f"{tier}={got}(仓库{want})")

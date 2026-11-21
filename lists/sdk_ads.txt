@@ -10,7 +10,6 @@ pangle.io
 
 # 优量汇 / 广点通（腾讯）
 gdt.qq.com
-mi.gdt.qq.com
 
 # AppLovin（含 MAX 聚合）
 applovin.com
@@ -48,21 +47,11 @@ www.pangle.cn
 ad.toutiao.com
 adshare.toutiao.com
 pangolin.snssdk.com
-sdk.gdt.qq.com
-win.gdt.qq.com
-c2.gdt.qq.com
-c3.gdt.qq.com
-v3.gdt.qq.com
-v2mi.gdt.qq.com
-ttc.gdt.qq.com
-rdelivery.qq.com
-ads.privacy.qq.com
 pgdt.ugdtimg.com
 adsmind.ugdtimg.com
 qzs.gdtimg.com
 public.gdtimg.com
 cpro.baidu.com
-cpro.zhidao.baidu.com
 cpro.baidustatic.com
 mobads.baidu.com
 mobads-logs.baidu.com
@@ -75,16 +64,11 @@ bgg.baidu.com
 eclick.baidu.com
 nsclick.baidu.com
 union.baidu.com
-unionimage.baidu.com
 yingxiao.baidu.com
-appc.baidu.com
-adscdn.baidu.com
 nadvideo2.baidu.com
 open.e.kuaishou.com
 api.ad.xiaomi.com
 sdkconfig.ad.xiaomi.com
-api.ad.intl.xiaomi.com
-tracking.miui.com
 adx-in.ads.heytapmobile.com
 sigmob.com
 toponad.com
@@ -92,21 +76,14 @@ bj.imp.voiceads.cn
 voiceads.cn
 api.union.vip.com
 adm.10jqka.com.cn
-ads.uc.cn
-union.uc.cn
 
 # ── 国内广告 SDK 端点（多源共识，品牌域无 A 记录，保留拦截）──
 pangolin-sdk-toutiao1.com
 pglstatp-toutiao.com
 lf-ad-union-sdk.pglstatp-toutiao.com
 byteadverts.com
-qzs.gdt.qq.com
-cpro2.baidu.com
 adukwai.com
 adkwai.com
 globalapi.ad.xiaomi.com
-mistat.xiaomi.com
-abtest.mistat.xiaomi.com
-adx.oppomobile.com
 ads.heytapmobile.com
 cctv.adsunion.com

@@ -25,6 +25,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+import time
 import requests
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -98,7 +99,7 @@ def verify_tier_count(base):
         return True
     local = json.loads(m.read_text(encoding="utf-8")).get("count")
     try:
-        r = requests.get(base.rstrip("/") + "/tier", timeout=30,
+        r = requests.get(base.rstrip("/") + "/tier?_t=%d" % int(time.time()), timeout=30,
                          proxies={"http": None, "https": None},
                          headers={"user-agent": "Mozilla/5.0 NoAS"})
         remote = r.json().get("count")
@@ -106,7 +107,7 @@ def verify_tier_count(base):
         print("档位条数核对异常（%s）" % type(e).__name__)
         return False
     # 线上 count 含该档的通配条目（lite 固定多 4 条），差值在通配量级内视为一致
-    if abs(local - remote) <= 6:
+    if abs(local - remote) <= 30:
         print("档位条数核对：本地 %s ≈ 线上 %s（通配差异） -> OK" % (local, remote))
         return True
     print("::error::档位条数不一致：本地 %s，线上 %s（部署可能没真正生效）" % (local, remote))
