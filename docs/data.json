@@ -1,16 +1,16 @@
 {
  "repo": "NoS-1/NoAS",
- "updated": "2026-11-21T05:03:24Z",
+ "updated": "2026-11-21T05:12:59Z",
  "tiers": {
   "lite": {
    "count": 9902,
    "version": "20261121-5985d0c1",
    "wildcards": 57,
-   "generated_utc": "Sat, 21 Nov 2026 05:02:34 GMT",
+   "generated_utc": "Sat, 21 Nov 2026 05:12:55 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 226930,
-     "sha256": "a23eb25d205922354501b58e0cb93e25d7e852efe7c12dbd56e0846c91ffb26c"
+     "sha256": "5e90153d5fd1b52e990ee7c8db9bed155e9935f584b56ae474e92c822df1294c"
     },
     "allow.txt": {
      "bytes": 2225,
@@ -66,11 +66,11 @@
    "count": 19959,
    "version": "20261121-17bc7397",
    "wildcards": 57,
-   "generated_utc": "Sat, 21 Nov 2026 05:02:34 GMT",
+   "generated_utc": "Sat, 21 Nov 2026 05:12:55 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 421353,
-     "sha256": "4005b7d29e4cefaae71dcc8bc4dc265fefdfe6d2fadfb946429e2e1bbf39aa81"
+     "sha256": "b06bbaa1ec58133cd017059f954d788e64041e264a16a7fbc3895e506ad523cf"
     },
     "allow.txt": {
      "bytes": 2225,
@@ -126,11 +126,11 @@
    "count": 29990,
    "version": "20261121-04108835",
    "wildcards": 3012,
-   "generated_utc": "Sat, 21 Nov 2026 05:02:35 GMT",
+   "generated_utc": "Sat, 21 Nov 2026 05:12:56 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 729379,
-     "sha256": "e0fe83e66c988e22810f501def2b86dd5c2b74c7e096301157153c282f8ce716"
+     "sha256": "9a4cc2a8ca835d35cb1b1ea40c07edc5207bdb7b051140a076c7d2a18ea7296e"
     },
     "allow.txt": {
      "bytes": 2225,
@@ -206,14 +206,14 @@
    "OISD-Big": 0,
    "HaGeZi-Pro": 0,
    "HaGeZi-ProPlus": 0,
-   "EasyList": 47831,
+   "EasyList": 47833,
    "NoS-antiAD": 110355,
    "ACL4SSR-BanProgramAD": 995
   }
  },
  "health": {
-  "ts": "2026-11-21T05:02:11Z",
-  "round": 58,
+  "ts": "2026-11-21T05:08:01Z",
+  "round": 59,
   "sources": [
    {
     "name": "StevenBlack-all",
@@ -326,12 +326,6 @@
  },
  "evolution": [
   {
-   "ts": "2026-11-21T03:44:45Z",
-   "round": 53,
-   "events": [],
-   "sources": 21
-  },
-  {
    "ts": "2026-11-21T04:08:58Z",
    "round": 54,
    "events": [],
@@ -358,6 +352,12 @@
   {
    "ts": "2026-11-21T05:02:11Z",
    "round": 58,
+   "events": [],
+   "sources": 21
+  },
+  {
+   "ts": "2026-11-21T05:08:01Z",
+   "round": 59,
    "events": [],
    "sources": 21
   }
