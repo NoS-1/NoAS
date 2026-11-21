@@ -1848,6 +1848,7 @@ ad-balancer.at	77	lite	已在lite; 共识2.5; 父域为广告网络
 ad-balancer.net	90	lite	已在lite; 共识6.5; 父域为广告网络
 ad-beta.flipboard.com	0	none	白名单/良性/黄金集一票否决
 ad-bice-seven.vercel.app	65	mid	已在lite; 父域为广告网络
+ad-bitcryptoft-dp23yfvcte9c.edgeone.dev	73	lite	已在lite; 父域为广告网络; 机器生成子域
 ad-block-offer.com	65	mid	已在lite; 父域为广告网络
 ad-bls-tracking.lemino.docomo.ne.jp	77	lite	已在lite; 共识3.0; 父域为广告网络
 ad-breaking.top	77	lite	已在lite; 共识2.5; 父域为广告网络
@@ -2856,7 +2857,6 @@ adebisu.wowow.co.jp	70	lite	已在lite; 共识5.5
 adecn.com	70	lite	已在lite; 共识5.5
 adehhurslxxmh.space	78	lite	已在lite; 共识5.5; 机器生成子域
 adelphic.net	70	lite	已在lite; 共识5.5
-ademails.com	70	lite	已在lite; 共识5.5
 adexchangedirect.com	78	lite	已在lite; 共识6.5; 机器生成子域
 adexchangegate.com	78	lite	已在lite; 共识6.5; 机器生成子域
 adexchangeguru.com	78	lite	已在lite; 共识6.5; 机器生成子域

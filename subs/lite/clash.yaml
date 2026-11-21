@@ -1,4 +1,4 @@
-# NoAS 20261121-9feeb90b rule-provider payload
+# NoAS 20261121-2006ea56 rule-provider payload
 payload:
   - DOMAIN-SUFFIX,0017c6c37c.com
   - DOMAIN-SUFFIX,00a39e6dfd.com
@@ -1842,6 +1842,7 @@ payload:
   - DOMAIN-SUFFIX,ad-balancer.net
   - DOMAIN-SUFFIX,ad-beta.flipboard.com
   - DOMAIN-SUFFIX,ad-bice-seven.vercel.app
+  - DOMAIN-SUFFIX,ad-bitcryptoft-dp23yfvcte9c.edgeone.dev
   - DOMAIN-SUFFIX,ad-block-offer.com
   - DOMAIN-SUFFIX,ad-bls-tracking.lemino.docomo.ne.jp
   - DOMAIN-SUFFIX,ad-breaking.top
@@ -2835,7 +2836,6 @@ payload:
   - DOMAIN-SUFFIX,adecn.com
   - DOMAIN-SUFFIX,adehhurslxxmh.space
   - DOMAIN-SUFFIX,adelphic.net
-  - DOMAIN-SUFFIX,ademails.com
   - DOMAIN-SUFFIX,adexchangedirect.com
   - DOMAIN-SUFFIX,adexchangegate.com
   - DOMAIN-SUFFIX,adexchangeguru.com

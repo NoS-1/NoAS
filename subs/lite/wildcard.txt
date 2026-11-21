@@ -1,4 +1,4 @@
-# NoAS 通配（20261121-9feeb90b）
+# NoAS 通配（20261121-2006ea56）
 *.0017c6c37c.com
 *.00a39e6dfd.com
 *.01168nl.com
@@ -1841,6 +1841,7 @@
 *.ad-balancer.net
 *.ad-beta.flipboard.com
 *.ad-bice-seven.vercel.app
+*.ad-bitcryptoft-dp23yfvcte9c.edgeone.dev
 *.ad-block-offer.com
 *.ad-bls-tracking.lemino.docomo.ne.jp
 *.ad-breaking.top
@@ -2834,7 +2835,6 @@
 *.adecn.com
 *.adehhurslxxmh.space
 *.adelphic.net
-*.ademails.com
 *.adexchangedirect.com
 *.adexchangegate.com
 *.adexchangeguru.com

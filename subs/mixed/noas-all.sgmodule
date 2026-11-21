@@ -1850,6 +1850,7 @@ DOMAIN-SUFFIX,ad-balancer.at,REJECT
 DOMAIN-SUFFIX,ad-balancer.net,REJECT
 DOMAIN-SUFFIX,ad-beta.flipboard.com,REJECT
 DOMAIN-SUFFIX,ad-bice-seven.vercel.app,REJECT
+DOMAIN-SUFFIX,ad-bitcryptoft-dp23yfvcte9c.edgeone.dev,REJECT
 DOMAIN-SUFFIX,ad-block-offer.com,REJECT
 DOMAIN-SUFFIX,ad-bls-tracking.lemino.docomo.ne.jp,REJECT
 DOMAIN-SUFFIX,ad-breaking.top,REJECT
@@ -2843,7 +2844,6 @@ DOMAIN-SUFFIX,adebisu.wowow.co.jp,REJECT
 DOMAIN-SUFFIX,adecn.com,REJECT
 DOMAIN-SUFFIX,adehhurslxxmh.space,REJECT
 DOMAIN-SUFFIX,adelphic.net,REJECT
-DOMAIN-SUFFIX,ademails.com,REJECT
 DOMAIN-SUFFIX,adexchangedirect.com,REJECT
 DOMAIN-SUFFIX,adexchangegate.com,REJECT
 DOMAIN-SUFFIX,adexchangeguru.com,REJECT

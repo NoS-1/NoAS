@@ -1,17 +1,17 @@
 {
- "updated": "2026-11-21T02:04:18Z",
+ "updated": "2026-11-21T02:09:59Z",
  "today": {
   "date": "2026-11-21",
   "lite": 9903,
-  "mid": 210603,
-  "full": 529219,
+  "mid": 210623,
+  "full": 529150,
   "sources": 21,
   "whitelist": 136
  },
  "delta": {
   "lite": 0,
-  "mid": 80,
-  "full": 75,
+  "mid": 100,
+  "full": 6,
   "sources": 0,
   "whitelist": 0
  },
@@ -27,8 +27,8 @@
   {
    "date": "2026-11-21",
    "lite": 9903,
-   "mid": 210603,
-   "full": 529219,
+   "mid": 210623,
+   "full": 529150,
    "sources": 21,
    "whitelist": 136
   }

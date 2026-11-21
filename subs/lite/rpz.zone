@@ -1,4 +1,4 @@
-# NoAS RPZ（20261121-9feeb90b）
+# NoAS RPZ（20261121-2006ea56）
 ; $TTL 300
 0017c6c37c.com CNAME .
 00a39e6dfd.com CNAME .
@@ -1842,6 +1842,7 @@ ad-balancer.at CNAME .
 ad-balancer.net CNAME .
 ad-beta.flipboard.com CNAME .
 ad-bice-seven.vercel.app CNAME .
+ad-bitcryptoft-dp23yfvcte9c.edgeone.dev CNAME .
 ad-block-offer.com CNAME .
 ad-bls-tracking.lemino.docomo.ne.jp CNAME .
 ad-breaking.top CNAME .
@@ -2835,7 +2836,6 @@ adebisu.wowow.co.jp CNAME .
 adecn.com CNAME .
 adehhurslxxmh.space CNAME .
 adelphic.net CNAME .
-ademails.com CNAME .
 adexchangedirect.com CNAME .
 adexchangegate.com CNAME .
 adexchangeguru.com CNAME .

@@ -1,7 +1,7 @@
 ! Title: NoAS 拦截订阅（lite）
 ! Description: 免费公开源并集，白名单硬闸过滤后发布；每日自动重建
-! Version: 20261121-9feeb90b
-! Last modified: Sat, 21 Nov 2026 02:01:14 GMT
+! Version: 20261121-2006ea56
+! Last modified: Sat, 21 Nov 2026 02:06:34 GMT
 ! Expires: 12 hours
 ! Homepage: https://github.com/NoS-1/NoAS
 ! 条数: 9903（含通配 57）
@@ -1848,6 +1848,7 @@
 ||ad-balancer.net^
 ||ad-beta.flipboard.com^
 ||ad-bice-seven.vercel.app^
+||ad-bitcryptoft-dp23yfvcte9c.edgeone.dev^
 ||ad-block-offer.com^
 ||ad-bls-tracking.lemino.docomo.ne.jp^
 ||ad-breaking.top^
@@ -2841,7 +2842,6 @@
 ||adecn.com^
 ||adehhurslxxmh.space^
 ||adelphic.net^
-||ademails.com^
 ||adexchangedirect.com^
 ||adexchangegate.com^
 ||adexchangeguru.com^

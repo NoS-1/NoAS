@@ -1,4 +1,4 @@
-# NoAS 20261121-9feeb90b（9903 条 + 通配 21）
+# NoAS 20261121-2006ea56（9903 条 + 通配 21）
 host-suffix, 0017c6c37c.com, reject
 host-suffix, 00a39e6dfd.com, reject
 host-suffix, 01168nl.com, reject
@@ -1841,6 +1841,7 @@ host-suffix, ad-balancer.at, reject
 host-suffix, ad-balancer.net, reject
 host-suffix, ad-beta.flipboard.com, reject
 host-suffix, ad-bice-seven.vercel.app, reject
+host-suffix, ad-bitcryptoft-dp23yfvcte9c.edgeone.dev, reject
 host-suffix, ad-block-offer.com, reject
 host-suffix, ad-bls-tracking.lemino.docomo.ne.jp, reject
 host-suffix, ad-breaking.top, reject
@@ -2834,7 +2835,6 @@ host-suffix, adebisu.wowow.co.jp, reject
 host-suffix, adecn.com, reject
 host-suffix, adehhurslxxmh.space, reject
 host-suffix, adelphic.net, reject
-host-suffix, ademails.com, reject
 host-suffix, adexchangedirect.com, reject
 host-suffix, adexchangegate.com, reject
 host-suffix, adexchangeguru.com, reject
