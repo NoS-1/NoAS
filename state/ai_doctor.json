@@ -6,14 +6,19 @@
    "note": "无需凭据：--verdicts 传入即可，优先级最高"
   },
   {
-   "name": "DeepSeek",
+   "name": "智谱 GLM",
    "status": "missing",
-   "note": "未配置 DEEPSEEK_API_KEY"
+   "note": "未配置 ZHIPU_API_KEY（智谱 BigModel）"
   },
   {
    "name": "阿里云百炼",
    "status": "missing",
    "note": "未配置 DASHSCOPE_API_KEY（阿里云百炼）"
+  },
+  {
+   "name": "DeepSeek",
+   "status": "missing",
+   "note": "未配置 DEEPSEEK_API_KEY"
   },
   {
    "name": "豆包 Ark",

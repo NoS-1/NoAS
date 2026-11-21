@@ -44,6 +44,21 @@ def check_deepseek():
         return "fail", "%s: %s" % (type(e).__name__, str(e)[:80])
 
 
+def check_zhipu():
+    key = (os.environ.get("ZHIPU_API_KEY") or os.environ.get("GLM_API_KEY") or os.environ.get("BIGMODEL_API_KEY") or "").strip()
+    if not key:
+        return "missing", "未配置 ZHIPU_API_KEY（智谱 BigModel）"
+    base = os.environ.get("ZP_BASE", "https://open.bigmodel.cn/api/paas/v4").rstrip("/")
+    model = os.environ.get("ZP_MODEL", "glm-4.7-flash")
+    try:
+        txt = _post(base + "/chat/completions", {"model": model, "max_tokens": 16,
+                 "messages": [{"role": "user", "content": MC}]},
+                 {"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+        return "ok", "%s → %s" % (model, txt.strip()[:20])
+    except Exception as e:
+        return "fail", "%s: %s" % (type(e).__name__, str(e)[:80])
+
+
 def check_aliyun():
     key = (os.environ.get("DASHSCOPE_API_KEY") or os.environ.get("ALIYUN_API_KEY") or "").strip()
     if not key:
@@ -91,7 +106,8 @@ def check_cf():
 
 def main():
     sources = [("主脑模型（会话内逐条判）", "ok", "无需凭据：--verdicts 传入即可，优先级最高"),
-               ("DeepSeek", *check_deepseek()), ("阿里云百炼", *check_aliyun()),
+               ("智谱 GLM", *check_zhipu()), ("阿里云百炼", *check_aliyun()),
+               ("DeepSeek", *check_deepseek()),
                ("豆包 Ark", *check_ark()), ("Cloudflare AI", *check_cf())]
     print("%-26s %-8s %s" % ("判定源", "状态", "说明"))
     for name, st, msg in sources:

@@ -17,7 +17,8 @@ import pathlib
 import sys
 
 CREDS = pathlib.Path(os.path.expanduser("~/.noas/creds.env"))
-KEYS = {"aliyun": "DASHSCOPE_API_KEY", "deepseek": "DEEPSEEK_API_KEY", "ark": "ARK_API_KEY"}
+KEYS = {"aliyun": "DASHSCOPE_API_KEY", "deepseek": "DEEPSEEK_API_KEY",
+        "zhipu": "ZHIPU_API_KEY", "ark": "ARK_API_KEY"}
 
 
 def read_lines():

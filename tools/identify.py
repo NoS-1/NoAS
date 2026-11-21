@@ -163,6 +163,10 @@ def from_pool():
 
 
 # ── AI 直判 ────────────────────────────────────────────────────────────────
+ZP_KEY = (os.environ.get("ZHIPU_API_KEY") or os.environ.get("GLM_API_KEY") or os.environ.get("BIGMODEL_API_KEY") or "").strip()
+ZP_BASE = os.environ.get("ZP_BASE", "https://open.bigmodel.cn/api/paas/v4").strip()
+ZP_MODEL = os.environ.get("ZP_MODEL", "glm-4.7-flash").strip()
+
 ALI_KEY = (os.environ.get("DASHSCOPE_API_KEY") or os.environ.get("ALIYUN_API_KEY") or "").strip()
 ALI_BASE = os.environ.get("ALI_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1").strip()
 ALI_MODEL = os.environ.get("ALI_MODEL", "qwen3.5-turbo").strip()
@@ -192,6 +196,17 @@ def ds_call(prompt, max_tokens=2000):
                        "response_format": {"type": "json_object"}}).encode()
     req = urllib.request.Request(DS_BASE.rstrip("/") + "/chat/completions", data=body,
                                  headers={"Authorization": "Bearer " + DS_KEY,
+                                          "Content-Type": "application/json"})
+    d = json.loads(urllib.request.urlopen(req, timeout=120).read().decode())
+    return ((d.get("choices") or [{}])[0].get("message") or {}).get("content", "")
+
+
+def zp_call(prompt, max_tokens=2000):
+    """智谱开放平台（BigModel）OpenAI 兼容端点，默认 glm-4.7-flash（常驻免费模型）"""
+    body = json.dumps({"model": ZP_MODEL, "messages": [{"role": "user", "content": prompt}],
+                       "max_tokens": max_tokens, "temperature": 0.1}).encode()
+    req = urllib.request.Request(ZP_BASE.rstrip("/") + "/chat/completions", data=body,
+                                 headers={"Authorization": "Bearer " + ZP_KEY,
                                           "Content-Type": "application/json"})
     d = json.loads(urllib.request.urlopen(req, timeout=120).read().decode())
     return ((d.get("choices") or [{}])[0].get("message") or {}).get("content", "")
@@ -265,7 +280,7 @@ def judge(domains, hits):
     """把候选分批交给 AI，返回 (verdicts, calls, model_used, err)"""
     verdicts, calls, used_model, err = [], 0, MODEL, ""
     trusted = bool(ARK_KEY)
-    if not (ACC and TOK) and not ARK_KEY and not DS_KEY and not ALI_KEY:
+    if not (ACC and TOK) and not ARK_KEY and not DS_KEY and not ALI_KEY and not ZP_KEY:
         return verdicts, 0, "", "缺少 CF_ACCOUNT_ID / CF_API_TOKEN，AI 直判不可用"
     usage = load_json(USAGE, {})
     day = today()
@@ -306,10 +321,12 @@ def judge(domains, hits):
             "待判域名（域名   请求次数）：\n" + "\n".join(lines)
         )
         # 判定源优先级：DeepSeek > 豆包 Ark > CF（70B 优先，8B 兜底）
-        if DS_KEY:
-            providers = [("deepseek", lambda: ds_call(prompt))]
+        if ZP_KEY:
+            providers = [("zhipu", lambda: zp_call(prompt))]
         elif ALI_KEY:
             providers = [("aliyun", lambda: ali_call(prompt))]
+        elif DS_KEY:
+            providers = [("deepseek", lambda: ds_call(prompt))]
         elif ARK_KEY:
             providers = [("ark", lambda: ark_call(prompt))]
         else:
@@ -484,7 +501,7 @@ def main():
             if model_used == "main-brain":
                 # 主脑模型逐条审过，不再用词元闸兜底；只要求置信达标 + 有真实请求痕迹
                 ok = it["c"] >= 85 and (todo.get(d, 0) >= 3 or parent_hit(d, known_ad))
-            elif DS_KEY or ALI_KEY or ARK_KEY or "70b" in (model_used or "").lower():
+            elif ZP_KEY or DS_KEY or ALI_KEY or ARK_KEY or "70b" in (model_used or "").lower():
                 # 豆包接口判：可信，但保留词元/已知网络作为结构证据
                 ok = (todo.get(d, 0) >= HOT and it["c"] >= 85
                       and (name_ad or parent_hit(d, known_ad)))
