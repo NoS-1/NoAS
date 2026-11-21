@@ -90,7 +90,7 @@ cd /home/user/NoAS && python3 tools/cf_rotate.py --doctor
 | Workers Logs | 现口径 20 万事件/天、保留 3 天；**2026-12-01 起改用 Observability 计价：免费 0.5GB/天摄取、保留 7 天** | 只开 1% 采样 | 采样率写死在部署配置里 |
 | D1 | 读 500 万行/天、写 10 万行/天、5GB | 只放配置与状态 | 日志一律不进 D1 |
 | KV | 读 10 万/天、写 1000/天、1GB | 只放低频状态（热规则 `lite_v1`） | 计数绝不写 KV；写入只在版本变化时 |
-| Gateway | Free 定价页有"50 用户"与"实际 10 user limit"两种表述；**DNS 查询按 seat 计：平均 5,000/seat/天（月均 15 万/seat）**；Lists 100 个、每表 1,000 条、List API 600 次/分；规则表达式上限 4,096 字符 | 小档 10 片列表 + 1 条 override | `gateway_align.py` 只读比对；列表数逼近 100 时告警 |
+| Gateway | Free 定价页有"50 用户"与"实际 10 user limit"两种表述；**DNS 查询按 seat 计：平均 5,000/seat/天（月均 15 万/seat）**；Lists 100 个、每表 1,000 条、List API 600 次/分；规则表达式上限 4,096 字符 | **三档全量（lite 10 片 / mid 20 片 / full 30 片，共 60 片 6 万条）+ 3 条 override** —— 定档后规模装得下，Gateway 通道（首包 382ms／复用 210ms，比 Pages 快一倍）可独立覆盖全档 | `gateway_all.py` 幂等同步 + `gateway_align.py` 回读三档 缺 0/多余 0；列表数 60/100 留 40 片余量 |
 
 分摊顺序（从最省到最贵）：
 
@@ -98,6 +98,14 @@ cd /home/user/NoAS && python3 tools/cf_rotate.py --doctor
 2. **CF Gateway DoH**（`https://oxyacq0a4t.cloudflare-gateway.com/dns-query`）：**DNS 查询不计 Worker 请求**，额度按 seat 单独算。已实测拦截生效：doubleclick.net / googleadservices.com 返回 `0.0.0.0`，baidu.com 返回真实 IP。注意别写成 `oxyacq0a4t4`——多一个 4 会拿到「不过滤」的应答，看着通、其实没拦；
 3. **Worker 判定**：只有 Gateway 覆盖不到的长尾才走；
 4. **国内 DoH 回落**：阿里 / 腾讯 / 360，额度不归我们。
+
+### 规则定档（2026-11-21）
+
+三档硬上限：**lite 10,000 / mid 20,000 / full 30,000**。裁剪口径国内优先：
+必留集（国内端点、核心广告网、SDK、贴片、挖矿、被 lite 命中的父域）→ 国内名单/`.cn` → 多源共识分 → 命中源数；
+**海外 ccTLD 长尾（`.ca` `.au` `.uk` `.de` `.jp` 等）直接排除**，full 通配也只留 3,000 条。
+归因/统计域（adjust、appsflyer、branch、telemetry）三档一律不拦 —— 拦了只误伤 App 上报。
+`guard.py` 只看"是否凑齐目标九成"，不再比较历史规模（主动裁剪会跌 90%，那是策略不是故障）。
 
 按官方数字算，这套结构的天花板不是"无限"，而是 **约 15 万次/天**：Gateway 10 seats ≈ 5 万 + Worker 10 万，两者互不占用。再往上就只能靠 L0 本地过滤把请求消掉——这也正是 lite 表要一直维持在 1 万条以内的原因。
 

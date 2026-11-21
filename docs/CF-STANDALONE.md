@@ -10,7 +10,7 @@ CF 侧**运行期只依赖自身内嵌制品**（worker.js 里已编译进 lite+
 
 | # | 项目 | 用途 | 谁读 | 频率 | 缺失后果 | 可关 |
 |---|---|---|---|---|---|---|
-| 1 | `lists/` + `subs/{lite,mid,full}/domains.txt` | 规则唯一真源 | compile / build_doh / gateway_sync / gateway_prune | 每日 | 规则不再更新（线上照旧跑） | 否 |
+| 1 | `lists/` + `subs/{lite,mid,full}/domains.txt` | 规则唯一真源 | compile / build_doh / gateway_all / gateway_prune | 每日 | 规则不再更新（线上照旧跑） | 否 |
 | 2 | `state/build_manifest.json` | 判断线上规则是否落后 | Worker `scheduled()` | 每 15 分钟 1 次（KB 级） | `rules_stale=null`（未知，不告警） | 是（清空常量） |
 | 2b | `subs/lite/domains.txt` | 热规则（不重部署也能换规则） | Worker `scheduled()` → KV | 仅版本变化时拉（约 140KB） | 继续用内嵌基线 | 是（不绑 KV 即关闭） |
 
@@ -66,7 +66,7 @@ CF AE / Logs / Cron ──► 只读观测（不进构建判定）
 | 上游清单抓取失败 | 沿用上次 `subs/`，不重建 | 下轮重试 |
 | compile / build 失败 | 产物不变，线上不受影响 | 修脚本后重跑 |
 | deploy 失败 | 线上继续跑旧 worker，`rules_stale=true` | 重跑 `tools/deploy_doh.py` |
-| Gateway 同步失败 | Gateway 保留旧列表，规则仍生效 | 重跑 `tools/gateway_sync.py --apply` |
+| Gateway 同步失败 | Gateway 保留旧列表，规则仍生效 | 重跑 `tools/gateway_all.py --apply` |
 | AE 写入失败 | 仅丢观测，DNS 应答不受影响 | 无需处理 |
 | 三条上游全挂 | 返回 502 + `degraded=upstream-down` | 上游恢复后 cron 自动复位 |
 | 仓库 raw 不可达 | `rules_stale=null`（未知），不误报 | 网络恢复后自动恢复 |
