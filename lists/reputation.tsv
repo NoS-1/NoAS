@@ -2455,7 +2455,7 @@ adsquash.info	70	lite	已在lite; 共识5.5
 adsquasher.com	70	lite	已在lite; 共识5.5
 adsquasher.pro	70	lite	已在lite; 共识5.5
 adsratcarp.com	70	lite	已在lite; 共识5.5
-adsrvr.org	90	lite	已在lite; 共识6.5; 父域为广告网络
+adsrvr.org	98	lite	已在lite; 共识6.5; 标签2类; 父域为广告网络
 adsterraserver.com	78	lite	已在lite; 共识5.5; 机器生成子域
 adstik.click	70	lite	已在lite; 共识5.5
 adstook.com	70	lite	已在lite; 共识5.5
@@ -2532,6 +2532,7 @@ adversaldisplay.com	78	lite	已在lite; 共识5.5; 机器生成子域
 adversalservers.com	78	lite	已在lite; 共识5.5; 机器生成子域
 advertica.com	70	lite	已在lite; 共识5.5
 adverticum.net	70	lite	已在lite; 共识5.5
+advertise.bczeducation.cn	45	mid	已在lite
 advertise.com	70	lite	已在lite; 共识5.5
 advertiserubyproximity.com	78	lite	已在lite; 共识5.5; 机器生成子域
 advertiserurl.com	78	lite	已在lite; 共识6.5; 机器生成子域
@@ -6821,7 +6822,7 @@ crisisinanehalted.com	78	lite	已在lite; 共识5.5; 机器生成子域
 crisistuesdayartillery.com	78	lite	已在lite; 共识5.5; 机器生成子域
 crisp-freedom.com	70	lite	已在lite; 共识5.5
 cristochris.com	70	lite	已在lite; 共识5.5
-criteo.com	90	lite	已在lite; 共识6.5; 父域为广告网络
+criteo.com	98	lite	已在lite; 共识6.5; 标签2类; 父域为广告网络
 criticalaeroplanepleat.com	78	lite	已在lite; 共识5.5; 机器生成子域
 critictruck.com	70	lite	已在lite; 共识5.5
 crittereasilyhangover.com	78	lite	已在lite; 共识5.5; 机器生成子域
@@ -6997,7 +6998,6 @@ culsucqivn.in	70	lite	已在lite; 共识5.5
 cultivated-cell.com	70	lite	已在lite; 共识5.5
 cultivated-guitar.com	70	lite	已在lite; 共识5.5
 cultivateddecrepitcoolest.com	78	lite	已在lite; 共识5.5; 机器生成子域
-cultivatelimbharvest.com	78	lite	已在lite; 共识5.5; 机器生成子域
 culturaltracking.ru	78	lite	已在lite; 共识6.0; 机器生成子域
 culture.intermedes.com	0	full	无信号
 cumbersomeplenty.com	8	full	机器生成子域
@@ -8788,6 +8788,7 @@ dyj8pbcnat4xv.cloudfront.net	78	lite	已在lite; 共识6.5; 机器生成子域
 dymwfbufbwtwc.site	8	full	机器生成子域
 dyn.empflix.com	70	lite	已在lite; 共识6.5
 dyn.tnaflix.com	70	lite	已在lite; 共识6.5
+dynamicad.kfc.com.cn	45	mid	已在lite
 dynamitedata.com	8	full	机器生成子域
 dynatrace.att.com	0	none	白名单/良性/黄金集一票否决
 dynbanners.netlify.app	0	full	无信号
@@ -15587,13 +15588,11 @@ marketing.ompimail.com	0	full	无信号
 marketing.orolia.com	0	full	无信号
 marketing.orthofi.com	0	full	无信号
 marketing.pac.com	0	full	无信号
-marketing.papersave.com	0	full	无信号
 marketing.pcsww.com	0	full	无信号
 marketing.petsit.com	0	full	无信号
 marketing.profmi.org	0	full	无信号
 marketing.pronaca.com	0	full	无信号
 marketing.realcomm.com	0	full	无信号
-marketing.recarroll.com	0	full	无信号
 marketing.redlion.net	0	full	无信号
 marketing.revparts.com	0	full	无信号
 marketing.rmhoist.com	0	full	无信号
@@ -18275,6 +18274,7 @@ optimisation.coop.co.uk	78	lite	已在lite; 共识7.0; 机器生成子域
 optimisation.data.lloydsbankinggroup.com	78	lite	已在lite; 共识7.0; 机器生成子域
 optimisticcapital.pro	8	full	机器生成子域
 optimix.asia	70	lite	已在lite; 共识6.5
+optimus-ads.amap.com	0	none	白名单/良性/黄金集一票否决
 optionascertained.com	8	full	机器生成子域
 optmnstr.com	0	full	无信号
 optungjyfustb.space	8	full	机器生成子域

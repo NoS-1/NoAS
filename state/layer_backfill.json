@@ -1,9 +1,24 @@
 {
  "candidates": 20,
  "added": [
+  "ad.maoyan.com",
+  "adsmind.gdtimg.com",
+  "adsrvr.org",
   "advertise.bczeducation.cn",
+  "cbjs.baidu.com",
+  "cpro.baidu.com",
+  "criteo.com",
   "dynamicad.kfc.com.cn",
-  "optimus-ads.amap.com"
+  "eclick.baidu.com",
+  "gdt.qq.com",
+  "gromore.com",
+  "mobads.baidu.com",
+  "optimus-ads.amap.com",
+  "pgdt.gtimg.cn",
+  "pos.baidu.com",
+  "sdk.e.qq.com",
+  "tanx.com",
+  "tradplusad.com"
  ],
  "registered": [
   "ad.maoyan.com",
@@ -25,29 +40,20 @@
   "tanx.com",
   "tradplusad.com"
  ],
- "already_in_full": [
-  "ad.maoyan.com",
-  "adsmind.gdtimg.com",
-  "adsrvr.org",
-  "cbjs.baidu.com",
-  "cpro.baidu.com",
-  "criteo.com",
-  "eclick.baidu.com",
-  "gdt.qq.com",
-  "gromore.com",
-  "mobads.baidu.com",
-  "pgdt.gtimg.cn",
-  "pos.baidu.com",
-  "sdk.e.qq.com",
-  "tanx.com",
-  "tradplusad.com"
- ],
+ "already_in_full": [],
  "rejected": {
   "adnxs.com": "死域（dead.txt）",
   "pangolin-sdk-toutiao.com": "死域（dead.txt）"
  },
  "endpoint_exceptions": {
-  "optimus-ads.amap.com": "amap.com 在白名单，按端点例外处理（ep 身份免疫白名单）"
+  "cbjs.baidu.com": "baidu.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
+  "cpro.baidu.com": "baidu.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
+  "eclick.baidu.com": "baidu.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
+  "gdt.qq.com": "qq.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
+  "mobads.baidu.com": "baidu.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
+  "optimus-ads.amap.com": "amap.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
+  "pos.baidu.com": "baidu.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
+  "sdk.e.qq.com": "qq.com 在白名单，按端点例外处理（ep 身份免疫白名单）"
  },
  "l4": {
   "apps": 0,
@@ -55,59 +61,59 @@
   "why": "GKD 规则是 UI 选择器（text/id/vid 匹配），不含域名；它的价值用 L2 同 App 的广告主机来回灌，而不是直接产生解析规则"
  },
  "sources": {
+  "ad.maoyan.com": [
+   "L2:猫眼"
+  ],
+  "adsmind.gdtimg.com": [
+   "L3:ubo"
+  ],
+  "adsrvr.org": [
+   "L3:ubo"
+  ],
   "advertise.bczeducation.cn": [
    "L2:编程猫"
+  ],
+  "cbjs.baidu.com": [
+   "L3:ubo"
+  ],
+  "cpro.baidu.com": [
+   "L3:ubo"
+  ],
+  "criteo.com": [
+   "L3:ubo"
   ],
   "dynamicad.kfc.com.cn": [
    "L2:肯德基"
   ],
+  "eclick.baidu.com": [
+   "L3:ubo"
+  ],
+  "gdt.qq.com": [
+   "L3:ubo"
+  ],
+  "gromore.com": [
+   "L3:ubo"
+  ],
+  "mobads.baidu.com": [
+   "L3:ubo"
+  ],
   "optimus-ads.amap.com": [
    "L2:高德地图"
   ],
-  "ad.maoyan.com": [
-   "登记在案"
-  ],
-  "adsmind.gdtimg.com": [
-   "登记在案"
-  ],
-  "adsrvr.org": [
-   "登记在案"
-  ],
-  "cbjs.baidu.com": [
-   "登记在案"
-  ],
-  "cpro.baidu.com": [
-   "登记在案"
-  ],
-  "criteo.com": [
-   "登记在案"
-  ],
-  "eclick.baidu.com": [
-   "登记在案"
-  ],
-  "gdt.qq.com": [
-   "登记在案"
-  ],
-  "gromore.com": [
-   "登记在案"
-  ],
-  "mobads.baidu.com": [
-   "登记在案"
-  ],
   "pgdt.gtimg.cn": [
-   "登记在案"
+   "L3:ubo"
   ],
   "pos.baidu.com": [
-   "登记在案"
+   "L3:ubo"
   ],
   "sdk.e.qq.com": [
-   "登记在案"
+   "L3:ubo"
   ],
   "tanx.com": [
-   "登记在案"
+   "L3:ubo"
   ],
   "tradplusad.com": [
-   "登记在案"
+   "L3:ubo"
   ]
  }
 }
