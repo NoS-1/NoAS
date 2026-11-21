@@ -717,6 +717,9 @@ def judge(domains, hits):
                 _m = quota_sleep_minutes(e)
                 if _m:
                     cool_mark(pname, _m, e)
+                elif pname == "github-models":
+                    # 200 但返回非 JSON（出网网关改写）：本轮/当天不再反复试，6 小时后再说
+                    cool_mark(pname, 360, "非 JSON 响应：%s" % err)
         verdicts.extend(got)
     usage[day] = used + calls
     USAGE.write_text(json.dumps(usage, ensure_ascii=False, indent=1), encoding="utf-8")
