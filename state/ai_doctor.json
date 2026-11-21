@@ -17,8 +17,8 @@
   },
   {
    "name": "Cloudflare AI",
-   "status": "ok",
-   "note": "@cf/meta/llama-3.3-70b-instruct-fp8-fast → 可用"
+   "status": "missing",
+   "note": "未配置 CF_ACCOUNT_ID / CF_API_TOKEN"
   }
  ]
 }
