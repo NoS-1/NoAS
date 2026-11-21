@@ -118,13 +118,15 @@ def main():
         return hashlib.sha256(seg).hexdigest()
 
     online = None
-    for attempt in range(3):
+    # 部署刚返回时边缘可能还在切换（读取会短暂 404 / 旧版），指数退避重试即可，
+    # 别把"同步中"误判成"部署失败"。
+    for attempt in range(4):
         online = read_online()
         if online == local:
             print("回读一致 sha=%s，线上已是新版" % online[:16])
             return 0
-        if attempt < 2:
-            time.sleep(2)
+        if attempt < 3:
+            time.sleep(1 + 2 ** attempt)
     print("回读不一致/未完成：线上 %s ≠ 本地 %s（部署已成功，仅校验未完成）"
           % ((online or "unknown")[:16], local[:16]))
     return 0
