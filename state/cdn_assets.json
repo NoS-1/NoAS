@@ -20,13 +20,21 @@
  "/subs/lite/unbound.conf": "da9d30f393c6c0489ebfab792f3b8cf41e88049022a694e4f01b8a6a91fef2ef",
  "/subs/lite/wildcard.txt": "b922e33f9b00e4bdf3122a41857f8bf84b9f4f357d063f58ffc6a5a447b40d30",
  "/subs/lite/wildcards.txt": "5fcc93de4459a53ef1f3fdda1455dba83ee25c4da712cc7629fa5cacd8eac310",
+<<<<<<< HEAD
  "/subs/mid/adguard.txt": "e2553ce2ae706814be3aab9475c8fd5960a18bb0a88be2940a8c75c0e18b577d",
+=======
+ "/subs/mid/adguard.txt": "f795c8d8994fe79d70501d9fe9ce2314dd40d416c8f805a34584c7c4ff774619",
+>>>>>>> fffd5e9 (fix: 缓存命中时用当前规则二次校验(规则移除后不再误拦最长24h); Pages 匹配层数与 Worker 对齐)
  "/subs/mid/allow.txt": "d245e52b9fe956fccadd7aa89ce869d4ad9d3537341161a2ef5a34af93e80f5d",
  "/subs/mid/clash.yaml": "574c2c1f2e461a2ebed20ec417a84b62290f1a4e0eabc1765c809f3a85ae9280",
  "/subs/mid/dnsmasq.conf": "a8a0b215d1da8f7b798ee8808cd35214b77e3123731c371652e1db79b63251fb",
  "/subs/mid/domains.txt": "5ac2c53220a99bc5bedd56b3f4c5f3ef8178ec44a01b452fac421055e68f7188",
  "/subs/mid/hosts.txt": "2a0de27cca448ca5289270e71fddd21fb928b157947b88088161d00ac0df09d8",
+<<<<<<< HEAD
  "/subs/mid/meta.json": "c0828a190ddbbf08c56cdb1244264682fd733169b69484be1654d95917f7d942",
+=======
+ "/subs/mid/meta.json": "979926e1653239623efeaf804bf9717ad398bf716ab230b25da81cf706a1e999",
+>>>>>>> fffd5e9 (fix: 缓存命中时用当前规则二次校验(规则移除后不再误拦最长24h); Pages 匹配层数与 Worker 对齐)
  "/subs/mid/qx.list": "70504aa299b3ebb0e7e62d1d218a8de4b493f421ae4439c8793f7e087d6e114e",
  "/subs/mid/rpz.zone": "99835e8e25bf7f139d958081f0db133a563bebe432ec637be18d1c6efcdb9934",
  "/subs/mid/singbox.json": "b2e32da1872ea641d6b1c10fa5745e511abe7b05eb5b3e8f9607b65ca55fd3a9",
@@ -34,13 +42,21 @@
  "/subs/mid/unbound.conf": "af50a78fbf8640c7e2d61fed32f52fb05f47526b773ea1ea48332965d5bfde7c",
  "/subs/mid/wildcard.txt": "1e24b0e0c6a2ec73669430e4cf28d39ff4b1112ddccb3f830e2146c79b25ec44",
  "/subs/mid/wildcards.txt": "d6132ee246f9abf6853c113b322fb1b84eee65ecbcf5690e6dcc51592e52f666",
+<<<<<<< HEAD
  "/subs/full/adguard.txt": "22270863c16d4ec6342227fb2a4af1ad39eaf7e6b144fdade160929a18f13bc9",
+=======
+ "/subs/full/adguard.txt": "6748d6608673c733a9a5750262ed5ad48a967e8197a51f646d802527d1ab84fe",
+>>>>>>> fffd5e9 (fix: 缓存命中时用当前规则二次校验(规则移除后不再误拦最长24h); Pages 匹配层数与 Worker 对齐)
  "/subs/full/allow.txt": "43ca7e237a10bd1cc08dedfede79717bf9d320942f3bac7220daa9dbc12baf08",
  "/subs/full/clash.yaml": "bf468d810235499087c400a25a38bbe6f0911b7cf008b4cd25c6f31887904b00",
  "/subs/full/dnsmasq.conf": "0fbcc121f014c95d53983453e30cc88bad30783a7ed509a6288bebcc9071a392",
  "/subs/full/domains.txt": "8fdc4a03030cc8f0bd6ad7cc0d5d1b9543a921e24bbe6332833e18ce4e0fa40e",
  "/subs/full/hosts.txt": "5f03d7288dc20a26553bf0b4cbabe391398053ba8f3be7cd7e099ed0477d2439",
+<<<<<<< HEAD
  "/subs/full/meta.json": "d3a082be5398af752bbe35bf3ca9ec9011765251c9f965dbc824f4f841a05646",
+=======
+ "/subs/full/meta.json": "0d9b4683a7f29f35ae5eb3efac5a041ba1fc72404632ef3ae6a560689c4397e5",
+>>>>>>> fffd5e9 (fix: 缓存命中时用当前规则二次校验(规则移除后不再误拦最长24h); Pages 匹配层数与 Worker 对齐)
  "/subs/full/qx.list": "c6704dac610242356b43795bc18d018371127522d4cbee73c3f9a8bfa4131e68",
  "/subs/full/rpz.zone": "752d261256e4cdcd3d9e51809e82e09b580c019386a7c3273fb6ef32ec61cd14",
  "/subs/full/singbox.json": "a7d9eb64bbc819018482dc54ac07cf38741df1a4e88933f39d4f53aa2cc5209f",
@@ -74,8 +90,13 @@
  "/subs/mixed/noas-all.conf": "20b77dfcb3d8a72dc6521007518ffdbccfcf32900667ba5505b155b8f1060f48",
  "/subs/mixed/noas-all.plugin": "91a476ca1da86aa326dea0610856ba16bc7bc34626299d7a01d4634da46e55c0",
  "/subs/mixed/noas-all.sgmodule": "ca1f27f7490f4aa24eb2227bcd92a54818036dfaf3b0c5dcbb4d240dc046151d",
+<<<<<<< HEAD
  "/state/build_manifest.json": "ad9eae7b25bbf9eb0c0b803a090a81b3a44dd49898bcfecb48a9627f9ff0487d",
  "/functions/dns-query/[[tier]].js": "08183e2bbdc198882a8e61090a3b08d237b3b1f7ea961185dbbb982ace4db484",
+=======
+ "/state/build_manifest.json": "9d529e5d3c1c5553d35d96ef5827851a6ac28730fcf6b9a6f0ef201bc5710abe",
+ "/functions/dns-query/[[tier]].js": "927a0de8229ae4ad82b36949aa1906333c36ec1521022b132302fbcddb75b76c",
+>>>>>>> fffd5e9 (fix: 缓存命中时用当前规则二次校验(规则移除后不再误拦最长24h); Pages 匹配层数与 Worker 对齐)
  "/functions/why.js": "acaa745d92a60a2775fe3e96c8d27fe18e5e63598adcdd3bf09014baf3f9c38f",
  "/functions/resolve.js": "94c06f9365c6eb447a2bb233996aa366ea32053eeeea91a3da0813f63e40011b",
  "/functions/tier.js": "335b22785331b95db2158ea49471210333c6c38853d354cce75ea5add1f81784"

@@ -498,6 +498,19 @@ function b64urlToBytes(s) {
 }
 
 /** 合成"拦截"应答：A→0.0.0.0，AAAA→::，其它类型→NOERROR 空答（NXDOMAIN 会误伤邮件/校验类客户端） */
+// 判断一段应答是不是"我们自己的拦截应答"：A/AAAA 的 0.0.0.0 / ::（rcode 0 + 1 条答案 + RDATA 全零）。
+// NXDOMAIN/REFUSED/SERVFAIL 形态与真实上游应答无法区分，保守不判。
+function looksBlocked(buf) {
+  if (!buf || buf.length < 12) return false;
+  const rc = buf[3] & 15;
+  const an = (buf[6] << 8) | buf[7];
+  if (rc !== 0 || an !== 1) return false;
+  const n = buf.length;
+  const is0 = (arr) => arr.every((b) => b === 0);
+  if (n >= 16 && is0(Array.from(buf.slice(n - 16))) && buf[0] !== 0) return true;   // AAAA ::
+  return is0(Array.from(buf.slice(n - 4)));                                        // A 0.0.0.0
+}
+
 function blockedResponse(query, qtype, end, mode) {
   const head = new Uint8Array(query.slice(0, end));   // 头部 + 问题区原样带回
   // ?mode=nxdomain：回 NXDOMAIN(3) 而不是 0.0.0.0。少数客户端对 0.0.0.0 会回退 IPv6 或重试，
@@ -1095,7 +1108,13 @@ async function handle(request, env, ctx) {
   }
   // 缓存优先：fresh 命中直接返（0 上游 RTT）；stale 命中先返旧值、后台刷新。
   // 旧实现只有"上游全挂"才读缓存，等于每次解析都白付 10-110ms 的上游往返。
-  const cached = await cacheLookup(name, qtype, ecs, doBit);
+  let cached = await cacheLookup(name, qtype, ecs, doBit);
+  // 规则是即时生效的，缓存不是：某域被移出规则后，缓存里仍可能是"拦截应答"，
+  // 最长能用 stale 撑 24h —— 那就是"删了规则还误拦"。命中缓存时用当前规则再校验一次，
+  // 不一致就丢掉缓存重新解析（多一次上游往返，换零误拦滞后）。
+  if (cached && !skipRules && looksBlocked(cached.buf) && !blocked(name, tier)) {
+    cached = null;
+  }
   if (cached && !cached.stale) {
     cacheHits += 1;
     return dnsReply(cached.buf, "cache-hit");

@@ -195,13 +195,14 @@ function parseQuery(bytes) {
 function hitSet(set, name) {
   if (!name) return false;
   let d = name;
-  for (let i = 0; i < 6; i++) {
+  // 与 Worker 的 matchSet 对齐：一直向上剥到根，不再固定 6 层
+  // （旧实现遇到 a.b.c.d.e.f.g.h 这类深子域会漏，虽然会转发 Worker 兜底，但多一跳）
+  while (true) {
     if (set.has(d)) return true;
     const p = d.indexOf(".");
-    if (p < 0) break;
+    if (p < 0) return false;
     d = d.slice(p + 1);
   }
-  return false;
 }
 
 function blockedResponse(bytes, qtype, end, mode) {
