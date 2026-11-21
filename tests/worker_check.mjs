@@ -38,14 +38,14 @@ for (const d of benign) {
 }
 
 // CNAME 反隐蔽：第一方子域 CNAME 到广告域时，必须判为拦截
-const cn = await handler(new Request('https://x.dev/check?q=stats.someblog.org&cname=doubleclick.net&tier=1'), ENV, ctx);
+const cn = await handler(new Request('https://x.dev/check?q=stats.someblog.org&cname=gdt.qq.com&tier=1'), ENV, ctx);
 const cnj = await cn.json();
-if (cnj.cname_blocked !== true) { miss.push('cname:doubleclick.net'); }
+if (cnj.cname_blocked !== true) { miss.push('cname:gdt.qq.com'); }
 const cn2 = await handler(new Request('https://x.dev/check?q=stats.someblog.org&cname=api.someblog.org&tier=1'), ENV, ctx);
 if ((await cn2.json()).cname_blocked !== false) { fp.push('cname-benign'); }
 
 // 通配回归：纯广告网根域的深层子域必须拦；白名单父域下的子域必须放
-const wc = await handler(new Request('https://x.dev/check?q=a.b.c.doubleclick.net&tier=1'), ENV, ctx);
+const wc = await handler(new Request('https://x.dev/check?q=a.b.c.gdt.qq.com&tier=1'), ENV, ctx);
 if (!(await wc.json()).blocked) miss.push('wild:deep-subdomain');
 const wok = await handler(new Request('https://x.dev/check?q=a.b.taobao.com&tier=1'), ENV, ctx);
 if ((await wok.json()).blocked) fp.push('wild:benign-subdomain');

@@ -163,12 +163,12 @@ seen = []; await doh(query('g.example.com', 255, { edns: true }), '');
 { ok(seen.length === 0, 'ANY 不打上游'); }
 
 // 6.5) ?mode=nxdomain → RCODE 3 且无答案
-{ const r = await doh(query('doubleclick.net', 1), '?mode=nxdomain');
+{ const r = await doh(query('gdt.qq.com', 1), '?mode=nxdomain');
   const b = new Uint8Array(await r.arrayBuffer());
   ok((b[3] & 0xf) === 3 && new DataView(b.buffer).getUint16(6) === 0, 'mode=nxdomain 回 NXDOMAIN'); }
 
 // 7) /why 分层理由
-{ const r = await handler(new Request('https://x.dev/why?d=doubleclick.net&tier=2'), ENV, ctx);
+{ const r = await handler(new Request('https://x.dev/why?d=alimama.com&tier=1'), ENV, ctx);
   const j = await r.json(); ok(j.blocked === true && j.why === 'rule', '/why 命中 rule 层'); }
 { const r = await handler(new Request('https://x.dev/why?d=www.qq.com&tier=2'), ENV, ctx);
   const j = await r.json(); ok(j.blocked === false, '/why 白名单放行'); }
@@ -228,10 +228,10 @@ recMock(() => answer('p.example.com', 1, 300));
   ok(seen.length > 0 && !!hasECS(seen.at(-1)), '默认仍透传 ECS'); }
 
 // 11) /resolve 与 dns-json
-{ const r = await handler(new Request('https://x.dev/resolve?name=doubleclick.net&type=A&tier=2'), ENV, ctx);
+{ const r = await handler(new Request('https://x.dev/resolve?name=gdt.qq.com&type=A&tier=2'), ENV, ctx);
   const j = await r.json();
   ok(j.blocked === true && j.Answer[0].data === '0.0.0.0', '/resolve 命中返回 0.0.0.0'); }
-{ const r = await handler(new Request('https://x.dev/dns-query?name=doubleclick.net&type=AAAA'), ENV, ctx);
+{ const r = await handler(new Request('https://x.dev/dns-query?name=gdt.qq.com&type=AAAA'), ENV, ctx);
   const j = await r.json();
   ok(j.Status === 0 && j.Answer[0].data === '::', 'dns-json AAAA 命中返回 ::'); }
 { recMock(() => answer('www.qq.com', 1, 300));
@@ -255,13 +255,13 @@ recMock(() => answer('p.example.com', 1, 300));
   await mod.__logHit(env2, 'pass', 'www.qq.com', 2, '');
   await mod.__logHit(env2, 'pass', 'www.qq.com', 2, '');          // 同域同盐 → 同 hash
   await mod.__logHit(env2, 'pass', 'www.example.org', 2, '');
-  await mod.__logHit(env2, 'block', 'doubleclick.net', 2, '');
+  await mod.__logHit(env2, 'block', 'gdt.qq.com', 2, '');
   const pass = pts.filter((p) => p.blobs[0] === 'pass');
   ok(pass.length === 3 && pass.every((p) => String(p.blobs[1]).startsWith('h:')), '放行侧只记 hash');
   ok(!pass.some((p) => /qq\.com|example\.org/.test(String(p.blobs[1]))), '放行侧不含明文域名');
   ok(pass[0].blobs[1] === pass[1].blobs[1] && pass[0].blobs[1] !== pass[2].blobs[1], '同域同盐稳定、异域不同');
   const blk = pts.find((p) => p.blobs[0] === 'block');
-  ok(blk && blk.blobs[1] === 'doubleclick.net', '拦截侧保留明文域名（公开黑名单）'); }
+  ok(blk && blk.blobs[1] === 'gdt.qq.com', '拦截侧保留明文域名（公开黑名单）'); }
 globalThis.fetch = origFetch;
 
 // 反滥用：LIMITER 拒绝时必须回 SERVFAIL（rcode 2），不能静默放行

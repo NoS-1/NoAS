@@ -29,13 +29,13 @@ try {
   const health = await fetch(BASE + '/health').then((r) => r.json());
   console.log(`OK /health：lite ${health.tier1} / mid ${health.tier2} / 版本 ${health.version}`);
 
-  const blocked = await fetch(BASE + '/check?q=doubleclick.net&tier=1').then((r) => r.json());
+  const blocked = await fetch(BASE + '/check?q=gdt.qq.com&tier=1').then((r) => r.json());
   if (!blocked.blocked) { console.log('FAIL 广告域未拦'); fail++; } else console.log('OK 广告域被拦');
 
   const pass = await fetch(BASE + '/check?q=www.baidu.com&tier=2').then((r) => r.json());
   if (pass.blocked) { console.log('FAIL 正常域被拦'); fail++; } else console.log('OK 正常域放行');
 
-  const q = dnsQuery('doubleclick.net');
+  const q = dnsQuery('gdt.qq.com');
   const dns = await fetch(`${BASE}/dns-query?dns=${q}`);
   const hdr = dns.headers.get('x-noas') || '';
   if (dns.status !== 200 || hdr !== 'blocked') { console.log(`FAIL DoH 报文路径 status=${dns.status} x-noas=${hdr}`); fail++; }
