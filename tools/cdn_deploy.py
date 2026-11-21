@@ -57,6 +57,11 @@ def collect():
     mf = ROOT / "state" / "build_manifest.json"
     if mf.exists():
         files["/state/build_manifest.json"] = mf.read_bytes()
+    # Pages Function：/dns-query 代理到 Worker。workers.dev 国内不可达、pages.dev 可达，
+    # 这是让国内用户真正能用上自建 DoH 的唯一免费通道。
+    fn = ROOT / "pages" / "dns-query.js"
+    if fn.exists():
+        files["/functions/dns-query.js"] = fn.read_bytes()
     return files
 
 
@@ -96,11 +101,13 @@ def deploy_wrangler(stage):
     env["CLOUDFLARE_API_TOKEN"] = os.environ.get("CF_TOKEN") or os.environ.get("CF_API_TOKEN") or ""
     env["CLOUDFLARE_ACCOUNT_ID"] = ACCT
     env.setdefault("NO_COLOR", "1")
-    cmd = ["npx", "-y", "wrangler@4", "pages", "deploy", str(stage),
+    cmd = ["npx", "-y", "wrangler@4", "pages", "deploy", ".",
            "--project-name", PROJECT, "--branch", "main", "--commit-dirty=true"]
-    print("执行：", " ".join(cmd))
+    print("执行：", " ".join(cmd), "（cwd=%s）" % stage)
     try:
-        p = subprocess.run(cmd, capture_output=True, text=True, timeout=900, env=env)
+        # 关键：wrangler 是从 **cwd** 找 functions/ 目录来编译 Pages Functions。
+        # 在仓库根跑会漏掉 stage 里的 functions/，整站就退化成纯静态。
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=900, env=env, cwd=str(stage))
     except subprocess.TimeoutExpired:
         print("wrangler 超时（900s）")
         return None

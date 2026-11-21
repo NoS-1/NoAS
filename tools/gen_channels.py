@@ -87,7 +87,8 @@ def main():
         "# 要拦截，二选一：\n"
         "#   a) 本地过滤：AGH / sing-box 加载 subs/lite/adguard.txt，上游填下面任意一条（零额度）；\n"
         "#   b) 云端带规则：手机 DoH 直接填 " + gw_endpoint + "（Gateway，" + gw_status + "）\n"
-        "#      或 https://noas-doh.199999510.workers.dev/dns-query（Worker，10 万/天，90% 熔断）\n"
+        "#      全规则档：https://noas-cdn.pages.dev/dns-query（Pages 承载自建 Worker，10 万/天，90% 熔断）\n"
+        "#      workers.dev 原生域在国内被阻断，仅境外可用，不要再填\n"
         + ("# 注意：本次体检环境异常，以下为完整清单（未经在线验证），请自行试通\n" if fallback else "")
         + "# 顺序即优先级；均为国内直连，无调用额度\n"
     )

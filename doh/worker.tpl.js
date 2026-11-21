@@ -76,7 +76,10 @@ const BLOCK_TTL = 300;
 const UPSTREAM_TIMEOUT_MS = 5000;
 
 let degraded = "";                 // 非空 = 正在降级；/health 可见
+let degradedUntil = 0;             // 降级到期时间：上游抖一次不能让整个 isolate 长期不拦广告
 let upstreamFails = 0;
+let lastHandlerErr = "";        // 最近一次 handler 抛异常的位置，/health 可见
+let lastUpstreamErr = "";      // 最近一次竞速全败的原因，/health 可见
 let lastUpstreamOk = 0;
 let rulesStale = null;             // null=还没校验过
 let manifestCheckedAt = 0;         // 上次新鲜度校验时间，避免 /health 被刷时反复拉
@@ -166,8 +169,15 @@ async function ipLimited(env, ip) {
   return ipBurst(ip);
 }
 
-function degrade(reason) {
+function degrade(reason, ms = 120000) {
   degraded = reason;
+  degradedUntil = Date.now() + ms;
+}
+
+/** 带自愈的降级判断：到期自动恢复，避免一次上游抖动导致后续请求全跳过规则 */
+function isDegraded() {
+  if (degraded && Date.now() > degradedUntil) { degraded = ""; degradedUntil = 0; }
+  return !!degraded;
 }
 
 function json(obj, status = 200) {
@@ -373,12 +383,25 @@ function preference(name) {
   return [CF_UP, UPSTREAM[0], UPSTREAM[2]];
 }
 
+function hostOf(u) { try { return new URL(u).host.replace(".dns-query", ""); } catch (e) { return u; } }
+
+function bytesToB64url(b) {
+  let s = "";
+  for (let i = 0; i < b.length; i++) s += String.fromCharCode(b[i]);
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
 function fetchUpstream(u, bytes, ctrl) {
-  return fetch(u, {
-    method: "POST",
-    headers: { "content-type": "application/dns-message", accept: "application/dns-message" },
-    body: bytes,
+  // 用 RFC 8484 的 GET 形态而不是 POST：报文进 ?dns= 查询串，没有请求体。
+  // 实测 POST body 从 Pages Function 中转过来后，三家上游一致回 400——
+  // 报文本身没坏（hex 已核对），是中转链路上请求体被改写；GET 彻底绕开这一步。
+  // 附带好处：GET 可被 CDN 缓存，上游 RTT 更低。
+  const url = u + (u.includes("?") ? "&" : "?") + "dns=" + bytesToB64url(bytes);
+  return fetch(url, {
+    method: "GET",
+    headers: { accept: "application/dns-message" },
     signal: ctrl.signal,
+    cf: { cacheTtl: 300, cacheEverything: true },
   }).then(async (r) => {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return await r.arrayBuffer();
@@ -386,8 +409,10 @@ function fetchUpstream(u, bytes, ctrl) {
 }
 
 async function upstream(bytes, qname) {
+  const t0 = Date.now();
   const list = preference(qname).slice();
   const ctrls = list.map(() => new AbortController());
+  const errs = [];                        // 与 try 同级：catch 里要读它，放 try 内会掉进 TDZ
   const hard = setTimeout(() => ctrls.forEach((c) => c.abort()), UPSTREAM_TIMEOUT_MS);
   try {
     const attempts = list.map((u, i) => new Promise((resolve, reject) => {
@@ -395,7 +420,7 @@ async function upstream(bytes, qname) {
       const kick = () => {
         fetchUpstream(u, bytes, ctrls[i]).then(
           (buf) => resolve({ u, buf }),
-          (e) => reject(e),
+          (e) => { errs[i] = hostOf(u) + ":" + String(e).slice(0, 60); reject(e); },
         );
       };
       if (delay) setTimeout(kick, delay); else kick();
@@ -404,6 +429,7 @@ async function upstream(bytes, qname) {
     ctrls.forEach((c, i) => { if (list[i] !== win.u) { try { c.abort(); } catch (e) {} } });
     upstreamFails = 0;
     lastUpstreamOk = Date.now();
+    if (degraded === "upstream-down") { degraded = ""; degradedUntil = 0; }
     if (list[0] !== win.u) {                 // 把当前可用上游提到第一位，下个请求直接命中
       list.splice(list.indexOf(win.u), 1);
       list.unshift(win.u);
@@ -411,6 +437,7 @@ async function upstream(bytes, qname) {
     return win.buf;
   } catch (e) {
     upstreamFails += 1;
+    lastUpstreamErr = (Date.now() - t0) + "ms " + errs.filter(Boolean).join(" | ");
     return null;
   } finally {
     clearTimeout(hard);
@@ -446,6 +473,13 @@ async function handle(request, env, ctx) {
     // ?probe=1：从"这个边缘节点"出发，并发量每家上游各一次的真实耗时。
     // 外部测的 RTT 含客户端→CF 的网络，这里量到的才是我们能优化的那段。
     let probe = null;
+    let probeReal = null;
+    if (url.searchParams.get("probe") === "2") {
+      // 跑一次真实的解析路径（含错峰并发/中止），与上面的直连探测对比
+      const t = Date.now();
+      const b = await upstream(mkQuery("example.com"), "example.com");
+      probeReal = { ok: !!b, ms: Date.now() - t, bytes: b ? b.byteLength : 0 };
+    }
     if (url.searchParams.get("probe")) {
       const q = mkQuery("example.com");
       probe = await Promise.all(UPSTREAM.map(async (u) => {
@@ -465,17 +499,18 @@ async function handle(request, env, ctx) {
     return json({ ok: true, version: VERSION, tier1: TIER1.size, tier2: TIER2.size,
                   allowlist: ALLOW.size, endpoints: ENDPOINTS.size, wildcards: WILD_SUFFIX.size,
                   upstream: UPSTREAM.length, upstream_fails: upstreamFails,
+                  last_upstream_err: lastUpstreamErr || null,
                   last_upstream_ok: lastUpstreamOk,
-                  ae: !!(env && env.AE),
+                  ae: !!(env && env.AE), handler_err: lastHandlerErr || null,
                   canary: canaryOk,
-                  degraded: degraded || null,
+                  degraded: isDegraded() ? degraded : null,
                   rules_stale: rulesStale, rules_manifest: MANIFEST_URLS[0],
                   hot: hot ? { ver: hot.ver, count: hot.count } : null, hot_url: HOT_URLS[0],
                   ae_points_local: aePoints, ae_cap_per_isolate: AE_DAILY_CAP,
                   limiter: !!(env && env.LIMITER),
                   cache: hasCache(), cache_hits: cacheHits,
                   cache_ttl_s: [CACHE_FRESH_S, CACHE_STALE_S],
-                  upstream_order: preference(""), cn_order: preference("x.cn"), hedge_ms: HEDGE_MS, probe: probe,
+                  upstream_order: preference(""), cn_order: preference("x.cn"), hedge_ms: HEDGE_MS, probe: probe, probe_real: probeReal,
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
                            soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
   }
@@ -503,8 +538,8 @@ async function handle(request, env, ctx) {
   // 跳过规则匹配省 CPU，DNS 照常应答，恢复靠 UTC 换日 + cron 自检复位。
   const ip = request.headers.get("cf-connecting-ip") || "unknown";
   if (await ipLimited(env, ip)) degrade("ip-burst " + PER_IP_PER_MIN + "/min");
-  if (!takeQuota()) degrade("quota 90%");
-  const skipRules = !!degraded;
+  if (!takeQuota()) degrade("quota 90%", 3600000);
+  const skipRules = isDegraded();
 
   let bytes;
   if (request.method === "POST") {
@@ -551,7 +586,13 @@ async function handle(request, env, ctx) {
   const buf = await upstream(bytes, name);
   if (!buf) {
     degrade("upstream-down");
-    return new Response("上游不可用", { status: 502, headers: { "x-noas": "upstream-fail" } });
+    const h = { "x-noas": "upstream-fail" };
+    if (url.searchParams.get("debug")) {
+      h["x-noas-err"] = (lastUpstreamErr || "no-detail").slice(0, 240);
+      h["x-noas-req"] = bytes.byteLength + "B " +
+        Array.from(bytes.slice(0, 14)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    return new Response("上游不可用", { status: 502, headers: h });
   }
   if (!skipRules) {
     // CNAME 反隐蔽：第一方子域 CNAME 到追踪者时，按追踪者判定并直接拦掉
@@ -701,8 +742,21 @@ async function scheduled(event, env, ctx) {
     logHit(env, "diag", "selfcheck", 0,
            ["t1=" + TIER1.size, "t2=" + TIER2.size, "allow=" + ALLOW.size,
             "hot=" + (hot ? hot.count : 0), "ver=" + VERSION,
-            "fails=" + upstreamFails, "degraded=" + (degraded || "-")].join(" "));
+            "fails=" + upstreamFails, "degraded=" + (isDegraded() ? degraded : "-")].join(" "));
   }
 }
 
-export default { fetch: handle, scheduled };
+async function guarded(request, env, ctx) {
+  try {
+    return await handle(request, env, ctx);
+  } catch (e) {
+    const msg = String((e && (e.stack || e.message)) || e).replace(/\s+/g, " ").slice(0, 260);
+    lastHandlerErr = msg;
+    const dbg = new URL(request.url).searchParams.get("debug");
+    const h = { "x-noas": "error", "content-type": "text/plain; charset=utf-8" };
+    if (dbg) h["x-noas-err"] = msg;
+    return new Response("内部错误", { status: 500, headers: h });
+  }
+}
+
+export default { fetch: guarded, scheduled };
