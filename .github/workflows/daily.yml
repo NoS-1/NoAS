@@ -48,6 +48,11 @@ jobs:
         with:
           node-version: "24"
 
+      # 依赖必须显式安装：cdn_deploy / gateway_* / post_deploy_verify 都 import requests，
+      # 宿主机没有这个包时表现为"3 次重试全失败"，看起来像 CF 故障，其实是缺依赖。
+      - name: 0 · 安装 Python 依赖
+        run: python3 -m pip install --disable-pip-version-check -q -r requirements.txt && python3 -c "import requests;print('requests', requests.__version__)"
+
       # 令牌失效是最安静的故障：CF 步骤历来 continue-on-error，token 过期后构建照样绿、
       # 线上照样跑旧规则。放在最前面显式校验，失效直接红。
       - name: 0 · 凭据健康检查
