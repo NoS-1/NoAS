@@ -54,7 +54,8 @@ def main() -> int:
 
     month = datetime.now(timezone.utc).strftime("%Y-%m")
     used, page = 0, 1
-    while page <= 12:
+    # 每页 25 条，上限 500 次/月 → 至少翻 20 页；原来只翻 12 页（300 条）会把 350 的告警线架空
+    while page <= 30:
         req = urllib.request.Request(
             f"https://api.cloudflare.com/client/v4/accounts/{ACC}/pages/projects/{PROJECT}"
             f"/deployments?per_page=25&page={page}",

@@ -343,6 +343,11 @@ async function handle(request, env, ctx) {
                            soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
   }
   if (url.pathname === "/check") {
+    // 调试端点也按 IP 限速：只对有真实来源 IP 的线上请求生效，本地/CI 测试不受影响
+    const cip = request.headers.get("cf-connecting-ip");
+    if (cip && ipBurst(cip)) {
+      return json({ error: "rate-limited", retry_after_s: 60 }, 429);
+    }
     const q = (url.searchParams.get("q") || "").toLowerCase();
     const tier = Number(url.searchParams.get("tier") || 2);   // 默认走 mid：lite 只是零误伤最小集
     const cn = (url.searchParams.get("cname") || "").toLowerCase();
