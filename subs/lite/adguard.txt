@@ -1,10 +1,10 @@
 ! Title: NoAS 拦截订阅（lite）
 ! Description: 免费公开源并集，白名单硬闸过滤后发布；每日自动重建
-! Version: 20261121-57c1d2f1
-! Last modified: Sat, 21 Nov 2026 15:38:10 GMT
+! Version: 20261121-00e742fe
+! Last modified: Sat, 21 Nov 2026 15:44:55 GMT
 ! Expires: 12 hours
 ! Homepage: https://github.com/NoS-1/NoAS
-! 条数: 8093（含通配 63）
+! 条数: 8094（含通配 63）
 
 ||0017c6c37c.com^
 ||00a39e6dfd.com^
@@ -1655,6 +1655,7 @@
 ||adventurousamount.com^
 ||adversaldisplay.com^
 ||adversalservers.com^
+||advert.58.com^
 ||advertica.com^
 ||adverticum.net^
 ||advertise.bczeducation.cn^
@@ -5748,35 +5749,7 @@
 ||cv.nell.life^
 ||cv.optimo-slb.com^
 ||cv.shiryoku1.com^
-||cv.stella-s.com^
-||cv.subscription-store.com^
-||cv.tenjin.cc^
-||cv.theatreacademy.info^
-||cvastico.com^
-||cvbdlmcuzahza.site^
-||cvevpwhszksij.online^
-||cvhefd.ixbt.com^
-||cvivxd.com^
-||cvngacuwqodke.site^
-||cvpdkmzxvnzng.online^
-||cvpthv.vipoutlet.com^
-||cvqfwzrnkvtun.website^
-||cvuestnhwbnix.site^
-||cvwgltvuviniv.space^
-||cvxbbrcunmulw.site^
-||cvxkkuhbqgwxo.space^
-||cvzbchlxyuzzd.site^
-||cvzrqzanffkxy.site^
-||cwawlwdjdtxem.space^
 ||cwcdmm.zennioptical.com^
-||cwchjisabnnmx.space^
-||cwclrbjglcccp.website^
-||cwhjirncjhrmo.site^
-||cwicybzyryttv.space^
-||cwlnrlnmalwof.site^
-||cwnqfrehigqdb.online^
-||cwqtqpxudxicq.space^
-||cwrlsjkvjdgff.site^
 ||d0.xcar.com.cn^
 ||d10ce3z4vbhcdd.cloudfront.net^
 ||d10zmv6hrj5cx1.cloudfront.net^
@@ -6262,6 +6235,7 @@
 ||dodk8rb03jif9.cloudfront.net^
 ||doo9gpa5xdov2.cloudfront.net^
 ||doqpm.click^
+||doubleclick.ctfile.com^
 ||dp45nhyltt487.cloudfront.net^
 ||dpirwgljl6cjp.cloudfront.net^
 ||dpjlvaveq1byu.cloudfront.net^
@@ -6280,6 +6254,8 @@
 ||dsh7ky7308k4b.cloudfront.net^
 ||dsnymrk0k4p3v.cloudfront.net^
 ||dsp-impr2.youdao.com^
+||dsp.aparat.com^
+||dsp.wtf^
 ||dsp.youdao.com^
 ||dspmnt.autohome.com.cn^
 ||dtadnetwork.com^
@@ -6375,6 +6351,7 @@
 ||fkdaik.lightinthebox.com^
 ||flairadscpc.com^
 ||flashtalking.com^
+||flat-ads.com^
 ||flurry.com^
 ||fmpub.net^
 ||fmqidg.letras.com^
@@ -6387,6 +6364,7 @@
 ||frtya.com^
 ||frztrk.netmums.com^
 ||fsbozl.dillards.com^
+||fuck-ads.vercel.app^
 ||fwbntw.com^
 ||fwmrm.net^
 ||g3.letv.com^
@@ -6420,6 +6398,7 @@
 ||goads.pro^
 ||goadservices.com^
 ||goatcounter.com^
+||good-ads-online.com^
 ||googlecommerce.com^
 ||goqon.com^
 ||gorgon.youdao.com^
@@ -6468,6 +6447,7 @@
 ||imp.pvnsolutions.com^
 ||impression.link^
 ||imtwjwoasak.com^
+||infinite-ads.com^
 ||infinityid.condenastdigital.com^
 ||info.accutrain.com^
 ||info.autozonepro.com^
@@ -6570,6 +6550,7 @@
 ||lwadm.com^
 ||lwozzk.legacy.com^
 ||lzjl.com^
+||m-rtb.com^
 ||m.trb.com^
 ||m2.ai^
 ||m32.media^
@@ -6594,6 +6575,7 @@
 ||marketing.sentinelgroup.com^
 ||marketing.trubridge.com^
 ||marketing.washington.org^
+||masque-ads.b-cdn.net^
 ||mastertag.effiliation.com^
 ||mato.clanto.cloud^
 ||maxbounty.com^
@@ -6748,6 +6730,7 @@
 ||mpnrs.com^
 ||msg.qy.net^
 ||mtburn.com^
+||multiwall-ads.shop^
 ||mushroomgods.com^
 ||mxptint.net^
 ||mxvp-ad-config-prod-1.zenmxapps.com^
@@ -6758,6 +6741,7 @@
 ||nadvideo2.baidu.com^
 ||nanigans.com^
 ||nappyattack.com^
+||native-adserver.com^
 ||ndsp.baidu.com^
 ||nervoussummer.com^
 ||net.iberia.com^
@@ -6826,6 +6810,7 @@
 ||open.e.kuaishou.com^
 ||open.oneplus.net^
 ||openfpcdn.io^
+||openrtb-banner.com^
 ||openstat.net^
 ||oply.hearstapps.com^
 ||optad360.io^
@@ -6848,6 +6833,7 @@
 ||pangolin.bytedance.com^
 ||pangolin.snssdk.com^
 ||parrable.com^
+||partner-ads.com^
 ||partner.vecteezy.com^
 ||partners.dogtime.com^
 ||partners.hostgator.com^
@@ -6858,6 +6844,7 @@
 ||pb.sogou.com^
 ||pbjs-stream.bydata.com^
 ||pbterra.com^
+||pc-ads.com^
 ||pdmsmrt.buick.com^
 ||pdmsmrt.cadillac.com^
 ||pdmsmrt.chevrolet.com^
@@ -6895,6 +6882,7 @@
 ||powerad.ai^
 ||pp2.pptv.com^
 ||prebid-server.newsbreak.com^
+||prebid.org^
 ||predictiondisplay.com^
 ||predictivadnetwork.com^
 ||presage.io^
@@ -6921,6 +6909,7 @@
 ||pub.network^
 ||pubdirecte.com^
 ||pubfeed.linkby.com^
+||pubfuture-ad.com^
 ||pubmine.com^
 ||pubsrv.devhints.io^
 ||pubtrky.com^
@@ -6970,6 +6959,12 @@
 ||rotabanner.kulichki.net^
 ||rpt.kidsfootlocker.com^
 ||rst.pornyhd.com^
+||rtb-1.jizzberry.com^
+||rtb-1.mylust.com^
+||rtb-1.xcafe.com^
+||rtb-3.xgroovy.com^
+||rtb-media.me^
+||rtb.appbid.com^
 ||rtmark.net^
 ||rttrk.com^
 ||rum-ingress-coralogix.com^
@@ -7082,6 +7077,7 @@
 ||skillfuldrop.com^
 ||sm.edweek.org^
 ||sm.stjude.org^
+||smartnews-ads.com^
 ||smetric.4imprint.com^
 ||smetric.biogen.com^
 ||smetric.hilton.com^
@@ -7679,6 +7675,7 @@
 ||ssl.o.medscape.com^
 ||ssl.o.medscape.org^
 ||ssl.o.vitals.com^
+||ssp.hinet.net^
 ||sstat.ncl.com^
 ||sstats.aavacations.com^
 ||sstats.americafirst.com^
@@ -7762,6 +7759,7 @@
 ||stickyadstv.com^
 ||stms.53.com^
 ||stnt.express-scripts.com^
+||storage-ad.com^
 ||strack.collegeboard.org^
 ||strack.concur.com^
 ||stracking.rogers.com^
@@ -7861,6 +7859,8 @@
 ||telemetry.owenscorning.com^
 ||telemetry.stryker.com^
 ||tellapart.com^
+||test-ad.lucia-c.com^
+||text-link-ads.com^
 ||the-ozone-project.com^
 ||theadex.com^
 ||theadsparks.com^
@@ -8076,6 +8076,7 @@
 ||yjxssk.apartments.com^
 ||ylx-1.com^
 ||yoads.net^
+||yoc-adserver.com^
 ||yotta.scrolller.com^
 ||yottlyscript.com^
 ||youmi.net^

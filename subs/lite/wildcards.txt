@@ -1,4 +1,4 @@
-# NoAS 通配清单（20261121-57c1d2f1）：*.域 = 该域任意多级子域
+# NoAS 通配清单（20261121-00e742fe）：*.域 = 该域任意多级子域
 *.ad-scope.com
 *.ad-scope.com.cn
 *.adchina.cn

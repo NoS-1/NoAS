@@ -1,4 +1,4 @@
-# NoAS 20261121-57c1d2f1（8093 条）
+# NoAS 20261121-00e742fe（8094 条）
 0.0.0.0 0017c6c37c.com
 0.0.0.0 00a39e6dfd.com
 0.0.0.0 01168nl.com
@@ -1648,6 +1648,7 @@
 0.0.0.0 adventurousamount.com
 0.0.0.0 adversaldisplay.com
 0.0.0.0 adversalservers.com
+0.0.0.0 advert.58.com
 0.0.0.0 advertica.com
 0.0.0.0 adverticum.net
 0.0.0.0 advertise.bczeducation.cn
@@ -5741,35 +5742,7 @@
 0.0.0.0 cv.nell.life
 0.0.0.0 cv.optimo-slb.com
 0.0.0.0 cv.shiryoku1.com
-0.0.0.0 cv.stella-s.com
-0.0.0.0 cv.subscription-store.com
-0.0.0.0 cv.tenjin.cc
-0.0.0.0 cv.theatreacademy.info
-0.0.0.0 cvastico.com
-0.0.0.0 cvbdlmcuzahza.site
-0.0.0.0 cvevpwhszksij.online
-0.0.0.0 cvhefd.ixbt.com
-0.0.0.0 cvivxd.com
-0.0.0.0 cvngacuwqodke.site
-0.0.0.0 cvpdkmzxvnzng.online
-0.0.0.0 cvpthv.vipoutlet.com
-0.0.0.0 cvqfwzrnkvtun.website
-0.0.0.0 cvuestnhwbnix.site
-0.0.0.0 cvwgltvuviniv.space
-0.0.0.0 cvxbbrcunmulw.site
-0.0.0.0 cvxkkuhbqgwxo.space
-0.0.0.0 cvzbchlxyuzzd.site
-0.0.0.0 cvzrqzanffkxy.site
-0.0.0.0 cwawlwdjdtxem.space
 0.0.0.0 cwcdmm.zennioptical.com
-0.0.0.0 cwchjisabnnmx.space
-0.0.0.0 cwclrbjglcccp.website
-0.0.0.0 cwhjirncjhrmo.site
-0.0.0.0 cwicybzyryttv.space
-0.0.0.0 cwlnrlnmalwof.site
-0.0.0.0 cwnqfrehigqdb.online
-0.0.0.0 cwqtqpxudxicq.space
-0.0.0.0 cwrlsjkvjdgff.site
 0.0.0.0 d0.xcar.com.cn
 0.0.0.0 d10ce3z4vbhcdd.cloudfront.net
 0.0.0.0 d10zmv6hrj5cx1.cloudfront.net
@@ -6255,6 +6228,7 @@
 0.0.0.0 dodk8rb03jif9.cloudfront.net
 0.0.0.0 doo9gpa5xdov2.cloudfront.net
 0.0.0.0 doqpm.click
+0.0.0.0 doubleclick.ctfile.com
 0.0.0.0 dp45nhyltt487.cloudfront.net
 0.0.0.0 dpirwgljl6cjp.cloudfront.net
 0.0.0.0 dpjlvaveq1byu.cloudfront.net
@@ -6273,6 +6247,8 @@
 0.0.0.0 dsh7ky7308k4b.cloudfront.net
 0.0.0.0 dsnymrk0k4p3v.cloudfront.net
 0.0.0.0 dsp-impr2.youdao.com
+0.0.0.0 dsp.aparat.com
+0.0.0.0 dsp.wtf
 0.0.0.0 dsp.youdao.com
 0.0.0.0 dspmnt.autohome.com.cn
 0.0.0.0 dtadnetwork.com
@@ -6368,6 +6344,7 @@
 0.0.0.0 fkdaik.lightinthebox.com
 0.0.0.0 flairadscpc.com
 0.0.0.0 flashtalking.com
+0.0.0.0 flat-ads.com
 0.0.0.0 flurry.com
 0.0.0.0 fmpub.net
 0.0.0.0 fmqidg.letras.com
@@ -6380,6 +6357,7 @@
 0.0.0.0 frtya.com
 0.0.0.0 frztrk.netmums.com
 0.0.0.0 fsbozl.dillards.com
+0.0.0.0 fuck-ads.vercel.app
 0.0.0.0 fwbntw.com
 0.0.0.0 fwmrm.net
 0.0.0.0 g3.letv.com
@@ -6413,6 +6391,7 @@
 0.0.0.0 goads.pro
 0.0.0.0 goadservices.com
 0.0.0.0 goatcounter.com
+0.0.0.0 good-ads-online.com
 0.0.0.0 googlecommerce.com
 0.0.0.0 goqon.com
 0.0.0.0 gorgon.youdao.com
@@ -6461,6 +6440,7 @@
 0.0.0.0 imp.pvnsolutions.com
 0.0.0.0 impression.link
 0.0.0.0 imtwjwoasak.com
+0.0.0.0 infinite-ads.com
 0.0.0.0 infinityid.condenastdigital.com
 0.0.0.0 info.accutrain.com
 0.0.0.0 info.autozonepro.com
@@ -6563,6 +6543,7 @@
 0.0.0.0 lwadm.com
 0.0.0.0 lwozzk.legacy.com
 0.0.0.0 lzjl.com
+0.0.0.0 m-rtb.com
 0.0.0.0 m.trb.com
 0.0.0.0 m2.ai
 0.0.0.0 m32.media
@@ -6587,6 +6568,7 @@
 0.0.0.0 marketing.sentinelgroup.com
 0.0.0.0 marketing.trubridge.com
 0.0.0.0 marketing.washington.org
+0.0.0.0 masque-ads.b-cdn.net
 0.0.0.0 mastertag.effiliation.com
 0.0.0.0 mato.clanto.cloud
 0.0.0.0 maxbounty.com
@@ -6741,6 +6723,7 @@
 0.0.0.0 mpnrs.com
 0.0.0.0 msg.qy.net
 0.0.0.0 mtburn.com
+0.0.0.0 multiwall-ads.shop
 0.0.0.0 mushroomgods.com
 0.0.0.0 mxptint.net
 0.0.0.0 mxvp-ad-config-prod-1.zenmxapps.com
@@ -6751,6 +6734,7 @@
 0.0.0.0 nadvideo2.baidu.com
 0.0.0.0 nanigans.com
 0.0.0.0 nappyattack.com
+0.0.0.0 native-adserver.com
 0.0.0.0 ndsp.baidu.com
 0.0.0.0 nervoussummer.com
 0.0.0.0 net.iberia.com
@@ -6819,6 +6803,7 @@
 0.0.0.0 open.e.kuaishou.com
 0.0.0.0 open.oneplus.net
 0.0.0.0 openfpcdn.io
+0.0.0.0 openrtb-banner.com
 0.0.0.0 openstat.net
 0.0.0.0 oply.hearstapps.com
 0.0.0.0 optad360.io
@@ -6841,6 +6826,7 @@
 0.0.0.0 pangolin.bytedance.com
 0.0.0.0 pangolin.snssdk.com
 0.0.0.0 parrable.com
+0.0.0.0 partner-ads.com
 0.0.0.0 partner.vecteezy.com
 0.0.0.0 partners.dogtime.com
 0.0.0.0 partners.hostgator.com
@@ -6851,6 +6837,7 @@
 0.0.0.0 pb.sogou.com
 0.0.0.0 pbjs-stream.bydata.com
 0.0.0.0 pbterra.com
+0.0.0.0 pc-ads.com
 0.0.0.0 pdmsmrt.buick.com
 0.0.0.0 pdmsmrt.cadillac.com
 0.0.0.0 pdmsmrt.chevrolet.com
@@ -6888,6 +6875,7 @@
 0.0.0.0 powerad.ai
 0.0.0.0 pp2.pptv.com
 0.0.0.0 prebid-server.newsbreak.com
+0.0.0.0 prebid.org
 0.0.0.0 predictiondisplay.com
 0.0.0.0 predictivadnetwork.com
 0.0.0.0 presage.io
@@ -6914,6 +6902,7 @@
 0.0.0.0 pub.network
 0.0.0.0 pubdirecte.com
 0.0.0.0 pubfeed.linkby.com
+0.0.0.0 pubfuture-ad.com
 0.0.0.0 pubmine.com
 0.0.0.0 pubsrv.devhints.io
 0.0.0.0 pubtrky.com
@@ -6963,6 +6952,12 @@
 0.0.0.0 rotabanner.kulichki.net
 0.0.0.0 rpt.kidsfootlocker.com
 0.0.0.0 rst.pornyhd.com
+0.0.0.0 rtb-1.jizzberry.com
+0.0.0.0 rtb-1.mylust.com
+0.0.0.0 rtb-1.xcafe.com
+0.0.0.0 rtb-3.xgroovy.com
+0.0.0.0 rtb-media.me
+0.0.0.0 rtb.appbid.com
 0.0.0.0 rtmark.net
 0.0.0.0 rttrk.com
 0.0.0.0 rum-ingress-coralogix.com
@@ -7075,6 +7070,7 @@
 0.0.0.0 skillfuldrop.com
 0.0.0.0 sm.edweek.org
 0.0.0.0 sm.stjude.org
+0.0.0.0 smartnews-ads.com
 0.0.0.0 smetric.4imprint.com
 0.0.0.0 smetric.biogen.com
 0.0.0.0 smetric.hilton.com
@@ -7672,6 +7668,7 @@
 0.0.0.0 ssl.o.medscape.com
 0.0.0.0 ssl.o.medscape.org
 0.0.0.0 ssl.o.vitals.com
+0.0.0.0 ssp.hinet.net
 0.0.0.0 sstat.ncl.com
 0.0.0.0 sstats.aavacations.com
 0.0.0.0 sstats.americafirst.com
@@ -7755,6 +7752,7 @@
 0.0.0.0 stickyadstv.com
 0.0.0.0 stms.53.com
 0.0.0.0 stnt.express-scripts.com
+0.0.0.0 storage-ad.com
 0.0.0.0 strack.collegeboard.org
 0.0.0.0 strack.concur.com
 0.0.0.0 stracking.rogers.com
@@ -7854,6 +7852,8 @@
 0.0.0.0 telemetry.owenscorning.com
 0.0.0.0 telemetry.stryker.com
 0.0.0.0 tellapart.com
+0.0.0.0 test-ad.lucia-c.com
+0.0.0.0 text-link-ads.com
 0.0.0.0 the-ozone-project.com
 0.0.0.0 theadex.com
 0.0.0.0 theadsparks.com
@@ -8069,6 +8069,7 @@
 0.0.0.0 yjxssk.apartments.com
 0.0.0.0 ylx-1.com
 0.0.0.0 yoads.net
+0.0.0.0 yoc-adserver.com
 0.0.0.0 yotta.scrolller.com
 0.0.0.0 yottlyscript.com
 0.0.0.0 youmi.net

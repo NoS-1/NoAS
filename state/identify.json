@@ -1,20 +1,17 @@
 {
  "ts": "2026-11-21",
- "candidates": 2,
- "judged": 2,
- "calls": 2,
- "model": "zhipu",
+ "candidates": 50,
+ "judged": 0,
+ "calls": 0,
+ "model": "",
  "confirmed": [],
  "whitelisted": [],
- "shadow": [
-  "adx-zz9track-20261121.net",
-  "zz9-adtest-20261121.com"
- ],
+ "shadow": [],
  "denied": [],
  "skipped": {
-  "白名单/服务放行/遥测": 0,
+  "白名单/服务放行/遥测": 4,
   "已在规则库": 0,
-  "已否决": 0
+  "已否决": 10
  },
- "error": "github-models: RuntimeError"
+ "error": "缺少 CF_ACCOUNT_ID / CF_API_TOKEN，AI 直判不可用"
 }
