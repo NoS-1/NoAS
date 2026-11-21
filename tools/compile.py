@@ -238,7 +238,7 @@ PARSERS = {"hosts": parse_hosts, "adblock": parse_adblock, "domains": parse_doma
 # 只留国内设备真会请求的域 + 国际大广告 SDK，其余长尾一律删 —— 规则不是越多越好，
 # 每条都要占额度（KV、Gateway 100×1000、Worker bundle），换不来拦截收益就是负债。
 LITE_CAP = 10000
-MID_CAP = 20000
+MID_CAP = 40000   # L2 把 mid 搬进 KV 后，体积墙从 3 万条推到 KV 上限，mid 扩到 4 万
 FULL_CAP = 30000
 
 HEAVY_HINTS = ("AdGuard", "HaGeZi", "hagezi", "OISD", "oisd", "1Hosts", "KADhosts", "antiAD")
