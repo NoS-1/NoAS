@@ -332,31 +332,54 @@ function blockedResponse(query, qtype, end) {
   return out;                                          // RDATA 全 0 → A=0.0.0.0 / AAAA=::
 }
 
+// 阶梯竞速（hedged requests）：原实现是"一个上游 5s 超时才换下一个"，
+// 一旦主上游抽风，用户要等满 5 秒。改为错峰并发：
+//   0ms 发 A，300ms 未回再发 B，800ms 未回再发 C；先回来且 HTTP 200 的那份胜出，
+//   其余立刻 abort。常态仍然只打 1 个上游，尾部延迟从 5000ms 压到 ~800ms。
+const HEDGE_MS = [0, 300, 800];
+
+function fetchUpstream(u, bytes, ctrl) {
+  return fetch(u, {
+    method: "POST",
+    headers: { "content-type": "application/dns-message", accept: "application/dns-message" },
+    body: bytes,
+    signal: ctrl.signal,
+  }).then(async (r) => {
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return await r.arrayBuffer();
+  });
+}
+
 async function upstream(bytes) {
   const list = upOrder || (upOrder = UPSTREAM.slice());
-  for (const u of list) {
-    try {
-      let signal;
-      try { signal = AbortSignal.timeout(UPSTREAM_TIMEOUT_MS); } catch (e) { signal = undefined; }
-      const r = await fetch(u, {
-        method: "POST",
-        headers: { "content-type": "application/dns-message", accept: "application/dns-message" },
-        body: bytes,
-        signal,
-      });
-      if (r.ok) {
-        upstreamFails = 0;
-        lastUpstreamOk = Date.now();
-        if (list[0] !== u) {                  // 把当前可用上游提到第一位，下个请求直接命中
-          list.splice(list.indexOf(u), 1);
-          list.unshift(u);
-        }
-        return await r.arrayBuffer();
-      }
-    } catch (e) { /* 超时/被拒：换下一个上游 */ }
+  const ctrls = list.map(() => new AbortController());
+  const hard = setTimeout(() => ctrls.forEach((c) => c.abort()), UPSTREAM_TIMEOUT_MS);
+  try {
+    const attempts = list.map((u, i) => new Promise((resolve, reject) => {
+      const delay = HEDGE_MS[i] !== undefined ? HEDGE_MS[i] : i * 500;
+      const kick = () => {
+        fetchUpstream(u, bytes, ctrls[i]).then(
+          (buf) => resolve({ u, buf }),
+          (e) => reject(e),
+        );
+      };
+      if (delay) setTimeout(kick, delay); else kick();
+    }));
+    const win = await Promise.any(attempts);
+    ctrls.forEach((c, i) => { if (list[i] !== win.u) { try { c.abort(); } catch (e) {} } });
+    upstreamFails = 0;
+    lastUpstreamOk = Date.now();
+    if (list[0] !== win.u) {                 // 把当前可用上游提到第一位，下个请求直接命中
+      list.splice(list.indexOf(win.u), 1);
+      list.unshift(win.u);
+    }
+    return win.buf;
+  } catch (e) {
+    upstreamFails += 1;
+    return null;
+  } finally {
+    clearTimeout(hard);
   }
-  upstreamFails += 1;
-  return null;
 }
 
 /** 构造一条最小的 A 查询报文（cron 自检用，不经过自己的 DoH，避免自增计数） */
