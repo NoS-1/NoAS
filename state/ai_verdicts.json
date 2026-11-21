@@ -151,28 +151,28 @@
  },
  "ad-admin.immomo.com": {
   "v": "unknown",
-  "c": 0,
-  "ts": "2026-11-20"
+  "c": 90,
+  "ts": "2026-11-21"
  },
  "ad-advertiser.soulapp.cn": {
   "v": "unknown",
-  "c": 0,
-  "ts": "2026-11-20"
+  "c": 10,
+  "ts": "2026-11-21"
  },
  "ad-h5-cdn.soulapp.cn": {
   "v": "unknown",
-  "c": 0,
-  "ts": "2026-11-20"
+  "c": 10,
+  "ts": "2026-11-21"
  },
  "ad-r.soulapp.cn": {
   "v": "unknown",
-  "c": 0,
-  "ts": "2026-11-20"
+  "c": 10,
+  "ts": "2026-11-21"
  },
  "ad-www.guazi.com": {
   "v": "unknown",
-  "c": 0,
-  "ts": "2026-11-20"
+  "c": 10,
+  "ts": "2026-11-21"
  },
  "shop-op.guazi.com": {
   "v": "benign",
@@ -201,27 +201,27 @@
  },
  "union.wps.cn": {
   "v": "benign",
-  "c": 90,
-  "ts": "2026-11-20"
+  "c": 100,
+  "ts": "2026-11-21"
  },
  "v1.log.moji.com": {
-  "v": "benign",
-  "c": 95,
-  "ts": "2026-11-20"
+  "v": "ad",
+  "c": 0,
+  "ts": "2026-11-21"
  },
  "v2.log.moji.com": {
-  "v": "benign",
-  "c": 95,
-  "ts": "2026-11-20"
+  "v": "ad",
+  "c": 0,
+  "ts": "2026-11-21"
  },
  "ad-console.jdcloud.com": {
   "v": "ad",
-  "c": 0,
-  "ts": "2026-11-20"
+  "c": 100,
+  "ts": "2026-11-21"
  },
  "op-api.docer.wps.cn": {
-  "v": "unknown",
-  "c": 30,
-  "ts": "2026-11-20"
+  "v": "benign",
+  "c": 100,
+  "ts": "2026-11-21"
  }
 }

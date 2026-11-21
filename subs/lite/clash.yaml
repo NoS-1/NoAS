@@ -1,4 +1,4 @@
-# NoAS 20261120-9feeb90b rule-provider payload
+# NoAS 20261121-9feeb90b rule-provider payload
 payload:
   - DOMAIN-SUFFIX,0017c6c37c.com
   - DOMAIN-SUFFIX,00a39e6dfd.com

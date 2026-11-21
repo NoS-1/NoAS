@@ -1,20 +1,34 @@
 {
- "updated": "2026-11-20T23:53:28Z",
+ "updated": "2026-11-21T00:16:18Z",
  "today": {
-  "date": "2026-11-20",
+  "date": "2026-11-21",
   "lite": 9903,
   "mid": 210523,
-  "full": 529144,
+  "full": 529147,
   "sources": 21,
   "whitelist": 136
  },
- "delta": {},
+ "delta": {
+  "lite": 0,
+  "mid": 0,
+  "full": 3,
+  "sources": 0,
+  "whitelist": 0
+ },
  "series": [
   {
    "date": "2026-11-20",
    "lite": 9903,
    "mid": 210523,
    "full": 529144,
+   "sources": 21,
+   "whitelist": 136
+  },
+  {
+   "date": "2026-11-21",
+   "lite": 9903,
+   "mid": 210523,
+   "full": 529147,
    "sources": 21,
    "whitelist": 136
   }
