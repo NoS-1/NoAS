@@ -29,6 +29,10 @@ jobs:
           import struct, urllib.request, statistics, time, random
 
           URL = "https://noas-doh.199999510.workers.dev/dns-query"
+          # workers.dev 对非浏览器 UA 直接 403（实测 Python-urllib 默认 UA 就被拦），
+          # 旧版预热因此一直静默失败、根本没起到保温作用。
+          UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/124.0 Safari/537.36 NoAS-warm")
 
           def query(name):
               labels = [l for l in name.split(".") if l]
@@ -37,7 +41,8 @@ jobs:
               b += struct.pack(">HH", 1, 1)
               req = urllib.request.Request(URL, data=b, method="POST",
                   headers={"Content-Type": "application/dns-message",
-                           "Accept": "application/dns-message"})
+                           "Accept": "application/dns-message",
+                           "User-Agent": UA})
               t = time.perf_counter()
               urllib.request.urlopen(req, timeout=10).read(16)
               return (time.perf_counter() - t) * 1000
