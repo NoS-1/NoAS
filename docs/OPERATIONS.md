@@ -17,8 +17,8 @@
 
 - 构建是否正常：[github.com/NoS-1/NoAS/actions](https://github.com/NoS-1/NoAS/actions) —— 每日 4 轮，每轮 30 步全绿即没问题
 - 失败告警：[Issues](https://github.com/NoS-1/NoAS/issues) —— 只有 `failure/timed_out/action_required` 才开单，`cancelled` 不再误报；恢复后自动评论并关闭
-- 误拦率与规模：[precision.html](https://nos-1.github.io/NoAS/precision.html) —— 三档误拦率、规则条数、黄金集通过情况
-- 构建明细：[tasks.html](https://nos-1.github.io/NoAS/tasks.html) · DNS 延迟：[dns-latency.html](https://nos-1.github.io/NoAS/dns-latency.html)
+- 误拦率与规模：[precision.html](https://noas-cdn.pages.dev/precision.html) —— 三档误拦率、规则条数、黄金集通过情况
+- 构建明细：[tasks.html](https://noas-cdn.pages.dev/tasks.html) · DNS 延迟：[dns-latency.html](https://noas-cdn.pages.dev/dns-latency.html)
 - CF Pages 部署历史：[dash.cloudflare.com/?to=/:account/pages/view/noas-cdn](https://dash.cloudflare.com/?to=/:account/pages/view/noas-cdn)
 - CF Worker（DoH）：[dash.cloudflare.com/?to=/:account/workers-and-pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages)
 

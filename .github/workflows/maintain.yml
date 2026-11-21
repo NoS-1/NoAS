@@ -33,11 +33,10 @@ jobs:
         with:
           node-version: "20"
 
-      - name: 1 · 取云端 full 清单（data 分支）
+      - name: 1 · 取云端 full 清单（CF Pages）
         run: |
-          git fetch -q origin data
-          git show origin/data:subs/full/domains.txt > /tmp/full.txt
-          wc -l /tmp/full.txt
+          curl -fsSL --retry 3 --max-time 60 "https://noas-cdn.pages.dev/subs/full/domains.txt" -o /tmp/full.txt
+          grep -vc '^#' /tmp/full.txt
 
       - name: 2 · 拉源 + 体检 + 死域抽样
         run: |
@@ -56,11 +55,8 @@ jobs:
           node tests/worker_check.mjs
           node tests/standalone_check.mjs
 
-      - name: 5 · 发布 data 分支 + 站点数据 + 成长账本
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 5 · 站点数据 + 成长账本（分发走 CF Pages，不推 data 分支）
         run: |
-          python3 tools/publish.py --token "$GITHUB_TOKEN"
           python3 tools/report.py
           python3 tools/growth.py
 

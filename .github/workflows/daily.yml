@@ -202,10 +202,8 @@ jobs:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: python3 tools/ai_classify.py
 
-      - name: 7 · 发布 mid/full 到 data 分支
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 tools/publish.py --token "$GITHUB_TOKEN"
+      # data 分支已停用：三档全格式由 CF Pages 承载（/subs/{lite,mid,full}/*），
+      # GitHub 不再做分发。需要离线单包的人走 Release（latest，固定一个 tag 不累积）。
 
       - name: 8 · 生成站点数据与 Pages 镜像（含零误拦闭环页）
         run: |
@@ -216,10 +214,16 @@ jobs:
         run: python3 tools/growth.py
 
       - name: 9 · 提交（内容没变就零提交）
+        # 降频到每天一次：产物分发走 CF，main 只是备份。每天 4 轮各提交一次会让
+        # 历史按 ~1MB/轮 膨胀（一年 1.4GB），把免费的仓库额度白吃掉。
+        if: github.event_name == 'push' || github.event.schedule == '17 19 * * *'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A subs/lite subs/mixed subs/channels subs/paths docs history tools doh/worker.tpl.js sources.tsv lists tests state
+          # 入库的只有「必须的数据」：规则源、lite（小档，克隆即用）、代码与状态台账。
+          # 大产物（mid/full、mixed、paths、站点 HTML）一律不进 git —— 它们由 CF Pages 分发，
+          # 每轮提交等于按 MB 级烧仓库额度。
+          git add -A subs/lite subs/channels history tools doh/worker.tpl.js sources.tsv lists tests state
           if git diff --cached --quiet; then
             echo "无变化，跳过提交"
             exit 0
@@ -253,17 +257,8 @@ jobs:
             --title "NoAS 最新快照" --notes "每日自动重建的规则单包（lite/mid/full + 自建 DoH）"
           gh release upload latest /tmp/noas-snapshot.zip --clobber
 
-      - name: 11 · Pages 部署
-        uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
-      # artifact 刚 finalize 时 GitHub 的索引还没刷新，deploy-pages 会报
-      # "No artifacts named github-pages were found"（实测相隔 0.02 秒就撞上）。等 8 秒再部署。
-      - name: 等待 artifact 索引
-        run: sleep 4
-      - id: deployment
-        uses: actions/deploy-pages@v5
+      # GitHub Pages 部署已停用：站点与订阅全部走 CF Pages（免费无限流量，国内可达）。
+      # GitHub 侧只保留 Actions（public 仓库分钟数免费）与 Release 单包。
 
       # 免费额度守门：Pages 每月 500 次部署，用光就整月发不了新规则。
       # 放在发布之后，不影响产物；逼近告警线则让构建红，触发 Issue 而不是静默耗尽。
@@ -283,4 +278,4 @@ jobs:
             out/compile.json
             history/health.json
             history/evolution.json
-          retention-days: 14
+          retention-days: 7

@@ -7,9 +7,9 @@
 
 | 档位 | 条数 | 说明 | 地址 |
 |---|---|---|---|
-| lite | 9,903（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断；**零误伤最小集**，设备算力很弱时用这档 | `https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt` |
-| mid | 210,265 | 跨 2 源共识 + 广告 SDK/贴片专项；**日常默认就用这档**，覆盖与误伤的平衡点 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt` |
-| full | ≈53 万（529,385） | 21 源并集，最激进 | `https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/adguard.txt` |
+| lite | 9,903（硬上限 10,000） | 跨 3 源共识 + 广告结构自动晋级，按共识分排序截断；**零误伤最小集**，设备算力很弱时用这档 | `https://noas-cdn.pages.dev/subs/lite/adguard.txt` |
+| mid | 19,959 | 跨 2 源共识 + 广告 SDK/贴片专项；**日常默认就用这档**，覆盖与误伤的平衡点 | `https://noas-cdn.pages.dev/subs/mid/adguard.txt` |
+| full | 29,990 | 21 源并集，最激进 | `https://noas-cdn.pages.dev/subs/full/adguard.txt` |
 
 > 上面三个数字取自 CI 每日重建后的**线上实际产物**（`main` 分支 lite、`data` 分支 mid/full）。CI 出网能拉到 21 个源，本机受限网络只到 19 个，所以本地复跑会比线上小 20% 左右——这不是丢规则，是源可达性差异。任何时刻以 `precision.html` 上的实时数字为准。
 
@@ -30,11 +30,11 @@
 | 通道 | 用法 | 说明 |
 |---|---|---|
 | raw | 上表地址 | 随仓库提交即时生效 |
-| Pages | `https://nos-1.github.io/NoAS/subs/lite/adguard.txt` | 站点镜像，带宽由 GitHub 承担，与 raw 互为备份 |
+| Pages | `https://noas-cdn.pages.dev/subs/lite/adguard.txt` | 站点镜像，带宽由 GitHub 承担，与 raw 互为备份 |
 | **CF Pages** | `https://noas-cdn.pages.dev/subs/mid/adguard.txt` | **国内推荐**：CF 边缘静态分发，免费、带宽不限，**不占 Worker 额度** |
 | Release | `https://github.com/NoS-1/NoAS/releases/latest/download/noas-snapshot.zip` | 单包下载（三档 + DoH + 通道产物），长期留档 |
 
-站点首页 `https://nos-1.github.io/NoAS/` 有实时条数、各格式校验值、源健康度与自我成长记录。
+站点首页 `https://noas-cdn.pages.dev/` 有实时条数、各格式校验值、源健康度与自我成长记录。
 
 ## 用了哪些行业级手段
 
@@ -54,7 +54,7 @@
 4. `meta.json` 里的 sha256 必须与真实文件一致（改了文件没重算直接红）
 5. 抽查：已知广告网络必须拦、已知正常站必须放
 6. **规模突变护栏**：比上一轮少 15% 以上直接判红停发（多半是上游集体挂掉，宁可停一天也不发残包）
-7. **黄金回归**：`tests/golden_set.txt` 里 2,227 条正常站点，lite 档命中必须为 0，出现一条就判红（实测三档误拦率见 [precision.html](https://nos-1.github.io/NoAS/precision.html)）
+7. **黄金回归**：`tests/golden_set.txt` 里 2,227 条正常站点，lite 档命中必须为 0，出现一条就判红（实测三档误拦率见 [precision.html](https://noas-cdn.pages.dev/precision.html)）
 8. **基础服务护栏**：`lists/service_allow.txt`（登录/支付/推送/地图/验证码/崩溃上报）三档都不许出现——这条挂了，用户是登不上微信、付不了款，比误拦广告严重得多
 9. **影子期**：观察池里的低置信域必须先看够 14 天且复现 2 轮才准晋级，30 天不复现直接退役；没满期的绝不许进 lite（`tools/watch_pool.py`）
 10. **信誉评分**：多信号加权打分，≥70 才够格进 lite；命中白名单/良性大盘/黄金集的域直接清零，不给翻盘机会（`tools/reputation.py`）
@@ -103,6 +103,8 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 
 ## DNS 通道（国内主用 + 自建兜底）
 
+**分工**：GitHub 只负责算（Actions 拉源 → 编译 → 校验），Cloudflare 负责发（Pages 三档订阅 + DoH 分档端点、Workers 判定、Gateway 60 片云列表）。仓库里只保留必须的数据（规则源、lite、代码、台账），大产物一律不进 git —— 详见 [docs/GITHUB-QUOTA.md](docs/GITHUB-QUOTA.md)。
+
 规则解决"拦什么"，通道解决"走哪条路"。**注意：国内公共 DNS 只解析、不拦广告**，真正能拦的只有两类：本地过滤、或带规则的云端端点。
 
 | 场景 | 通道 | 地址 | 拦广告 | 额度 |
@@ -122,7 +124,7 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 
 CF 侧运行期只读一份 KB 级构建指纹，规则本体内嵌，GitHub 全挂也不影响解析；哪些东西必须过仓库、各环节如何解耦，见 [`docs/CF-STANDALONE.md`](docs/CF-STANDALONE.md)。
 
-延迟不是拍脑袋定的：`tools/bench_dns.py` 按真实 DNS wire query 实测各家首包与复用耗时，结论和取舍写在 [`dns-latency.html`](https://nos-1.github.io/NoAS/dns-latency.html)。
+延迟不是拍脑袋定的：`tools/bench_dns.py` 按真实 DNS wire query 实测各家首包与复用耗时，结论和取舍写在 [`dns-latency.html`](https://noas-cdn.pages.dev/dns-latency.html)。
 一句话：延迟大头是每次重做 TLS 握手，所以主用常连的国内 DoH（复用后 9–16ms），自建只兜底。
 
 ## 三层叠加（DNS 只是第一层）

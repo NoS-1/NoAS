@@ -27,12 +27,12 @@ jobs:
               echo "::error::通道异常 $1"; fail=1
             fi
           }
-          check "https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/adguard.txt"
-          check "https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/rpz.zone"
-          check "https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/hosts.txt"
-          check "https://nos-1.github.io/NoAS/subs/lite/adguard.txt"
-          check "https://nos-1.github.io/NoAS/data.json"
-          check "https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/mid/adguard.txt"
-          check "https://raw.githubusercontent.com/NoS-1/NoAS/data/subs/full/hosts.txt"
+          check "https://noas-cdn.pages.dev/subs/lite/adguard.txt"
+          check "https://noas-cdn.pages.dev/subs/lite/rpz.zone"
+          check "https://noas-cdn.pages.dev/subs/lite/hosts.txt"
+          check "https://noas-cdn.pages.dev/subs/lite/adguard.txt"
+          check "https://noas-cdn.pages.dev/data.json"
+          check "https://noas-cdn.pages.dev/subs/mid/adguard.txt"
+          check "https://noas-cdn.pages.dev/subs/full/hosts.txt"
           check "https://github.com/NoS-1/NoAS/releases/latest/download/noas-snapshot.zip"
           exit $fail

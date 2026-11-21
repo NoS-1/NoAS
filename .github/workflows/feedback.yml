@@ -62,10 +62,7 @@ jobs:
           node tests/worker_check.mjs
           node tests/standalone_check.mjs
 
-      - name: 6 · 发布 mid/full 到 data 分支
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 tools/publish.py --token "$GITHUB_TOKEN"
+      # data 分支已停用：分发走 CF Pages（cdn_deploy 在同轮把三档推上去）
 
       - name: 7 · 站点数据 / Pages 镜像 / 成长账本
         run: |
