@@ -64,6 +64,9 @@ def collect():
     fn = ROOT / "pages" / "dns-query.js"
     if fn.exists():
         files["/functions/dns-query/[[tier]].js"] = fn.read_bytes()
+    wf = ROOT / "pages" / "why.js"
+    if wf.exists():
+        files["/functions/why.js"] = wf.read_bytes()
     tf = ROOT / "pages" / "tier.js"
     if tf.exists():
         files["/functions/tier.js"] = tf.read_bytes()

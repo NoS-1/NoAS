@@ -232,6 +232,7 @@ export async function onRequest(context) {
   let pathTier = params && params.tier;
   if (Array.isArray(pathTier)) pathTier = pathTier[0];
   pathTier = String(pathTier == null ? "" : pathTier).split("/")[0].trim().toLowerCase();
+  const cip = request.headers.get("cf-connecting-ip") || "";
 
   // 自查端点：/tier 或 /dns-query/...?info=1
   if (url.pathname === "/tier" || url.searchParams.get("info") === "1") {
@@ -244,6 +245,14 @@ export async function onRequest(context) {
       ua: request.headers.get("user-agent") || "",
       hint: "配置 URL 里带上 /dns-query/<档位> 即可固定档位；不带则由 UA 自动判定",
     }, null, 1), { headers: TIER_JSON_H });
+  }
+
+  // /why 自查：Worker 才有规则分层信息，Pages 原样转发
+  if (url.pathname === "/why") {
+    const res = await fetch(WORKER_URL + "/why" + url.search, {
+      headers: { "user-agent": "NoAS-pages", "x-noas-cip": cip }, cache: "no-store",
+    });
+    return proxied(res);
   }
 
   if (!url.pathname.startsWith("/dns-query")) return next();
@@ -261,7 +270,7 @@ export async function onRequest(context) {
     try { waitUntil(persistTier(request, p.tier, env).catch(() => {})); } catch (x) {}
   }
 
-  const ck = request.method === "GET" ? request.url + "#" + p.tier : null;
+  const ck = request.method === "GET" ? request.url + "#" + p.tier + "#" + netKey(cip) : null;
   if (ck && typeof caches !== "undefined" && caches.default) {
     try {
       const hit = await caches.default.match(ck);
@@ -284,7 +293,6 @@ export async function onRequest(context) {
   if (bytes.length < 17) return new Response("报文过短", { status: 400 });
 
   const q = parseQuery(bytes);
-  const cip = request.headers.get("cf-connecting-ip") || "";
   if (q) {
     const mem = memGet(p.tier + "|" + q.name + "|" + q.qtype + "|" + netKey(cip));
     if (mem) return new Response(mem, {
@@ -307,20 +315,20 @@ export async function onRequest(context) {
   // 未命中本档 → 透传 Worker（Worker 内嵌 mid 兜底 + 上游竞速 + 缓存）
   const fwd = new URL(WORKER_URL + "/dns-query");
   for (const [k, v] of url.searchParams) {
-    if (k === "tier") continue;
+    if (k === "tier" || k === "dns") continue;   // dns 走 POST body，避免参数重编码
     fwd.searchParams.set(k, v);
   }
   fwd.searchParams.set("tier", "2");
   const res = await fetch(fwd.toString(), {
-    method: request.method,
+    method: "POST",                             // 恒用 POST 转发，报文不走查询串
     headers: {
-      "content-type": request.headers.get("content-type") || "application/dns-message",
+      "content-type": "application/dns-message",
       accept: "application/dns-message",
       "user-agent": "NoAS-pages",
       // Worker 侧看不到真实客户端 IP（只剩 Pages 出口），显式带过去给 ECS 用
-      "x-noas-cip": request.headers.get("cf-connecting-ip") || "",
+      "x-noas-cip": cip,
     },
-    body: request.method === "POST" ? bytes : undefined,
+    body: bytes,
     cache: "no-store",
   });
   const headers = pickHeaders(res);
