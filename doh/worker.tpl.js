@@ -371,7 +371,7 @@ async function handle(request, env, ctx) {
                   degraded: degraded || null,
                   rules_stale: rulesStale, rules_manifest: MANIFEST_URLS[0],
                   hot: hot ? { ver: hot.ver, count: hot.count } : null, hot_url: HOT_URLS[0],
-                  ae_points: aePoints, ae_cap: AE_DAILY_CAP,
+                  ae_points_local: aePoints, ae_cap_per_isolate: AE_DAILY_CAP,
                   cache: hasCache(),
                   upstream_order: (upOrder || UPSTREAM),
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
