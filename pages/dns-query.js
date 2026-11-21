@@ -18,6 +18,27 @@ const LITE_TTL_MS = 600000;
 let LITE = null;
 let LITE_AT = 0;
 
+// isolate 内结果缓存：手机端高频域名（同一个 App 反复查同一域）第二次直接命中，
+// 完全不再跳 Worker。只在 isolate 存活期内有效，30 秒过期 —— 宁可多回源，不吃旧 IP。
+const MEM_MAX = 800;
+const MEM_TTL_MS = 30000;
+const MEM = new Map();
+
+function memGet(key) {
+  const e = MEM.get(key);
+  if (!e) return null;
+  if (Date.now() > e.exp) { MEM.delete(key); return null; }
+  return e.buf;
+}
+
+function memPut(key, buf) {
+  if (MEM.size >= MEM_MAX) {
+    const oldest = MEM.keys().next().value;
+    if (oldest !== undefined) MEM.delete(oldest);
+  }
+  MEM.set(key, { buf, exp: Date.now() + MEM_TTL_MS });
+}
+
 async function liteSet() {
   if (LITE && Date.now() - LITE_AT < LITE_TTL_MS) return LITE;
   try {
@@ -103,6 +124,14 @@ export async function onRequest(context) {
     return proxied(res);
   }
 
+  const ck = request.method === "GET" ? request.url : null;
+  if (ck && typeof caches !== "undefined" && caches.default) {
+    try {
+      const hit = await caches.default.match(ck);
+      if (hit) return withPath(hit, "pages-cache");
+    } catch (e) { /* 缓存不可用就当没命中 */ }
+  }
+
   let bytes;
   if (request.method === "POST") {
     bytes = new Uint8Array(await request.arrayBuffer());
@@ -118,6 +147,13 @@ export async function onRequest(context) {
   if (bytes.length < 17) return new Response("报文过短", { status: 400 });
 
   const q = parseQuery(bytes);
+  if (q) {
+    const mem = memGet(q.name + "|" + q.qtype);
+    if (mem) return new Response(mem, {
+      headers: { "content-type": "application/dns-message", "x-noas": "cache-hit",
+                 "x-noas-path": "pages-mem", "x-noas-ver": "lite" },
+    });
+  }
   const set = await liteSet();
   if (q && set && hitLite(set, q.name)) {
     return new Response(blockedResponse(bytes, q.qtype, q.end), {
@@ -138,15 +174,38 @@ export async function onRequest(context) {
     body: request.method === "POST" ? bytes : undefined,
     cache: "no-store",
   });
-  return proxied(res);
+  const headers = pickHeaders(res);
+  const buf = await res.arrayBuffer();
+  const ok = res.status === 200 && buf.byteLength > 17;
+  if (ok && q) memPut(q.name + "|" + q.qtype, buf);
+  const out = new Response(buf, { status: res.status, headers });
+  if (ok && ck && typeof caches !== "undefined" && caches.default && context.waitUntil) {
+    try {
+      const ch = new Headers(headers);          // Headers 不能展开成对象，必须显式 copy
+      ch.set("cache-control", "max-age=60");
+      const copy = new Response(buf, { headers: ch });
+      context.waitUntil(caches.default.put(ck, copy));
+    } catch (e) { /* 写缓存失败不影响应答 */ }
+  }
+  return out;
 }
 
-function proxied(res) {
+function pickHeaders(res) {
   const out = new Headers();
   for (const [k, v] of res.headers) {
     if (k === "content-type" || k.toLowerCase().startsWith("x-noas")) out.set(k, v);
   }
   if (!out.has("content-type")) out.set("content-type", "application/dns-message");
   if (!out.has("x-noas-path")) out.set("x-noas-path", "pages");   // 标记经过 Pages 层
-  return new Response(res.body, { status: res.status, headers: out });
+  return out;
+}
+
+function withPath(res, path) {
+  const h = new Headers(res.headers);
+  h.set("x-noas-path", path);
+  return new Response(res.body, { status: res.status, headers: h });
+}
+
+async function proxied(res) {
+  return new Response(res.body, { status: res.status, headers: pickHeaders(res) });
 }

@@ -108,11 +108,17 @@ cd /home/user/NoAS && python3 tools/cf_rotate.py --doctor
 | Gateway DoH `oxyacq0a4t.cloudflare-gateway.com` | 0.09~0.10 s | 0.22~0.25 s | 0.33~0.38 s | **最快**，就近边缘，拦截实测 0.0.0.0 |
 | Pages DoH `noas-cdn.pages.dev`（承载自建 Worker） | 0.20~0.21 s | 0.51~1.52 s | 1.03~1.78 s | 落在远端边缘，TLS 抖动大；连接复用后降至几十 ms |
 | `noas-doh.199999510.workers.dev` | 超时 6.2 s | — | — | **国内被阻断**，只能走 Pages 承载 |
+| `1.1.1.1/dns-query` | TCP 不通 | — | — | 国内不可达 |
+| `cloudflare-dns.com/dns-query` | 0.22 s | 握手失败 | — | TCP 通、TLS 被重置，不可用 |
 | Gateway DoT `:853` | 建连成功 | 握手后读超时 | — | **853 端口普遍被阻断**，国内不要主用 DoT |
 
 结论：服务端处理时间可忽略（Worker 命中缓存 0ms、未命中上游竞速 5~40ms），**延迟几乎全部来自"国内→CF 最近边缘"的建连**。所以顺序是 ① 本地规则 ② Gateway DoH（就近边缘）③ Pages 承载的全规则档，DoT 仅作境外/可用环境备用。
 
-Pages 这一档做了两级判定：`lite`（9,902 条零误伤集）在 **Pages 边缘直接应答**（`x-noas-path: pages-local`，不跳 Worker），其余域名透传 Worker 走 mid 全量规则。长连接实测（温州，2026-11-21）：边缘拦截 237~336 ms ≈ 单个 RTT，透传 267~834 ms——省掉的那一跳就是 150~500 ms。`lite` 与本域白名单无直接交集，白名单父域下的 16 个纯广告端点仍按端点例外拦掉（`union.baidu.com` 实测被拦）。
+Pages 这一档做了两级判定：`lite`（9,902 条零误伤集）在 **Pages 边缘直接应答**（`x-noas-path: pages-local`，不跳 Worker），其余域名透传 Worker 走 mid 全量规则。长连接实测（温州，2026-11-21）：边缘拦截 237~336 ms ≈ 单个 RTT，透传 267~834 ms——省掉的那一跳就是 150~500 ms。
+
+再加两层结果缓存：`isolate` 内存 LRU（30 s / 800 条，`x-noas-path: pages-mem`）与 GET 请求的 Cache API（60 s，`pages-cache`）。高频域名第二次起不再跳 Worker，实测稳定在 193~246 ms，抖动从 267~834 ms 收敛成一个 RTT。
+
+**通道侧到此已到物理下限**：服务端处理是 0（缓存命中不建连、广告域边缘直拦），剩下那 ~200 ms 就是温州到 CF 最近边缘的往返。要再快只能换更近的边缘（Gateway 落在香港方向，复用 235 ms），应用层没有别的可压。`lite` 与本域白名单无直接交集，白名单父域下的 16 个纯广告端点仍按端点例外拦掉（`union.baidu.com` 实测被拦）。
 
 关于“多开账户接近无限”：
 

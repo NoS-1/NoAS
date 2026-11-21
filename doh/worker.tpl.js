@@ -356,7 +356,7 @@ function blockedResponse(query, qtype, end) {
 // 所以按域名分流，各自把最快的那家放第一：
 //   · .cn 域名 → 阿里优先（结果为准），150ms 时 CF 兜底（避免用户等满 600ms）
 //   · 其他域名 → CF 优先（1ms 出结果），150ms 时阿里兜底
-const HEDGE_MS = [0, 150, 450];
+const HEDGE_MS = [0, 120, 300];   // 收紧错峰窗口：实测边缘→CF DoH 只要 3~5ms，150/450 太保守
 const CF_UP = "https://cloudflare-dns.com/dns-query";
 const CN_TLDS = new Set(["cn"]);
 // 国内大站多是 .com，但它们的 CDN 靠 GeoDNS 调度：从境外递归会拿到境外节点，
