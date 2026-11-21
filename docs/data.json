@@ -1,16 +1,16 @@
 {
  "repo": "NoS-1/NoAS",
- "updated": "2026-11-21T02:35:10Z",
+ "updated": "2026-11-21T02:37:36Z",
  "tiers": {
   "lite": {
    "count": 9902,
    "version": "20261121-5985d0c1",
    "wildcards": 57,
-   "generated_utc": "Sat, 21 Nov 2026 02:33:43 GMT",
+   "generated_utc": "Sat, 21 Nov 2026 02:36:24 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 226930,
-     "sha256": "8be62132d7bbab5c873395d9df0cbf92e922da3a9d4cbb7b33c5118e92d93215"
+     "sha256": "06449bfbd98f88023f3dbe16416eb600ecd4bf83ded61bd828ae78b6f337d745"
     },
     "allow.txt": {
      "bytes": 2225,
@@ -66,11 +66,11 @@
    "count": 208129,
    "version": "20261121-5386366d",
    "wildcards": 57,
-   "generated_utc": "Sat, 21 Nov 2026 02:33:43 GMT",
+   "generated_utc": "Sat, 21 Nov 2026 02:36:24 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 4962304,
-     "sha256": "cc9b654db45b53b40bad34c924965fb265c87440c5943957ac6f0ac3f5653a32"
+     "sha256": "3184b2ee6865e3067ae14a1c8354adc67ba3fc1c607846792302f137f40e3c23"
     },
     "allow.txt": {
      "bytes": 2225,
@@ -126,11 +126,11 @@
    "count": 529155,
    "version": "20261121-76d7f908",
    "wildcards": 399390,
-   "generated_utc": "Sat, 21 Nov 2026 02:33:44 GMT",
+   "generated_utc": "Sat, 21 Nov 2026 02:36:25 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 22452265,
-     "sha256": "381036a1097f676181bd67f298d66df8863ff8bdc75f32b84749c4fb675e2356"
+     "sha256": "643b480460e741e413949864ebcad92646fa51b58bb6c51934d303f830ee9359"
     },
     "allow.txt": {
      "bytes": 2225,
@@ -212,8 +212,8 @@
   }
  },
  "health": {
-  "ts": "2026-11-21T02:33:25Z",
-  "round": 47,
+  "ts": "2026-11-21T02:36:07Z",
+  "round": 48,
   "sources": [
    {
     "name": "StevenBlack-all",
@@ -326,12 +326,6 @@
  },
  "evolution": [
   {
-   "ts": "2026-11-21T01:46:02Z",
-   "round": 42,
-   "events": [],
-   "sources": 21
-  },
-  {
    "ts": "2026-11-21T02:05:34Z",
    "round": 43,
    "events": [],
@@ -358,6 +352,12 @@
   {
    "ts": "2026-11-21T02:33:25Z",
    "round": 47,
+   "events": [],
+   "sources": 21
+  },
+  {
+   "ts": "2026-11-21T02:36:07Z",
+   "round": 48,
    "events": [],
    "sources": 21
   }
