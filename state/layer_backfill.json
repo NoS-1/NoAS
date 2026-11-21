@@ -52,6 +52,7 @@
   "gdt.qq.com": "qq.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
   "mobads.baidu.com": "baidu.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
   "optimus-ads.amap.com": "amap.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
+  "pgdt.gtimg.cn": "gtimg.cn 在白名单，按端点例外处理（ep 身份免疫白名单）",
   "pos.baidu.com": "baidu.com 在白名单，按端点例外处理（ep 身份免疫白名单）",
   "sdk.e.qq.com": "qq.com 在白名单，按端点例外处理（ep 身份免疫白名单）"
  },
