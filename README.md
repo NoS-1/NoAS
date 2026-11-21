@@ -117,6 +117,8 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 产物在 `subs/channels/`：`doh.txt`、`dot.txt`、`aiodns.sh`、`adguardhome-upstream.yaml`、`aiodns.special.txt`、`health.json`。
 每轮构建先体检再生成；体检若判定环境被代理劫持（`env=suspect`），**沿用完整清单，绝不剔空**。
 
+CF 侧运行期只读一份 KB 级构建指纹，规则本体内嵌，GitHub 全挂也不影响解析；哪些东西必须过仓库、各环节如何解耦，见 [`docs/CF-STANDALONE.md`](docs/CF-STANDALONE.md)。
+
 延迟不是拍脑袋定的：`tools/bench_dns.py` 按真实 DNS wire query 实测各家首包与复用耗时，结论和取舍写在 [`dns-latency.html`](https://nos-1.github.io/NoAS/dns-latency.html)。
 一句话：延迟大头是每次重做 TLS 握手，所以主用常连的国内 DoH（复用后 9–16ms），自建只兜底。
 

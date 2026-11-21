@@ -8,14 +8,17 @@
   它们拦得对，删掉只会降低防护，不算误拦清理。
 默认干跑，--apply 才写回（PUT 整表替换）。
 """
+import hashlib
 import json
 import os
 import pathlib
 import sys
+import time
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STATE = ROOT / "state" / "gateway_prune.json"
+FP = ROOT / "state" / "prune_fp.json"
 SUFFIX2 = {"com.cn", "cn.com", "net.cn", "org.cn", "gov.cn", "edu.cn", "ac.cn",
            "com.hk", "com.tw", "co.uk", "co.jp", "com.au", "co.kr", "com.sg", "com.my"}
 
@@ -69,8 +72,25 @@ def load_creds():
     return env
 
 
+def allow_fp():
+    """白名单指纹：白名单不变就没必要每天翻 80 个分片（省 CF API 调用）。"""
+    h = hashlib.sha256()
+    for p in sorted(list(ROOT.glob("subs/*/allow.txt")) + list(ROOT.glob("lists/*allow*.txt"))):
+        h.update(p.read_bytes())
+    return h.hexdigest()[:16]
+
+
 def main():
     apply = "--apply" in sys.argv
+    fp_now = allow_fp()
+    if apply and "--force" not in sys.argv:
+        try:
+            old = json.loads(FP.read_text(encoding="utf-8"))
+        except Exception:
+            old = {}
+        if old.get("allow_fp") == fp_now:
+            print("白名单未变（%s），跳过 Gateway 剪枝（--force 可强制）" % fp_now)
+            return 0
     env = load_creds()
     acct = env["CF_ACCOUNT_ID"]
     tok = env["CF_API_TOKEN"]
@@ -143,6 +163,10 @@ def main():
 
     STATE.parent.mkdir(parents=True, exist_ok=True)
     STATE.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+    if apply and rc == 0:
+        FP.write_text(json.dumps({"allow_fp": fp_now, "applied": True,
+                                  "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
+                                 ensure_ascii=False, indent=1), encoding="utf-8")
     if not apply:
         print("干跑完成（未写回）。加 --apply 才真正删。")
     return rc

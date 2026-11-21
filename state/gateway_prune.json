@@ -4,17 +4,17 @@
  "tiers": {
   "t2": {
    "pieces": 30,
-   "total": 29134,
+   "total": 28898,
    "keep": 28898,
-   "pruned": 236,
-   "orphan_kept": 2950
+   "pruned": 0,
+   "orphan_kept": 2803
   },
   "t3": {
    "pieces": 50,
-   "total": 50000,
+   "total": 49141,
    "keep": 49141,
-   "pruned": 859,
-   "orphan_kept": 5771
+   "pruned": 0,
+   "orphan_kept": 5029
   }
  },
  "applied": true
