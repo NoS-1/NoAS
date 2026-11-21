@@ -1,16 +1,16 @@
 {
  "repo": "NoS-1/NoAS",
- "updated": "2026-11-21T01:35:15Z",
+ "updated": "2026-11-21T01:35:40Z",
  "tiers": {
   "lite": {
    "count": 9903,
    "version": "20261121-9feeb90b",
    "wildcards": 57,
-   "generated_utc": "Sat, 21 Nov 2026 01:33:11 GMT",
+   "generated_utc": "Sat, 21 Nov 2026 01:33:00 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 228923,
-     "sha256": "8f2a535ad6114fed9f50135d21408b885ea194a6544642875789b84ebe577cf2"
+     "sha256": "c3414ea07cb2992440811d2ab2c95e93791f764f25fe40328bb89073a132a7b4"
     },
     "allow.txt": {
      "bytes": 2225,
@@ -66,11 +66,11 @@
    "count": 210603,
    "version": "20261121-08e74232",
    "wildcards": 57,
-   "generated_utc": "Sat, 21 Nov 2026 01:33:11 GMT",
+   "generated_utc": "Sat, 21 Nov 2026 01:33:00 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 5020978,
-     "sha256": "435eddd181012d8b9f5961dae004740cc24679f2042dde65bd8c4f6552ba3232"
+     "sha256": "4e4d51a32f9466ca7ea16684e3638653a70804d68e005a9d13a32cb61bd789ac"
     },
     "allow.txt": {
      "bytes": 2225,
@@ -126,11 +126,11 @@
    "count": 529205,
    "version": "20261121-e8dd1d35",
    "wildcards": 399376,
-   "generated_utc": "Sat, 21 Nov 2026 01:33:12 GMT",
+   "generated_utc": "Sat, 21 Nov 2026 01:33:01 GMT",
    "files": {
     "adguard.txt": {
      "bytes": 22451569,
-     "sha256": "255a16cd3a1f4f49afe7b0a4c6568b044853925053de897825ca36754c33a369"
+     "sha256": "cfc795b592c81d6b312dbb778dd6f26e1536fb34765d7c50be4121aa4ed9af9c"
     },
     "allow.txt": {
      "bytes": 2225,
@@ -212,7 +212,7 @@
   }
  },
  "health": {
-  "ts": "2026-11-21T01:24:08Z",
+  "ts": "2026-11-21T01:32:23Z",
   "round": 40,
   "sources": [
    {
@@ -356,7 +356,7 @@
    "sources": 21
   },
   {
-   "ts": "2026-11-21T01:24:08Z",
+   "ts": "2026-11-21T01:32:23Z",
    "round": 40,
    "events": [],
    "sources": 21
