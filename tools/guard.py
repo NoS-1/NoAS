@@ -170,16 +170,26 @@ def check_cooldown():
 def check_threat_isolation():
     """挖矿/联盟/遥测分类只许进 full，绝不许漏进 lite/mid。"""
     fails = []
-    cats = read_first_col("miner.txt") | read_first_col("affiliate.txt") | read_first_col("telemetry.txt")
+    # 定档策略（2026-11-21）：挖矿/恶意类必须进 full；归因与统计类（adjust/appsflyer/branch/
+    # telemetry）三档一律不拦 —— 拦了会误伤 App 上报与风控，换不到体验收益，属于"没用但有害"的规则。
+    miner = read_first_col("miner.txt")
+    soft = read_first_col("affiliate.txt") | read_first_col("telemetry.txt")
+    cats = miner | soft
     if not cats:
         return fails
+    for tier in ("lite", "mid", "full"):
+        base = set(domains_of(tier, "domains.txt") or [])
+        soft_hit = sorted(base & soft)
+        if soft_hit and tier != "full":
+            fails.append("%s：混入归因/统计域 %d 条（应三档全不拦）：%s"
+                         % (tier, len(soft_hit), ", ".join(soft_hit[:5])))
     for tier in ("lite", "mid"):
         base = domains_of(tier, "domains.txt") or set()
         hit = sorted(set(base) & cats)
         if hit:
             fails.append("%s：混入威胁分类域 %d 条：%s" % (tier, len(hit), ", ".join(hit[:5])))
     full = set(domains_of("full", "domains.txt") or [])
-    missing = sorted(set(cats) - set(full))
+    missing = sorted(miner - set(full))
     if missing:
         fails.append("full：分类域缺失 %d 条（应全部强制进 full）：%s"
                      % (len(missing), ", ".join(missing[:5])))
@@ -228,10 +238,13 @@ def check_tags():
     lite = set(domains_of("lite", "domains.txt") or [])
     tagged = {l.split("\t")[0].strip().lower() for l in open(tp, encoding="utf-8")
               if not l.startswith("#") and "\t" in l}
-    orphan = sorted(d for d in tagged if d not in full and d not in lite
-                    and d not in (domains_of("mid", "domains.txt") or set()))
-    if orphan:
-        fails.append("tags.tsv 有 %d 条域名不在任何档位：%s" % (len(orphan), ", ".join(orphan[:5])))
+    # 定档后档位是有上限的子集，台账仍是全量历史 → 反向校验：档位里每条域都必须有台账标签，
+    # 否则就是"发布了查不到出处的规则"。台账里被裁掉的历史长尾不再算孤儿。
+    mid_domains = domains_of("mid", "domains.txt") or set()
+    all_tier = set(full) | set(lite) | set(mid_domains)
+    no_tag = sorted(d for d in all_tier if d not in tagged)
+    if no_tag:
+        fails.append("tags.tsv 缺 %d 条已发布域的标签：%s" % (len(no_tag), ", ".join(no_tag[:5])))
     if rows < 1000:
         fails.append("tags.tsv 条数过少 %d" % rows)
     return fails
@@ -694,7 +707,16 @@ def main():
     else:
         for tier, n in summary.items():
             old = prev.get(tier)
-            if old and n < old * 0.85 and not (tier == "lite" and n <= LITE_CAP):
+            # 三档改成了硬上限（lite 1 万 / mid 2 万 / full 3 万），所以"比上轮少 15%"不再是故障信号 ——
+            # 主动裁剪就会跌 90%。真正的异常是"连目标规模的九成都凑不齐"：那说明上游真的废了或抓取断了。
+            cap = {"lite": 10000, "mid": 20000, "full": 30000}.get(tier)
+            if cap:
+                # 定档后只看绝对目标：凑不齐目标规模的九成才是真故障（上游失效/抓取断流）。
+                # 主动裁剪造成的"比上轮骤降"是策略，不是故障，不再比较历史规模。
+                if n < cap * 0.9:
+                    fails.append("%s 规模不足：%d 条，低于目标 %d 的九成（疑似上游失效或抓取截断）"
+                                 % (tier, n, cap))
+            elif old and n < old * 0.85 and not (tier == "lite" and n <= LITE_CAP):
                 fails.append("%s 规模骤降：%d → %d（超过 15%%，疑似上游失效）" % (tier, old, n))
     summary["_sources"] = cur_src
     os.makedirs(os.path.dirname(hist), exist_ok=True)

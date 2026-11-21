@@ -172,11 +172,11 @@ jobs:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: python3 tools/deploy_doh.py
 
-      - name: 6.88 · Gateway 小档同步（免费 50 seats 主通道，幂等）
+      - name: 6.88 · Gateway 三档全量同步（lite/mid/full 各 10/20/30 片，幂等）
         continue-on-error: true
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        run: python3 tools/gateway_sync.py --apply
+        run: python3 tools/gateway_all.py --apply
 
       - name: 6.885 · Gateway 误拦剪枝（只删白名单冲突，幂等）
         continue-on-error: true

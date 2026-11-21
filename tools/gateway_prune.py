@@ -132,7 +132,7 @@ def main():
 
     out = {"local_domains": len(doms), "local_roots": len(roots), "tiers": {}, "applied": apply}
     rc = 0
-    for tier, prefix in (("t2", "noas_t2_"), ("t3", "noas_t3_")):
+    for tier, prefix in (("t2", "noas_l2_"), ("t3", "noas_l3_")):
         total = keep = pruned = orphan = 0
         pieces = sorted([n for n in by_name if n.startswith(prefix)],
                         key=lambda x: int(x.split("_")[-1]) if x.split("_")[-1].isdigit() else 0)

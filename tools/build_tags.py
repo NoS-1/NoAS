@@ -59,8 +59,9 @@ def main():
 
     # 只给"需要解释来源"的域打标签，避免把 41 万条长尾全写进台账（仓库体积会爆）：
     # 全 lite + 端点/观察池/核心网/分类表 + 命名结构即广告的长尾
-    all_doms = (set(lite) | set(ep) | set(watch) | set(core) | set(miner)
-                | set(aff) | set(tel) | set(sdk) | set(video)) | set(sdk) | set(video)
+    # 定档后档位是有上限的子集，台账必须覆盖每个已发布域，否则"拦了某条却查不到出处"
+    all_doms = (set(lite) | set(mid) | set(full) | set(ep) | set(watch) | set(core)
+                | set(miner) | set(aff) | set(tel) | set(sdk) | set(video))
     for d in (mid | full):
         labels = d.split(".")[:-2]
         if any(x in AD_LABELS for x in labels):

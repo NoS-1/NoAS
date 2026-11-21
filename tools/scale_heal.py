@@ -41,7 +41,10 @@ def dropped(prev, cur):
     bad = []
     for t in TIERS:
         old, new = prev.get(t) or 0, cur.get(t) or 0
-        if old and new and new < old * 0.85 and not (t == "lite" and new <= LITE_CAP):
+        cap = {"lite": 10000, "mid": 20000, "full": 30000}.get(t)
+        if cap and new and new < cap * 0.9:
+            bad.append("%s 仅 %d 条（目标 %d）" % (t, new, cap))
+        elif old and new and new < old * 0.85 and not (t == "lite" and new <= LITE_CAP):
             bad.append("%s %d → %d" % (t, old, new))
     return bad
 

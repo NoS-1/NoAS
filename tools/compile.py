@@ -234,8 +234,12 @@ PARSERS = {"hosts": parse_hosts, "adblock": parse_adblock, "domains": parse_doma
            "domainswild": parse_wildcard, "clash": parse_domains}
 
 
-# lite 档硬上限：日常默认订阅控制在 1 万条以内，超出部分按共识分排序截断，留在 mid/full
+# 三档硬上限（2026-11-21 定档）：lite 1 万 / mid 2 万 / full 3 万。
+# 只留国内设备真会请求的域 + 国际大广告 SDK，其余长尾一律删 —— 规则不是越多越好，
+# 每条都要占额度（KV、Gateway 100×1000、Worker bundle），换不来拦截收益就是负债。
 LITE_CAP = 10000
+MID_CAP = 20000
+FULL_CAP = 30000
 
 HEAVY_HINTS = ("AdGuard", "HaGeZi", "hagezi", "OISD", "oisd", "1Hosts", "KADhosts", "antiAD")
 # 小而准、单源也必须进中档的清单：CNAME 落点表（反第一方伪装）与国内 App 去广告清单
@@ -554,10 +558,39 @@ def main():
     lite = drop_children(forced | promoted_keep | consensus_keep) - threat_all
     # 观察池只进 mid / full：这些是自动发现的"前缀像广告、但链上没有广告落点"的域
     # 档位必须严格包含：lite ⊆ mid ⊆ full。否则用户从 lite 升到 mid 会突然漏拦（体验倒退）。
-    mid = drop_children(
+    # 「国内优先」：这些域是国内设备真的会查的 —— 国内观察池 / 国内发现端点 / 国内根域 /
+    # 核心广告网（含 AdMob·AppLovin·Unity 这类国内 App 内嵌的海外 SDK，必须留），
+    # 以及审计端点与白名单相关。排序时先国内、再按共识分与命中源数。
+    cn = (load_list_file("cn_ad_watch.txt") | load_list_file("cn_ad_endpoints.txt")
+          | load_list_file("cn_roots.txt") | ep | core | sdk | video)
+    # 「只要国内的」：国内设备不会请求纯海外本地服务/品牌域（timhortons.ca、playstation.net 这类），
+    # 它们在海外源里躺了几十万条，占额度换不到任何拦截收益 —— 直接排除，除非它属于必留白名单。
+    FOREIGN_CC = {"ca", "au", "uk", "de", "fr", "jp", "kr", "ru", "br", "mx", "in", "id",
+                  "th", "vn", "my", "sg", "ph", "tr", "pl", "nl", "se", "no", "dk", "fi",
+                  "ch", "at", "be", "es", "it", "pt", "gr", "cz", "ar", "cl", "co", "za",
+                  "ae", "il", "nz", "ie", "hu", "ro", "ua"}
+    must = ep | core | sdk | video | (lblock - lallow)
+
+    def foreign(d):
+        if d in must or d in cn:
+            return 0
+        return 1 if d.rsplit(".", 1)[-1] in FOREIGN_CC else 0
+
+    def rank(d):
+        return (foreign(d), 0 if d in cn else 1, -consensus.get(d, 0), -hitn.get(d, 0), len(d), d)
+
+    mid_raw = drop_children(
         drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted)
         | ep | watch | sdk_video | (lblock - lallow) | lite) - threat_all
-    full = exact | watch | sdk_video | threat_extra | mid
+    mid_keep = lite | ep | sdk_video | promoted | (core & exact) | (lblock - lallow)
+    mid_extra = sorted(mid_raw - mid_keep, key=rank)[:max(0, MID_CAP - len(mid_keep))]
+    mid = drop_children((mid_keep | set(mid_extra)) - threat_all)
+
+    full_raw = exact | watch | sdk_video | threat_extra | mid
+    full_keep = mid | threat_extra | ep | (core & exact)
+    full_extra = sorted(full_raw - full_keep, key=rank)[:max(0, FULL_CAP - len(full_keep))]
+    # 挖矿/恶意域必须留在 full（拦掉才算真防护），归因/统计域三档都不进
+    full = (full_keep | set(full_extra)) - threat_all | miner
 
     prov = {d: round(consensus.get(d, 0), 2) for d in lite}
     json.dump({"lite": prov, "core": sorted(core & lite), "endpoints": sorted(ep & lite)},
@@ -567,7 +600,7 @@ def main():
     report = {"dead_dropped": len(dropped_dead), "sources": per_source,
               "full": len(full), "lite": len(lite), "mid": len(mid),
               "cn_discovered": len(ep - load_list_file("ad_endpoints.txt")), "cn_watch": len(watch),
-              "lite_cap": LITE_CAP, "lite_pool": len(promoted) + len(consensus_pool),
+              "lite_cap": LITE_CAP, "mid_cap": MID_CAP, "full_cap": FULL_CAP, "lite_pool": len(promoted) + len(consensus_pool),
               "wildcards": len(wild), "whitelist_blocked": len(blocked_wl),
               "ad_endpoints": len(ep), "promoted": len(promoted), "benign_dropped": len(benign_dropped)}
     print("编译完成：full %d ／mid %d ／lite %d 条（通配 %d）｜白名单剔除 %d｜源 %d 个｜国内发现端点 %d＋观察 %d" % (
@@ -588,7 +621,10 @@ def main():
         ver, changed, meta = write_formats(mid, wild_safe, os.path.join(SUBS, "mid"), "mid")
         results["mid"] = {"version": ver, "changed": changed, "count": meta["count"]}
     if args.only in (None, "full"):
-        ver, changed, meta = write_formats(full, wild | wild_safe, os.path.join(SUBS, "full"), "full")
+        # full 通配上限 3000：通配一条覆盖整棵子树，价值高但也最容易误伤，只留国内可查的前 3000 条
+        wild_full = set(sorted([w for w in wild if not foreign(w)],
+                               key=lambda d: (0 if d in cn else 1, -consensus.get(d, 0), len(d), d))[:3000])
+        ver, changed, meta = write_formats(full, wild_full | wild_safe, os.path.join(SUBS, "full"), "full")
         results["full"] = {"version": ver, "changed": changed, "count": meta["count"]}
     for k, v in results.items():
         print("  %s：%d 条，版本 %s，变更 %d 个文件" % (k, v["count"], v["version"], len(v["changed"])))
