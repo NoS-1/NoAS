@@ -60,10 +60,10 @@ def check_ark():
 
 
 def check_cf():
-    acc = (os.environ.get("CF_ACCOUNT_ID") or "").strip()
+    acc = (os.environ.get("CF_ACCOUNT_ID") or "226431c8f431ebb75d82dd5dbd5e8d86").strip()  # 账号 ID 非密钥
     tok = (os.environ.get("CF_API_TOKEN") or "").strip()
     if not (acc and tok):
-        return "missing", "未配置 CF_ACCOUNT_ID / CF_API_TOKEN"
+        return "missing", "缺少 CF_API_TOKEN 密钥"
     model = os.environ.get("AI_MODEL", "@cf/meta/llama-3.3-70b-instruct-fp8-fast")
     try:
         txt = _post("https://api.cloudflare.com/client/v4/accounts/%s/ai/run/%s" % (acc, model),

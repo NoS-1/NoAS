@@ -48,7 +48,7 @@ LISTS = ROOT / "lists"
 STATE = ROOT / "state"
 SUBS = ROOT / "subs"
 
-ACC = os.environ.get("CF_ACCOUNT_ID", "").strip()
+ACC = os.environ.get("CF_ACCOUNT_ID", "226431c8f431ebb75d82dd5dbd5e8d86").strip()  # 账号 ID 非密钥，公开可查
 TOK = os.environ.get("CF_API_TOKEN", "").strip()
 MODEL = os.environ.get("AI_MODEL", "@cf/meta/llama-3.3-70b-instruct-fp8-fast").strip()
 FALLBACK_MODEL = "@cf/meta/llama-3.1-8b-instruct"
