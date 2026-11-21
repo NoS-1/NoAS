@@ -267,6 +267,19 @@ jobs:
 
       # 免费额度守门：Pages 每月 500 次部署，用光就整月发不了新规则。
       # 放在发布之后，不影响产物；逼近告警线则让构建红，触发 Issue 而不是静默耗尽。
+      # 每天只留一份可回滚的日期快照（latest 会被覆盖，回滚时需要一个固定点）
+      - name: 10.2 · 每日快照 tag
+        if: github.event_name == 'push' || github.event.schedule == '17 19 * * *'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TS=$(date -u +%Y%m%d-%H%M)
+          gh release create "snap-$TS" /tmp/noas-snapshot.zip \
+            --title "NoAS 快照 $TS" --notes-file /tmp/noas-notes.md || true
+          # 只保留最近 5 个快照 tag，避免 tag 无限堆积
+          gh release list --limit 100 --json tagName -q '.[].tagName' \
+            | grep '^snap-' | tail -n +6 | while read -r t; do gh release delete "$t" -y --delete-tag; done || true
+
       - name: 10.5 · 仓库体积守卫
         run: |
           SZ=$(du -sm .git | cut -f1)
