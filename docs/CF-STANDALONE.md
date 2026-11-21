@@ -54,8 +54,9 @@ CF AE / Logs / Cron ──► 只读观测（不进构建判定）
 - **熔断不再断服**：额度到 90% 或单 IP 超 300/min 时，**跳过规则匹配直接转发**，响应头 `x-noas: degraded`，客户端无感；UTC 换日或 cron 自检成功后自动恢复。
 - **上游容错**：阿里 / 腾讯 / 360 三条 DoH，单条 5s 超时即切换。
 - **热规则自更新**（KV `RULES`）：cron 读 manifest 发现版本变化时，才拉 `subs/lite/domains.txt` → 条数/金丝雀双校验 → 存 KV；请求 isolate 冷启动读一次 KV，之后全走内存。**不重部署也能换规则**，校验不过就丢弃、继续用内嵌基线。源是 Pages 优先、raw 兜底；解析用一次换行替换 + 计数，避免 Free cron 的 10ms CPU 被上万行 split/join 吃掉。
-- **上游断线兜底**（Cache API）：放行应答按 qname+qtype 缓存 60s；三条上游全挂时先回缓存再报错，客户端不至于彻底解析失败。Cache 免费且不计 Worker 请求额度。
-- **观测**：AE（绑定缺失静默）+ Workers Logs 1% 采样；pass 只采样 10%，block/cname/cron 全量。
+- **每日自检**（UTC 0 点那一轮）：只读本 isolate 状态，写一条 `diag` 点，内容包括三档条数、热规则条数、当前版本、上游失败数、是否降级。一条日志就能回答"线上到底装的是什么"。
+- **上游断线兜底**（Cache API）：放行应答按 qname+qtype 缓存 300s（与拦截 TTL 一致）；三条上游全挂时先回缓存再报错，客户端不至于彻底解析失败。Cache 免费且不计 Worker 请求额度。
+- **观测**：AE（绑定缺失静默）+ Workers Logs 1% 采样；pass 只采样 5%，block/cname/cron 全量；AE 写点有 9 万/天硬上限（免费额度 10 万），到顶后静默丢弃，绝不因写日志失败拖慢应答。
 
 ## 六、依赖矩阵：哪一环坏了会怎样
 
@@ -69,6 +70,8 @@ CF AE / Logs / Cron ──► 只读观测（不进构建判定）
 | AE 写入失败 | 仅丢观测，DNS 应答不受影响 | 无需处理 |
 | 三条上游全挂 | 返回 502 + `degraded=upstream-down` | 上游恢复后 cron 自动复位 |
 | 仓库 raw 不可达 | `rules_stale=null`（未知），不误报 | 网络恢复后自动恢复 |
+| Pages 部署异常 | 站点回到 500，规则分发中断；DoH/Gateway 不受影响 | `cdn_deploy.py` 用 wrangler 重发 + 取文验证，不通过即红 |
+| 触发 1,000 次/分钟准入 | 部分请求被平台直接拒绝，Worker 内无法自救 | 靠 Gateway 分流 + 本地规则把请求量压下来 |
 
 ## 七、明确不做
 

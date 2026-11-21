@@ -108,8 +108,8 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 | 场景 | 通道 | 地址 | 拦广告 | 额度 |
 |---|---|---|---|---|
 | 本地过滤（推荐） | AGH / sing-box + 国内上游 | 规则用 `subs/lite/adguard.txt`，上游填下面任一条 | 是 | 0 |
-| 手机直填 DoH | Gateway（带规则） | `https://oxyacq0a4t.cloudflare-gateway.com/dns-query` | 是（已实测） | 免费 50 seats，不占 Worker |
-| 手机直填 DoH | 自建 Worker（兜底） | `https://noas-doh.199999510.workers.dev/dns-query` | 是 | 10 万/天，90% 熔断 |
+| 手机直填 DoH | **首选**：Gateway（带规则） | `https://oxyacq0a4t.cloudflare-gateway.com/dns-query` | 是（已实测） | 查询不占 Worker 请求，按 seat 单独计（免费档约 5,000/seat/天） |
+| 手机直填 DoH | 长尾兜底：自建 Worker | `https://noas-doh.199999510.workers.dev/dns-query` | 是 | 10 万/天，90% 自动降级直转 |
 | 纯解析 | 阿里 / 腾讯 DoH | `https://dns.alidns.com/dns-query`、`https://doh.pub/dns-query` | 否 | 0 |
 | 纯解析 | 阿里/腾讯 DoT | `tls://dns.alidns.com:853`、`tls://dot.pub:853` | 否 | 0 |
 | 本地分流 | aiodns | `127.0.0.1:5300`（国内分流 + 缓存） | 否 | 0 |
