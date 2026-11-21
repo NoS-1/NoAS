@@ -8,3 +8,6 @@ subs/full/
 __pycache__/
 *.pyc
 state/known_good/
+
+__pycache__/
+*.pyc
