@@ -168,3 +168,18 @@ Pages 这一档做了两级判定：`lite`（9,902 条零误伤集）在 **Pages
 - 多账户确实能叠加额度，但代价是双份 secret、双份部署、双份故障面，且属于规避额度，不做；最多留一个灾备账户。
 
 AE 自检：`tools/ae_selfcheck.py`（daily 第 6.9 步），每轮发 1 个真实查询 + 查最近 15 分钟数据点，失败只提示不打红。
+
+## 发布后验证（2026-11-21）
+
+部署脚本返回码只说明"API 调用成功"，不代表线上生效。`tools/post_deploy_verify.py`
+按客户端视角打真实端点，任何一项不符就让构建红（Alert 自动开 Issue）：
+
+- `/tier` 能读到规则，三档条数与 `subs/*/meta.json` 完全一致
+- `/dns-query/{lite,mid,full}` 三个端点都 200
+- DoH 实测：拦截域回 `0.0.0.0`、白名单域放行且不是 `0.0.0.0`
+- Worker `noas-doh` 与其 bindings 在线
+- Gateway 列表片数 10/20/30 + allow + core，规则 ≥ 6
+
+配套：`tools/step_run.py` 的 `required` 模式（重试 3 次 → 仍失败则红），
+`soft` 模式只记 `out/deploy_warnings.json` 的统一告警。Gateway 对齐校验已从 soft 升为 required。
+
