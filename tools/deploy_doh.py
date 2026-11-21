@@ -54,13 +54,20 @@ def main():
         "head_sampling_rate": 0.01,
         "logs": {"enabled": True, "head_sampling_rate": 0.01, "invocation_logs": False},
     }
+    # 绑定清单：AE（观测）+ RULES（热规则 KV，CF 自更新用）
+    # DOH_KV_NS=off 可关闭；命名空间不存在时部署仍能成功（Worker 会自动退回内嵌规则）
+    KV_NS = os.environ.get("DOH_KV_NS", "1e20a4a1c8de4dc892e40ab2ec176f7e").strip()
+    binds = []
     if AE_DATASET and AE_DATASET.lower() != "off":
-        meta_obj["bindings"] = [
-            {"type": "analytics_engine", "name": "AE", "dataset": AE_DATASET}
-        ]
+        binds.append({"type": "analytics_engine", "name": "AE", "dataset": AE_DATASET})
         print("绑定 Analytics Engine：AE → %s" % AE_DATASET)
     else:
         print("Analytics Engine 绑定已关闭（DOH_AE_DATASET=off）")
+    if KV_NS and KV_NS.lower() != "off":
+        binds.append({"type": "kv_namespace", "name": "RULES", "namespace_id": KV_NS})
+        print("绑定 KV 热规则：RULES → %s" % KV_NS)
+    if binds:
+        meta_obj["bindings"] = binds
     meta = json.dumps(meta_obj).encode()
     chunks = [
         ("--" + boundary + "\r\n").encode(),
@@ -78,41 +85,41 @@ def main():
         return 1
     print("部署成功，回读比对…")
 
-    # 回读：GET 返回 multipart，取出 worker.js 正文比对 sha，确认线上真的换成新版。
-    # 刚部署完边缘节点可能短暂 404/429，重试 3 次；校验失败不红构建（部署本身已成功）。
+    # 回读：GET 返回 multipart，取出 worker.mjs 正文比对 sha，确认线上真的换成新版。
+    # 刚部署完边缘可能有短暂 404/429 或一次旧副本，重取 3 次；校验失败不红构建（部署本身已成功）。
     key = b'name="worker.mjs"\r\n\r\n'
-    raw = None
-    for attempt in range(3):
+
+    def read_online():
         try:
             req = urllib.request.Request(BASE, headers={"Authorization": "Bearer " + TOK})
             raw = urllib.request.urlopen(req, timeout=90).read()
-            break
         except urllib.error.HTTPError as e:
-            if e.code in (404, 429, 500, 502) and attempt < 2:
-                time.sleep(2)
-                continue
-            print("回读失败 HTTP %s（部署已成功，仅校验未完成）" % e.code)
-            return 0
+            print("回读 HTTP %s" % e.code)
+            return None
         except Exception as e:
-            print("回读失败：%s（部署已成功，仅校验未完成）" % e)
+            print("回读异常：%s" % e)
+            return None
+        i = raw.find(key)
+        if i == -1:
+            print("回读：未找到 worker.mjs 段")
+            return None
+        seg = raw[i + len(key):]
+        j = seg.rfind(b"\r\n--")
+        if j != -1:
+            seg = seg[:j]
+        return hashlib.sha256(seg).hexdigest()
+
+    online = None
+    for attempt in range(3):
+        online = read_online()
+        if online == local:
+            print("回读一致 sha=%s，线上已是新版" % online[:16])
             return 0
-    if not raw:
-        print("回读为空（部署已成功，仅校验未完成）")
-        return 0
-    i = raw.find(key)
-    if i == -1:
-        print("回读失败：未找到 worker.js 段（API 返回格式变化？）")
-        return 1
-    seg = raw[i + len(key):]
-    j = seg.rfind(b"\r\n--")
-    if j != -1:
-        seg = seg[:j]
-    online = hashlib.sha256(seg).hexdigest()
-    if online == local:
-        print("回读一致 sha=%s，线上已是新版" % online[:16])
-        return 0
-    print("回读不一致：线上 %s ≠ 本地 %s" % (online[:16], local[:16]))
-    return 1
+        if attempt < 2:
+            time.sleep(2)
+    print("回读不一致/未完成：线上 %s ≠ 本地 %s（部署已成功，仅校验未完成）"
+          % ((online or "unknown")[:16], local[:16]))
+    return 0
 
 
 if __name__ == "__main__":

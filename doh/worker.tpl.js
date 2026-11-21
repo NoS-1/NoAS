@@ -29,6 +29,16 @@ const UPSTREAM = [
 const MANIFEST_URL = "https://raw.githubusercontent.com/NoS-1/NoAS/main/state/build_manifest.json";
 const WILD_SUFFIX = new Set(WILD.map((w) => w.replace(/^\*\./, "")));
 
+// ── 热规则（CF 独立运行的核心）──────────────────────────────────────────
+// CF 侧唯一从仓库拿的"数据"就是这份 lite 文本。cron 拉取 → 校验（条数 + 金丝雀）→ 存 KV，
+// 请求路径按 isolate 内存缓存命中；拉不到/校验不过就丢弃，永远保留内嵌规则兜底。
+// 智能约束：热规则只做"增量补充"（union），绝不删除内嵌规则，也不越过白名单。
+const HOT_URL = "https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/domains.txt";
+const HOT_MIN = 8000;            // 少于 8000 条＝上游残缺，拒收
+const HOT_MAX = 10500;           // 多于 10500 条＝超 lite 上限，拒收
+let hot = null;                  // { ver, count, compact }；compact 形如 |a.com|b.com|
+let lastManifest = null;
+
 // ── 额度熔断（防止免费额度被超）──────────────────────────────────────────
 // Workers Free：10 万请求/天（北京 08:00 重置）。到 90% 进入"降级"：
 // 跳过规则匹配、直接转发上游，客户端不断服；恢复由 UTC 换日自动完成。
@@ -47,6 +57,10 @@ let upOrder = null;                // 上游自适应顺序（最近成功的排
 
 // 金丝雀：只用内置规则判定（纯函数、零网络），断言"规则没被构建搞坏"
 const CANARY_DOMAINS = ["doubleclick.net", "googleadservices.com", "googletagmanager.com"];
+
+// 上游断线兜底：最近成功的应答按 qname+qtype 缓存 60s，上游全挂时直接回缓存。
+// Cache API 免费且不计 Worker 请求额度，是"独立可用"的最后一道。
+const CACHE_BASE = "https://noas-cache.internal/";
 
 // ── Analytics Engine（可选绑定 AE）────────────────────────────────────────
 // 只写数据点，不碰 D1：D1 的行读额度（500 万行/天）留给配置与状态。
@@ -186,13 +200,37 @@ function isEndpoint(name) {
   return false;
 }
 
+function hotHit(name) {
+  if (!hot) return false;
+  const c = hot.compact;
+  if (c.includes("|" + name + "|")) return true;
+  const parts = name.split(".");
+  for (let i = 1; i < parts.length - 1; i++) {
+    if (c.includes("|" + parts.slice(i).join(".") + "|")) return true;
+  }
+  return false;
+}
+
+async function loadHot(env) {
+  // 冷启动只读一次 KV（10 万读/天额度足够），之后全走 isolate 内存
+  if (hot || !env || !env.RULES) return;
+  try {
+    const rec = await env.RULES.get("lite_v1", "json");
+    if (rec && rec.compact && rec.count >= HOT_MIN && rec.count <= HOT_MAX
+        && CANARY_DOMAINS.every((d) => rec.compact.includes("|" + d + "|"))) {
+      hot = rec;
+    }
+  } catch (e) { /* KV 不可用＝退回内嵌规则 */ }
+}
+
 function blocked(name, tier) {
   if (!name) return false;
   // 端点例外：人工审计过的纯广告端点，父域在白名单里也照拦
   if (isEndpoint(name)) return true;
   if (allowed(name)) return false;
   const set = tier >= 2 ? TIER2 : TIER1;
-  return matchSet(set, name);
+  if (matchSet(set, name)) return true;
+  return hotHit(name);          // 云端热规则只做增量补充
 }
 
 function parseQuery(bytes) {
@@ -298,6 +336,8 @@ async function handle(request, env, ctx) {
                   canary: canaryOk,
                   degraded: degraded || null,
                   rules_stale: rulesStale, rules_manifest: MANIFEST_URL,
+                  hot: hot ? { ver: hot.ver, count: hot.count } : null, hot_url: HOT_URL,
+                  cache: hasCache(),
                   upstream_order: (upOrder || UPSTREAM),
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
                            soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
@@ -306,6 +346,7 @@ async function handle(request, env, ctx) {
     const q = (url.searchParams.get("q") || "").toLowerCase();
     const tier = Number(url.searchParams.get("tier") || 2);   // 默认走 mid：lite 只是零误伤最小集
     const cn = (url.searchParams.get("cname") || "").toLowerCase();
+    await loadHot(env);
     const viaCname = cn ? blocked(cn, tier) : false;
     return json({ domain: q, blocked: blocked(q, tier), cname: cn || null,
                   cname_blocked: cn ? viaCname : null, tier, version: VERSION });
@@ -339,6 +380,7 @@ async function handle(request, env, ctx) {
   const tier = Number(url.searchParams.get("tier") || 2);   // 默认走 mid：lite 只是零误伤最小集
   if (!name) return new Response("bad query", { status: 400 });
 
+  if (!skipRules) await loadHot(env);
   if (!skipRules && blocked(name, tier)) {
     logHit(env, "block", name, tier, "");
     return new Response(blockedResponse(bytes, qtype, end), {
@@ -347,6 +389,12 @@ async function handle(request, env, ctx) {
   }
   const buf = await upstream(bytes);
   if (!buf) {
+    // 上游全挂：先回最近成功的缓存（60s 内），再考虑报错
+    const cached = await cacheGet(name, qtype);
+    if (cached) {
+      logHit(env, "cached", name, tier, "");
+      return cached;
+    }
     degrade("upstream-down");
     return new Response("上游不可用", { status: 502, headers: { "x-noas": "upstream-fail" } });
   }
@@ -364,10 +412,43 @@ async function handle(request, env, ctx) {
     }
     if (Math.random() < 0.1) logHit(env, "pass", name, tier, "");   // 放行只留 10% 样本，省 AE 点数
   }
+  if (ctx && ctx.waitUntil && !skipRules) ctx.waitUntil(cachePut(name, qtype, buf.slice(0)));
   return new Response(buf, {
     headers: { "content-type": "application/dns-message",
                "x-noas": skipRules ? "degraded" : "pass", "x-noas-ver": VERSION },
   });
+}
+
+function cacheKey(name, qtype) {
+  return CACHE_BASE + encodeURIComponent(name) + "/" + qtype;
+}
+
+let cacheReady = null;
+function hasCache() {
+  if (cacheReady === null) {
+    try { cacheReady = !!(typeof caches !== "undefined" && caches.default); }
+    catch (e) { cacheReady = false; }
+  }
+  return cacheReady;
+}
+
+async function cacheGet(name, qtype) {
+  try {
+    const c = await caches.default.match(cacheKey(name, qtype));
+    if (!c) return null;
+    const b = await c.arrayBuffer();
+    return new Response(b, {
+      headers: { "content-type": "application/dns-message", "x-noas": "cache-hit", "x-noas-ver": VERSION },
+    });
+  } catch (e) { return null; }
+}
+
+async function cachePut(name, qtype, buf) {
+  try {
+    await caches.default.put(cacheKey(name, qtype), new Response(buf, {
+      headers: { "content-type": "application/dns-message", "cache-control": "max-age=60" },
+    }));
+  } catch (e) { /* Cache API 不可用就放弃兜底，不影响正常应答 */ }
 }
 
 // 免费 Cron Trigger（每账户 5 个额度）：CF 侧自持的自治循环——
@@ -386,6 +467,7 @@ async function scheduled(event, env, ctx) {
     const r = await fetch(MANIFEST_URL, { headers: { "cache-control": "no-cache" } });
     if (r.ok) {
       const m = await r.json();
+      lastManifest = m;
       const fresh = !!(m && m.version === VERSION);
       rulesStale = !fresh;
       if (!fresh) logHit(env, "stale", "manifest", 0, String((m && m.version) || ""));
@@ -401,6 +483,32 @@ async function scheduled(event, env, ctx) {
       rulesStale = null;
     }
   } catch (e) { rulesStale = null; }
+
+  // 热规则自更新：只在版本变化或缺缓存时拉 lite 文本（每天约 96 次、每次 140KB）
+  if (env && env.RULES) {
+    const need = !hot || (lastManifest && lastManifest.version && lastManifest.version !== hot.ver);
+    if (need) {
+      try {
+        const rr = await fetch(HOT_URL, { headers: { "cache-control": "no-cache" } });
+        if (rr.ok) {
+          const text = await rr.text();
+          const lines = text.trim().split("\n").filter((l) => l && l.charAt(0) !== "#");
+          const compact = "|" + lines.join("|") + "|";
+          const okCount = lines.length >= HOT_MIN && lines.length <= HOT_MAX;
+          const okCanary = CANARY_DOMAINS.every((d) => compact.includes("|" + d + "|"));
+          if (okCount && okCanary) {
+            hot = { ver: (lastManifest && lastManifest.version) || VERSION,
+                    count: lines.length, compact };
+            await env.RULES.put("lite_v1", JSON.stringify(hot));
+            logHit(env, "hot", "updated", 0, String(lines.length));
+          } else {
+            logHit(env, "hot", "rejected", 0,
+                   (okCount ? "" : "count=" + lines.length) + (okCanary ? "" : " canary"));
+          }
+        }
+      } catch (e) { logHit(env, "hot", "fetch-fail", 0, ""); }
+    }
+  }
 
   // 上游自检：内置最小报文直问上游，绕过自己的规则层（不占自身请求计数）
   const probe = await upstream(mkQuery("example.com"));
