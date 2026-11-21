@@ -78,6 +78,7 @@ let rulesStale = null;             // null=还没校验过
 let manifestCheckedAt = 0;         // 上次新鲜度校验时间，避免 /health 被刷时反复拉
 let canaryOk = null;               // cron 规则金丝雀：内置表还能不能拦住已知广告域
 let upOrder = null;                // 上游自适应顺序（最近成功的排前面），isolate 内有效
+let cacheHits = 0;                 // 缓存命中数（fresh+stale），/health 可见
 
 // 金丝雀：只用内置规则判定（纯函数、零网络），断言"规则没被构建搞坏"
 const CANARY_DOMAINS = ["doubleclick.net", "googleadservices.com", "googletagmanager.com"];
@@ -85,6 +86,10 @@ const CANARY_DOMAINS = ["doubleclick.net", "googleadservices.com", "googletagman
 // 上游断线兜底：最近成功的应答按 qname+qtype 缓存 60s，上游全挂时直接回缓存。
 // Cache API 免费且不计 Worker 请求额度，是"独立可用"的最后一道。
 const CACHE_BASE = "https://noas-cache.internal/";
+// 放行应答缓存双层：fresh 300s 内直接命中；stale 24h 内先返旧值、后台刷新。
+// 缓存命中不写 AE（否则额度会被高频命中打爆），只在 /health 里给个内存计数。
+const CACHE_FRESH_S = 300;
+const CACHE_STALE_S = 86400;
 
 // ── Analytics Engine（可选绑定 AE）────────────────────────────────────────
 // 只写数据点，不碰 D1：D1 的行读额度（500 万行/天）留给配置与状态。
@@ -419,7 +424,8 @@ async function handle(request, env, ctx) {
                   hot: hot ? { ver: hot.ver, count: hot.count } : null, hot_url: HOT_URLS[0],
                   ae_points_local: aePoints, ae_cap_per_isolate: AE_DAILY_CAP,
                   limiter: !!(env && env.LIMITER),
-                  cache: hasCache(),
+                  cache: hasCache(), cache_hits: cacheHits,
+                  cache_ttl_s: [CACHE_FRESH_S, CACHE_STALE_S],
                   upstream_order: (upOrder || UPSTREAM),
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
                            soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
@@ -474,14 +480,27 @@ async function handle(request, env, ctx) {
       headers: { "content-type": "application/dns-message", "x-noas": "blocked", "x-noas-ver": VERSION },
     });
   }
+  // 缓存优先：fresh 命中直接返（0 上游 RTT）；stale 命中先返旧值、后台刷新。
+  // 旧实现只有"上游全挂"才读缓存，等于每次解析都白付 10-110ms 的上游往返。
+  const cached = await cacheLookup(name, qtype);
+  if (cached && !cached.stale) {
+    cacheHits += 1;
+    return dnsReply(cached.buf, "cache-hit");
+  }
+  if (cached && cached.stale) {
+    cacheHits += 1;
+    if (ctx && ctx.waitUntil) {
+      ctx.waitUntil((async () => {
+        try {
+          const b = await upstream(bytes);
+          if (b) await cachePut(name, qtype, b);
+        } catch (e) { /* 后台刷新失败保留旧值 */ }
+      })());
+    }
+    return dnsReply(cached.buf, "cache-stale");
+  }
   const buf = await upstream(bytes);
   if (!buf) {
-    // 上游全挂：先回最近成功的缓存（60s 内），再考虑报错
-    const cached = await cacheGet(name, qtype);
-    if (cached) {
-      logHit(env, "cached", name, tier, "");
-      return cached;
-    }
     degrade("upstream-down");
     return new Response("上游不可用", { status: 502, headers: { "x-noas": "upstream-fail" } });
   }
@@ -519,23 +538,33 @@ function hasCache() {
   return cacheReady;
 }
 
-async function cacheGet(name, qtype) {
+async function cacheLookup(name, qtype) {
+  if (!hasCache()) return null;
   try {
-    const c = await caches.default.match(cacheKey(name, qtype));
-    if (!c) return null;
-    const b = await c.arrayBuffer();
-    return new Response(b, {
-      headers: { "content-type": "application/dns-message", "x-noas": "cache-hit", "x-noas-ver": VERSION },
-    });
-  } catch (e) { return null; }
+    const fresh = await caches.default.match(cacheKey(name, qtype));
+    if (fresh) return { buf: await fresh.arrayBuffer(), stale: false };
+  } catch (e) { /* 继续尝试 stale */ }
+  try {
+    const old = await caches.default.match(cacheKey(name, qtype) + "#swr");
+    if (old) return { buf: await old.arrayBuffer(), stale: true };
+  } catch (e) { /* 无缓存 */ }
+  return null;
 }
 
 async function cachePut(name, qtype, buf) {
-  try {
-    await caches.default.put(cacheKey(name, qtype), new Response(buf, {
-      headers: { "content-type": "application/dns-message", "cache-control": "max-age=300" },
-    }));
-  } catch (e) { /* Cache API 不可用就放弃兜底，不影响正常应答 */ }
+  if (!hasCache()) return;
+  // 两份：fresh 300s（命中直返）+ stale 24h（fresh 过期后先返旧值、后台刷新）
+  const put = (key, maxAge) => caches.default.put(key, new Response(buf.slice(0), {
+    headers: { "content-type": "application/dns-message", "cache-control": "max-age=" + maxAge },
+  }));
+  try { await put(cacheKey(name, qtype), CACHE_FRESH_S); } catch (e) { /* 忽略 */ }
+  try { await put(cacheKey(name, qtype) + "#swr", CACHE_STALE_S); } catch (e) { /* 忽略 */ }
+}
+
+function dnsReply(buf, tag) {
+  return new Response(buf, {
+    headers: { "content-type": "application/dns-message", "x-noas": tag, "x-noas-ver": VERSION },
+  });
 }
 
 // 规则新鲜度：只读构建指纹（KB 级），不拉规则本体。
