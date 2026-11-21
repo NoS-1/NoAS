@@ -111,29 +111,31 @@ def ctype(path):
 
 
 def verify_tier_count(base):
-    """线上档位条数必须与本地 meta 一致。
+    """核对线上真实产物条数。
 
-    200 + x-noas 只能证明函数活着，证明不了“新规则真的生效”：
-    上传中断、KV 缓存旧值、Pages 侧旧快照都会给出 200 却仍在跑老规则。"""
-    import json, pathlib
-    m = pathlib.Path("subs/lite/meta.json")
-    if not m.exists():
-        print("档位条数核对：本地无 meta.json，跳过")
+    2026-11 起对外只有一条订阅 subs/all，旧的 lite/mid/full 不再发布，
+    KV /tier 里留的是历史值 —— 继续拿它比对会恒判"部署没生效"。
+    改为直接比对 /subs/all/adguard.txt 的行数：这是用户真正拉到的文件。
+    """
+    import pathlib
+    f = pathlib.Path("subs/all/adguard.txt")
+    if not f.exists():
+        print("条数核对：本地无 subs/all/adguard.txt，跳过")
         return True
-    local = json.loads(m.read_text(encoding="utf-8")).get("count")
+    local = sum(1 for l in f.read_text(encoding="utf-8").splitlines() if l.strip())
     try:
-        r = requests.get(base.rstrip("/") + "/tier?_t=%d" % int(time.time()), timeout=30,
-                         proxies={"http": None, "https": None},
+        r = requests.get(base.rstrip("/") + "/subs/all/adguard.txt?_t=%d" % int(time.time()),
+                         timeout=60, proxies={"http": None, "https": None},
                          headers={"user-agent": "Mozilla/5.0 NoAS"})
-        remote = r.json().get("count")
+        remote = sum(1 for l in r.text.splitlines() if l.strip())
     except Exception as e:
-        print("档位条数核对异常（%s）" % type(e).__name__)
+        print("条数核对异常（%s）" % type(e).__name__)
         return False
-    # 线上 count 含该档的通配条目（lite 固定多 4 条），差值在通配量级内视为一致
-    if abs(local - remote) <= 30:
-        print("档位条数核对：本地 %s ≈ 线上 %s（通配差异） -> OK" % (local, remote))
+    if local == remote:
+        print("条数核对：本地 %d = 线上 %d（HTTP %d） -> OK" % (local, remote, r.status_code))
         return True
-    print("::error::档位条数不一致：本地 %s，线上 %s（部署可能没真正生效）" % (local, remote))
+    print("::error::条数不一致：本地 %d，线上 %d（HTTP %d，部署未真正生效）"
+          % (local, remote, r.status_code))
     return False
 
 
@@ -170,7 +172,7 @@ def verify(url):
     资产没被服务端接收时它照样是满的 —— 2026-11-21 的整站 500 就是这么骗过去的。"""
     for i in range(4):
         try:
-            r = requests.get(url.rstrip("/") + "/subs/lite/domains.txt", timeout=60,
+            r = requests.get(url.rstrip("/") + "/subs/all/domains.txt", timeout=60,
                              proxies={"http": None, "https": None})
             if r.status_code == 200 and len(r.content) > 1024:
                 print("线上取文验证：%d 字节 -> OK" % len(r.content))
@@ -241,7 +243,7 @@ def main():
     #      但"台账无变化"不等于"线上可用"——必须真的取一次文件再决定跳过。
     if not todo:
         try:
-            v = requests.get(f"https://{PROJECT}.pages.dev/subs/lite/domains.txt", timeout=60,
+            v = requests.get(f"https://{PROJECT}.pages.dev/subs/all/domains.txt", timeout=60,
                              proxies={"http": None, "https": None})
             if v.status_code == 200 and len(v.content) > 1024:
                 print("无变化且线上可取文（%d 字节），跳过部署以节省配额" % len(v.content))
@@ -312,7 +314,7 @@ def main():
         # 关键：deployment.files 只是 manifest 的条目数，资产被服务端淘汰时它照样是满的。
         # 只有真的把文件取回来，才能证明站点不是空的。
         base = res.get("url") or f"https://{PROJECT}.pages.dev"
-        probe = "/subs/lite/domains.txt"
+        probe = "/subs/all/domains.txt"
         ok = False
         for attempt in range(4):
             try:
