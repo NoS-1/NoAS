@@ -615,6 +615,7 @@ def main():
     json.dump(report, open(os.path.join(ROOT, "out_compile.json"), "w", encoding="utf-8"),
               ensure_ascii=False, indent=1)
     os.makedirs(os.path.join(ROOT, "out"), exist_ok=True)
+
     os.replace(os.path.join(ROOT, "out_compile.json"), os.path.join(ROOT, "out", "compile.json"))
 
     results = {}
@@ -632,6 +633,28 @@ def main():
         results["full"] = {"version": ver, "changed": changed, "count": meta["count"]}
     for k, v in results.items():
         print("  %s：%d 条，版本 %s，变更 %d 个文件" % (k, v["count"], v["version"], len(v["changed"])))
+
+    # 名额余量告警：mid/lite 一旦撞上 cap，超出的规则会被**静默**截掉、产物照样是绿的，
+    # 等于"覆盖在缩水但没人知道"。余量低于 3% 就在这里喊一声，让 CI 出黄条。
+    def _head(used, cap):
+        return {"used": used, "cap": cap, "left": cap - used,
+                "pct_left": round(max(0, cap - used) / cap * 100, 2)}
+    headroom = {"lite": _head(results.get("lite", {}).get("count", len(lite)), LITE_CAP),
+                "mid": _head(results.get("mid", {}).get("count", len(mid)), MID_CAP),
+                "full": _head(results.get("full", {}).get("count", len(full)), FULL_CAP)}
+    report["headroom"] = headroom
+    json.dump(headroom, open(os.path.join(ROOT, "out", "cap_headroom.json"), "w", encoding="utf-8"), indent=1)
+    for t in ("lite", "mid"):
+        h = headroom[t]
+        if h["left"] < 0:
+            print("::warning title=规则名额溢出::%s 超出 cap %d 条（cap=%d）——超出部分已被截断，规则没进产物" %
+                  (t, -h["left"], h["cap"]))
+        elif h["pct_left"] < 3:
+            print("::warning title=规则名额见底::%s 只剩 %d 条余量（cap=%d，%.2f%%）——再加源就会被静默截断，该扩 cap 或收源了" %
+                  (t, h["left"], h["cap"], h["pct_left"]))
+    print("名额余量：lite 剩 %d ／mid 剩 %d ／full 剩 %d" %
+          (headroom["lite"]["left"], headroom["mid"]["left"], headroom["full"]["left"]))
+
     try:
         os.makedirs(os.path.join(ROOT, "state"), exist_ok=True)
         json.dump({"fp": fp, "at": time.strftime("%Y-%m-%d %H:%M:%S")},

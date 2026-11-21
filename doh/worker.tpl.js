@@ -500,15 +500,19 @@ function b64urlToBytes(s) {
 /** 合成"拦截"应答：A→0.0.0.0，AAAA→::，其它类型→NOERROR 空答（NXDOMAIN 会误伤邮件/校验类客户端） */
 // 判断一段应答是不是"我们自己的拦截应答"：A/AAAA 的 0.0.0.0 / ::（rcode 0 + 1 条答案 + RDATA 全零）。
 // NXDOMAIN/REFUSED/SERVFAIL 形态与真实上游应答无法区分，保守不判。
-function looksBlocked(buf) {
-  if (!buf || buf.length < 12) return false;
+function looksBlocked(raw) {
+  if (!raw) return false;
+  // 缓存里拿到的可能是 ArrayBuffer（arrayBuffer()）也可能已是 Uint8Array —— 统一成可索引视图，
+  // 否则 buf[3] 恒 undefined，整条校验会静默失效。
+  const buf = raw instanceof Uint8Array ? raw : new Uint8Array(raw);
+  if (buf.length < 12) return false;
   const rc = buf[3] & 15;
   const an = (buf[6] << 8) | buf[7];
   if (rc !== 0 || an !== 1) return false;
   const n = buf.length;
-  const is0 = (arr) => arr.every((b) => b === 0);
-  if (n >= 16 && is0(Array.from(buf.slice(n - 16))) && buf[0] !== 0) return true;   // AAAA ::
-  return is0(Array.from(buf.slice(n - 4)));                                        // A 0.0.0.0
+  const zero = (from) => { for (let i = from; i < n; i++) if (buf[i] !== 0) return false; return true; };
+  if (n >= 16 && zero(n - 16)) return true;    // AAAA ::
+  return zero(n - 4);                          // A 0.0.0.0
 }
 
 function blockedResponse(query, qtype, end, mode) {

@@ -185,7 +185,7 @@ jobs:
           python3 tools/build_doh.py
           node --check doh/worker.js
 
-      - name: 6 · 真产物回归（6 项并行，门禁一项不少）
+      - name: 6 · 真产物回归（7 项并行，门禁一项不少）
         # 6 个测试互不依赖、都只读产物，串行 84s → 并行约 38s（2 核 runner 实测在 CI 上是 40s 级）。
         # 任何一项失败都让本步红：用标记文件汇总，避免子 shell 里的变量传不出来。
         run: |
@@ -195,13 +195,14 @@ jobs:
           ( node tests/dns_features_check.mjs || touch "$D/dns_features" ) &   # ECS/TTL/负缓存/v4only/CNAME
           ( node tests/fuzz_check.mjs         || touch "$D/fuzz" ) &           # 500 个畸形报文
           ( node tests/cache_iso_check.mjs    || touch "$D/cache_iso" ) &      # 子网隔离
+          ( node tests/cache_recheck_check.mjs|| touch "$D/cache_recheck" ) &  # 规则移除后旧拦截缓存不得生效
           ( python3 tests/benign_fp.py        || touch "$D/benign_fp" ) &      # 4444 样本三档 0 误伤
           wait
           if [ -n "$(ls -A "$D")" ]; then
             echo "::error::回归失败：$(ls -A "$D" | tr '\n' ' ')"
             exit 1
           fi
-          echo "六项回归全绿"
+          echo "七项回归全绿"
 
       - name: 6.8 · 同步规则到 CF Pages
         env:
