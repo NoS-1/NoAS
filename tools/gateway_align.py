@@ -106,7 +106,12 @@ def main():
     t3 = gateway_items(lists, "noas_l3_") or gateway_items(lists, "noas_t3_")
     m1, e1 = report("小档 t1 ↔ lite", t1, lite)
     m2, e2 = report("中档 t2 ↔ mid", t2, mid, cmp_root=True)
-    m3, e3 = report("大档 t3 ↔ full", t3, full, cmp_root=True)
+    # Gateway 不再铺 full（列表上限 100，mid 4 万已占 40 片）：没有 l3 列表时跳过这一档
+    if t3:
+        m3, e3 = report("大档 t3 ↔ full", t3, full, cmp_root=True)
+    else:
+        m3, e3 = 0, 0
+        print("大档 t3：Gateway 未铺 full（设计如此，full 只走 DoH）")
     status = "ok" if (m1 == 0 and e1 == 0) else "drift"
     print("结论：%s（小档不一致会直接影响误拦，需重建小档分片）" % status)
     out = {"t1": {"missing": m1, "extra": e1},

@@ -265,3 +265,14 @@ observability 1%→0.1%（20 万日志额度，1% 于 10 万请求仅 1000 条�
 
 另：CNAME 深追默认 4 跳 → **3 跳**（`?deep=1` 恢复 4 跳），因为 4 跳把 CPU p99 顶到 13ms。
 `tools/quota_water.py` 现在同时覆盖 请求 / KV / AE / **D1**（当日 118 次）与 CPU p50/p99。
+
+## Gateway 列表容量收口（第五批）
+
+Cloudflare Gateway 免费版两个硬限实测：单列表 **1000 条**（API 直接 400 `list size is limited to 1000 items`）、列表总数 **100 个**。
+mid 扩到 4 万后若三档全铺会变成 93 个列表（10+40+41），只剩 7 个槽，规则再长一点就爆表。
+
+因此 Gateway 定为「粗拦层」：只铺 lite（10 片）+ mid（40 片）= **50 片 / 5 万条**，加 `noas_allow`、`noas_core` 共 **52 个列表**，留 48 槽；
+full 不进 Gateway（full 只在 DoH 精细通道生效），「NoAS 大档拦截」规则置 `enabled=false` 并指向 core 列表，旧 `noas_l3_*` 分片已清理。
+
+配套口径同步：`gateway_all.py` 的 `TIERS` 只有 lite/mid（`NOAS_GATEWAY_FULL=1` 可临时恢复三档）、
+`gateway_align.py` 无 l3 列表时跳过 t3 校验、`post_deploy_verify.py` 期望片数改成按 `subs/*/meta.json` 的 `ceil(count/1000)` 推算（不再写死 10/20/30），列表数 >95 才预警。

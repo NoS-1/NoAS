@@ -26,9 +26,14 @@ TOK = os.environ.get("CF_API_TOKEN", "").strip()
 SHARD = 1000
 BASE = "https://api.cloudflare.com/client/v4/accounts/" + ACC
 
+# Gateway 免费版硬限：单列表 1000 条（API 会直接 400 "list size is limited to 1000 items"），
+# 列表总数 100 个。mid 扩到 4 万后三档全铺 = 93 个列表，只剩 7 个槽，再涨就爆。
+# 所以 Gateway 只承担 lite + mid（5 万条 / 50 片），full 留在 DoH 精细通道。
+# 需要恢复三档时：NOAS_GATEWAY_FULL=1 python3 tools/gateway_all.py --apply
 TIERS = [("lite", "t1", "NoAS 小档拦截", "小档"),
-         ("mid", "t2", "NoAS 中档拦截", "中档"),
-         ("full", "t3", "NoAS 大档拦截", "大档")]
+         ("mid", "t2", "NoAS 中档拦截", "中档")]
+if os.environ.get("NOAS_GATEWAY_FULL") == "1":
+    TIERS.append(("full", "t3", "NoAS 大档拦截", "大档"))
 
 # ☠️ 死循环保护：单片 1000，三档最多 60 片，留 40 片余量
 MAX_LISTS = 100

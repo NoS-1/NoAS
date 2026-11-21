@@ -115,15 +115,24 @@ def main():
             cnt = {"l1": sum(n.startswith("noas_l1_") for n in names),
                    "l2": sum(n.startswith("noas_l2_") for n in names),
                    "l3": sum(n.startswith("noas_l3_") for n in names)}
-            if cnt != {"l1": 10, "l2": 20, "l3": 30}:
-                fails.append(f"Gateway 片数 {cnt} ≠ 10/20/30")
+            # 期望片数按本地 meta 推算（单片 1000 条，Gateway 免费单列表硬上限），
+            # 写死 10/20/30 的话每次扩容都会假红。l3 允许为 0：full 只在 DoH。
+            import math
+            exp = {}
+            for k, t in (("l1", "lite"), ("l2", "mid")):
+                m = json.loads(open(f"subs/{t}/meta.json", encoding="utf-8").read())
+                exp[k] = math.ceil(int(m["count"]) / 1000)
+            if cnt["l1"] != exp["l1"] or cnt["l2"] != exp["l2"]:
+                fails.append(f"Gateway 片数 {cnt} ≠ l1={exp['l1']}/l2={exp['l2']}（l3 可为 0）")
+            if cnt["l3"]:
+                notes.append(f"l3={cnt['l3']}（已铺 full，注意列表上限）")
             if "noas_allow" not in names or "noas_core" not in names:
                 fails.append("Gateway 缺 allow/core 列表")
             rules = cf_get("gateway/rules").json().get("result", [])
             if len(rules) < 6:
                 fails.append(f"Gateway 规则 {len(rules)} < 6")
-            if len(names) > 90:
-                notes.append(f"warn:gapway_lists={len(names)} 逼近 100 上限")
+            if len(names) > 95:
+                notes.append(f"warn:gateway_lists={len(names)} 逼近 100 上限")
             notes.append(f"lists={len(names)} rules={len(rules)}")
         except Exception as e:
             fails.append(f"Gateway 查询异常：{e}")
