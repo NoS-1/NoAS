@@ -307,7 +307,7 @@
   "ai": {
    "v": "benign",
    "c": 100,
-   "ts": "2026-11-20"
+   "ts": "2026-11-21"
   }
  },
  "stat.myzaker.com": {
@@ -319,7 +319,7 @@
   "ai": {
    "v": "ad",
    "c": 0,
-   "ts": "2026-11-20"
+   "ts": "2026-11-21"
   }
  },
  "tracking.ib24384.news.my.luckincoffee.com": {
@@ -329,9 +329,9 @@
   "token": "tracking",
   "last_mark": "prev",
   "ai": {
-   "v": "tracker",
-   "c": 50,
-   "ts": "2026-11-20"
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-21"
   }
  },
  "tracking.ib71536.user.my.luckincoffee.com": {
@@ -341,9 +341,9 @@
   "token": "tracking",
   "last_mark": "prev",
   "ai": {
-   "v": "tracker",
-   "c": 50,
-   "ts": "2026-11-20"
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-21"
   }
  },
  "tracking.ib85264.order.my.luckincoffee.com": {
@@ -353,9 +353,9 @@
   "token": "tracking",
   "last_mark": "prev",
   "ai": {
-   "v": "tracker",
-   "c": 50,
-   "ts": "2026-11-20"
+   "v": "ad",
+   "c": 0,
+   "ts": "2026-11-21"
   }
  },
  "tracking.news.sg.luckincoffee.com": {
@@ -532,8 +532,8 @@
   "token": "log",
   "last_mark": "prev",
   "ai": {
-   "v": "ad",
-   "c": 0,
+   "v": "unknown",
+   "c": 50,
    "ts": "2026-11-21"
   }
  },
@@ -544,8 +544,8 @@
   "token": "log",
   "last_mark": "prev",
   "ai": {
-   "v": "ad",
-   "c": 0,
+   "v": "unknown",
+   "c": 50,
    "ts": "2026-11-21"
   }
  },
@@ -557,7 +557,7 @@
   "last_mark": "probe",
   "ai": {
    "v": "ad",
-   "c": 100,
+   "c": 0,
    "ts": "2026-11-21"
   }
  },
