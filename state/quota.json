@@ -1,12 +1,12 @@
 {
- "at": "2026-11-21T08:43:03Z",
+ "at": "2026-11-21T08:50:54Z",
  "ok": true,
  "utc_day_used": true,
  "used": {
-  "requests": 683,
-  "kv_requests": 655,
-  "ae_points": 203,
-  "d1_queries": 134
+  "requests": 698,
+  "kv_requests": 694,
+  "ae_points": 207,
+  "d1_queries": 138
  },
  "limits": {
   "requests": 100000,
@@ -21,17 +21,17 @@
   "d1_queries": 0.0
  },
  "headroom": {
-  "requests": 99317,
-  "kv_requests": 99345,
-  "ae_points": 99797,
-  "d1_queries": 4999866
+  "requests": 99302,
+  "kv_requests": 99306,
+  "ae_points": 99793,
+  "d1_queries": 4999862
  },
- "subrequests": 665,
+ "subrequests": 681,
  "errors": 6,
  "cpu_ms_p50": 2.97,
  "cpu_ms_p99": 37.92,
  "cpu_limit_ms": 10,
  "by_script": {
-  "noas-doh": 683
+  "noas-doh": 698
  }
 }
