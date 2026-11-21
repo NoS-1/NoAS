@@ -112,6 +112,8 @@ cd /home/user/NoAS && python3 tools/cf_rotate.py --doctor
 
 结论：服务端处理时间可忽略（Worker 命中缓存 0ms、未命中上游竞速 5~40ms），**延迟几乎全部来自"国内→CF 最近边缘"的建连**。所以顺序是 ① 本地规则 ② Gateway DoH（就近边缘）③ Pages 承载的全规则档，DoT 仅作境外/可用环境备用。
 
+Pages 这一档做了两级判定：`lite`（9,902 条零误伤集）在 **Pages 边缘直接应答**（`x-noas-path: pages-local`，不跳 Worker），其余域名透传 Worker 走 mid 全量规则。长连接实测（温州，2026-11-21）：边缘拦截 237~336 ms ≈ 单个 RTT，透传 267~834 ms——省掉的那一跳就是 150~500 ms。`lite` 与本域白名单无直接交集，白名单父域下的 16 个纯广告端点仍按端点例外拦掉（`union.baidu.com` 实测被拦）。
+
 关于“多开账户接近无限”：
 
 - 同一账户下所有 Worker **共享**同一份 10 万/天，多建 Worker 不叠加；
