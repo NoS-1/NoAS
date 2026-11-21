@@ -209,3 +209,33 @@ AE 自检：`tools/ae_selfcheck.py`（daily 第 6.9 步），每轮发 1 个真�
 基线在 `state/source_counts.json`，只有全绿才推进基线）、`tools/build_status_page.py`（`docs/status.html`
 一张页看全部通道）、`tests/fuzz_check.mjs`、`tests/cache_iso_check.mjs` 已进 6 步回归、
 `eslint.config.mjs` + `ruff.toml` + 3.95 步 soft 静态检查、`tools/legacy/` 收纳已退役脚本。
+
+## 免费额度与 CPU 上限（2026-11-21 第三批）
+
+免费版只有三个真天花板，全部**全账号合计**：请求 100,000/天、KV 读 100,000/天（写 1,000/天）、
+AE 写点 100,000/天；单次调用 CPU **10ms**（超了直接被限流，不是慢慢变慢）。数字来自
+Cloudflare 官方 Limits 页（2026-11 版）。
+
+**水位监控**：`tools/quota_water.py` 走 GraphQL Analytics（免费只读）拉当日用量与 CPU 分位，
+写 `state/quota.json`，接在 CI 6.97 步（soft，80% 预警）。实测当天：
+
+| 维度 | 用量 | 上限 | 占比 |
+|---|---|---|---|
+| 请求 | 507 | 100,000 | 0.5% |
+| KV 读 | 366 | 100,000 | 0.4% |
+| AE 写点 | 166 | 100,000 | 0.2% |
+| CPU p50 / p99 | 2.49ms / **10.91ms** | 10ms | p99 越线 |
+
+**结论**：额度不是瓶颈（连 1% 都没到），**CPU p99 才是**。归因与修复：
+
+- 元凶：`hotHit()` 每次请求都在 195KB 的 `compact` 字符串上做 `includes("|域名|")`，
+  未命中也要按 3~6 层逐层扫；CNAME 多跳时一次请求调 4 次 → 单次 163µs × 多次 ≈ 10ms 级。
+- 修法：冷启动时 `HOT_SET = new Set(compact.split("|"))`，判定变 O(层数) 的哈希查找；
+  同时把 `matchSet`/`allowed` 的 `parts.slice(i).join(".")` 改成原地累加，去掉每次分配。
+- 基准：同机 2 万次判定，旧 3262ms → 新 10ms（**326×**）。
+- 部署后线上 sha `2af14b30d3039545`，规则集与计数不变（lite 9904 / mid 19959 / full 29990）。
+- Pages 侧 `RULES.get` 补 `cacheTtl: 300`：同 PoP 内 5 分钟只真读一次 KV，省 KV 读也降冷启动。
+
+**没做的、以及为什么**：Gateway 前置分流（额度只用了 0.5%，收益为零，且 Gateway 免费版
+列表上限 100、已用 62，留给后续新增源更值）；AE 动态降采样（日写点 166，离 10 万差 600 倍）；
+observability 1%→0.1%（20 万日志额度，1% 于 10 万请求仅 1000 条）。都不值得动。

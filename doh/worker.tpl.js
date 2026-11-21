@@ -191,8 +191,10 @@ function allowed(name) {
   if (!name) return false;
   if (ALLOW.has(name)) return true;
   const parts = name.split(".");
-  for (let i = 1; i < parts.length - 1; i++) {
-    if (ALLOW.has(parts.slice(i).join("."))) return true;
+  let acc = parts[parts.length - 1];
+  for (let i = parts.length - 2; i >= 1; i--) {
+    acc = parts[i] + "." + acc;
+    if (ALLOW.has(acc)) return true;
   }
   return false;
 }
@@ -200,10 +202,11 @@ function allowed(name) {
 function matchSet(set, name) {
   if (set.has(name)) return true;
   const parts = name.split(".");
-  for (let i = 1; i < parts.length - 1; i++) {
-    const parent = parts.slice(i).join(".");
-    if (set.has(parent)) return true;
-    if (WILD_SUFFIX.has(parent)) return true;   // *.parent 命中其任意（含多级）子域
+  let acc = parts[parts.length - 1];
+  for (let i = parts.length - 2; i >= 1; i--) {
+    acc = parts[i] + "." + acc;                 // 原地累加，省掉 slice()+join() 的每次分配
+    if (set.has(acc)) return true;
+    if (WILD_SUFFIX.has(acc)) return true;      // *.parent 命中其任意（含多级）子域
   }
   return false;
 }
@@ -339,13 +342,25 @@ function isEndpoint(name) {
   return false;
 }
 
+let HOT_SET = null;
+
+function hotSetOf(rec) {
+  // compact = "|a|b|c"：冷启动时切一次，之后每次判定都是 O(层数) 的 Set 查找。
+  // 旧实现是每次请求都在 195KB 字符串上做 includes()，命中/未命中都要扫，
+  // 这是 CPU p99 打到 10.9ms（超免费 10ms）的主因之一。
+  if (!rec || !rec.compact) return null;
+  return new Set(rec.compact.split("|").filter(Boolean));
+}
+
 function hotHit(name) {
-  if (!hot) return false;
-  const c = hot.compact;
-  if (c.includes("|" + name + "|")) return true;
+  const s = HOT_SET;
+  if (!s) return false;
+  if (s.has(name)) return true;
   const parts = name.split(".");
-  for (let i = 1; i < parts.length - 1; i++) {
-    if (c.includes("|" + parts.slice(i).join(".") + "|")) return true;
+  let acc = parts[parts.length - 1];
+  for (let i = parts.length - 2; i >= 1; i--) {
+    acc = parts[i] + "." + acc;
+    if (s.has(acc)) return true;
   }
   return false;
 }
@@ -360,6 +375,7 @@ async function loadHot(env) {
     if (rec && rec.compact && rec.count >= HOT_MIN && rec.count <= HOT_MAX
         && CANARY_DOMAINS.every((d) => rec.compact.includes("|" + d + "|"))) {
       hot = rec;
+      HOT_SET = hotSetOf(rec);
     }
   } catch (e) { /* KV 不可用＝退回内嵌规则 */ }
 }

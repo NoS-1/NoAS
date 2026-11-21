@@ -94,7 +94,9 @@ async function tierSet(tier, env) {
   // ① lite 优先吃 Worker cron 写进 KV 的热规则（更新更快，不用等部署）
   if (tier === "lite" && env && env.RULES) {
     try {
-      const kv = await env.RULES.get("lite_v1", { type: "text" });
+      // cacheTtl：KV 免费只有 10 万读/天，Pages 每个新 isolate 都会读一次；
+      // 走边缘缓存后同 PoP 内 5 分钟只真读一次（规则一天更新两次，完全够）。
+      const kv = await env.RULES.get("lite_v1", { type: "text", cacheTtl: 300 });
       const set = parse(kv);
       if (set) return adopt(set);
       if (kv) setErr("kv lite_v1 不可用（" + kv.length + " 字节）");
