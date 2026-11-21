@@ -518,6 +518,11 @@ def main():
     sdk = load_list_file("sdk_ads.txt")
     video = load_list_file("video_ads.txt")
     dead = load_list_file("dead.txt")
+    # 设备实测确认（手机日志里真实发出的广告请求，AI+多信号判定过）：强制进 mid，不参与名额竞争
+    dconf = {d for d in load_list_file("device_confirmed.txt")
+             if not protected(d, wl) and d not in benign and d not in ep}
+    # 影子观察（机器判定但还没经过观察期）：只进 full，三档都不拦，观察期满由 identify.py 转正
+    shadow = load_list_file("shadow.txt")
     # 人工审核过的必拦清单（SDK/贴片/端点/威胁）不适用死域闸：
     # 品牌根域常常没有 A 记录（pangle.io 就是这样），但它是真广告实体，删掉等于漏拦。
     sdk_video = {d for d in (sdk | video)
@@ -586,12 +591,15 @@ def main():
     mid_raw = drop_children(
         drop_children({d for d in exact if consensus.get(d, 0) >= 2.0} | promoted)
         | ep | watch | sdk_video | (lblock - lallow) | lite) - threat_all
-    mid_keep = lite | ep | sdk_video | promoted | (core & exact) | (lblock - lallow)
+    mid_keep = (lite | ep | sdk_video | promoted | (core & exact) | (lblock - lallow)
+                | (dconf - threat_all))
+    mid_raw = mid_raw - shadow
     mid_extra = sorted(mid_raw - mid_keep, key=rank)[:max(0, MID_CAP - len(mid_keep))]
     mid = drop_children((mid_keep | set(mid_extra)) - threat_all)
 
-    full_raw = exact | watch | sdk_video | threat_extra | mid
-    full_keep = mid | threat_extra | ep | (core & exact)
+    full_raw = exact | watch | sdk_video | threat_extra | mid | shadow
+    # 影子域必须真的留在 full（否则被 rank 截掉，观察期形同虚设）
+    full_keep = mid | threat_extra | ep | (core & exact) | shadow
     full_extra = sorted(full_raw - full_keep, key=rank)[:max(0, FULL_CAP - len(full_keep))]
     # 挖矿/恶意域必须留在 full（拦掉才算真防护），归因/统计域三档都不进
     full = (full_keep | set(full_extra)) - threat_all | miner
@@ -606,7 +614,8 @@ def main():
               "cn_discovered": len(ep - load_list_file("ad_endpoints.txt")), "cn_watch": len(watch),
               "lite_cap": LITE_CAP, "mid_cap": MID_CAP, "full_cap": FULL_CAP, "lite_pool": len(promoted) + len(consensus_pool),
               "wildcards": len(wild), "whitelist_blocked": len(blocked_wl),
-              "ad_endpoints": len(ep), "promoted": len(promoted), "benign_dropped": len(benign_dropped)}
+              "ad_endpoints": len(ep), "promoted": len(promoted),
+              "device_confirmed": len(dconf), "shadow": len(shadow), "benign_dropped": len(benign_dropped)}
     print("编译完成：full %d ／mid %d ／lite %d 条（通配 %d）｜白名单剔除 %d｜源 %d 个｜国内发现端点 %d＋观察 %d" % (
         len(full), len(mid), len(lite), len(wild | wild_safe), len(blocked_wl), len(per_source),
         len(ep - load_list_file("ad_endpoints.txt")), len(watch)))

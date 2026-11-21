@@ -1,0 +1,1793 @@
+{
+ "l1.xfinfr.com": {
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "manual-revoke"
+ },
+ "whoami.akamai.net": {
+  "d": "whoami.akamai.net",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cn.ntp.org.cn": {
+  "d": "cn.ntp.org.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "edu.ntp.org.cn": {
+  "d": "edu.ntp.org.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "so.m.sm.cn": {
+  "d": "so.m.sm.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "biz.sm.cn": {
+  "d": "biz.sm.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "api5-normal-sinfonlineb.fqnovel.com": {
+  "d": "api5-normal-sinfonlineb.fqnovel.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "huichuan-mc.sm.cn": {
+  "d": "huichuan-mc.sm.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "blm.sm.cn": {
+  "d": "blm.sm.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "github.githubassets.com": {
+  "d": "github.githubassets.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "images.ctfassets.net": {
+  "d": "images.ctfassets.net",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "ipinfo.io": {
+  "d": "ipinfo.io",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cdn.jsdelivr.net": {
+  "d": "cdn.jsdelivr.net",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "example.net": {
+  "d": "example.net",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "lf6-vccdn.ndcpp.com": {
+  "d": "lf6-vccdn.ndcpp.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "ipv4.icanhazip.com": {
+  "d": "ipv4.icanhazip.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "doh.pub": {
+  "d": "doh.pub",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "content-produce-offine.quark.cn": {
+  "d": "content-produce-offine.quark.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "open.e.kuaishou.cn": {
+  "d": "open.e.kuaishou.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "amdc.alipay.com.cn": {
+  "d": "amdc.alipay.com.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cdn.tailwindcss.com": {
+  "d": "cdn.tailwindcss.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "image.uc.cn": {
+  "d": "image.uc.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cnb.cool": {
+  "d": "cnb.cool",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "gateway.quark.cn": {
+  "d": "gateway.quark.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "partner.uc.cn": {
+  "d": "partner.uc.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "api-v3.speedtest.cn": {
+  "d": "api-v3.speedtest.cn",
+  "v": "benign",
+  "c": 98,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "ip4.23-4.cn": {
+  "d": "ip4.23-4.cn",
+  "v": "benign",
+  "c": 98,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "vc-mirror-v6.ndcpp.com": {
+  "d": "vc-mirror-v6.ndcpp.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "vc-mirror.ndcpp.com": {
+  "d": "vc-mirror.ndcpp.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "iot-hub-prod-az1.plovercrest.com": {
+  "d": "iot-hub-prod-az1.plovercrest.com",
+  "v": "benign",
+  "c": 85,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cn.pool.ntp.org": {
+  "d": "cn.pool.ntp.org",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "quark-translation-api-zb.quark.cn": {
+  "d": "quark-translation-api-zb.quark.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "video-v4.yiyouliao.com": {
+  "d": "video-v4.yiyouliao.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "gcore.jsdelivr.net": {
+  "d": "gcore.jsdelivr.net",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v2-zj-zjcm.kwaicdn.com": {
+  "d": "v2-zj-zjcm.kwaicdn.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cnb.cdn-go.cn": {
+  "d": "cnb.cdn-go.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "pull-flv-f6-xg.bytecdn.cn": {
+  "d": "pull-flv-f6-xg.bytecdn.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "vivo7.go2yd.com": {
+  "d": "vivo7.go2yd.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "kkimgs.yisou.com": {
+  "d": "kkimgs.yisou.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "auni.telecome.cn": {
+  "d": "auni.telecome.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "mms-static.cdn.bcebos.com": {
+  "d": "mms-static.cdn.bcebos.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "smvconf.f.360.cn": {
+  "d": "smvconf.f.360.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v6.kwaicdn.com": {
+  "d": "v6.kwaicdn.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "s0.awsstatic.com": {
+  "d": "s0.awsstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cdn.bootcdn.net": {
+  "d": "cdn.bootcdn.net",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "tosv.byted.org": {
+  "d": "tosv.byted.org",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "stun.stunprotocol.org": {
+  "d": "stun.stunprotocol.org",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "a0.awsstatic.com": {
+  "d": "a0.awsstatic.com",
+  "v": "benign",
+  "c": 88,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v1.kwaicdn.com": {
+  "d": "v1.kwaicdn.com",
+  "v": "benign",
+  "c": 87,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "d1.awsstatic.com": {
+  "d": "d1.awsstatic.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "stun.ekiga.net": {
+  "d": "stun.ekiga.net",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "t0.awsstatic.com": {
+  "d": "t0.awsstatic.com",
+  "v": "benign",
+  "c": 99,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "complier.pwhs.app": {
+  "d": "complier.pwhs.app",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "log-api.pangolin-sdk-toutiao-b.com": {
+  "d": "log-api.pangolin-sdk-toutiao-b.com",
+  "v": "tracker",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "dl04.gxcould.com": {
+  "d": "dl04.gxcould.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "download.voicecloud.cn": {
+  "d": "download.voicecloud.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "www.pangolin-dsp-toutiao.com": {
+  "d": "www.pangolin-dsp-toutiao.com",
+  "v": "tracker",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "vc-brain-v6.ndcpp.com": {
+  "d": "vc-brain-v6.ndcpp.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "iflow-image.myquark.cn": {
+  "d": "iflow-image.myquark.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v11-cold.douyinvod.com": {
+  "d": "v11-cold.douyinvod.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "ip.skk.moe": {
+  "d": "ip.skk.moe",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "ossp.voicecloud.cn": {
+  "d": "ossp.voicecloud.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "p3-be-pack-sign.pglstatp-toutiao.com": {
+  "d": "p3-be-pack-sign.pglstatp-toutiao.com",
+  "v": "tracker",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "msv6.wosms.cn": {
+  "d": "msv6.wosms.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "tr.byteurl.cn": {
+  "d": "tr.byteurl.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "d66-plat-solar.wsukwai.com": {
+  "d": "d66-plat-solar.wsukwai.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "n98-lf9-dy-ncdn-tos-sub.bytegecko.com": {
+  "d": "n98-lf9-dy-ncdn-tos-sub.bytegecko.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "s1.dmgytb.com": {
+  "d": "s1.dmgytb.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "res.servicewechat.com": {
+  "d": "res.servicewechat.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "sh.servicewechat.com": {
+  "d": "sh.servicewechat.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "dns.99600000.xyz": {
+  "d": "dns.99600000.xyz",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "19ac9b20-9.sjxydc.com": {
+  "d": "19ac9b20-9.sjxydc.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "d.url.cn": {
+  "d": "d.url.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "time.gpsonextra.net": {
+  "d": "time.gpsonextra.net",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "douyin.starrydyn.com": {
+  "d": "douyin.starrydyn.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "stun.ideasip.com": {
+  "d": "stun.ideasip.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "api-auth.flysleep.cn": {
+  "d": "api-auth.flysleep.cn",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "imagev2.xmcdn.com": {
+  "d": "imagev2.xmcdn.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "amazonwebservicesinc.tt.omtrdc.net": {
+  "d": "amazonwebservicesinc.tt.omtrdc.net",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "p5-plat.wsukwai.com": {
+  "d": "p5-plat.wsukwai.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "s1.yyzqtb.com": {
+  "d": "s1.yyzqtb.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v6-gdvod.kwaicdn.com": {
+  "d": "v6-gdvod.kwaicdn.com",
+  "v": "benign",
+  "c": 100,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "n98-v-dyseriesncdn0.douyinvod.com": {
+  "d": "n98-v-dyseriesncdn0.douyinvod.com",
+  "v": "benign",
+  "c": 98,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "push-rtmp-hs-f5.huoshanlive.com": {
+  "d": "push-rtmp-hs-f5.huoshanlive.com",
+  "v": "benign",
+  "c": 96,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "errc.flysleep.cn": {
+  "d": "errc.flysleep.cn",
+  "v": "benign",
+  "c": 94,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "prod.us-east-1.ui.gcr-chat.marketing.aws.dev": {
+  "d": "prod.us-east-1.ui.gcr-chat.marketing.aws.dev",
+  "v": "benign",
+  "c": 92,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "ec7a9f61-9.sjxydc.com": {
+  "d": "ec7a9f61-9.sjxydc.com",
+  "v": "benign",
+  "c": 90,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "lf3-static.bytednsdoc.com": {
+  "d": "lf3-static.bytednsdoc.com",
+  "v": "benign",
+  "c": 90,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "download.szytnet.cn": {
+  "d": "download.szytnet.cn",
+  "v": "benign",
+  "c": 86,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "lf3-config.bytetcc.com": {
+  "d": "lf3-config.bytetcc.com",
+  "v": "benign",
+  "c": 86,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "p4-plat.wsukwai.com": {
+  "d": "p4-plat.wsukwai.com",
+  "v": "benign",
+  "c": 86,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "pull2.ntjiake.cn": {
+  "d": "pull2.ntjiake.cn",
+  "v": "benign",
+  "c": 86,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v5-coldy.douyinvod.com": {
+  "d": "v5-coldy.douyinvod.com",
+  "v": "benign",
+  "c": 86,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v6-hcb.douyinvod.com": {
+  "d": "v6-hcb.douyinvod.com",
+  "v": "benign",
+  "c": 86,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "lf-webcast-gr-sourcecdn.bytegecko.com": {
+  "d": "lf-webcast-gr-sourcecdn.bytegecko.com",
+  "v": "benign",
+  "c": 96,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "mce.vivojrkj.com": {
+  "d": "mce.vivojrkj.com",
+  "v": "benign",
+  "c": 96,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "zplan-lite.cdn-go.cn": {
+  "d": "zplan-lite.cdn-go.cn",
+  "v": "benign",
+  "c": 96,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "pull-rtmp-l6-hs.pstatp.com": {
+  "d": "pull-rtmp-l6-hs.pstatp.com",
+  "v": "benign",
+  "c": 93,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "vc-hj-new-brain.ndcpp.com": {
+  "d": "vc-hj-new-brain.ndcpp.com",
+  "v": "benign",
+  "c": 92,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "vc-new-hole-v6.ndcpp.com": {
+  "d": "vc-new-hole-v6.ndcpp.com",
+  "v": "benign",
+  "c": 92,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "vc-new-hole.ndcpp.com": {
+  "d": "vc-new-hole.ndcpp.com",
+  "v": "benign",
+  "c": 92,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "pull-rtmp-f1-hs.pstatp.com": {
+  "d": "pull-rtmp-f1-hs.pstatp.com",
+  "v": "benign",
+  "c": 91,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "pull-rtmp-f6-hs.pstatp.com": {
+  "d": "pull-rtmp-f6-hs.pstatp.com",
+  "v": "benign",
+  "c": 90,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "dm.wo.com.cn": {
+  "d": "dm.wo.com.cn",
+  "v": "benign",
+  "c": 86,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "qq-web.cdn-go.cn": {
+  "d": "qq-web.cdn-go.cn",
+  "v": "benign",
+  "c": 86,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "nv00.cdn.bcebos.com": {
+  "d": "nv00.cdn.bcebos.com",
+  "v": "benign",
+  "c": 76,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "push-rtmp-f5.ihuoshanlive.com": {
+  "d": "push-rtmp-f5.ihuoshanlive.com",
+  "v": "benign",
+  "c": 76,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "framework.cdn-go.cn": {
+  "d": "framework.cdn-go.cn",
+  "v": "benign",
+  "c": 72,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "npm.cdn-go.cn": {
+  "d": "npm.cdn-go.cn",
+  "v": "benign",
+  "c": 72,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.d.f.ip6.arpa": {
+  "d": "2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.d.f.ip6.arpa",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "ime-res-download.xfinfr.com": {
+  "d": "ime-res-download.xfinfr.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "stun.voipstunt.com": {
+  "d": "stun.voipstunt.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "lf1-cdn-tos.bytescm.com": {
+  "d": "lf1-cdn-tos.bytescm.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "x0.ifengimg.com": {
+  "d": "x0.ifengimg.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "upos-sz-static.bilivideo.com": {
+  "d": "upos-sz-static.bilivideo.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "prod.pa.cdn.uis.awsstatic.com": {
+  "d": "prod.pa.cdn.uis.awsstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "stvideo-dynamic-cover.dgsltx.com": {
+  "d": "stvideo-dynamic-cover.dgsltx.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "tun-cos-1258344701.file.myqcloud.com": {
+  "d": "tun-cos-1258344701.file.myqcloud.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v96.douyinvod.com": {
+  "d": "v96.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "zj66.a.kwimgs.com": {
+  "d": "zj66.a.kwimgs.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "3.c.4.9.9.0.e.f.f.f.c.0.d.5.8.f.0.2.1.3.d.8.4.3.b.2.a.8.9.0.4.2.ip6.arpa": {
+  "d": "3.c.4.9.9.0.e.f.f.f.c.0.d.5.8.f.0.2.1.3.d.8.4.3.b.2.a.8.9.0.4.2.ip6.arpa",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "trade.xfinfr.com": {
+  "d": "trade.xfinfr.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "189.10.168.192.in-addr.arpa": {
+  "d": "189.10.168.192.in-addr.arpa",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "d.0.c.6.7.d.e.f.f.f.1.d.f.6.c.1.3.0.5.2.0.7.0.3.3.7.5.0.e.0.4.2.ip6.arpa": {
+  "d": "d.0.c.6.7.d.e.f.f.f.1.d.f.6.c.1.3.0.5.2.0.7.0.3.3.7.5.0.e.0.4.2.ip6.arpa",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "d.7.6.f.0.d.e.f.f.f.0.8.6.1.0.6.9.e.8.5.0.1.0.6.8.a.2.4.a.0.4.2.ip6.arpa": {
+  "d": "d.7.6.f.0.d.e.f.f.f.0.8.6.1.0.6.9.e.8.5.0.1.0.6.8.a.2.4.a.0.4.2.ip6.arpa",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cdn-static.gitcode.com": {
+  "d": "cdn-static.gitcode.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "lf-webcast-sourcecdn-tos.bytegecko.com": {
+  "d": "lf-webcast-sourcecdn-tos.bytegecko.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "universal-nav-registry-production.cfapi.workers.dev": {
+  "d": "universal-nav-registry-production.cfapi.workers.dev",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "all-api.ymm56.com": {
+  "d": "all-api.ymm56.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "www.pushplus.plus": {
+  "d": "www.pushplus.plus",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "api.yunxish.com": {
+  "d": "api.yunxish.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cdn.yunxish.com": {
+  "d": "cdn.yunxish.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "d-proxy-config.xxpkg.com": {
+  "d": "d-proxy-config.xxpkg.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "d2-reco.a.kwimgs.com": {
+  "d": "d2-reco.a.kwimgs.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "n98-v-ncdn-music.douyinstatic.com": {
+  "d": "n98-v-ncdn-music.douyinstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "voldp.s3-cache-accelerate.cn-north-1.jdcloud-oss.com": {
+  "d": "voldp.s3-cache-accelerate.cn-north-1.jdcloud-oss.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "d.d.8.a.f.d.1.7.1.f.e.8.e.9.d.f.0.2.1.3.d.8.4.3.b.2.a.8.9.0.4.2.ip6.arpa": {
+  "d": "d.d.8.a.f.d.1.7.1.f.e.8.e.9.d.f.0.2.1.3.d.8.4.3.b.2.a.8.9.0.4.2.ip6.arpa",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "2.100.64.100.in-addr.arpa": {
+  "d": "2.100.64.100.in-addr.arpa",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "mms-mis.cdn.bcebos.com": {
+  "d": "mms-mis.cdn.bcebos.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "accesstpush.tencentmusic.com": {
+  "d": "accesstpush.tencentmusic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "stun.voipbuster.com": {
+  "d": "stun.voipbuster.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "d-pxy-crc.xxpkg.com": {
+  "d": "d-pxy-crc.xxpkg.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "img.shields.io": {
+  "d": "img.shields.io",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "line3-h5-mobile-api.biligame.com": {
+  "d": "line3-h5-mobile-api.biligame.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "logrcv.yunxish.com": {
+  "d": "logrcv.yunxish.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "c-gtc.getui.net": {
+  "d": "c-gtc.getui.net",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "hy-openapi-public-1258344703.cos.ap-nanjing.myqcloud.com": {
+  "d": "hy-openapi-public-1258344703.cos.ap-nanjing.myqcloud.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "lf26-webcastcdn-tos-sign.douyinstatic.com": {
+  "d": "lf26-webcastcdn-tos-sign.douyinstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "m.baike.com": {
+  "d": "m.baike.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "p.tencentmusic.com": {
+  "d": "p.tencentmusic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "qcc.qualcomm.cn": {
+  "d": "qcc.qualcomm.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "sdk.open.talk.gepush.com": {
+  "d": "sdk.open.talk.gepush.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "sdk.open.talk.getui.net": {
+  "d": "sdk.open.talk.getui.net",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "sf3-cdn-tos.douyinstatic.com": {
+  "d": "sf3-cdn-tos.douyinstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "videos.ctfassets.net": {
+  "d": "videos.ctfassets.net",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "api.kuaishouzt.com": {
+  "d": "api.kuaishouzt.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v5-se-sjy-daily-luna.douyinvod.com": {
+  "d": "v5-se-sjy-daily-luna.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "pull-rtmp-f1-xg.bytecdn.cn": {
+  "d": "pull-rtmp-f1-xg.bytecdn.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v5-se-qn-daily-cm.douyinvod.com": {
+  "d": "v5-se-qn-daily-cm.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "pull-rtmp-l1-xg.bytecdn.cn": {
+  "d": "pull-rtmp-l1-xg.bytecdn.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "acs.m.goofish.com": {
+  "d": "acs.m.goofish.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "adrules.top": {
+  "d": "adrules.top",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "amdc-sibling.alipay.com.cn": {
+  "d": "amdc-sibling.alipay.com.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "grpc.biliapi.net": {
+  "d": "grpc.biliapi.net",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "h5.m.goofish.com": {
+  "d": "h5.m.goofish.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "hunyuan-prod-1258344703.cos.ap-guangzhou.myqcloud.com": {
+  "d": "hunyuan-prod-1258344703.cos.ap-guangzhou.myqcloud.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "iot-hub-staging.plovercrest.com": {
+  "d": "iot-hub-staging.plovercrest.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "p.qlogo.cn": {
+  "d": "p.qlogo.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "tm-s.xxpkg.com": {
+  "d": "tm-s.xxpkg.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "usr-api.yunxish.com": {
+  "d": "usr-api.yunxish.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "a.b.cdn.console.awsstatic.com": {
+  "d": "a.b.cdn.console.awsstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "iceudpstat.xdrtc.com": {
+  "d": "iceudpstat.xdrtc.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "lf-dy-sourcecdn-tos.bytegecko.com": {
+  "d": "lf-dy-sourcecdn-tos.bytegecko.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "material.weiling.cn": {
+  "d": "material.weiling.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cdn1.dcloud.net.cn": {
+  "d": "cdn1.dcloud.net.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "m.goapk.com": {
+  "d": "m.goapk.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "w1.kskwai.com": {
+  "d": "w1.kskwai.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "gitee.cn": {
+  "d": "gitee.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "newapp-prompt.cdn.bcebos.com": {
+  "d": "newapp-prompt.cdn.bcebos.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "pull-flv-l1-xg.bytecdn.cn": {
+  "d": "pull-flv-l1-xg.bytecdn.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "pull-rtmp-f6-xg.bytecdn.cn": {
+  "d": "pull-rtmp-f6-xg.bytecdn.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "scrm-wx.weiling.cn": {
+  "d": "scrm-wx.weiling.cn",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "jscm.a.etoote.com": {
+  "d": "jscm.a.etoote.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "lf26-cdn-tos.bytegecko.com": {
+  "d": "lf26-cdn-tos.bytegecko.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "sdk-ab-config-cdn.yunxish.com": {
+  "d": "sdk-ab-config-cdn.yunxish.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "api5-hl.qishui.com": {
+  "d": "api5-hl.qishui.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "cube.elemecdn.com": {
+  "d": "cube.elemecdn.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "gitcode.com": {
+  "d": "gitcode.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "iot-hub-prod-v6-az1.plovercrest.com": {
+  "d": "iot-hub-prod-v6-az1.plovercrest.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "iot-hub-staging-v6.plovercrest.com": {
+  "d": "iot-hub-staging-v6.plovercrest.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "n98-v-ncdnab3.douyinvod.com": {
+  "d": "n98-v-ncdnab3.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v11-cold-src.douyinvod.com": {
+  "d": "v11-cold-src.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v5-whd4.douyinvod.com": {
+  "d": "v5-whd4.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v6-music.douyinstatic.com": {
+  "d": "v6-music.douyinstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v95-zjbwz-mc-wha.douyinvod.com": {
+  "d": "v95-zjbwz-mc-wha.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v96-hcc.douyinvod.com": {
+  "d": "v96-hcc.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "ynuf.aliapp.org": {
+  "d": "ynuf.aliapp.org",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "3nbk3hc7pnbn5c6802cqa7j6ur5rigvzrv4wuvoc3c7s3fdznz3s2wx4.xs.alibabachengdun.com": {
+  "d": "3nbk3hc7pnbn5c6802cqa7j6ur5rigvzrv4wuvoc3c7s3fdznz3s2wx4.xs.alibabachengdun.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "a-ws.xmcdn.com": {
+  "d": "a-ws.xmcdn.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "a.xmcdn.com": {
+  "d": "a.xmcdn.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "audiopay-hs.cos.xmcdn.com": {
+  "d": "audiopay-hs.cos.xmcdn.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "audiopay-ws.cos.xmcdn.com": {
+  "d": "audiopay-ws.cos.xmcdn.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "audiopay.cos.tx.xmcdn.com": {
+  "d": "audiopay.cos.tx.xmcdn.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "conf3-hl.qishui.com": {
+  "d": "conf3-hl.qishui.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "conf5-hl.qishui.com": {
+  "d": "conf5-hl.qishui.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "d0.m.awsstatic.com": {
+  "d": "d0.m.awsstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "dnstt.xyz": {
+  "d": "dnstt.xyz",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "h5-data.elemecdn.com": {
+  "d": "h5-data.elemecdn.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "ip-api.com": {
+  "d": "ip-api.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "log3-hl.qishui.com": {
+  "d": "log3-hl.qishui.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "log5-hl.qishui.com": {
+  "d": "log5-hl.qishui.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "pp.myapp.com": {
+  "d": "pp.myapp.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "rcs.cmpassport.com": {
+  "d": "rcs.cmpassport.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v11-music.douyinstatic.com": {
+  "d": "v11-music.douyinstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v11.douyinvod.com": {
+  "d": "v11.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v13-music.douyinstatic.com": {
+  "d": "v13-music.douyinstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v26-cold-y.douyinvod.com": {
+  "d": "v26-cold-y.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v26-colds.douyinvod.com": {
+  "d": "v26-colds.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v5-bd-daily-music.douyinstatic.com": {
+  "d": "v5-bd-daily-music.douyinstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v5-daily-cm-dyseries.douyinvod.com": {
+  "d": "v5-daily-cm-dyseries.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v5-se-zjnbtc-wha.douyinvod.com": {
+  "d": "v5-se-zjnbtc-wha.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v5-whd3.douyinvod.com": {
+  "d": "v5-whd3.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v9.douyinvod.com": {
+  "d": "v9.douyinvod.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ },
+ "v95-aw-music.douyinstatic.com": {
+  "d": "v95-aw-music.douyinstatic.com",
+  "v": "benign",
+  "c": 95,
+  "t": "none",
+  "ts": "2026-11-21",
+  "by": "ai"
+ }
+}

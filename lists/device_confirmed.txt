@@ -1,0 +1,21 @@
+# 设备实测确认（主脑 AI 逐条判定）
+# AI 直判 2026-11-21  model=main-brain  calls=0
+adapi.izuiyou.com
+amazonwebservices.d2.sc.omtrdc.net
+cm.everesttech.net
+cpc-service-square.iggrowth.cn
+d-gm.mmstat.com
+dsp.ads.umeng.com
+e.cn.miaozhen.com
+edge.adobedc.net
+gm.mmstat.com
+lf-leads-fe-scm.bytecdn.com
+lf9-sf-be-pack-sign.pglstatp-toutiao.com
+mkt-advertisement.tuhu.cn
+p1-lm.adkwai.com
+p23-plat.wskwai.com
+p4-plat.wskwai.com
+p66-ad.adkwai.com
+report.tencentmusic.com
+roi.soulapp.cn
+xmadsdk.cos.tx.xmcdn.com

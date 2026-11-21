@@ -1,4 +1,4 @@
-# NoAS 20261121-1caf929c（9900 条）
+# NoAS 20261121-9f0d5f27（9901 条）
 0.0.0.0 0017c6c37c.com
 0.0.0.0 00a39e6dfd.com
 0.0.0.0 01168nl.com
@@ -2343,7 +2343,6 @@
 0.0.0.0 ads.maoyan.com
 0.0.0.0 ads.mgtv.com
 0.0.0.0 ads.scored.co
-0.0.0.0 ads.service.kugou.com
 0.0.0.0 ads.sportradar.com
 0.0.0.0 ads.talksport.com
 0.0.0.0 ads.tiktok.com
@@ -2392,7 +2391,6 @@
 0.0.0.0 adserving.unibet.com
 0.0.0.0 adsessionserv.com
 0.0.0.0 adsfac.net
-0.0.0.0 adsfs.oppomobile.com
 0.0.0.0 adsgateway.net
 0.0.0.0 adshare.toutiao.com
 0.0.0.0 adsiduous.com
@@ -2540,7 +2538,6 @@
 0.0.0.0 adxbid.info
 0.0.0.0 adxhand1.name
 0.0.0.0 adxion.com
-0.0.0.0 adxlog-adnet.vivo.com.cn
 0.0.0.0 adxnexus.com
 0.0.0.0 adxpansion.com
 0.0.0.0 adxpartner.com
@@ -3476,7 +3473,6 @@
 0.0.0.0 api-access.pangolin-sdk-toutiao1.com
 0.0.0.0 api.digitalpiloten.org
 0.0.0.0 api.elliehuxtable.com
-0.0.0.0 api.mp.uc.cn
 0.0.0.0 api.pingstart.com
 0.0.0.0 api.sae.systems
 0.0.0.0 api.shanghailingye.cn
@@ -3514,9 +3510,6 @@
 0.0.0.0 applicationassistantpal.com
 0.0.0.0 applicationsighgolden.com
 0.0.0.0 applierlignes.com
-0.0.0.0 applog.uc.cn
-0.0.0.0 applog.ucdns.uc.cn
-0.0.0.0 applog.zijieapi.com
 0.0.0.0 applogapi.autohome.com.cn
 0.0.0.0 applovin.com
 0.0.0.0 apply.maxlend.com
@@ -4152,7 +4145,6 @@
 0.0.0.0 bagsurprise.com
 0.0.0.0 baguettefactornervous.com
 0.0.0.0 bahpartridge.com
-0.0.0.0 baidustatic.com
 0.0.0.0 bakersequaled.com
 0.0.0.0 bakingbeheld.com
 0.0.0.0 bakteso.ru
@@ -6110,7 +6102,6 @@
 0.0.0.0 cmorautniwdao.space
 0.0.0.0 cmptphyupeflf.site
 0.0.0.0 cmrdr.com
-0.0.0.0 cms.ucweb.com
 0.0.0.0 cmtrk.com
 0.0.0.0 cnabusictviht.site
 0.0.0.0 cname-aa.hatarakunavi.net
@@ -6625,6 +6616,7 @@
 0.0.0.0 cpmstar.com
 0.0.0.0 cpnsbxkibvbhw.space
 0.0.0.0 cpro.baidu.com
+0.0.0.0 cpro.baidustatic.com
 0.0.0.0 cpsumpgbxqhid.space
 0.0.0.0 cpu-api.infor.pl
 0.0.0.0 cpuzspopetlsg.space
@@ -7022,7 +7014,38 @@
 0.0.0.0 cwqtqpxudxicq.space
 0.0.0.0 cwrlsjkvjdgff.site
 0.0.0.0 cwtervpgcjuqa.website
-0.0.0.0 d.kugou.com
+0.0.0.0 cwtjduacwhhtj.site
+0.0.0.0 cwuxquolwlfqp.site
+0.0.0.0 cwvueoaakybnr.site
+0.0.0.0 cwxdhubxeibwf.site
+0.0.0.0 cwyvnvawjstrr.online
+0.0.0.0 cxamupwxndqat.online
+0.0.0.0 cxbzfolgfvvvn.online
+0.0.0.0 cxcjuhbxaysnj.site
+0.0.0.0 cxcsrgntzjolw.online
+0.0.0.0 cxcvqnqzrnkpv.website
+0.0.0.0 cxgznmgoawvwj.site
+0.0.0.0 cxiegxvvbtmxo.space
+0.0.0.0 cxivcfnaivzmj.online
+0.0.0.0 cxmonbsehjanc.space
+0.0.0.0 cxnp-protect.pro
+0.0.0.0 cxofostbnjehi.website
+0.0.0.0 cxrfns.gu-global.com
+0.0.0.0 cxuhnlvxuxskw.online
+0.0.0.0 cxussqzuffumy.site
+0.0.0.0 cxutqsjbwtkth.website
+0.0.0.0 cxvklaosnwgae.online
+0.0.0.0 cxvuaexnqejex.site
+0.0.0.0 cxyilbdocnfsi.space
+0.0.0.0 cyachalbbofrw.online
+0.0.0.0 cyaijllypnzgl.online
+0.0.0.0 cyberfluxer.com
+0.0.0.0 cybkit.com
+0.0.0.0 cyclinghere.com
+0.0.0.0 cyf9.destinia.cl
+0.0.0.0 cyfyxkqvqfvfm.space
+0.0.0.0 cygalwwkhhimv.space
+0.0.0.0 cyhanjealyojs.space
 0.0.0.0 d0.xcar.com.cn
 0.0.0.0 d10ce3z4vbhcdd.cloudfront.net
 0.0.0.0 d10zmv6hrj5cx1.cloudfront.net
@@ -7478,7 +7501,6 @@
 0.0.0.0 direct-events-collector.spot.im
 0.0.0.0 directaclick.com
 0.0.0.0 directadvert.ru
-0.0.0.0 dispatcher.upmc.uc.cn
 0.0.0.0 displayvertising.com
 0.0.0.0 distillery.wistia.com
 0.0.0.0 districtm.ca
@@ -7698,8 +7720,6 @@
 0.0.0.0 getjan.io
 0.0.0.0 getrockerbox.com
 0.0.0.0 gfgywe.abril.com.br
-0.0.0.0 gjapplog.uc.cn
-0.0.0.0 gjapplog.ucweb.com
 0.0.0.0 gkfdkf.jdsports.co.uk
 0.0.0.0 glamipixel.com
 0.0.0.0 globalsiteanalytics.com
@@ -7759,7 +7779,6 @@
 0.0.0.0 hubcloud.com.cn
 0.0.0.0 hubmetrics.samsclub.com
 0.0.0.0 hueadsxml.com
-0.0.0.0 huichuan.sm.cn
 0.0.0.0 hvrhgt.the-sun.com
 0.0.0.0 hvrhgt.thesun.co.uk
 0.0.0.0 hzstats.com
@@ -7855,7 +7874,6 @@
 0.0.0.0 kta.etherscan.com
 0.0.0.0 kuaikan.netmon.360safe.com
 0.0.0.0 kueezrtb.com
-0.0.0.0 kwmsg.kuwo.cn
 0.0.0.0 kwvbhj.jcpenney.com
 0.0.0.0 kwwvxn.uniqlo.com
 0.0.0.0 kzsicw.focus.de
@@ -7880,13 +7898,11 @@
 0.0.0.0 log.go.com
 0.0.0.0 log.gs3.goo.ne.jp
 0.0.0.0 log.iflytek.com
-0.0.0.0 log.kuwo.cn
 0.0.0.0 log.medietall.no
 0.0.0.0 log.moji.com
 0.0.0.0 log.olark.com
 0.0.0.0 log.particlenews.com
 0.0.0.0 log.snapdeal.com
-0.0.0.0 log.web.kugou.com
 0.0.0.0 logger.qingting.fm
 0.0.0.0 logger.yp.ca
 0.0.0.0 logging.api.intuit.com
@@ -7946,7 +7962,6 @@
 0.0.0.0 mc.yango.com
 0.0.0.0 mcdmetrics.aaa.com
 0.0.0.0 mcs-va.tiktokv.com
-0.0.0.0 mcs.zijieapi.com
 0.0.0.0 mdhv.io
 0.0.0.0 mdstats.info
 0.0.0.0 measureadv.com
@@ -8126,21 +8141,17 @@
 0.0.0.0 mnbvpo8trk.com
 0.0.0.0 mng-ads.com
 0.0.0.0 mnrddc.journeys.com
-0.0.0.0 mo.kugou.com
 0.0.0.0 moatads.com
 0.0.0.0 mobads-logs.baidu.com
 0.0.0.0 mobads.baidu.com
 0.0.0.0 mobfox.com
-0.0.0.0 mobilead.kuwo.cn
 0.0.0.0 mobilefuse.com
-0.0.0.0 mon.zijieapi.com
 0.0.0.0 monetizer101.com
 0.0.0.0 mookie1.com
 0.0.0.0 motionspots.com
 0.0.0.0 movad.net
 0.0.0.0 mpnrs.com
 0.0.0.0 mqvyob.vidaxl.fi
-0.0.0.0 msg.mobile.kugou.com
 0.0.0.0 msg.qy.net
 0.0.0.0 mtburn.com
 0.0.0.0 mtcs.nhk.or.jp
@@ -8249,6 +8260,7 @@
 0.0.0.0 outbrain.com
 0.0.0.0 p.raasnet.com
 0.0.0.0 p0.raasnet.com
+0.0.0.0 p3-ad-sign.byteimg.com
 0.0.0.0 pabidding.io
 0.0.0.0 pages-stats.rbl.ms
 0.0.0.0 pageviews.tray.com.br
@@ -8344,11 +8356,9 @@
 0.0.0.0 pubmine.com
 0.0.0.0 pubsrv.devhints.io
 0.0.0.0 pubtrky.com
-0.0.0.0 puds.ucweb.com
 0.0.0.0 puhtml.com
 0.0.0.0 pulse.delta.com
 0.0.0.0 push.app.autohome.com.cn
-0.0.0.0 push.mobile.kugou.com
 0.0.0.0 push.zhangyue.com
 0.0.0.0 pushnami.com
 0.0.0.0 pushno.com
@@ -8515,7 +8525,6 @@
 0.0.0.0 sdata.connection.com
 0.0.0.0 sdata.wiley.com
 0.0.0.0 sdc.allianz.de
-0.0.0.0 sdn.kugou.com
 0.0.0.0 sdsp.baidu.com
 0.0.0.0 sdtagging.azureedge.net
 0.0.0.0 seahorseinfo.agilent.com
@@ -8544,7 +8553,6 @@
 0.0.0.0 services.brightline.tv
 0.0.0.0 seyfwl.interia.pl
 0.0.0.0 sf-insights.io
-0.0.0.0 sgali-mcs.byteoversea.com
 0.0.0.0 share-server.com
 0.0.0.0 sharethrough.com
 0.0.0.0 shgcdn3.com
@@ -9586,7 +9594,6 @@
 0.0.0.0 thrtle.com
 0.0.0.0 thunderhead.com
 0.0.0.0 tidaltv.com
-0.0.0.0 tj.kugou.com
 0.0.0.0 tjk-njk.com
 0.0.0.0 tk.abt.com
 0.0.0.0 tk.airfrance.fr
@@ -9628,7 +9635,6 @@
 0.0.0.0 track.robee.tech
 0.0.0.0 track.saygames.io
 0.0.0.0 track.searchiq.co
-0.0.0.0 track.uc.cn
 0.0.0.0 tracker-api.my.com
 0.0.0.0 tracker.azet.sk
 0.0.0.0 tracker.bt.uol.com.br
@@ -9698,10 +9704,7 @@
 0.0.0.0 tynt.com
 0.0.0.0 u.uc123.com
 0.0.0.0 ub-analytics.com
-0.0.0.0 uc.ucweb.com
 0.0.0.0 ucounter.ucoz.net
-0.0.0.0 ucsec.ucweb.com
-0.0.0.0 ucsec1.ucweb.com
 0.0.0.0 udmserve.net
 0.0.0.0 udrvvx.kabum.com.br
 0.0.0.0 ufpcdn.com
@@ -9790,7 +9793,6 @@
 0.0.0.0 w88.go.com
 0.0.0.0 wa.childrensplace.com
 0.0.0.0 wa.gtimg.com
-0.0.0.0 wa.kuwo.cn
 0.0.0.0 wa.nxp.com
 0.0.0.0 wafvertizing.crazygames.com
 0.0.0.0 wahoha.com
@@ -9826,7 +9828,6 @@
 0.0.0.0 wigetmedia.com
 0.0.0.0 wizaly.com
 0.0.0.0 wmxuba.aldoshoes.com
-0.0.0.0 woodpecker.uc.cn
 0.0.0.0 workdeadlinededicate.com
 0.0.0.0 worldmtcs.nhk.jp
 0.0.0.0 wowanalytics.co.uk

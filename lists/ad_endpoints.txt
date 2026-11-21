@@ -82,3 +82,5 @@ nadvideo2.baidu.com
 ad.toutiao.com
 adshare.toutiao.com
 scc.bytedance.com
+
+p3-ad-sign.byteimg.com

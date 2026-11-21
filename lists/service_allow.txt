@@ -44,3 +44,26 @@ pushwoosh.com	push-realtime	推送服务
 
 honcode.ch	health-badge	HONcode 医疗网站认证徽章（医院站常引用，非广告）
 2345.com	nav	2345 导航站主域（业务，非广告；广告走 union.2345.com 端点例外）
+
+# 内容分发/业务必需根域（AI 直判不得越过）
+bytedance.com
+openspeech.cn
+qznovelvod.com
+douyincdn.com
+amemv.com
+snssdk.com
+
+douyinliving.com
+
+# 内容 CDN / 推送 / 业务 API（根域放行，精确广告子域走端点表照拦）
+douyinpic.com
+fqnovelpic.com
+byteimg.com
+zijieapi.com
+upush-sender.quark.cn
+
+# 微信 CDN / 讯飞开放平台 / 直播 CDN（用户明确要求不得拦）
+xf-yun.com
+tencent-cloud.net
+wx.qq.com
+wxlivecdn.com

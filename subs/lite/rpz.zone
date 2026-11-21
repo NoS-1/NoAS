@@ -1,4 +1,4 @@
-# NoAS RPZ（20261121-1caf929c）
+# NoAS RPZ（20261121-9f0d5f27）
 ; $TTL 300
 0017c6c37c.com CNAME .
 00a39e6dfd.com CNAME .
@@ -2344,7 +2344,6 @@ ads.ipfighter.com CNAME .
 ads.maoyan.com CNAME .
 ads.mgtv.com CNAME .
 ads.scored.co CNAME .
-ads.service.kugou.com CNAME .
 ads.sportradar.com CNAME .
 ads.talksport.com CNAME .
 ads.tiktok.com CNAME .
@@ -2393,7 +2392,6 @@ adservicemedia.dk CNAME .
 adserving.unibet.com CNAME .
 adsessionserv.com CNAME .
 adsfac.net CNAME .
-adsfs.oppomobile.com CNAME .
 adsgateway.net CNAME .
 adshare.toutiao.com CNAME .
 adsiduous.com CNAME .
@@ -2541,7 +2539,6 @@ adxawkejwjdfh.site CNAME .
 adxbid.info CNAME .
 adxhand1.name CNAME .
 adxion.com CNAME .
-adxlog-adnet.vivo.com.cn CNAME .
 adxnexus.com CNAME .
 adxpansion.com CNAME .
 adxpartner.com CNAME .
@@ -3477,7 +3474,6 @@ apfqoakmqrpqv.site CNAME .
 api-access.pangolin-sdk-toutiao1.com CNAME .
 api.digitalpiloten.org CNAME .
 api.elliehuxtable.com CNAME .
-api.mp.uc.cn CNAME .
 api.pingstart.com CNAME .
 api.sae.systems CNAME .
 api.shanghailingye.cn CNAME .
@@ -3515,9 +3511,6 @@ appliancecolaprofessor.com CNAME .
 applicationassistantpal.com CNAME .
 applicationsighgolden.com CNAME .
 applierlignes.com CNAME .
-applog.uc.cn CNAME .
-applog.ucdns.uc.cn CNAME .
-applog.zijieapi.com CNAME .
 applogapi.autohome.com.cn CNAME .
 applovin.com CNAME .
 apply.maxlend.com CNAME .
@@ -4153,7 +4146,6 @@ bagpipemonogamypercent.com CNAME .
 bagsurprise.com CNAME .
 baguettefactornervous.com CNAME .
 bahpartridge.com CNAME .
-baidustatic.com CNAME .
 bakersequaled.com CNAME .
 bakingbeheld.com CNAME .
 bakteso.ru CNAME .
@@ -6111,7 +6103,6 @@ cmolkehwqwiur.online CNAME .
 cmorautniwdao.space CNAME .
 cmptphyupeflf.site CNAME .
 cmrdr.com CNAME .
-cms.ucweb.com CNAME .
 cmtrk.com CNAME .
 cnabusictviht.site CNAME .
 cname-aa.hatarakunavi.net CNAME .
@@ -6626,6 +6617,7 @@ cpmrevenuegate.com CNAME .
 cpmstar.com CNAME .
 cpnsbxkibvbhw.space CNAME .
 cpro.baidu.com CNAME .
+cpro.baidustatic.com CNAME .
 cpsumpgbxqhid.space CNAME .
 cpu-api.infor.pl CNAME .
 cpuzspopetlsg.space CNAME .
@@ -7023,7 +7015,38 @@ cwnqfrehigqdb.online CNAME .
 cwqtqpxudxicq.space CNAME .
 cwrlsjkvjdgff.site CNAME .
 cwtervpgcjuqa.website CNAME .
-d.kugou.com CNAME .
+cwtjduacwhhtj.site CNAME .
+cwuxquolwlfqp.site CNAME .
+cwvueoaakybnr.site CNAME .
+cwxdhubxeibwf.site CNAME .
+cwyvnvawjstrr.online CNAME .
+cxamupwxndqat.online CNAME .
+cxbzfolgfvvvn.online CNAME .
+cxcjuhbxaysnj.site CNAME .
+cxcsrgntzjolw.online CNAME .
+cxcvqnqzrnkpv.website CNAME .
+cxgznmgoawvwj.site CNAME .
+cxiegxvvbtmxo.space CNAME .
+cxivcfnaivzmj.online CNAME .
+cxmonbsehjanc.space CNAME .
+cxnp-protect.pro CNAME .
+cxofostbnjehi.website CNAME .
+cxrfns.gu-global.com CNAME .
+cxuhnlvxuxskw.online CNAME .
+cxussqzuffumy.site CNAME .
+cxutqsjbwtkth.website CNAME .
+cxvklaosnwgae.online CNAME .
+cxvuaexnqejex.site CNAME .
+cxyilbdocnfsi.space CNAME .
+cyachalbbofrw.online CNAME .
+cyaijllypnzgl.online CNAME .
+cyberfluxer.com CNAME .
+cybkit.com CNAME .
+cyclinghere.com CNAME .
+cyf9.destinia.cl CNAME .
+cyfyxkqvqfvfm.space CNAME .
+cygalwwkhhimv.space CNAME .
+cyhanjealyojs.space CNAME .
 d0.xcar.com.cn CNAME .
 d10ce3z4vbhcdd.cloudfront.net CNAME .
 d10zmv6hrj5cx1.cloudfront.net CNAME .
@@ -7479,7 +7502,6 @@ dimensions.mappy.com CNAME .
 direct-events-collector.spot.im CNAME .
 directaclick.com CNAME .
 directadvert.ru CNAME .
-dispatcher.upmc.uc.cn CNAME .
 displayvertising.com CNAME .
 distillery.wistia.com CNAME .
 districtm.ca CNAME .
@@ -7699,8 +7721,6 @@ getclicky.com CNAME .
 getjan.io CNAME .
 getrockerbox.com CNAME .
 gfgywe.abril.com.br CNAME .
-gjapplog.uc.cn CNAME .
-gjapplog.ucweb.com CNAME .
 gkfdkf.jdsports.co.uk CNAME .
 glamipixel.com CNAME .
 globalsiteanalytics.com CNAME .
@@ -7760,7 +7780,6 @@ hub.firestonecompleteautocare.com CNAME .
 hubcloud.com.cn CNAME .
 hubmetrics.samsclub.com CNAME .
 hueadsxml.com CNAME .
-huichuan.sm.cn CNAME .
 hvrhgt.the-sun.com CNAME .
 hvrhgt.thesun.co.uk CNAME .
 hzstats.com CNAME .
@@ -7856,7 +7875,6 @@ kropka.onet.pl CNAME .
 kta.etherscan.com CNAME .
 kuaikan.netmon.360safe.com CNAME .
 kueezrtb.com CNAME .
-kwmsg.kuwo.cn CNAME .
 kwvbhj.jcpenney.com CNAME .
 kwwvxn.uniqlo.com CNAME .
 kzsicw.focus.de CNAME .
@@ -7881,13 +7899,11 @@ log.cs.pp.cn CNAME .
 log.go.com CNAME .
 log.gs3.goo.ne.jp CNAME .
 log.iflytek.com CNAME .
-log.kuwo.cn CNAME .
 log.medietall.no CNAME .
 log.moji.com CNAME .
 log.olark.com CNAME .
 log.particlenews.com CNAME .
 log.snapdeal.com CNAME .
-log.web.kugou.com CNAME .
 logger.qingting.fm CNAME .
 logger.yp.ca CNAME .
 logging.api.intuit.com CNAME .
@@ -7947,7 +7963,6 @@ mc.yandex.com CNAME .
 mc.yango.com CNAME .
 mcdmetrics.aaa.com CNAME .
 mcs-va.tiktokv.com CNAME .
-mcs.zijieapi.com CNAME .
 mdhv.io CNAME .
 mdstats.info CNAME .
 measureadv.com CNAME .
@@ -8127,21 +8142,17 @@ mmotraffic.com CNAME .
 mnbvpo8trk.com CNAME .
 mng-ads.com CNAME .
 mnrddc.journeys.com CNAME .
-mo.kugou.com CNAME .
 moatads.com CNAME .
 mobads-logs.baidu.com CNAME .
 mobads.baidu.com CNAME .
 mobfox.com CNAME .
-mobilead.kuwo.cn CNAME .
 mobilefuse.com CNAME .
-mon.zijieapi.com CNAME .
 monetizer101.com CNAME .
 mookie1.com CNAME .
 motionspots.com CNAME .
 movad.net CNAME .
 mpnrs.com CNAME .
 mqvyob.vidaxl.fi CNAME .
-msg.mobile.kugou.com CNAME .
 msg.qy.net CNAME .
 mtburn.com CNAME .
 mtcs.nhk.or.jp CNAME .
@@ -8250,6 +8261,7 @@ ou.shutterfly.com CNAME .
 outbrain.com CNAME .
 p.raasnet.com CNAME .
 p0.raasnet.com CNAME .
+p3-ad-sign.byteimg.com CNAME .
 pabidding.io CNAME .
 pages-stats.rbl.ms CNAME .
 pageviews.tray.com.br CNAME .
@@ -8345,11 +8357,9 @@ pubmatic.com CNAME .
 pubmine.com CNAME .
 pubsrv.devhints.io CNAME .
 pubtrky.com CNAME .
-puds.ucweb.com CNAME .
 puhtml.com CNAME .
 pulse.delta.com CNAME .
 push.app.autohome.com.cn CNAME .
-push.mobile.kugou.com CNAME .
 push.zhangyue.com CNAME .
 pushnami.com CNAME .
 pushno.com CNAME .
@@ -8516,7 +8526,6 @@ sda.seesaa.jp CNAME .
 sdata.connection.com CNAME .
 sdata.wiley.com CNAME .
 sdc.allianz.de CNAME .
-sdn.kugou.com CNAME .
 sdsp.baidu.com CNAME .
 sdtagging.azureedge.net CNAME .
 seahorseinfo.agilent.com CNAME .
@@ -8545,7 +8554,6 @@ server.m.pp.cn CNAME .
 services.brightline.tv CNAME .
 seyfwl.interia.pl CNAME .
 sf-insights.io CNAME .
-sgali-mcs.byteoversea.com CNAME .
 share-server.com CNAME .
 sharethrough.com CNAME .
 shgcdn3.com CNAME .
@@ -9587,7 +9595,6 @@ theta.sogoucdn.com CNAME .
 thrtle.com CNAME .
 thunderhead.com CNAME .
 tidaltv.com CNAME .
-tj.kugou.com CNAME .
 tjk-njk.com CNAME .
 tk.abt.com CNAME .
 tk.airfrance.fr CNAME .
@@ -9629,7 +9636,6 @@ track.pricespider.com CNAME .
 track.robee.tech CNAME .
 track.saygames.io CNAME .
 track.searchiq.co CNAME .
-track.uc.cn CNAME .
 tracker-api.my.com CNAME .
 tracker.azet.sk CNAME .
 tracker.bt.uol.com.br CNAME .
@@ -9699,10 +9705,7 @@ tybfxw.puma.com CNAME .
 tynt.com CNAME .
 u.uc123.com CNAME .
 ub-analytics.com CNAME .
-uc.ucweb.com CNAME .
 ucounter.ucoz.net CNAME .
-ucsec.ucweb.com CNAME .
-ucsec1.ucweb.com CNAME .
 udmserve.net CNAME .
 udrvvx.kabum.com.br CNAME .
 ufpcdn.com CNAME .
@@ -9791,7 +9794,6 @@ w7.berlin.de CNAME .
 w88.go.com CNAME .
 wa.childrensplace.com CNAME .
 wa.gtimg.com CNAME .
-wa.kuwo.cn CNAME .
 wa.nxp.com CNAME .
 wafvertizing.crazygames.com CNAME .
 wahoha.com CNAME .
@@ -9827,7 +9829,6 @@ widgets.tree.com CNAME .
 wigetmedia.com CNAME .
 wizaly.com CNAME .
 wmxuba.aldoshoes.com CNAME .
-woodpecker.uc.cn CNAME .
 workdeadlinededicate.com CNAME .
 worldmtcs.nhk.jp CNAME .
 wowanalytics.co.uk CNAME .

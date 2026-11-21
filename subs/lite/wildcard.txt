@@ -1,4 +1,4 @@
-# NoAS 通配（20261121-1caf929c）
+# NoAS 通配（20261121-9f0d5f27）
 *.0017c6c37c.com
 *.00a39e6dfd.com
 *.01168nl.com
@@ -2343,7 +2343,6 @@
 *.ads.maoyan.com
 *.ads.mgtv.com
 *.ads.scored.co
-*.ads.service.kugou.com
 *.ads.sportradar.com
 *.ads.talksport.com
 *.ads.tiktok.com
@@ -2392,7 +2391,6 @@
 *.adserving.unibet.com
 *.adsessionserv.com
 *.adsfac.net
-*.adsfs.oppomobile.com
 *.adsgateway.net
 *.adshare.toutiao.com
 *.adsiduous.com
@@ -2540,7 +2538,6 @@
 *.adxbid.info
 *.adxhand1.name
 *.adxion.com
-*.adxlog-adnet.vivo.com.cn
 *.adxnexus.com
 *.adxpansion.com
 *.adxpartner.com
@@ -3476,7 +3473,6 @@
 *.api-access.pangolin-sdk-toutiao1.com
 *.api.digitalpiloten.org
 *.api.elliehuxtable.com
-*.api.mp.uc.cn
 *.api.pingstart.com
 *.api.sae.systems
 *.api.shanghailingye.cn
@@ -3514,9 +3510,6 @@
 *.applicationassistantpal.com
 *.applicationsighgolden.com
 *.applierlignes.com
-*.applog.uc.cn
-*.applog.ucdns.uc.cn
-*.applog.zijieapi.com
 *.applogapi.autohome.com.cn
 *.applovin.com
 *.apply.maxlend.com
@@ -4152,7 +4145,6 @@
 *.bagsurprise.com
 *.baguettefactornervous.com
 *.bahpartridge.com
-*.baidustatic.com
 *.bakersequaled.com
 *.bakingbeheld.com
 *.bakteso.ru
@@ -6110,7 +6102,6 @@
 *.cmorautniwdao.space
 *.cmptphyupeflf.site
 *.cmrdr.com
-*.cms.ucweb.com
 *.cmtrk.com
 *.cnabusictviht.site
 *.cname-aa.hatarakunavi.net
@@ -6625,6 +6616,7 @@
 *.cpmstar.com
 *.cpnsbxkibvbhw.space
 *.cpro.baidu.com
+*.cpro.baidustatic.com
 *.cpsumpgbxqhid.space
 *.cpu-api.infor.pl
 *.cpuzspopetlsg.space
@@ -7022,7 +7014,38 @@
 *.cwqtqpxudxicq.space
 *.cwrlsjkvjdgff.site
 *.cwtervpgcjuqa.website
-*.d.kugou.com
+*.cwtjduacwhhtj.site
+*.cwuxquolwlfqp.site
+*.cwvueoaakybnr.site
+*.cwxdhubxeibwf.site
+*.cwyvnvawjstrr.online
+*.cxamupwxndqat.online
+*.cxbzfolgfvvvn.online
+*.cxcjuhbxaysnj.site
+*.cxcsrgntzjolw.online
+*.cxcvqnqzrnkpv.website
+*.cxgznmgoawvwj.site
+*.cxiegxvvbtmxo.space
+*.cxivcfnaivzmj.online
+*.cxmonbsehjanc.space
+*.cxnp-protect.pro
+*.cxofostbnjehi.website
+*.cxrfns.gu-global.com
+*.cxuhnlvxuxskw.online
+*.cxussqzuffumy.site
+*.cxutqsjbwtkth.website
+*.cxvklaosnwgae.online
+*.cxvuaexnqejex.site
+*.cxyilbdocnfsi.space
+*.cyachalbbofrw.online
+*.cyaijllypnzgl.online
+*.cyberfluxer.com
+*.cybkit.com
+*.cyclinghere.com
+*.cyf9.destinia.cl
+*.cyfyxkqvqfvfm.space
+*.cygalwwkhhimv.space
+*.cyhanjealyojs.space
 *.d0.xcar.com.cn
 *.d10ce3z4vbhcdd.cloudfront.net
 *.d10zmv6hrj5cx1.cloudfront.net
@@ -7478,7 +7501,6 @@
 *.direct-events-collector.spot.im
 *.directaclick.com
 *.directadvert.ru
-*.dispatcher.upmc.uc.cn
 *.displayvertising.com
 *.distillery.wistia.com
 *.districtm.ca
@@ -7698,8 +7720,6 @@
 *.getjan.io
 *.getrockerbox.com
 *.gfgywe.abril.com.br
-*.gjapplog.uc.cn
-*.gjapplog.ucweb.com
 *.gkfdkf.jdsports.co.uk
 *.glamipixel.com
 *.globalsiteanalytics.com
@@ -7759,7 +7779,6 @@
 *.hubcloud.com.cn
 *.hubmetrics.samsclub.com
 *.hueadsxml.com
-*.huichuan.sm.cn
 *.hvrhgt.the-sun.com
 *.hvrhgt.thesun.co.uk
 *.hzstats.com
@@ -7855,7 +7874,6 @@
 *.kta.etherscan.com
 *.kuaikan.netmon.360safe.com
 *.kueezrtb.com
-*.kwmsg.kuwo.cn
 *.kwvbhj.jcpenney.com
 *.kwwvxn.uniqlo.com
 *.kzsicw.focus.de
@@ -7880,13 +7898,11 @@
 *.log.go.com
 *.log.gs3.goo.ne.jp
 *.log.iflytek.com
-*.log.kuwo.cn
 *.log.medietall.no
 *.log.moji.com
 *.log.olark.com
 *.log.particlenews.com
 *.log.snapdeal.com
-*.log.web.kugou.com
 *.logger.qingting.fm
 *.logger.yp.ca
 *.logging.api.intuit.com
@@ -7946,7 +7962,6 @@
 *.mc.yango.com
 *.mcdmetrics.aaa.com
 *.mcs-va.tiktokv.com
-*.mcs.zijieapi.com
 *.mdhv.io
 *.mdstats.info
 *.measureadv.com
@@ -8126,21 +8141,17 @@
 *.mnbvpo8trk.com
 *.mng-ads.com
 *.mnrddc.journeys.com
-*.mo.kugou.com
 *.moatads.com
 *.mobads-logs.baidu.com
 *.mobads.baidu.com
 *.mobfox.com
-*.mobilead.kuwo.cn
 *.mobilefuse.com
-*.mon.zijieapi.com
 *.monetizer101.com
 *.mookie1.com
 *.motionspots.com
 *.movad.net
 *.mpnrs.com
 *.mqvyob.vidaxl.fi
-*.msg.mobile.kugou.com
 *.msg.qy.net
 *.mtburn.com
 *.mtcs.nhk.or.jp
@@ -8249,6 +8260,7 @@
 *.outbrain.com
 *.p.raasnet.com
 *.p0.raasnet.com
+*.p3-ad-sign.byteimg.com
 *.pabidding.io
 *.pages-stats.rbl.ms
 *.pageviews.tray.com.br
@@ -8344,11 +8356,9 @@
 *.pubmine.com
 *.pubsrv.devhints.io
 *.pubtrky.com
-*.puds.ucweb.com
 *.puhtml.com
 *.pulse.delta.com
 *.push.app.autohome.com.cn
-*.push.mobile.kugou.com
 *.push.zhangyue.com
 *.pushnami.com
 *.pushno.com
@@ -8515,7 +8525,6 @@
 *.sdata.connection.com
 *.sdata.wiley.com
 *.sdc.allianz.de
-*.sdn.kugou.com
 *.sdsp.baidu.com
 *.sdtagging.azureedge.net
 *.seahorseinfo.agilent.com
@@ -8544,7 +8553,6 @@
 *.services.brightline.tv
 *.seyfwl.interia.pl
 *.sf-insights.io
-*.sgali-mcs.byteoversea.com
 *.share-server.com
 *.sharethrough.com
 *.shgcdn3.com
@@ -9586,7 +9594,6 @@
 *.thrtle.com
 *.thunderhead.com
 *.tidaltv.com
-*.tj.kugou.com
 *.tjk-njk.com
 *.tk.abt.com
 *.tk.airfrance.fr
@@ -9628,7 +9635,6 @@
 *.track.robee.tech
 *.track.saygames.io
 *.track.searchiq.co
-*.track.uc.cn
 *.tracker-api.my.com
 *.tracker.azet.sk
 *.tracker.bt.uol.com.br
@@ -9698,10 +9704,7 @@
 *.tynt.com
 *.u.uc123.com
 *.ub-analytics.com
-*.uc.ucweb.com
 *.ucounter.ucoz.net
-*.ucsec.ucweb.com
-*.ucsec1.ucweb.com
 *.udmserve.net
 *.udrvvx.kabum.com.br
 *.ufpcdn.com
@@ -9790,7 +9793,6 @@
 *.w88.go.com
 *.wa.childrensplace.com
 *.wa.gtimg.com
-*.wa.kuwo.cn
 *.wa.nxp.com
 *.wafvertizing.crazygames.com
 *.wahoha.com
@@ -9826,7 +9828,6 @@
 *.wigetmedia.com
 *.wizaly.com
 *.wmxuba.aldoshoes.com
-*.woodpecker.uc.cn
 *.workdeadlinededicate.com
 *.worldmtcs.nhk.jp
 *.wowanalytics.co.uk
