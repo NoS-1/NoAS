@@ -1,31 +1,69 @@
-name: DoH 预热
+name: DoH 预热与延迟采样
 
-# CF Worker 的 isolate 空闲一段时间会被回收，回收后再来一个请求要重新加载 4MB 脚本，
-# 首包从 ~30ms 变成几百毫秒。每 10 分钟打一次空查询，把 isolate 维持热态。
-# 成本：每天 144 次请求，远低于 Workers 免费档 10 万/天的额度。
+# 两个作用：
+# 1. CF Worker 的 isolate 空闲会被回收，回收后再来请求要重新加载 ~4.7MB 脚本，
+#    首包从几十毫秒变成几百毫秒。每 5 分钟打一次空查询维持热态（288 次/天，额度可忽略）。
+# 2. 顺手做真实延迟采样：4 个随机子域测"走上游"的耗时，5 次同名查询测"缓存路径"耗时，
+#    并把 P50 打出来。优化有没有效，看这两个数就够了。
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: warm
+  cancel-in-progress: true
 
 jobs:
   warm:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - name: 打一次自建 DoH（example.com A）
+      - name: 预热 + 延迟采样
         run: |
           python3 - <<'PY'
-          import struct, urllib.request, time
-          q = struct.pack(">HHHHHH", 0x1234, 0x0100, 1, 0, 0, 0) + b"\x07example\x03com\x00" + struct.pack(">HH", 1, 1)
-          req = urllib.request.Request("https://noas-doh.199999510.workers.dev/dns-query", data=q,
-              headers={"Content-Type": "application/dns-message", "Accept": "application/dns-message"}, method="POST")
-          t = time.perf_counter()
-          try:
-              r = urllib.request.urlopen(req, timeout=10)
-              r.read(16)
-              print("预热成功 %.0fms http=%d" % ((time.perf_counter() - t) * 1000, r.status))
-          except Exception as e:
-              print("预热失败（不阻塞）：%s" % e)
+          import struct, urllib.request, statistics, time, random
+
+          URL = "https://noas-doh.199999510.workers.dev/dns-query"
+
+          def query(name):
+              labels = [l for l in name.split(".") if l]
+              b = struct.pack(">HHHHHH", random.randint(1, 65535), 0x0100, 1, 0, 0, 0)
+              b += b"".join(struct.pack(">B", len(l)) + l.encode() for l in labels)
+              b += struct.pack(">HH", 1, 1)
+              req = urllib.request.Request(URL, data=b, method="POST",
+                  headers={"Content-Type": "application/dns-message",
+                           "Accept": "application/dns-message"})
+              t = time.perf_counter()
+              urllib.request.urlopen(req, timeout=10).read(16)
+              return (time.perf_counter() - t) * 1000
+
+          def sample(fn, n):
+              out = []
+              for _ in range(n):
+                  try:
+                      out.append(fn())
+                  except Exception as e:
+                      print("采样失败（不阻塞）：%s" % e)
+              return out
+
+          # 随机子域 → 必然未命中缓存，测的是"上游往返 + 规则匹配"的真实耗时
+          stamp = int(time.time() * 1000) % 100000
+          up = sample(lambda: query("w%d-%d.example.com" % (random.randint(1, 999), stamp)), 4)
+          # 同名连查 → 第一次走上游，后面走缓存，测的是"纯本地应答"耗时
+          hit = sample(lambda: query("example.com"), 5)
+
+          if up:
+              print("上游路径 ms：%s ／ P50=%.0f" % ([round(x) for x in up], statistics.median(up)))
+          if hit:
+              warm = hit[1:] or hit
+              print("缓存路径 ms：%s ／ P50=%.0f" % ([round(x) for x in hit], statistics.median(warm)))
+          if up and statistics.median(up) > 300:
+              print("⚠ 上游 P50 超过 300ms，检查三家 DoH 是否被限流")
+          if hit and statistics.median(hit[1:] or hit) > 60:
+              print("⚠ 缓存 P50 超过 60ms，检查 Cache API 是否失效")
           PY
