@@ -144,7 +144,13 @@ def main():
     os.makedirs(os.path.dirname(STATE), exist_ok=True)
     # 只在全部检查通过时推进基线，否则沿用旧基线，避免"污染值被记成新常态"
     if not problems:
-        open(STATE, "w", encoding="utf-8").write(json.dumps(counts, ensure_ascii=False, indent=1) + "\n")
+        # 当天某个源抓取失败（缓存缺失）时不能把它的旧基线一起丢掉：
+        # 先保留仍在源清单里的历史值，再用本轮实测覆盖。只删除已从 sources.tsv 下线的源。
+        names = {s["name"] for s in srcs}
+        merged = {k: v for k, v in prev.items() if k in names}
+        merged.update(counts)
+        open(STATE, "w", encoding="utf-8").write(
+            json.dumps({k: merged[k] for k in sorted(merged)}, ensure_ascii=False, indent=1) + "\n")
 
     for w in warns:
         print(f"WARN {w}")

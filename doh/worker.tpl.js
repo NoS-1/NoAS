@@ -1087,7 +1087,8 @@ async function handle(request, env, ctx) {
   if (!skipRules) await loadHot(env);
   if (!skipRules) await loadTier(env, tier);   // mid/full 走 KV，冷启动只读一次
   if (!skipRules && blocked(name, tier)) {
-    if (!statsOff) await logHit(env, "block", name, tier, "");
+    // 统计用 waitUntil 挂到响应之后：写 AE 不该占用这次请求的 CPU（p99 只有 10ms 预算）
+    if (!statsOff) { const lp = logHit(env, "block", name, tier, ""); if (ctx && ctx.waitUntil) ctx.waitUntil(lp); else await lp; }
     return new Response(blockedResponse(bytes, qtype, end, mode), {
       headers: { "content-type": "application/dns-message", "x-noas": "blocked", "x-noas-ver": VERSION },
     });
@@ -1127,14 +1128,16 @@ async function handle(request, env, ctx) {
     const t = await cnameDeep(buf, name, qtype, tier, ip, edns,
       url.searchParams.get("deep") === "1" ? 4 : 3);
     if (t) {
-      if (!statsOff) await logHit(env, "cname", name, tier, t);
+      if (!statsOff) { const lp = logHit(env, "cname", name, tier, t); if (ctx && ctx.waitUntil) ctx.waitUntil(lp); else await lp; }
       return new Response(blockedResponse(bytes, qtype, end, mode), {
         headers: { "content-type": "application/dns-message", "x-noas": "blocked-cname",
                    "x-noas-target": t, "x-noas-ver": VERSION },
       });
     }
     if (!statsOff && Math.random() < (env && env.__PASS_SAMPLE ? env.__PASS_SAMPLE : PASS_SAMPLE)) {
-      await logHit(env, "pass", name, tier, "");
+      // 放行样本要算 SHA-256，放到 waitUntil 里做，避免拖慢 p99
+      const lp = logHit(env, "pass", name, tier, "");
+      if (ctx && ctx.waitUntil) ctx.waitUntil(lp); else await lp;
     }   // 放行只留 5% 样本，省 AE 点数
   }
   // TTL 钳制（60s ~ 3600s）：压掉 5s 的缓存风暴与 7 天的 IP 漂移

@@ -298,7 +298,8 @@ export async function onRequest(context) {
   }
 
   const p = await pickTier(request, url, pathTier);
-  if (p.persist && waitUntil) {
+  const statsOff = url.searchParams.get("stats") === "off";
+  if (p.persist && waitUntil && !statsOff) {
     try { waitUntil(persistTier(request, p.tier, env).catch(() => {})); } catch (x) {}
   }
 
