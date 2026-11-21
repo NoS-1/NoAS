@@ -30,11 +30,11 @@
    "dns"
   ],
   "created_at": "2026-11-18T09:45:37Z",
-  "updated_at": "2026-11-21T04:34:18Z",
+  "updated_at": "2026-11-21T05:19:49Z",
   "deleted_at": null,
   "identity": "",
   "device_posture": "",
-  "version": 160,
+  "version": 161,
   "sharable": true,
   "traffic": "any(dns.domains[*] in $39a3da32-bfc9-4a3a-965e-77008ff2bf7c) or any(dns.domains[*] in $f1349cf3-d8b8-42d8-a70b-2ed5df80680e) or any(dns.domains[*] in $8d82c4ee-c8ab-4dc9-afdb-d6bfcdeb81a6) or any(dns.domains[*] in $4db71ba1-0874-43e5-88f0-652cc7e370aa) or any(dns.domains[*] in $226fd2ff-e5fb-4740-b5f8-4db40659e4a4) or any(dns.domains[*] in $9f3f5653-fe1c-4cd4-8222-a73109f94572) or any(dns.domains[*] in $bd55d285-3708-4751-a2c5-ba59e4282a34) or any(dns.domains[*] in $b18373f3-8242-41dc-9788-588a1b165b7e) or any(dns.domains[*] in $73a00906-38b4-4bf8-97c0-a8311f5f2f94) or any(dns.domains[*] in $147650fb-619c-49d3-9c58-5897057be352)",
   "rule_settings": {
@@ -54,11 +54,11 @@
    "dns"
   ],
   "created_at": "2026-11-18T09:46:36Z",
-  "updated_at": "2026-11-21T04:34:24Z",
+  "updated_at": "2026-11-21T05:19:55Z",
   "deleted_at": null,
   "identity": "",
   "device_posture": "",
-  "version": 130,
+  "version": 131,
   "sharable": true,
   "traffic": "any(dns.domains[*] in $02e58192-9bf3-400a-b877-a0a097576921) or any(dns.domains[*] in $8e3ae9a1-0383-40c9-84c8-ed0862dad0c5) or any(dns.domains[*] in $997e6c87-4d9c-46c6-9b45-5323518ef99c) or any(dns.domains[*] in $d9be2edd-3dd4-46bd-bdf6-b2da63a22729) or any(dns.domains[*] in $91baf9ed-d0c8-41a5-ba9a-68a6dd758b4c) or any(dns.domains[*] in $a4c31f32-a8af-4353-9110-09bf3044bfcf) or any(dns.domains[*] in $8155af5f-7c9d-465e-bb3b-e0e6cacd4f4a) or any(dns.domains[*] in $4088c916-f853-4272-a845-418360d82418) or any(dns.domains[*] in $3731dd64-1538-4063-855d-592a897ed882) or any(dns.domains[*] in $46fd429c-3169-4031-b542-9fcf9f3e95f2) or any(dns.domains[*] in $544fe777-8d11-47cf-b75e-d428634c9a02) or any(dns.domains[*] in $b3c594e8-20b7-47c6-8f19-b7e6b81cb428) or any(dns.domains[*] in $5896e992-289b-4bb9-badf-23fb81dd0494) or any(dns.domains[*] in $2aa206b2-6b53-4a42-8423-08174486af1d) or any(dns.domains[*] in $5eb6e47d-92bc-4bb0-979d-5d86796492ec) or any(dns.domains[*] in $61bbe61b-b2bc-443d-9a27-44acc739ddd6) or any(dns.domains[*] in $df050034-9118-4fd6-a5eb-523bede6cf78) or any(dns.domains[*] in $0bee2347-0161-4e07-8c52-e9e923e4dcc9) or any(dns.domains[*] in $83a7610a-20dd-4896-b8fe-7b692d48c0df) or any(dns.domains[*] in $6f9db87c-56d6-4d2c-a0a1-324343a40b73)",
   "rule_settings": {
@@ -78,11 +78,11 @@
    "dns"
   ],
   "created_at": "2026-11-18T09:46:36Z",
-  "updated_at": "2026-11-21T04:34:34Z",
+  "updated_at": "2026-11-21T05:20:03Z",
   "deleted_at": null,
   "identity": "",
   "device_posture": "",
-  "version": 130,
+  "version": 131,
   "sharable": true,
   "traffic": "any(dns.domains[*] in $2e1a7d55-41c4-402c-a195-7aa5546ec530) or any(dns.domains[*] in $293e406a-282e-41a3-bf3b-a2855ad49909) or any(dns.domains[*] in $9b478fc4-26ef-4a9b-9658-89cd9594fce2) or any(dns.domains[*] in $d0aaae0c-726c-4b2f-b8f2-45ce28cd6a48) or any(dns.domains[*] in $b0b611f3-f46c-445a-80f1-0d1e369f95fd) or any(dns.domains[*] in $5b734de5-9228-491a-be3d-5d990105d783) or any(dns.domains[*] in $9bdd57c7-b16d-4b51-b36f-c5b4e3772873) or any(dns.domains[*] in $5cf5a325-4674-4b0b-92e4-b2e73e51f7cf) or any(dns.domains[*] in $8ff4768d-d641-4493-90c3-770ecad42291) or any(dns.domains[*] in $a9e45d5d-5a40-4265-b774-560b88032ba9) or any(dns.domains[*] in $48574380-877a-413d-8578-1f2cc3f69f3d) or any(dns.domains[*] in $fdd36a1b-6178-4433-b7f8-c0ee4b32d2b8) or any(dns.domains[*] in $6c8399dc-92f4-4b70-936c-1828f28a2f73) or any(dns.domains[*] in $5932d763-6fe1-434f-bb08-5ca7ecab3e41) or any(dns.domains[*] in $6481be60-c26b-49ed-83f8-a66f3253c890) or any(dns.domains[*] in $bab62f09-e67c-4dcd-bbc4-d9f35d16aab7) or any(dns.domains[*] in $57aa335e-fdf6-4318-b45e-e6fdff73a31c) or any(dns.domains[*] in $572921bf-30e7-4dfe-a382-99a1a3d7fb82) or any(dns.domains[*] in $1f420781-ff90-4885-925c-9bbcddbff305) or any(dns.domains[*] in $2a6c6bc9-162a-4d8a-84a1-5a2521b50bfa) or any(dns.domains[*] in $ff518b4f-f8f8-4da4-b70e-6714e9b56b2d) or any(dns.domains[*] in $ec14fbee-c6c9-4a95-a252-1ba85fdb4c1c) or any(dns.domains[*] in $27b0e028-e51f-4886-83a9-d56f0292f33f) or any(dns.domains[*] in $d9915356-7233-4133-b432-eb673cc94c90) or any(dns.domains[*] in $2648c074-8bd8-4476-b8aa-1fbf305f3324) or any(dns.domains[*] in $855345e7-d691-4aa5-b16f-d9b8733c307d) or any(dns.domains[*] in $f3e330ac-1078-4c55-910f-89b9150ce75c) or any(dns.domains[*] in $f3372772-36b9-47f9-ba10-1f2306dc56f9) or any(dns.domains[*] in $a0bf886d-c604-40ae-bd3c-9c628eb997df) or any(dns.domains[*] in $2adb0339-f671-4673-befb-b7042fd4d3ba)",
   "rule_settings": {
