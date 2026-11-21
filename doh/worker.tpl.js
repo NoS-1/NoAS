@@ -92,7 +92,7 @@ const CANARY_DOMAINS = ["doubleclick.net", "googleadservices.com", "googletagman
 const CACHE_BASE = "https://noas-cache.internal/";
 // 放行应答缓存双层：fresh 300s 内直接命中；stale 24h 内先返旧值、后台刷新。
 // 缓存命中不写 AE（否则额度会被高频命中打爆），只在 /health 里给个内存计数。
-const CACHE_FRESH_S = 300;
+const CACHE_FRESH_S = 600;
 const CACHE_STALE_S = 86400;
 
 // ── Analytics Engine（可选绑定 AE）────────────────────────────────────────
@@ -349,10 +349,27 @@ function blockedResponse(query, qtype, end) {
 const HEDGE_MS = [0, 150, 450];
 const CF_UP = "https://cloudflare-dns.com/dns-query";
 const CN_TLDS = new Set(["cn"]);
+// 国内大站多是 .com，但它们的 CDN 靠 GeoDNS 调度：从境外递归会拿到境外节点，
+// 用户访问反而更慢。这些根域一律走阿里（国内递归出口，答案更准），
+// 解析多等几百 ms只有一次（随后缓存 10 分钟），换来每次访问都快，这个账是划算的。
+const CN_HINT = new Set([
+  "baidu.com", "qq.com", "taobao.com", "tmall.com", "jd.com", "weibo.com", "bilibili.com",
+  "iqiyi.com", "youku.com", "zhihu.com", "douyin.com", "alipay.com", "alipay.cn",
+  "sina.com.cn", "sohu.com", "163.com", "meituan.com", "ctrip.com", "58.com",
+  "kuaishou.com", "xiaohongshu.com", "toutiao.com", "huawei.com", "xiaomi.com", "mi.com",
+  "tencent.com", "qidian.com", "douban.com", "126.com", "youku.com",
+]);
+
+function rootOfName(name) {
+  const p = (name || "").split(".");
+  return p.length > 2 ? p.slice(-2).join(".") : (name || "");
+}
 
 function preference(name) {
   const tld = (name || "").split(".").pop() || "";
-  if (CN_TLDS.has(tld)) return [UPSTREAM[0], CF_UP, UPSTREAM[2]];
+  if (CN_TLDS.has(tld) || CN_HINT.has(rootOfName(name))) {
+    return [UPSTREAM[0], CF_UP, UPSTREAM[2]];
+  }
   return [CF_UP, UPSTREAM[0], UPSTREAM[2]];
 }
 
