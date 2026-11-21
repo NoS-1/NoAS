@@ -96,7 +96,7 @@ const CACHE_BASE = "https://noas-cache.internal/";
 // 放行应答缓存双层：fresh 300s 内直接命中；stale 24h 内先返旧值、后台刷新。
 // 缓存命中不写 AE（否则额度会被高频命中打爆），只在 /health 里给个内存计数。
 const CACHE_FRESH_S = 600;
-const PASS_SAMPLE = 0.05;   // 放行样本比例（测试可用 env.PASS_SAMPLE 覆盖为 1 验证匿名化）
+const PASS_SAMPLE = 0.05;   // 放行样本比例（测试用 env.__PASS_SAMPLE 覆盖为 1 验证匿名化，生产不暴露同名变量）
 const CACHE_STALE_S = 86400;
 
 // ── Analytics Engine（可选绑定 AE）────────────────────────────────────────
@@ -1133,7 +1133,7 @@ async function handle(request, env, ctx) {
                    "x-noas-target": t, "x-noas-ver": VERSION },
       });
     }
-    if (!statsOff && Math.random() < (env && env.PASS_SAMPLE ? env.PASS_SAMPLE : PASS_SAMPLE)) {
+    if (!statsOff && Math.random() < (env && env.__PASS_SAMPLE ? env.__PASS_SAMPLE : PASS_SAMPLE)) {
       await logHit(env, "pass", name, tier, "");
     }   // 放行只留 5% 样本，省 AE 点数
   }

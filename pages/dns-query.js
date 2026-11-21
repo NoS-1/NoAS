@@ -161,15 +161,16 @@ async function persistTier(request, tier, env) {
   if (!env || !env.STATS) return;
   if (isPreview(request)) return;   // 预览环境与生产共用同一 KV，写入会污染生产统计：预览一律只读
   const key = "v2:t:" + ipHash(request) + ":" + uaHash(request);
-  if (TIER_MEM.get(key) && TIER_MEM.get(key).tier === tier) {
-    // isolate 内已记，只有首次或改档才写
-    if (TIER_MEM.get(key).written) return;
-  }
+  const memo = TIER_MEM.get(key);
+  if (memo && memo.tier === tier && memo.written) return;   // 本 isolate 内已确认，不再动 KV
   try {
-    await env.STATS.put(key, tier, { expirationTtl: 259200 });
-    const e = TIER_MEM.get(key) || {};
-    TIER_MEM.set(key, { ...e, tier, at: Date.now(), written: true });
-  } catch (x) { /* 写失败不影响本次判定 */ }
+    // KV 写额度只有 1000/天，读有 10 万/天：先读再决定，值没变就不写
+    const cur = await env.STATS.get(key);
+    if (cur !== String(tier)) {
+      await env.STATS.put(key, String(tier), { expirationTtl: 259200 });
+    }
+    TIER_MEM.set(key, { tier, at: Date.now(), written: true });
+  } catch (x) { /* 读写失败不影响本次判定 */ }
 }
 
 function parseQuery(bytes) {
@@ -328,7 +329,7 @@ export async function onRequest(context) {
     const mem = memGet(p.tier + "|" + q.name + "|" + q.qtype + "|" + netKey(cip));
     if (mem) return new Response(mem, {
       headers: { "content-type": "application/dns-message", "x-noas": "cache-hit",
-                 "x-noas-path": "pages-mem", "x-noas-ver": "lite", "x-noas-tier": p.tier },
+                 "x-noas-path": "pages-mem", "x-noas-ver": String(p.tier), "x-noas-tier": p.tier },
     });
   }
 
@@ -349,7 +350,7 @@ export async function onRequest(context) {
     if (k === "tier" || k === "dns") continue;   // dns 走 POST body，避免参数重编码
     fwd.searchParams.set(k, v);
   }
-  fwd.searchParams.set("tier", "2");
+  fwd.searchParams.set("tier", String(p.tier));   // 档位必须跟着请求走，写死 2 会让 full 用户退化成 mid
   const res = await fetch(fwd.toString(), {
     method: "POST",                             // 恒用 POST 转发，报文不走查询串
     headers: {
