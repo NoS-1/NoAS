@@ -1,0 +1,163 @@
+[
+ {
+  "id": "8d7c1d18-a22e-415b-8b4b-87f9d0309ea4",
+  "name": "NoAS 白名单放行",
+  "description": "白名单先放行",
+  "precedence": 1,
+  "enabled": true,
+  "action": "allow",
+  "filters": [
+   "dns"
+  ],
+  "created_at": "2026-11-18T09:46:35Z",
+  "updated_at": "2026-11-20T06:57:44Z",
+  "deleted_at": null,
+  "identity": "",
+  "device_posture": "",
+  "version": 127,
+  "sharable": true,
+  "traffic": "any(dns.domains[*] in $6b96dbe4-9c52-413b-974d-eb56007e614b)",
+  "rule_settings": {}
+ },
+ {
+  "id": "988dcea2-141c-49e8-92cf-5c7c8e0ba6cd",
+  "name": "NoAS 小档拦截",
+  "description": "第 1 档：核心规则，常开",
+  "precedence": 2,
+  "enabled": true,
+  "action": "override",
+  "filters": [
+   "dns"
+  ],
+  "created_at": "2026-11-18T09:45:37Z",
+  "updated_at": "2026-11-20T06:57:45Z",
+  "deleted_at": null,
+  "identity": "",
+  "device_posture": "",
+  "version": 128,
+  "sharable": true,
+  "traffic": "any(dns.domains[*] in $7fda177b-d042-45b2-9feb-fb6f17383f18) or any(dns.domains[*] in $52bedf76-d1b1-49ca-b3cb-a443c23e49c3) or any(dns.domains[*] in $de7cbc33-56c3-47ec-ab6c-e9b51cd2b8dc)",
+  "rule_settings": {
+   "override_ips": [
+    "0.0.0.0"
+   ]
+  }
+ },
+ {
+  "id": "a313453a-3bd8-4efb-b357-b743779e41d9",
+  "name": "NoAS 中档拦截",
+  "description": "第 2 档：国内常见广告域（与 DoH 内联对齐，常开）",
+  "precedence": 3,
+  "enabled": true,
+  "action": "override",
+  "filters": [
+   "dns"
+  ],
+  "created_at": "2026-11-18T09:46:36Z",
+  "updated_at": "2026-11-20T06:57:45Z",
+  "deleted_at": null,
+  "identity": "",
+  "device_posture": "",
+  "version": 127,
+  "sharable": true,
+  "traffic": "any(dns.domains[*] in $e277c415-6fef-45a4-8363-158d6a069577) or any(dns.domains[*] in $fdabdd90-1e8c-4b4b-aeb6-00ad80234e4b) or any(dns.domains[*] in $d5e66212-56af-4fc0-a541-98c9c6536f96) or any(dns.domains[*] in $2063b9e0-4357-4f6d-a547-7c7cb794681e) or any(dns.domains[*] in $792c727e-48eb-43a4-ac14-23aab097ea0a) or any(dns.domains[*] in $fce7ff46-2c0a-4d01-b56a-8487f59a1e26) or any(dns.domains[*] in $e9403456-1b0f-41e5-a694-25f78f5c63ad) or any(dns.domains[*] in $506ab254-e85b-46d6-a3a1-86e82f6b259e) or any(dns.domains[*] in $7464eaff-42a8-49fa-a72a-b0c781bae159) or any(dns.domains[*] in $56e6c9f7-603e-4060-abe8-d5f09022c0e0) or any(dns.domains[*] in $2bb1ce69-101c-4a88-9820-345665aeb0a1) or any(dns.domains[*] in $b989e4b0-7ef4-4fbd-b696-2aa3602916eb) or any(dns.domains[*] in $4392a28a-65e6-46cb-8521-cc66b8a4e9f6) or any(dns.domains[*] in $e472b9b4-d134-44b6-ba95-4ff78cb9bb2d) or any(dns.domains[*] in $01ea5daa-dd84-48d3-99a7-5f44f3c091dc) or any(dns.domains[*] in $0e9f958f-420d-498c-a5a6-d802a9a94c72) or any(dns.domains[*] in $b23f3eb3-e1b2-4bca-992d-4c751379cac7) or any(dns.domains[*] in $a0fa3517-33d1-4afe-a971-b5bef39951db) or any(dns.domains[*] in $b2e940db-c9a7-490c-9d9d-842d9aed17d3) or any(dns.domains[*] in $c2fa4832-331c-4fa8-9651-c571d345867b) or any(dns.domains[*] in $e1f94ced-e16b-4ad0-9496-4771c64a4c46) or any(dns.domains[*] in $a0286e0e-f45e-4a56-8d2a-92c2569b630e) or any(dns.domains[*] in $d85dff53-1828-4f68-bdc6-beede44809eb) or any(dns.domains[*] in $93d1d044-1911-47c8-b114-215fe89b5933) or any(dns.domains[*] in $428ce3a2-5288-4a31-a07d-a4979277e37f) or any(dns.domains[*] in $2bc73b5c-765c-4d7c-b5f1-dd1da4145e0f) or any(dns.domains[*] in $8df6e7b7-6bbf-4ffd-840a-873f01fde1a6) or any(dns.domains[*] in $63a8a0f3-bc93-41f4-adab-598d10dac34b) or any(dns.domains[*] in $fc5c3e74-a2df-4b79-9b62-cc81555c0c0a) or any(dns.domains[*] in $5e19e268-444d-42d7-a2fe-b90ed5c2d1f1)",
+  "rule_settings": {
+   "override_ips": [
+    "0.0.0.0"
+   ]
+  }
+ },
+ {
+  "id": "365804ab-5dfd-401c-b0ea-548f82683eab",
+  "name": "NoAS 大档拦截",
+  "description": "第 3 档：全量威胁域",
+  "precedence": 4,
+  "enabled": true,
+  "action": "override",
+  "filters": [
+   "dns"
+  ],
+  "created_at": "2026-11-18T09:46:36Z",
+  "updated_at": "2026-11-20T06:57:45Z",
+  "deleted_at": null,
+  "identity": "",
+  "device_posture": "",
+  "version": 127,
+  "sharable": true,
+  "traffic": "any(dns.domains[*] in $b51a3771-c824-4cc1-9282-57ba09c10a75) or any(dns.domains[*] in $445b28ff-1512-4521-b96e-42536a656730) or any(dns.domains[*] in $b947ba1a-74aa-4008-8d2a-ff6d2e5b029c) or any(dns.domains[*] in $e29be690-2ad8-4403-b3fb-6abf4a57e4ff) or any(dns.domains[*] in $34a8c981-1190-4e65-aba4-2d7a02519e21) or any(dns.domains[*] in $baf2e345-00ce-4e51-9cf5-3be6e573a830) or any(dns.domains[*] in $3dc150b7-1f75-4440-860a-3edc2d27a42f) or any(dns.domains[*] in $ada52770-f8a0-40fb-b7f5-ceb0820ca911) or any(dns.domains[*] in $210e98a4-4314-44ec-a343-9d339b0549b5) or any(dns.domains[*] in $47e10a98-166d-4e09-a1f0-a65a788ea82d) or any(dns.domains[*] in $c07c8fe1-b46c-4627-aa17-873f23b6b3ea) or any(dns.domains[*] in $43cf8c9c-199a-44c3-9b9f-6bfc37b53423) or any(dns.domains[*] in $092fb56f-8fb1-4ff1-8d9e-305fa4873a42) or any(dns.domains[*] in $705e2647-9ad9-4780-a041-31b1f41bcf69) or any(dns.domains[*] in $950f5a7c-9c4f-4b8b-b316-70676043d45f) or any(dns.domains[*] in $c6a0daea-fad4-4845-afef-9237caed8918) or any(dns.domains[*] in $77d7706a-68f9-4739-957d-3ecd637ea9fc) or any(dns.domains[*] in $d7576b59-4433-4ffe-b710-08066645af5b) or any(dns.domains[*] in $961fcc43-bede-41f3-a66b-9f7e06b31f22) or any(dns.domains[*] in $69eb3d43-19ab-4e82-be9a-2367a6d697bb) or any(dns.domains[*] in $85dd0ee5-a862-474a-b70f-76a4cdca20e5) or any(dns.domains[*] in $58fc6418-b21d-4a02-869c-faaee873fb43) or any(dns.domains[*] in $0d9d554c-f8b8-479b-a7b0-be42d9c2241b) or any(dns.domains[*] in $22e41d02-b704-48eb-8f8e-66b0f0ae7f92) or any(dns.domains[*] in $109c701d-a33e-47cb-8326-f91f3f4c3653) or any(dns.domains[*] in $01907e12-9ca5-446a-8ceb-6b4f855d6c99) or any(dns.domains[*] in $ae6f7775-d5f3-48b8-a1cc-0f63f1bfeeb2) or any(dns.domains[*] in $0a815809-9861-4f95-b684-a6a31fe6e20e) or any(dns.domains[*] in $b33d4a43-2808-4f4e-b01f-5851f5056715) or any(dns.domains[*] in $b6752f31-153e-401c-ad27-a8a2a2dc9d37) or any(dns.domains[*] in $f156773b-7056-476d-a46a-e44a4996d123) or any(dns.domains[*] in $a92dce86-7af5-46f2-b53b-de69ef194a1d) or any(dns.domains[*] in $d39b815f-b6b8-4af0-b42b-44bf31bc83e3) or any(dns.domains[*] in $f5c453ac-143e-4ff7-980a-9f95d6827ed0) or any(dns.domains[*] in $9be4ac6a-0af4-4590-a14d-599c195f351b) or any(dns.domains[*] in $43cd2b4b-b77d-4256-b62c-9e4f98afb2f2) or any(dns.domains[*] in $0946405a-ea9b-4034-b5e6-ee1c2485552a) or any(dns.domains[*] in $f3fab231-5415-4ef7-809a-e696e2cc5bb7) or any(dns.domains[*] in $4a45002b-ae70-4b05-8eb0-95c379ce6175) or any(dns.domains[*] in $cb34aced-bfc9-4f65-ae56-9d5005836171) or any(dns.domains[*] in $bde997ff-34d7-4a78-b190-823f38b0d7ea) or any(dns.domains[*] in $7be06dc0-1ff6-4eaf-8e20-27b230f23d17) or any(dns.domains[*] in $f4b127e2-7adb-4b34-879d-f99bdea44353) or any(dns.domains[*] in $7512a6d0-4f20-458c-a8d8-6e5884bcdb03) or any(dns.domains[*] in $c3d07bd1-3e4d-428c-97c5-d1bb529434b3) or any(dns.domains[*] in $7405fdc0-a88b-4d5a-985d-c01714ea31c5) or any(dns.domains[*] in $5988e3f5-3dd0-40c4-af32-7f0991d7763a) or any(dns.domains[*] in $8529939a-02f6-4481-99f5-ccc2c2a76a1f) or any(dns.domains[*] in $ff542ffa-0ef5-46e9-aaf3-4c07821a4fd2) or any(dns.domains[*] in $bc18925c-d8e1-49b6-a49a-337a7eebcffe)",
+  "rule_settings": {
+   "override_ips": [
+    "0.0.0.0"
+   ]
+  }
+ },
+ {
+  "id": "9b522275-76f4-447a-b21b-91fa84ff59af",
+  "name": "NoAS 安全分类拦截",
+  "description": "CF 威胁情报安全分类（恶意/钓鱼/C2/挖矿/DNS 隧道）",
+  "precedence": 5,
+  "enabled": true,
+  "action": "block",
+  "filters": [
+   "dns"
+  ],
+  "created_at": "2026-11-18T12:17:42Z",
+  "updated_at": "2026-11-18T12:17:42Z",
+  "deleted_at": null,
+  "identity": "",
+  "device_posture": "",
+  "version": 1,
+  "sharable": true,
+  "traffic": "any(dns.security_category[*] in {68 178 80 83 176 175 117 131 134 151 153})",
+  "rule_settings": {
+   "block_page_enabled": true,
+   "block_reason": "该域名被 Cloudflare 判定为安全风险"
+  }
+ },
+ {
+  "id": "9bfecad5-0d6a-4863-9655-5db9aa3fbab7",
+  "name": "NoAS 新域拦截",
+  "description": "New Domains + Newly Seen Domains（新注册/新出现域）",
+  "precedence": 6,
+  "enabled": true,
+  "action": "block",
+  "filters": [
+   "dns"
+  ],
+  "created_at": "2026-11-18T12:17:42Z",
+  "updated_at": "2026-11-18T12:17:42Z",
+  "deleted_at": null,
+  "identity": "",
+  "device_posture": "",
+  "version": 1,
+  "sharable": true,
+  "traffic": "any(dns.content_category[*] in {169 177})",
+  "rule_settings": {
+   "block_page_enabled": true,
+   "block_reason": "该域名属于新注册或新出现的域名"
+  }
+ },
+ {
+  "id": "a1ec1b7a-8ce8-41de-ae3d-b280fa684f7f",
+  "name": "NoAS 正则族拦截",
+  "description": "广告域族前缀正则（10 条，覆盖新域）",
+  "precedence": 7,
+  "enabled": true,
+  "action": "block",
+  "filters": [
+   "dns"
+  ],
+  "created_at": "2026-11-18T13:38:09Z",
+  "updated_at": "2026-11-20T06:57:46Z",
+  "deleted_at": null,
+  "identity": "",
+  "device_posture": "",
+  "version": 76,
+  "sharable": true,
+  "traffic": "any(dns.domains[*] matches \"^metrics?[-.]\") or any(dns.domains[*] matches \"^ads?[-.]\") or any(dns.domains[*] matches \"^track(ing)?[-.]\") or any(dns.domains[*] matches \"^analytics?[0-9]*[-.]\") or any(dns.domains[*] matches \"^stat(s)?[0-9]*[-.]\") or any(dns.domains[*] matches \"^log[0-9]*[-.]\") or any(dns.domains[*] matches \"^pixel[-.]\") or any(dns.domains[*] matches \"^click[-.]\") or any(dns.domains[*] matches \"^ads?[0-9]+[-.]\") or any(dns.domains[*] matches \"^advert\")",
+  "rule_settings": {
+   "block_page_enabled": true,
+   "block_reason": "该域名命中广告域族前缀"
+  }
+ }
+]
