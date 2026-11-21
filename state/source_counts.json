@@ -1,5 +1,23 @@
 {
+ "StevenBlack-all": 76105,
+ "antiAD-cn": 110355,
+ "KADhosts": 51939,
+ "AdGuard-CN-adservers": 224,
+ "AdGuard-tracking": 4306,
+ "DandelionSprout-malware": 11694,
+ "1Hosts-Lite": 202954,
  "notracking": 500340,
+ "AdAway": 6540,
  "urlhaus": 2128,
- "EasyList": 51584
+ "PhishingArmy": 146440,
+ "Spam404": 8140,
+ "AdGuardDNS-filter": 191334,
+ "AdGuard-CNAME-disguised": 306627,
+ "AdGuard-CNAME-original": 99,
+ "OISD-Big": 226592,
+ "HaGeZi-Pro": 244056,
+ "HaGeZi-ProPlus": 256869,
+ "EasyList": 51521,
+ "NoS-antiAD": 110355,
+ "ACL4SSR-BanProgramAD": 996
 }

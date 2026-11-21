@@ -59,6 +59,12 @@ def domains_of(path, fmt="hosts"):
                 s = line.strip()
                 if not s or LINE_NOISE.match(s):
                     continue
+                if fmt == "clash":
+                    # Clash 语法：- DOMAIN-SUFFIX,a.com / - DOMAIN,a.com；DOMAIN-KEYWORD 不是域名，跳过
+                    m = re.match(r"^\s*(?:-\s*)?DOMAIN(?:-SUFFIX)?\s*,\s*([a-z0-9][a-z0-9.\-]*[a-z0-9])", s, re.I)
+                    if m:
+                        cand.append(m.group(1).lower())
+                    continue
                 if fmt == "adblock":
                     # uBO/EasyList：只有 ||domain^ 形态才是域名规则，元素隐藏/脚本规则一律不参与抽样
                     m = re.match(r"^\|\|([a-z0-9][a-z0-9.\-]*[a-z0-9])([\^/]|$)", s, re.I)
@@ -106,9 +112,15 @@ def main():
     allowjump = "# allowjump" in open(os.path.join(ROOT, "sources.tsv"), encoding="utf-8").read()
 
     for s in srcs:
-        p = os.path.join(CACHE, os.path.basename(s["url"].split("?")[0]) or s["name"])
+        # 缓存文件名必须与 fetch.py 的 slug(name) 规则一致：
+        # 早前按 URL 的 basename 找，21 个源里只有 3 个能命中，其余全部"无缓存文件"跳过，
+        # 形状检查与突变检测等于只覆盖了 3/21，是防护形同虚设的根因。
+        def _slug(n):
+            return "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in n).lower()
+        p = os.path.join(CACHE, _slug(s["name"]) + ".txt")
         if not os.path.exists(p):
-            # 缓存文件名由拉取脚本决定，找不到就按名称兜底
+            p = os.path.join(CACHE, os.path.basename(s["url"].split("?")[0]) or s["name"])
+        if not os.path.exists(p):
             p = os.path.join(CACHE, s["name"] + ".txt")
         ds = domains_of(p, s.get("fmt", "hosts"))
         if ds is None:
