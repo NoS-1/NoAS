@@ -1,4 +1,4 @@
-# NoAS 20261121-49f7db41 rule-provider payload
+# NoAS 20261121-1caf929c rule-provider payload
 payload:
   - DOMAIN-SUFFIX,0017c6c37c.com
   - DOMAIN-SUFFIX,00a39e6dfd.com
@@ -1870,10 +1870,12 @@ payload:
   - DOMAIN-SUFFIX,ad.tencentmusic.com
   - DOMAIN-SUFFIX,ad.theatre.co.jp
   - DOMAIN-SUFFIX,ad.theatreacademy.jp
+  - DOMAIN-SUFFIX,ad.toutiao.com
   - DOMAIN-SUFFIX,ad.tradertimerz.media
   - DOMAIN-SUFFIX,ad.video-mech.ru
   - DOMAIN-SUFFIX,ad.wifi.com
   - DOMAIN-SUFFIX,ad.xiaojukeji.com
+  - DOMAIN-SUFFIX,ad.xiaomi.com
   - DOMAIN-SUFFIX,ad.xueersi.com
   - DOMAIN-SUFFIX,ad.yidianzixun.com
   - DOMAIN-SUFFIX,ad.ymcdn.org
@@ -2336,6 +2338,7 @@ payload:
   - DOMAIN-SUFFIX,ads.feelingtouch.com
   - DOMAIN-SUFFIX,ads.funmora.com
   - DOMAIN-SUFFIX,ads.gmodules.com
+  - DOMAIN-SUFFIX,ads.heytapmobile.com
   - DOMAIN-SUFFIX,ads.house365.com
   - DOMAIN-SUFFIX,ads.ipfighter.com
   - DOMAIN-SUFFIX,ads.maoyan.com
@@ -2392,6 +2395,7 @@ payload:
   - DOMAIN-SUFFIX,adsfac.net
   - DOMAIN-SUFFIX,adsfs.oppomobile.com
   - DOMAIN-SUFFIX,adsgateway.net
+  - DOMAIN-SUFFIX,adshare.toutiao.com
   - DOMAIN-SUFFIX,adsiduous.com
   - DOMAIN-SUFFIX,adsinstant.com
   - DOMAIN-SUFFIX,adsinteractive-794b.kxcdn.com
@@ -2408,6 +2412,7 @@ payload:
   - DOMAIN-SUFFIX,adsnative.com
   - DOMAIN-SUFFIX,adsnid.wagyushop.com
   - DOMAIN-SUFFIX,adsniper.ru
+  - DOMAIN-SUFFIX,adsp.baidu.com
   - DOMAIN-SUFFIX,adsparc.net
   - DOMAIN-SUFFIX,adspdbl.com
   - DOMAIN-SUFFIX,adspeed.net
@@ -2589,6 +2594,7 @@ payload:
   - DOMAIN-SUFFIX,afanglffjywuu.site
   - DOMAIN-SUFFIX,afcontent.net
   - DOMAIN-SUFFIX,afcv.champ-shop.com
+  - DOMAIN-SUFFIX,afd.baidu.com
   - DOMAIN-SUFFIX,afdbwq.blivakker.no
   - DOMAIN-SUFFIX,afdqijrzwjcls.website
   - DOMAIN-SUFFIX,aff.bstatic.com
@@ -2941,6 +2947,7 @@ payload:
   - DOMAIN-SUFFIX,alqzmnvaxvzcu.website
   - DOMAIN-SUFFIX,alrhry.cjthemarket.com
   - DOMAIN-SUFFIX,alrplssumdqve.site
+  - DOMAIN-SUFFIX,als.baidu.com
   - DOMAIN-SUFFIX,also.greatsecuritydebate.net
   - DOMAIN-SUFFIX,alterassumeaggravate.com
   - DOMAIN-SUFFIX,alternatewavyrid.com
@@ -4483,6 +4490,7 @@ payload:
   - DOMAIN-SUFFIX,bg4nxu2u5t.com
   - DOMAIN-SUFFIX,bgbaysohkaaee.site
   - DOMAIN-SUFFIX,bgbeqdtopwumc.online
+  - DOMAIN-SUFFIX,bgg.baidu.com
   - DOMAIN-SUFFIX,bghprsdyy.com
   - DOMAIN-SUFFIX,bgkuoiryzvhni.site
   - DOMAIN-SUFFIX,bgqamxuxabntp.space
@@ -7015,24 +7023,6 @@ payload:
   - DOMAIN-SUFFIX,cwqtqpxudxicq.space
   - DOMAIN-SUFFIX,cwrlsjkvjdgff.site
   - DOMAIN-SUFFIX,cwtervpgcjuqa.website
-  - DOMAIN-SUFFIX,cwtjduacwhhtj.site
-  - DOMAIN-SUFFIX,cwuxquolwlfqp.site
-  - DOMAIN-SUFFIX,cwvueoaakybnr.site
-  - DOMAIN-SUFFIX,cwxdhubxeibwf.site
-  - DOMAIN-SUFFIX,cwyvnvawjstrr.online
-  - DOMAIN-SUFFIX,cxamupwxndqat.online
-  - DOMAIN-SUFFIX,cxbzfolgfvvvn.online
-  - DOMAIN-SUFFIX,cxcjuhbxaysnj.site
-  - DOMAIN-SUFFIX,cxcsrgntzjolw.online
-  - DOMAIN-SUFFIX,cxcvqnqzrnkpv.website
-  - DOMAIN-SUFFIX,cxgznmgoawvwj.site
-  - DOMAIN-SUFFIX,cxiegxvvbtmxo.space
-  - DOMAIN-SUFFIX,cxivcfnaivzmj.online
-  - DOMAIN-SUFFIX,cxmonbsehjanc.space
-  - DOMAIN-SUFFIX,cxnp-protect.pro
-  - DOMAIN-SUFFIX,cxofostbnjehi.website
-  - DOMAIN-SUFFIX,cxrfns.gu-global.com
-  - DOMAIN-SUFFIX,cxuhnlvxuxskw.online
   - DOMAIN-SUFFIX,d.kugou.com
   - DOMAIN-SUFFIX,d0.xcar.com.cn
   - DOMAIN-SUFFIX,d10ce3z4vbhcdd.cloudfront.net
@@ -8162,8 +8152,10 @@ payload:
   - DOMAIN-SUFFIX,mydas.mobi
   - DOMAIN-SUFFIX,mythings.com
   - DOMAIN-SUFFIX,n-analytics.io
+  - DOMAIN-SUFFIX,nadvideo2.baidu.com
   - DOMAIN-SUFFIX,nanigans.com
   - DOMAIN-SUFFIX,nappyattack.com
+  - DOMAIN-SUFFIX,ndsp.baidu.com
   - DOMAIN-SUFFIX,nervoussummer.com
   - DOMAIN-SUFFIX,net.brillen.de
   - DOMAIN-SUFFIX,net.iberia.com
@@ -8186,6 +8178,7 @@ payload:
   - DOMAIN-SUFFIX,non.li
   - DOMAIN-SUFFIX,notix.io
   - DOMAIN-SUFFIX,nqslmtuswqdz.com
+  - DOMAIN-SUFFIX,nsclick.baidu.com
   - DOMAIN-SUFFIX,ntvk1.ru
   - DOMAIN-SUFFIX,ntvpforever.com
   - DOMAIN-SUFFIX,nuseek.com
@@ -8509,6 +8502,7 @@ payload:
   - DOMAIN-SUFFIX,sc.natwest.com
   - DOMAIN-SUFFIX,sc.rbs.co.uk
   - DOMAIN-SUFFIX,sc.vmware.com
+  - DOMAIN-SUFFIX,scc.bytedance.com
   - DOMAIN-SUFFIX,scjlpq.navitime.co.jp
   - DOMAIN-SUFFIX,scmetrics.shell.com
   - DOMAIN-SUFFIX,scode.randomhouse.com
@@ -8523,6 +8517,7 @@ payload:
   - DOMAIN-SUFFIX,sdata.wiley.com
   - DOMAIN-SUFFIX,sdc.allianz.de
   - DOMAIN-SUFFIX,sdn.kugou.com
+  - DOMAIN-SUFFIX,sdsp.baidu.com
   - DOMAIN-SUFFIX,sdtagging.azureedge.net
   - DOMAIN-SUFFIX,seahorseinfo.agilent.com
   - DOMAIN-SUFFIX,secmetrics.schaefer-shop.de
@@ -9871,6 +9866,7 @@ payload:
   - DOMAIN-SUFFIX,yieldlab.net
   - DOMAIN-SUFFIX,yieldmanager.net
   - DOMAIN-SUFFIX,yieldtraffic.com
+  - DOMAIN-SUFFIX,yingxiao.baidu.com
   - DOMAIN-SUFFIX,yjxssk.apartments.com
   - DOMAIN-SUFFIX,ykhqhe.domain.com.au
   - DOMAIN-SUFFIX,ylx-1.com

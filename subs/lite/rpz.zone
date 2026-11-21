@@ -1,4 +1,4 @@
-# NoAS RPZ（20261121-49f7db41）
+# NoAS RPZ（20261121-1caf929c）
 ; $TTL 300
 0017c6c37c.com CNAME .
 00a39e6dfd.com CNAME .
@@ -1870,10 +1870,12 @@ ad.tempstaff.co.jp CNAME .
 ad.tencentmusic.com CNAME .
 ad.theatre.co.jp CNAME .
 ad.theatreacademy.jp CNAME .
+ad.toutiao.com CNAME .
 ad.tradertimerz.media CNAME .
 ad.video-mech.ru CNAME .
 ad.wifi.com CNAME .
 ad.xiaojukeji.com CNAME .
+ad.xiaomi.com CNAME .
 ad.xueersi.com CNAME .
 ad.yidianzixun.com CNAME .
 ad.ymcdn.org CNAME .
@@ -2336,6 +2338,7 @@ ads.feedly.com CNAME .
 ads.feelingtouch.com CNAME .
 ads.funmora.com CNAME .
 ads.gmodules.com CNAME .
+ads.heytapmobile.com CNAME .
 ads.house365.com CNAME .
 ads.ipfighter.com CNAME .
 ads.maoyan.com CNAME .
@@ -2392,6 +2395,7 @@ adsessionserv.com CNAME .
 adsfac.net CNAME .
 adsfs.oppomobile.com CNAME .
 adsgateway.net CNAME .
+adshare.toutiao.com CNAME .
 adsiduous.com CNAME .
 adsinstant.com CNAME .
 adsinteractive-794b.kxcdn.com CNAME .
@@ -2408,6 +2412,7 @@ adsmoloco.com CNAME .
 adsnative.com CNAME .
 adsnid.wagyushop.com CNAME .
 adsniper.ru CNAME .
+adsp.baidu.com CNAME .
 adsparc.net CNAME .
 adspdbl.com CNAME .
 adspeed.net CNAME .
@@ -2589,6 +2594,7 @@ af9bb5da67.com CNAME .
 afanglffjywuu.site CNAME .
 afcontent.net CNAME .
 afcv.champ-shop.com CNAME .
+afd.baidu.com CNAME .
 afdbwq.blivakker.no CNAME .
 afdqijrzwjcls.website CNAME .
 aff.bstatic.com CNAME .
@@ -2941,6 +2947,7 @@ alpyvupjggczt.space CNAME .
 alqzmnvaxvzcu.website CNAME .
 alrhry.cjthemarket.com CNAME .
 alrplssumdqve.site CNAME .
+als.baidu.com CNAME .
 also.greatsecuritydebate.net CNAME .
 alterassumeaggravate.com CNAME .
 alternatewavyrid.com CNAME .
@@ -4483,6 +4490,7 @@ bfziqxsuvogng.space CNAME .
 bg4nxu2u5t.com CNAME .
 bgbaysohkaaee.site CNAME .
 bgbeqdtopwumc.online CNAME .
+bgg.baidu.com CNAME .
 bghprsdyy.com CNAME .
 bgkuoiryzvhni.site CNAME .
 bgqamxuxabntp.space CNAME .
@@ -7015,24 +7023,6 @@ cwnqfrehigqdb.online CNAME .
 cwqtqpxudxicq.space CNAME .
 cwrlsjkvjdgff.site CNAME .
 cwtervpgcjuqa.website CNAME .
-cwtjduacwhhtj.site CNAME .
-cwuxquolwlfqp.site CNAME .
-cwvueoaakybnr.site CNAME .
-cwxdhubxeibwf.site CNAME .
-cwyvnvawjstrr.online CNAME .
-cxamupwxndqat.online CNAME .
-cxbzfolgfvvvn.online CNAME .
-cxcjuhbxaysnj.site CNAME .
-cxcsrgntzjolw.online CNAME .
-cxcvqnqzrnkpv.website CNAME .
-cxgznmgoawvwj.site CNAME .
-cxiegxvvbtmxo.space CNAME .
-cxivcfnaivzmj.online CNAME .
-cxmonbsehjanc.space CNAME .
-cxnp-protect.pro CNAME .
-cxofostbnjehi.website CNAME .
-cxrfns.gu-global.com CNAME .
-cxuhnlvxuxskw.online CNAME .
 d.kugou.com CNAME .
 d0.xcar.com.cn CNAME .
 d10ce3z4vbhcdd.cloudfront.net CNAME .
@@ -8162,8 +8152,10 @@ myangular.life CNAME .
 mydas.mobi CNAME .
 mythings.com CNAME .
 n-analytics.io CNAME .
+nadvideo2.baidu.com CNAME .
 nanigans.com CNAME .
 nappyattack.com CNAME .
+ndsp.baidu.com CNAME .
 nervoussummer.com CNAME .
 net.brillen.de CNAME .
 net.iberia.com CNAME .
@@ -8186,6 +8178,7 @@ nntgna.dmm.com CNAME .
 non.li CNAME .
 notix.io CNAME .
 nqslmtuswqdz.com CNAME .
+nsclick.baidu.com CNAME .
 ntvk1.ru CNAME .
 ntvpforever.com CNAME .
 nuseek.com CNAME .
@@ -8509,6 +8502,7 @@ sc.hl.co.uk CNAME .
 sc.natwest.com CNAME .
 sc.rbs.co.uk CNAME .
 sc.vmware.com CNAME .
+scc.bytedance.com CNAME .
 scjlpq.navitime.co.jp CNAME .
 scmetrics.shell.com CNAME .
 scode.randomhouse.com CNAME .
@@ -8523,6 +8517,7 @@ sdata.connection.com CNAME .
 sdata.wiley.com CNAME .
 sdc.allianz.de CNAME .
 sdn.kugou.com CNAME .
+sdsp.baidu.com CNAME .
 sdtagging.azureedge.net CNAME .
 seahorseinfo.agilent.com CNAME .
 secmetrics.schaefer-shop.de CNAME .
@@ -9871,6 +9866,7 @@ yieldbuild.com CNAME .
 yieldlab.net CNAME .
 yieldmanager.net CNAME .
 yieldtraffic.com CNAME .
+yingxiao.baidu.com CNAME .
 yjxssk.apartments.com CNAME .
 ykhqhe.domain.com.au CNAME .
 ylx-1.com CNAME .

@@ -1,4 +1,4 @@
-# NoAS 通配（20261121-49f7db41）
+# NoAS 通配（20261121-1caf929c）
 *.0017c6c37c.com
 *.00a39e6dfd.com
 *.01168nl.com
@@ -1869,10 +1869,12 @@
 *.ad.tencentmusic.com
 *.ad.theatre.co.jp
 *.ad.theatreacademy.jp
+*.ad.toutiao.com
 *.ad.tradertimerz.media
 *.ad.video-mech.ru
 *.ad.wifi.com
 *.ad.xiaojukeji.com
+*.ad.xiaomi.com
 *.ad.xueersi.com
 *.ad.yidianzixun.com
 *.ad.ymcdn.org
@@ -2335,6 +2337,7 @@
 *.ads.feelingtouch.com
 *.ads.funmora.com
 *.ads.gmodules.com
+*.ads.heytapmobile.com
 *.ads.house365.com
 *.ads.ipfighter.com
 *.ads.maoyan.com
@@ -2391,6 +2394,7 @@
 *.adsfac.net
 *.adsfs.oppomobile.com
 *.adsgateway.net
+*.adshare.toutiao.com
 *.adsiduous.com
 *.adsinstant.com
 *.adsinteractive-794b.kxcdn.com
@@ -2407,6 +2411,7 @@
 *.adsnative.com
 *.adsnid.wagyushop.com
 *.adsniper.ru
+*.adsp.baidu.com
 *.adsparc.net
 *.adspdbl.com
 *.adspeed.net
@@ -2588,6 +2593,7 @@
 *.afanglffjywuu.site
 *.afcontent.net
 *.afcv.champ-shop.com
+*.afd.baidu.com
 *.afdbwq.blivakker.no
 *.afdqijrzwjcls.website
 *.aff.bstatic.com
@@ -2940,6 +2946,7 @@
 *.alqzmnvaxvzcu.website
 *.alrhry.cjthemarket.com
 *.alrplssumdqve.site
+*.als.baidu.com
 *.also.greatsecuritydebate.net
 *.alterassumeaggravate.com
 *.alternatewavyrid.com
@@ -4482,6 +4489,7 @@
 *.bg4nxu2u5t.com
 *.bgbaysohkaaee.site
 *.bgbeqdtopwumc.online
+*.bgg.baidu.com
 *.bghprsdyy.com
 *.bgkuoiryzvhni.site
 *.bgqamxuxabntp.space
@@ -7014,24 +7022,6 @@
 *.cwqtqpxudxicq.space
 *.cwrlsjkvjdgff.site
 *.cwtervpgcjuqa.website
-*.cwtjduacwhhtj.site
-*.cwuxquolwlfqp.site
-*.cwvueoaakybnr.site
-*.cwxdhubxeibwf.site
-*.cwyvnvawjstrr.online
-*.cxamupwxndqat.online
-*.cxbzfolgfvvvn.online
-*.cxcjuhbxaysnj.site
-*.cxcsrgntzjolw.online
-*.cxcvqnqzrnkpv.website
-*.cxgznmgoawvwj.site
-*.cxiegxvvbtmxo.space
-*.cxivcfnaivzmj.online
-*.cxmonbsehjanc.space
-*.cxnp-protect.pro
-*.cxofostbnjehi.website
-*.cxrfns.gu-global.com
-*.cxuhnlvxuxskw.online
 *.d.kugou.com
 *.d0.xcar.com.cn
 *.d10ce3z4vbhcdd.cloudfront.net
@@ -8161,8 +8151,10 @@
 *.mydas.mobi
 *.mythings.com
 *.n-analytics.io
+*.nadvideo2.baidu.com
 *.nanigans.com
 *.nappyattack.com
+*.ndsp.baidu.com
 *.nervoussummer.com
 *.net.brillen.de
 *.net.iberia.com
@@ -8185,6 +8177,7 @@
 *.non.li
 *.notix.io
 *.nqslmtuswqdz.com
+*.nsclick.baidu.com
 *.ntvk1.ru
 *.ntvpforever.com
 *.nuseek.com
@@ -8508,6 +8501,7 @@
 *.sc.natwest.com
 *.sc.rbs.co.uk
 *.sc.vmware.com
+*.scc.bytedance.com
 *.scjlpq.navitime.co.jp
 *.scmetrics.shell.com
 *.scode.randomhouse.com
@@ -8522,6 +8516,7 @@
 *.sdata.wiley.com
 *.sdc.allianz.de
 *.sdn.kugou.com
+*.sdsp.baidu.com
 *.sdtagging.azureedge.net
 *.seahorseinfo.agilent.com
 *.secmetrics.schaefer-shop.de
@@ -9870,6 +9865,7 @@
 *.yieldlab.net
 *.yieldmanager.net
 *.yieldtraffic.com
+*.yingxiao.baidu.com
 *.yjxssk.apartments.com
 *.ykhqhe.domain.com.au
 *.ylx-1.com

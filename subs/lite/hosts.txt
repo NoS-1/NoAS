@@ -1,4 +1,4 @@
-# NoAS 20261121-49f7db41（9904 条）
+# NoAS 20261121-1caf929c（9900 条）
 0.0.0.0 0017c6c37c.com
 0.0.0.0 00a39e6dfd.com
 0.0.0.0 01168nl.com
@@ -1869,10 +1869,12 @@
 0.0.0.0 ad.tencentmusic.com
 0.0.0.0 ad.theatre.co.jp
 0.0.0.0 ad.theatreacademy.jp
+0.0.0.0 ad.toutiao.com
 0.0.0.0 ad.tradertimerz.media
 0.0.0.0 ad.video-mech.ru
 0.0.0.0 ad.wifi.com
 0.0.0.0 ad.xiaojukeji.com
+0.0.0.0 ad.xiaomi.com
 0.0.0.0 ad.xueersi.com
 0.0.0.0 ad.yidianzixun.com
 0.0.0.0 ad.ymcdn.org
@@ -2335,6 +2337,7 @@
 0.0.0.0 ads.feelingtouch.com
 0.0.0.0 ads.funmora.com
 0.0.0.0 ads.gmodules.com
+0.0.0.0 ads.heytapmobile.com
 0.0.0.0 ads.house365.com
 0.0.0.0 ads.ipfighter.com
 0.0.0.0 ads.maoyan.com
@@ -2391,6 +2394,7 @@
 0.0.0.0 adsfac.net
 0.0.0.0 adsfs.oppomobile.com
 0.0.0.0 adsgateway.net
+0.0.0.0 adshare.toutiao.com
 0.0.0.0 adsiduous.com
 0.0.0.0 adsinstant.com
 0.0.0.0 adsinteractive-794b.kxcdn.com
@@ -2407,6 +2411,7 @@
 0.0.0.0 adsnative.com
 0.0.0.0 adsnid.wagyushop.com
 0.0.0.0 adsniper.ru
+0.0.0.0 adsp.baidu.com
 0.0.0.0 adsparc.net
 0.0.0.0 adspdbl.com
 0.0.0.0 adspeed.net
@@ -2588,6 +2593,7 @@
 0.0.0.0 afanglffjywuu.site
 0.0.0.0 afcontent.net
 0.0.0.0 afcv.champ-shop.com
+0.0.0.0 afd.baidu.com
 0.0.0.0 afdbwq.blivakker.no
 0.0.0.0 afdqijrzwjcls.website
 0.0.0.0 aff.bstatic.com
@@ -2940,6 +2946,7 @@
 0.0.0.0 alqzmnvaxvzcu.website
 0.0.0.0 alrhry.cjthemarket.com
 0.0.0.0 alrplssumdqve.site
+0.0.0.0 als.baidu.com
 0.0.0.0 also.greatsecuritydebate.net
 0.0.0.0 alterassumeaggravate.com
 0.0.0.0 alternatewavyrid.com
@@ -4482,6 +4489,7 @@
 0.0.0.0 bg4nxu2u5t.com
 0.0.0.0 bgbaysohkaaee.site
 0.0.0.0 bgbeqdtopwumc.online
+0.0.0.0 bgg.baidu.com
 0.0.0.0 bghprsdyy.com
 0.0.0.0 bgkuoiryzvhni.site
 0.0.0.0 bgqamxuxabntp.space
@@ -7014,24 +7022,6 @@
 0.0.0.0 cwqtqpxudxicq.space
 0.0.0.0 cwrlsjkvjdgff.site
 0.0.0.0 cwtervpgcjuqa.website
-0.0.0.0 cwtjduacwhhtj.site
-0.0.0.0 cwuxquolwlfqp.site
-0.0.0.0 cwvueoaakybnr.site
-0.0.0.0 cwxdhubxeibwf.site
-0.0.0.0 cwyvnvawjstrr.online
-0.0.0.0 cxamupwxndqat.online
-0.0.0.0 cxbzfolgfvvvn.online
-0.0.0.0 cxcjuhbxaysnj.site
-0.0.0.0 cxcsrgntzjolw.online
-0.0.0.0 cxcvqnqzrnkpv.website
-0.0.0.0 cxgznmgoawvwj.site
-0.0.0.0 cxiegxvvbtmxo.space
-0.0.0.0 cxivcfnaivzmj.online
-0.0.0.0 cxmonbsehjanc.space
-0.0.0.0 cxnp-protect.pro
-0.0.0.0 cxofostbnjehi.website
-0.0.0.0 cxrfns.gu-global.com
-0.0.0.0 cxuhnlvxuxskw.online
 0.0.0.0 d.kugou.com
 0.0.0.0 d0.xcar.com.cn
 0.0.0.0 d10ce3z4vbhcdd.cloudfront.net
@@ -8161,8 +8151,10 @@
 0.0.0.0 mydas.mobi
 0.0.0.0 mythings.com
 0.0.0.0 n-analytics.io
+0.0.0.0 nadvideo2.baidu.com
 0.0.0.0 nanigans.com
 0.0.0.0 nappyattack.com
+0.0.0.0 ndsp.baidu.com
 0.0.0.0 nervoussummer.com
 0.0.0.0 net.brillen.de
 0.0.0.0 net.iberia.com
@@ -8185,6 +8177,7 @@
 0.0.0.0 non.li
 0.0.0.0 notix.io
 0.0.0.0 nqslmtuswqdz.com
+0.0.0.0 nsclick.baidu.com
 0.0.0.0 ntvk1.ru
 0.0.0.0 ntvpforever.com
 0.0.0.0 nuseek.com
@@ -8508,6 +8501,7 @@
 0.0.0.0 sc.natwest.com
 0.0.0.0 sc.rbs.co.uk
 0.0.0.0 sc.vmware.com
+0.0.0.0 scc.bytedance.com
 0.0.0.0 scjlpq.navitime.co.jp
 0.0.0.0 scmetrics.shell.com
 0.0.0.0 scode.randomhouse.com
@@ -8522,6 +8516,7 @@
 0.0.0.0 sdata.wiley.com
 0.0.0.0 sdc.allianz.de
 0.0.0.0 sdn.kugou.com
+0.0.0.0 sdsp.baidu.com
 0.0.0.0 sdtagging.azureedge.net
 0.0.0.0 seahorseinfo.agilent.com
 0.0.0.0 secmetrics.schaefer-shop.de
@@ -9870,6 +9865,7 @@
 0.0.0.0 yieldlab.net
 0.0.0.0 yieldmanager.net
 0.0.0.0 yieldtraffic.com
+0.0.0.0 yingxiao.baidu.com
 0.0.0.0 yjxssk.apartments.com
 0.0.0.0 ykhqhe.domain.com.au
 0.0.0.0 ylx-1.com

@@ -1,4 +1,4 @@
-# NoAS 20261121-49f7db41（9904 条 + 通配 21）
+# NoAS 20261121-1caf929c（9900 条 + 通配 21）
 host-suffix, 0017c6c37c.com, reject
 host-suffix, 00a39e6dfd.com, reject
 host-suffix, 01168nl.com, reject
@@ -1869,10 +1869,12 @@ host-suffix, ad.tempstaff.co.jp, reject
 host-suffix, ad.tencentmusic.com, reject
 host-suffix, ad.theatre.co.jp, reject
 host-suffix, ad.theatreacademy.jp, reject
+host-suffix, ad.toutiao.com, reject
 host-suffix, ad.tradertimerz.media, reject
 host-suffix, ad.video-mech.ru, reject
 host-suffix, ad.wifi.com, reject
 host-suffix, ad.xiaojukeji.com, reject
+host-suffix, ad.xiaomi.com, reject
 host-suffix, ad.xueersi.com, reject
 host-suffix, ad.yidianzixun.com, reject
 host-suffix, ad.ymcdn.org, reject
@@ -2335,6 +2337,7 @@ host-suffix, ads.feedly.com, reject
 host-suffix, ads.feelingtouch.com, reject
 host-suffix, ads.funmora.com, reject
 host-suffix, ads.gmodules.com, reject
+host-suffix, ads.heytapmobile.com, reject
 host-suffix, ads.house365.com, reject
 host-suffix, ads.ipfighter.com, reject
 host-suffix, ads.maoyan.com, reject
@@ -2391,6 +2394,7 @@ host-suffix, adsessionserv.com, reject
 host-suffix, adsfac.net, reject
 host-suffix, adsfs.oppomobile.com, reject
 host-suffix, adsgateway.net, reject
+host-suffix, adshare.toutiao.com, reject
 host-suffix, adsiduous.com, reject
 host-suffix, adsinstant.com, reject
 host-suffix, adsinteractive-794b.kxcdn.com, reject
@@ -2407,6 +2411,7 @@ host-suffix, adsmoloco.com, reject
 host-suffix, adsnative.com, reject
 host-suffix, adsnid.wagyushop.com, reject
 host-suffix, adsniper.ru, reject
+host-suffix, adsp.baidu.com, reject
 host-suffix, adsparc.net, reject
 host-suffix, adspdbl.com, reject
 host-suffix, adspeed.net, reject
@@ -2588,6 +2593,7 @@ host-suffix, af9bb5da67.com, reject
 host-suffix, afanglffjywuu.site, reject
 host-suffix, afcontent.net, reject
 host-suffix, afcv.champ-shop.com, reject
+host-suffix, afd.baidu.com, reject
 host-suffix, afdbwq.blivakker.no, reject
 host-suffix, afdqijrzwjcls.website, reject
 host-suffix, aff.bstatic.com, reject
@@ -2940,6 +2946,7 @@ host-suffix, alpyvupjggczt.space, reject
 host-suffix, alqzmnvaxvzcu.website, reject
 host-suffix, alrhry.cjthemarket.com, reject
 host-suffix, alrplssumdqve.site, reject
+host-suffix, als.baidu.com, reject
 host-suffix, also.greatsecuritydebate.net, reject
 host-suffix, alterassumeaggravate.com, reject
 host-suffix, alternatewavyrid.com, reject
@@ -4482,6 +4489,7 @@ host-suffix, bfziqxsuvogng.space, reject
 host-suffix, bg4nxu2u5t.com, reject
 host-suffix, bgbaysohkaaee.site, reject
 host-suffix, bgbeqdtopwumc.online, reject
+host-suffix, bgg.baidu.com, reject
 host-suffix, bghprsdyy.com, reject
 host-suffix, bgkuoiryzvhni.site, reject
 host-suffix, bgqamxuxabntp.space, reject
@@ -7014,24 +7022,6 @@ host-suffix, cwnqfrehigqdb.online, reject
 host-suffix, cwqtqpxudxicq.space, reject
 host-suffix, cwrlsjkvjdgff.site, reject
 host-suffix, cwtervpgcjuqa.website, reject
-host-suffix, cwtjduacwhhtj.site, reject
-host-suffix, cwuxquolwlfqp.site, reject
-host-suffix, cwvueoaakybnr.site, reject
-host-suffix, cwxdhubxeibwf.site, reject
-host-suffix, cwyvnvawjstrr.online, reject
-host-suffix, cxamupwxndqat.online, reject
-host-suffix, cxbzfolgfvvvn.online, reject
-host-suffix, cxcjuhbxaysnj.site, reject
-host-suffix, cxcsrgntzjolw.online, reject
-host-suffix, cxcvqnqzrnkpv.website, reject
-host-suffix, cxgznmgoawvwj.site, reject
-host-suffix, cxiegxvvbtmxo.space, reject
-host-suffix, cxivcfnaivzmj.online, reject
-host-suffix, cxmonbsehjanc.space, reject
-host-suffix, cxnp-protect.pro, reject
-host-suffix, cxofostbnjehi.website, reject
-host-suffix, cxrfns.gu-global.com, reject
-host-suffix, cxuhnlvxuxskw.online, reject
 host-suffix, d.kugou.com, reject
 host-suffix, d0.xcar.com.cn, reject
 host-suffix, d10ce3z4vbhcdd.cloudfront.net, reject
@@ -8161,8 +8151,10 @@ host-suffix, myangular.life, reject
 host-suffix, mydas.mobi, reject
 host-suffix, mythings.com, reject
 host-suffix, n-analytics.io, reject
+host-suffix, nadvideo2.baidu.com, reject
 host-suffix, nanigans.com, reject
 host-suffix, nappyattack.com, reject
+host-suffix, ndsp.baidu.com, reject
 host-suffix, nervoussummer.com, reject
 host-suffix, net.brillen.de, reject
 host-suffix, net.iberia.com, reject
@@ -8185,6 +8177,7 @@ host-suffix, nntgna.dmm.com, reject
 host-suffix, non.li, reject
 host-suffix, notix.io, reject
 host-suffix, nqslmtuswqdz.com, reject
+host-suffix, nsclick.baidu.com, reject
 host-suffix, ntvk1.ru, reject
 host-suffix, ntvpforever.com, reject
 host-suffix, nuseek.com, reject
@@ -8508,6 +8501,7 @@ host-suffix, sc.hl.co.uk, reject
 host-suffix, sc.natwest.com, reject
 host-suffix, sc.rbs.co.uk, reject
 host-suffix, sc.vmware.com, reject
+host-suffix, scc.bytedance.com, reject
 host-suffix, scjlpq.navitime.co.jp, reject
 host-suffix, scmetrics.shell.com, reject
 host-suffix, scode.randomhouse.com, reject
@@ -8522,6 +8516,7 @@ host-suffix, sdata.connection.com, reject
 host-suffix, sdata.wiley.com, reject
 host-suffix, sdc.allianz.de, reject
 host-suffix, sdn.kugou.com, reject
+host-suffix, sdsp.baidu.com, reject
 host-suffix, sdtagging.azureedge.net, reject
 host-suffix, seahorseinfo.agilent.com, reject
 host-suffix, secmetrics.schaefer-shop.de, reject
@@ -9870,6 +9865,7 @@ host-suffix, yieldbuild.com, reject
 host-suffix, yieldlab.net, reject
 host-suffix, yieldmanager.net, reject
 host-suffix, yieldtraffic.com, reject
+host-suffix, yingxiao.baidu.com, reject
 host-suffix, yjxssk.apartments.com, reject
 host-suffix, ykhqhe.domain.com.au, reject
 host-suffix, ylx-1.com, reject
