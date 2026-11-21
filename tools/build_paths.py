@@ -14,6 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 TSV = ROOT / "lists" / "ad_paths.tsv"
+TSV_AUTO = ROOT / "lists" / "ad_paths_auto.tsv"   # gen_ad_paths.py 自动段
 MITM_EXTRA = ROOT / "lists" / "mitm_hosts.txt"
 OUT = ROOT / "subs" / "paths"
 HOME = "https://github.com/NoS-1/NoAS"
@@ -23,7 +24,11 @@ TIERS = ("core", "full")
 
 def read_rules():
     rules = []
-    for line in TSV.read_text(encoding="utf-8").splitlines():
+    src_lines = []
+    for tsv in (TSV, TSV_AUTO):
+        if tsv.exists():
+            src_lines += tsv.read_text(encoding="utf-8").splitlines()
+    for line in src_lines:
         line = line.strip("\n")
         if not line.strip() or line.lstrip().startswith("#"):
             continue

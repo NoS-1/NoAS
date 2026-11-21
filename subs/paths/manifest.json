@@ -1,16 +1,16 @@
 {
   "tiers": {
     "core": {
-      "rules": 14,
-      "mitm": 14,
+      "rules": 94,
+      "mitm": 73,
       "actions": [
         "reject",
         "reject-dict"
       ]
     },
     "full": {
-      "rules": 19,
-      "mitm": 37,
+      "rules": 99,
+      "mitm": 96,
       "actions": [
         "reject",
         "reject-dict"

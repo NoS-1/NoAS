@@ -162,6 +162,9 @@ jobs:
           # 否则一条通道能吃掉十几分钟，把整轮构建拖死。
           timeout 60 python3 tools/check_channels.py || true   # 恒返回 0，环境异常只标注不阻断
           python3 tools/gen_channels.py
+      - name: 3.9 · 生成路径层规则（端点表 → L2，可重复生成）
+        run: python3 tools/gen_ad_paths.py
+
       - name: 4 · 路径层（L2）重建与体检
         run: |
           python3 tools/build_paths.py

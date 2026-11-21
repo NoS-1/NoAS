@@ -6,8 +6,8 @@
       "source": "https://nos-1.github.io/NoAS/subs/lite/"
     },
     "L2_path": {
-      "rules": 14,
-      "mitm_hosts": 14,
+      "rules": 94,
+      "mitm_hosts": 73,
       "source": "https://nos-1.github.io/NoAS/subs/paths/core/"
     },
     "L3_content": {

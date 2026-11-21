@@ -35,10 +35,15 @@ def read_domains(path):
 
 def read_core_paths():
     rules = []
-    tsv = ROOT / "lists" / "ad_paths.tsv"
-    if not tsv.exists():
+    # 人工审计规则 + 端点表自动段（gen_ad_paths.py）都要并进融合包，否则装一条链接拿到的还是旧的 14 条
+    src = []
+    for f in ("ad_paths.tsv", "ad_paths_auto.tsv"):
+        tsv = ROOT / "lists" / f
+        if tsv.exists():
+            src += tsv.read_text(encoding="utf-8").splitlines()
+    if not src:
         return rules
-    for line in tsv.read_text(encoding="utf-8").splitlines():
+    for line in src:
         if not line.strip() or line.lstrip().startswith("#"):
             continue
         parts = line.split("\t")

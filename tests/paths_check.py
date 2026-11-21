@@ -20,7 +20,12 @@ def check(cond, msg):
 
 def read_tsv():
     rows = []
-    for line in (ROOT / "lists" / "ad_paths.tsv").read_text(encoding="utf-8").splitlines():
+    src = []
+    for f in ("ad_paths.tsv", "ad_paths_auto.tsv"):
+        p = ROOT / "lists" / f
+        if p.exists():
+            src += p.read_text(encoding="utf-8").splitlines()
+    for line in src:
         if not line.strip() or line.lstrip().startswith("#"):
             continue
         parts = line.split("\t")

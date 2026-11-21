@@ -1,0 +1,83 @@
+# 本文件由 tools/gen_ad_paths.py 自动生成，请勿手改；人工规则写在 ad_paths.tsv
+# 来源：lists/ad_endpoints.txt（人工审计的纯广告端点表）
+# host	path_regex	action	app	note	tier
+ad.qq.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+adclick.g.doubleclick.net	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+ads.mgtv.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+ads.vungle.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+adservice.google.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+adsmind.gdtimg.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+an.facebook.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+analytics.twitter.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+api-access.pangolin-sdk-toutiao.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+api-access.pangolin-sdk-toutiao1.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+api.applovin.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+atm.youku.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+auction.unityads.unity3d.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+bidder.criteo.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+cbjs.baidu.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+cdn.taboola.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+cm.g.doubleclick.net	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+cpro.baidu.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+cpro.baidustatic.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+ctobsnssdk.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+cupid.iqiyi.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+dis.criteo.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+e.qq.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+eclick.baidu.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+extlog.snssdk.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+fastlane.rubiconproject.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+gdt.qq.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+googleads.g.doubleclick.net	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+gromore.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+gum.criteo.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+js.adsrvr.org	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+live.chartboost.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+log.outbrain.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+match.adsrvr.org	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+mobads-logs.baidu.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+mobads.baidu.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+open.e.kuaishou.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+pagead2.googlesyndication.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+pangolin-sdk-toutiao.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+pangolin.snssdk.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+partner.googleadservices.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+pgdt.gtimg.cn	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+pglstatp-toutiao.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+pos.baidu.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+pubads.g.doubleclick.net	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+qzs.gdtimg.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+res.applovin.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+sdk.e.qq.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+securepubads.g.doubleclick.net	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+sslwidget.criteo.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+stats.g.doubleclick.net	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+tanx.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+tpc.googlesyndication.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+tradplusad.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+trc.taboola.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+union.baidu.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+video-ad-stats.googlesyndication.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+widgets.outbrain.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+www.googleadservices.com	/(ads?|adverts?|advertise|advertisement|adserver|adx|splash|openads?|banner)/	reject-dict	广告端点	广告端点（主路径族）	core
+ad.qq.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+adsmind.gdtimg.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+api-access.pangolin-sdk-toutiao.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+api-access.pangolin-sdk-toutiao1.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+cbjs.baidu.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+cpro.baidu.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+cpro.baidustatic.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+e.qq.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+eclick.baidu.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+gdt.qq.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+mobads-logs.baidu.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+mobads.baidu.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+open.e.kuaishou.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+pangolin-sdk-toutiao.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+pangolin.snssdk.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+pgdt.gtimg.cn	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+pglstatp-toutiao.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+pos.baidu.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+qzs.gdtimg.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+sdk.e.qq.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
+union.baidu.com	/api/(ads?|advertise|adinfo|adlist|adsense)/	reject-dict	广告端点	国内高频端点（API 变体）	core
