@@ -55,3 +55,4 @@ pangolin.bytedance.com	pangolin	pangolin
 splash.quark.cn	splash	prefix
 union.bytedance.com	union	bytedance
 union.img.alimama.com	union	alimama
+union.2345.com	union	2345 广告联盟（父域已放行，端点仍拦）

@@ -1,4 +1,4 @@
-# NoAS 20261121-6a8498f1 rule-provider payload
+# NoAS 20261121-23b3302a rule-provider payload
 payload:
   - DOMAIN-SUFFIX,0017c6c37c.com
   - DOMAIN-SUFFIX,00a39e6dfd.com
@@ -6967,7 +6967,6 @@ payload:
   - DOMAIN-SUFFIX,culsucqivn.in
   - DOMAIN-SUFFIX,cultivated-cell.com
   - DOMAIN-SUFFIX,cultivated-guitar.com
-  - DOMAIN-SUFFIX,cultivateddecrepitcoolest.com
   - DOMAIN-SUFFIX,culturaltracking.ru
   - DOMAIN-SUFFIX,cupid.iqiyi.com
   - DOMAIN-SUFFIX,customads.co
@@ -9708,6 +9707,7 @@ payload:
   - DOMAIN-SUFFIX,ufpcdn.com
   - DOMAIN-SUFFIX,ugdcxl.timeout.com
   - DOMAIN-SUFFIX,uid.mediacorp.sg
+  - DOMAIN-SUFFIX,union.2345.com
   - DOMAIN-SUFFIX,union.6.cn
   - DOMAIN-SUFFIX,union.baidu.com
   - DOMAIN-SUFFIX,union.bytedance.com

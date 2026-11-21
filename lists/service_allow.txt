@@ -43,3 +43,4 @@ pusherapp.com	push-realtime	推送服务
 pushwoosh.com	push-realtime	推送服务
 
 honcode.ch	health-badge	HONcode 医疗网站认证徽章（医院站常引用，非广告）
+2345.com	nav	2345 导航站主域（业务，非广告；广告走 union.2345.com 端点例外）

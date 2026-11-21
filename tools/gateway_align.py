@@ -10,6 +10,7 @@ import json
 import os
 import pathlib
 import sys
+import time
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -18,10 +19,20 @@ TOK = os.environ.get("CF_API_TOKEN", "").strip()
 
 
 def get(path):
-    r = urllib.request.Request(
-        "https://api.cloudflare.com/client/v4/accounts/%s%s" % (ACC, path),
-        headers={"Authorization": "Bearer " + TOK})
-    return json.load(urllib.request.urlopen(r, timeout=30))
+    # 读 62 个分片的条目时单次请求可能拖到几十秒，原来 30s 超时会偶发整步失败。
+    # 45s + 3 次重试：抖动不该让"对齐校验"这个 required 步骤误红。
+    last = None
+    for i in range(3):
+        r = urllib.request.Request(
+            "https://api.cloudflare.com/client/v4/accounts/%s%s" % (ACC, path),
+            headers={"Authorization": "Bearer " + TOK})
+        try:
+            return json.load(urllib.request.urlopen(r, timeout=45))
+        except Exception as e:
+            last = e
+            if i < 2:
+                time.sleep(2 + i * 3)
+    raise last
 
 
 def read_list(path):

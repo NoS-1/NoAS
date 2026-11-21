@@ -157,6 +157,7 @@ jobs:
           node tests/worker_check.mjs
           node tests/standalone_check.mjs
           node tests/dns_features_check.mjs     # ECS/TTL/负缓存/v4only/CNAME 多跳/why
+          python3 tests/benign_fp.py            # 4444 条业务主域大样本，lite 误伤必须为 0
 
       - name: 6.8 · 同步规则到 CF Pages
         env:

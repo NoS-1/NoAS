@@ -1,0 +1,21 @@
+{
+ "sample": "tests/benign_5000.txt",
+ "tier1": {
+  "n": 4444,
+  "fp": 0,
+  "rate": 0.0,
+  "domains": []
+ },
+ "tier2": {
+  "n": 4444,
+  "fp": 0,
+  "rate": 0.0,
+  "domains": []
+ },
+ "tier3": {
+  "n": 4444,
+  "fp": 0,
+  "rate": 0.0,
+  "domains": []
+ }
+}
