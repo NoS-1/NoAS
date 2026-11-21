@@ -86,10 +86,3 @@ jobs:
             echo "推送被拒，重试 $i/5"; sleep $((i*3))
           done
           exit 1
-
-      - name: 9 · Pages 部署
-        uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v5
-        with:
-          path: docs
-      - uses: actions/deploy-pages@v5

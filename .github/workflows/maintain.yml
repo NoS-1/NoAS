@@ -72,10 +72,3 @@ jobs:
             echo "重试 $i/5"; sleep $((i*3))
           done
           exit 1
-
-      - name: 7 · Pages 部署
-        uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v5
-        with:
-          path: docs
-      - uses: actions/deploy-pages@v5
