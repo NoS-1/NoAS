@@ -4,6 +4,7 @@ name: Daily Build (每日重建 · 发布 · 站点)
 #   Actions（公开仓库不限时长）→ 拉公开源 → 自我体检 → 编译 → 硬闸 → 订阅 → DoH 产物 → 回归
 #   → data 分支（大文件单 commit，历史不膨胀）→ Release 资产（单包下载，长期留档）
 #   → Pages（站点 + 镜像通道，带宽由 GitHub 承担）
+# 编排口径：产物提交带跳过标记（避免自触发）｜回归 6 项并行｜push 与定时分离并发｜pip 缓存
 # 写操作全程走 git push 与 gh CLI，不消耗 API 配额，也不依赖外部账号。
 
 on:
