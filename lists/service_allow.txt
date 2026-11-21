@@ -67,3 +67,6 @@ xf-yun.com
 tencent-cloud.net
 wx.qq.com
 wxlivecdn.com
+
+# 腾讯/微信视频播放 CDN（2026-11-21 防误拦）
+wxamedia.com

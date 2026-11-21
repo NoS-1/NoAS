@@ -617,6 +617,7 @@ www.lianwifi.com
 www.rethinkdns.com
 wx.gtimg.com
 wx.qq.com
+wxamedia.com
 wxlivecdn.com
 wzqcf.gtimg.com
 x.com

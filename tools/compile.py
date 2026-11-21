@@ -538,6 +538,8 @@ def main():
     telemetry = load_list_file("telemetry.txt")
     # 广告 SDK 与长视频贴片：高置信、低误伤，进 mid（不进 lite，避免挤占 1 万名额）
     sdk = load_list_file("sdk_ads.txt")
+    # App 内广告主/子域增量：只进 full（订阅取自 full），不进 mid，避免挤压 2 万名额
+    app_ad = load_list_file("app_ad_hosts.txt")
     video = load_list_file("video_ads.txt")
     dead = load_list_file("dead.txt")
     # 设备实测确认（手机日志里真实发出的广告请求，AI+多信号判定过）：强制进 mid，不参与名额竞争
@@ -672,6 +674,7 @@ def main():
     fuse = {d for d in (lite | mid | full) if cn_useless(d)}
     if fuse:
         lite, mid, full = lite - fuse, mid - fuse, full - fuse
+    full = full | {d for d in app_ad if not protected(d, wl)}
     # 档位包含是硬契约：drop_children 会在 mid 里删掉"父域已覆盖的子域"，
     # 而 lite 保留了该子域时，包含性就被破坏（用户从 lite 升 mid 反而漏拦）。这里无条件补齐。
     mid, full = mid | lite, full | mid | lite | miner
