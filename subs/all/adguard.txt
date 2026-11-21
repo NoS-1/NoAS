@@ -1,7 +1,7 @@
 ! Title: NoAS DNS 拦截订阅
 ! Description: 只做 DNS 层：广告/追踪/威胁域名进黑名单，正常业务域名进白名单，智能识别自动维护
-! Version: 20261121-1506
-! Last modified: 2026-11-21 15:06:05 UTC
+! Version: 20261121-1519
+! Last modified: 2026-11-21 15:19:47 UTC
 ! Expires: 6 hours
 ! Homepage: https://github.com/NoS-1/NoAS
 ! 条数: 黑名单 28156 ／白名单 640（例外 0）
@@ -1851,6 +1851,7 @@
 ||adx-cfg-u1.ubixioe.com^
 ||adx-exchange.toast.com^
 ||adx-in.ads.heytapmobile.com^
+||adx-zz9track-20261121.net^
 ||adx.alimama.com^
 ||adx.fulcrum.com.fj^
 ||adx.hupu.com^
@@ -14311,10 +14312,8 @@
 ||marketing.experts.com^
 ||marketing.external.xerox.com^
 ||marketing.eyc.com^
-||marketing.fedsched.com^
 ||marketing.festiva.com^
 ||marketing.fhsr.com^
-||marketing.flsmidth.com^
 ||marketing.ftfnews.com^
 ||marketing.fwcbd.com^
 ||marketing.genpak.com^
@@ -28146,6 +28145,7 @@
 ||zyvbcstcltidm.online^
 ||zyzapldgfoosg.site^
 ||zyziynnnhcvni.site^
+||zz9-adtest-20261121.com^
 ||zzbcje.com^
 ||zzbkcfkcglkhm.online^
 ||zzdvsgnxamcmq.website^
