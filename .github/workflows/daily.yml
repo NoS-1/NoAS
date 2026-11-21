@@ -1,5 +1,12 @@
 name: Daily Build (每日重建 · 发布 · 站点)
 
+# 同一时刻只允许一个构建在跑，新触发排队而不是并行。
+# 依据 GitHub 官方 Pages 模板的写法（cancel-in-progress: false）：不中断正在跑的构建，
+# 但绝不让两个 run 同时部署 Cloudflare Pages / Worker 互相覆盖。
+concurrency:
+  group: noas-daily
+  cancel-in-progress: false
+
 # 只用 GitHub 自家免费能力，不挂任何第三方平台或 CDN：
 #   Actions（公开仓库不限时长）→ 拉公开源 → 自我体检 → 编译 → 硬闸 → 订阅 → DoH 产物 → 回归
 #   → data 分支（大文件单 commit，历史不膨胀）→ Release 资产（单包下载，长期留档）
