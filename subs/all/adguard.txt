@@ -1,7 +1,7 @@
 ! Title: NoAS DNS 拦截订阅
 ! Description: 只做 DNS 层：广告/追踪/威胁域名进黑名单，正常业务域名进白名单，智能识别自动维护
-! Version: 20261121-1524
-! Last modified: 2026-11-21 15:24:38 UTC
+! Version: 20261121-1538
+! Last modified: 2026-11-21 15:38:13 UTC
 ! Expires: 6 hours
 ! Homepage: https://github.com/NoS-1/NoAS
 ! 条数: 黑名单 28929 ／白名单 641（例外 0）
@@ -14567,7 +14567,6 @@
 ||mail.finwellgroup.com^
 ||mail.spandex.com^
 ||mailcoupletime.net^
-||mailstat.us^
 ||mailtracking.tf1.com^
 ||mainadcenter.com^
 ||mainadv.com^
@@ -23313,6 +23312,7 @@
 ||stats.sirdata.com^
 ||stats.ski.com^
 ||stats.sqlteam.com^
+||stats.studypages.com^
 ||stats.suenicholls.com^
 ||stats.swissotel.com^
 ||stats.te.com^
