@@ -228,15 +228,18 @@ function blockedResponse(query, qtype, end) {
   head[6] = 0; head[7] = answer ? 1 : 0;
   head[8] = 0; head[9] = 0; head[10] = 0; head[11] = 0;
   if (!answer) return head;
-  const out = new Uint8Array(head.length + 16);
+  const rdlen = qtype === 1 ? 4 : 16;
+  const out = new Uint8Array(head.length + 12 + rdlen);
   out.set(head, 0);
   const p = head.length;
+  // ANSWER 区布局：NAME(2) TYPE(2) CLASS(2) TTL(4) RDLEN(2) RDATA(4|16)
   out[p] = 0xc0; out[p + 1] = 0x0c;                    // 指向问题区的名字
-  out[p + 2] = qtype === 1 ? 0x00 : 0x1c;              // TYPE
-  out[p + 3] = 0x01;
-  out[p + 4] = 0x00; out[p + 5] = 0x00; out[p + 6] = 0x00; out[p + 7] = 60;  // TTL 60
-  out[p + 8] = 0x00; out[p + 9] = qtype === 1 ? 4 : 16;
-  return out;
+  out[p + 2] = 0x00; out[p + 3] = qtype === 1 ? 0x01 : 0x1c;   // TYPE A=1 / AAAA=28
+  out[p + 4] = 0x00; out[p + 5] = 0x01;                // CLASS IN=1（写 0 会被严格解析器丢弃）
+  out[p + 6] = 0x00; out[p + 7] = 0x00;                // TTL = 60
+  out[p + 8] = 0x00; out[p + 9] = 0x3c;
+  out[p + 10] = 0x00; out[p + 11] = rdlen;             // RDLEN 必须与实际数据区一致
+  return out;                                          // RDATA 全 0 → A=0.0.0.0 / AAAA=::
 }
 
 async function upstream(bytes) {
