@@ -108,10 +108,16 @@ def main():
            "subrequests": got["subrequests"], "errors": got["errors"],
            "cpu_ms_p50": got["cpu_ms_p50"], "cpu_ms_p99": got["cpu_ms_p99"],
            "cpu_limit_ms": 10,
-           "by_script": got["by_script"]}
+           "by_script": got["by_script"],
+           # 观测口径：本表全部来自 Workers 的 workersInvocationsAdaptive 数据集。
+           # 实测发 30 次 Pages /why 后该数据集零增长 → Pages Functions 的调用量不在此口径内，
+           # 若真实用户主要走 Pages 入口，这里的 requests/KV 水位会**低估**，不能当唯一依据。
+           "coverage": {"workers_dataset": True,
+                        "pages_functions": "不在 workersInvocationsAdaptive 口径内（实测零计数）"}}
     os.makedirs("state", exist_ok=True)
     open("state/quota.json", "w", encoding="utf-8").write(json.dumps(out, ensure_ascii=False, indent=1) + "\n")
 
+    print("按脚本：" + "、".join(f"{k}={v}" for k, v in (got["by_script"] or {}).items()))
     for k, v in pct.items():
         flag = "WARN" if v >= a.warn_at else "OK  "
         print(f"{flag} {k:12s} {got[k]:>7d} / {LIMITS[k]:>7d}  {v:5.1f}%")

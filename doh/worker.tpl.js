@@ -999,6 +999,9 @@ async function handle(request, env, ctx) {
   if (url.pathname === "/why") {
     const d = (url.searchParams.get("d") || url.searchParams.get("domain") || "").toLowerCase();
     const tier = Number(url.searchParams.get("tier") || 2);
+    if (await ipLimited(env, request.headers.get("cf-connecting-ip"))) {
+      return json({ error: "rate-limited", retry_after_s: 60 }, 429);
+    }
     await loadHot(env);
     await loadTier(env, tier);
     const info = blockedInfo(d, tier);
@@ -1063,6 +1066,17 @@ async function handle(request, env, ctx) {
   let qbytes = bytes;
   if (ecsOff) qbytes = stripEcs(bytes, edns);
   const doBit = edns.doBit;
+
+  // 反滥用：DoH 主路径此前**完全没有限流**（只有 /check 调试端点有），谁拿到地址都能把它当免费公共解析器刷，
+  // 单点就能把上游往返和每日 10 万次额度打爆。超限回 SERVFAIL（DNS 语义，客户端会退走备份解析器），
+  // 而不是 HTTP 429——后者会让客户端原地重试，等于放大攻击。
+  // 注意不限 skipRules：降级只是跳过规则表，**不该连限流一起跳过**，
+  // 否则上游一挂、进降级窗口，正好给刷子一个 2 分钟不设防的窗口。
+  if (await ipLimited(env, ip)) {
+    return new Response(blockedResponse(bytes, qtype, end, "servfail"), {
+      headers: { "content-type": "application/dns-message", "x-noas": "rate-limited", "x-noas-ver": VERSION },
+    });
+  }
 
   // EDNS version > 0：RFC 6891 要求回 BADVERS(ext-rcode 16)，否则客户端会反复重试
   if (edns.version > 0) {

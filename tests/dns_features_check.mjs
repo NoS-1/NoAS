@@ -263,5 +263,25 @@ recMock(() => answer('p.example.com', 1, 300));
   const blk = pts.find((p) => p.blobs[0] === 'block');
   ok(blk && blk.blobs[1] === 'doubleclick.net', '拦截侧保留明文域名（公开黑名单）'); }
 globalThis.fetch = origFetch;
+
+// 反滥用：LIMITER 拒绝时必须回 SERVFAIL（rcode 2），不能静默放行
+{
+  const ENV_RL = Object.assign({}, ENV, { LIMITER: { limit: async () => ({ success: false }) } });
+  const r = await handler(new Request('https://x.dev/dns-query', {
+    method: 'POST', body: query('www.baidu.com'),
+    headers: { 'content-type': 'application/dns-message', 'cf-connecting-ip': '203.0.113.9' },
+  }), ENV_RL, ctx);
+  const b = Buffer.from(await r.arrayBuffer());
+  ok(r.headers.get('x-noas') === 'rate-limited' && (b[3] & 15) === 2,
+     'LIMITER 拒绝时 DoH 主路径没回 SERVFAIL（限流未生效或语义错）');
+  const r2 = await handler(new Request('https://x.dev/dns-query', {
+    method: 'POST', body: query('www.baidu.com'),
+    headers: { 'content-type': 'application/dns-message', 'cf-connecting-ip': '203.0.113.10' },
+  }), ENV, ctx);
+  const b2 = Buffer.from(await r2.arrayBuffer());
+  ok(r2.headers.get('x-noas') !== 'rate-limited' && (b2[3] & 15) === 0,
+     '无限流 binding 时正常请求被误限');
+}
+
 console.log(`${pass} 项通过｜失败 ${fail.length}`);
 if (fail.length) { console.log('FAIL: ' + fail.join(' / ')); process.exit(1); }
