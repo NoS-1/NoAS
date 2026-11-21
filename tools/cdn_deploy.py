@@ -75,6 +75,34 @@ def ctype(path):
     return "application/octet-stream"
 
 
+def verify_doh(base):
+    """确认 Pages Function 真的被编译上线了。
+
+    静态文件能取到、deployment.files 是满的，都不代表 functions/ 被识别 ——
+    wrangler 只从 cwd 找 functions/，跑错目录就整站退化成纯静态，POST 直接 405。
+    所以部署完必须真打一次 DoH：200 且带 x-noas 头才算通过。"""
+    import base64
+    import struct
+    q = struct.pack(">HHHHHH", 0x4e41, 0x0100, 1, 0, 0, 0)
+    q += b"\x07example\x03com\x00" + struct.pack(">HH", 1, 1)
+    url = base.rstrip("/") + "/dns-query?dns=" + base64.urlsafe_b64encode(q).decode().rstrip("=")
+    for i in range(3):
+        try:
+            r = requests.get(url, timeout=30, proxies={"http": None, "https": None},
+                             headers={"accept": "application/dns-message",
+                                      "user-agent": "Mozilla/5.0 NoAS"})
+            if r.status_code == 200 and r.headers.get("x-noas"):
+                print("DoH 端点验证：%d / x-noas=%s / %d 字节 -> OK"
+                      % (r.status_code, r.headers.get("x-noas"), len(r.content)))
+                return True
+            print("DoH 端点验证：HTTP %d（x-noas=%s）"
+                  % (r.status_code, r.headers.get("x-noas")))
+        except Exception as e:
+            print("DoH 端点验证异常（%s）" % type(e).__name__)
+        time.sleep(3)
+    return False
+
+
 def verify(url):
     """真的把文件取回来。deployment.files 只是 manifest 条目数，
     资产没被服务端接收时它照样是满的 —— 2026-11-21 的整站 500 就是这么骗过去的。"""
@@ -249,10 +277,10 @@ def main():
     finally:
         shutil.rmtree(stage, ignore_errors=True)
 
-    ok = bool(url) and verify(url)
+    ok = bool(url) and verify(url) and verify_doh(url)
     if not ok and verify(f"https://{PROJECT}.pages.dev"):
         url = url or f"https://{PROJECT}.pages.dev"
-        ok = True
+        ok = verify_doh(url)
     if not ok:
         print("wrangler 部署未生效，回退到直连 API 全量重试…")
         res = push(list(files), "-fallback") or {}
