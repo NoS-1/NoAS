@@ -26,7 +26,7 @@ jobs:
       - name: 预热 + 延迟采样
         run: |
           python3 - <<'PY'
-          import struct, urllib.request, statistics, time, random
+          import struct, urllib.request, statistics, time, json, random
 
           URL = "https://noas-doh.199999510.workers.dev/dns-query"
           # workers.dev 对非浏览器 UA 直接 403（实测 Python-urllib 默认 UA 就被拦），
@@ -71,4 +71,22 @@ jobs:
               print("⚠ 上游 P50 超过 300ms，检查三家 DoH 是否被限流")
           if hit and statistics.median(hit[1:] or hit) > 60:
               print("⚠ 缓存 P50 超过 60ms，检查 Cache API 是否失效")
+
+          # 关键一步：?probe=1 让 Worker 从它所在的边缘节点直接量每家上游的耗时。
+          # 上面的"上游路径 ms"含客户端→CF 的网络（runner 常常几百 ms 到几秒），
+          # 这一组才是我们真正能优化的那段。
+          try:
+              hreq = urllib.request.Request(
+                  "https://noas-doh.199999510.workers.dev/health?probe=1",
+                  headers={"User-Agent": UA})
+              h = json.loads(urllib.request.urlopen(hreq, timeout=15).read())
+              for p in (h.get("probe") or []):
+                  host = p["url"].split("//")[1].split("/")[0]
+                  print("边缘→上游 %-28s %5dms %s" % (
+                      host, p["ms"], "ok" if p.get("ok") else "fail " + (p.get("why") or "")))
+              print("边缘内状态：order=%s fails=%s cache_hits=%s limiter=%s" % (
+                  "→".join(x.split("//")[1].split("/")[0] for x in (h.get("upstream_order") or [])),
+                  h.get("upstream_fails"), h.get("cache_hits"), h.get("limiter")))
+          except Exception as e:
+              print("health 探测失败（不阻塞）：%s" % e)
           PY

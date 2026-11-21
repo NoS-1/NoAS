@@ -417,6 +417,25 @@ async function handle(request, env, ctx) {
     if (rulesStale === null && Date.now() - manifestCheckedAt > 60000) {
       try { await checkManifest(env); } catch (e) {}
     }
+    // ?probe=1：从"这个边缘节点"出发，并发量每家上游各一次的真实耗时。
+    // 外部测的 RTT 含客户端→CF 的网络，这里量到的才是我们能优化的那段。
+    let probe = null;
+    if (url.searchParams.get("probe")) {
+      const q = mkQuery("example.com");
+      probe = await Promise.all(UPSTREAM.map(async (u) => {
+        const t0 = Date.now();
+        const c = new AbortController();
+        const tm = setTimeout(() => { try { c.abort(); } catch (e) {} }, 5000);
+        try {
+          const r = await fetchUpstream(u, q, c);
+          clearTimeout(tm);
+          return { url: u, ms: Date.now() - t0, ok: true, bytes: r.byteLength };
+        } catch (e) {
+          clearTimeout(tm);
+          return { url: u, ms: Date.now() - t0, ok: false, why: String(e).slice(0, 80) };
+        }
+      }));
+    }
     return json({ ok: true, version: VERSION, tier1: TIER1.size, tier2: TIER2.size,
                   allowlist: ALLOW.size, endpoints: ENDPOINTS.size, wildcards: WILD_SUFFIX.size,
                   upstream: UPSTREAM.length, upstream_fails: upstreamFails,
@@ -430,7 +449,7 @@ async function handle(request, env, ctx) {
                   limiter: !!(env && env.LIMITER),
                   cache: hasCache(), cache_hits: cacheHits,
                   cache_ttl_s: [CACHE_FRESH_S, CACHE_STALE_S],
-                  upstream_order: (upOrder || UPSTREAM),
+                  upstream_order: (upOrder || UPSTREAM), probe: probe,
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
                            soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
   }
