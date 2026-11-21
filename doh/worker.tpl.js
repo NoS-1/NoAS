@@ -371,6 +371,7 @@ async function handle(request, env, ctx) {
                   degraded: degraded || null,
                   rules_stale: rulesStale, rules_manifest: MANIFEST_URLS[0],
                   hot: hot ? { ver: hot.ver, count: hot.count } : null, hot_url: HOT_URLS[0],
+                  ae_points: aePoints, ae_cap: AE_DAILY_CAP,
                   cache: hasCache(),
                   upstream_order: (upOrder || UPSTREAM),
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
@@ -485,7 +486,7 @@ async function cacheGet(name, qtype) {
 async function cachePut(name, qtype, buf) {
   try {
     await caches.default.put(cacheKey(name, qtype), new Response(buf, {
-      headers: { "content-type": "application/dns-message", "cache-control": "max-age=60" },
+      headers: { "content-type": "application/dns-message", "cache-control": "max-age=300" },
     }));
   } catch (e) { /* Cache API 不可用就放弃兜底，不影响正常应答 */ }
 }
