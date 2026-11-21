@@ -73,11 +73,26 @@ def main():
 
     # doh.txt
     doh = [r for r in alive_up if r["proto"] in ("doh", "ndoh")]
-    (OUTDIR / "doh.txt").write_text(
-        "# NoAS 国内 DoH 上游（可直接填入 AdGuard Home / sing-box / 浏览器）\n"
+    verify = {}
+    vp = ROOT / "state" / "gateway_verify.json"
+    if vp.exists():
+        try:
+            verify = json.loads(vp.read_text(encoding="utf-8"))
+        except Exception:
+            verify = {}
+    gw_endpoint = gw[0]["endpoint"] if gw else "https://oxyacq0a4t.cloudflare-gateway.com/dns-query"
+    gw_status = "已实测：拦广告 / 放正常" if verify.get("ok") else "待验证"
+    head = (
+        "# NoAS DoH 清单 —— 注意：下面都是「纯解析」通道，不拦截广告。\n"
+        "# 要拦截，二选一：\n"
+        "#   a) 本地过滤：AGH / sing-box 加载 subs/lite/adguard.txt，上游填下面任意一条（零额度）；\n"
+        "#   b) 云端带规则：手机 DoH 直接填 " + gw_endpoint + "（Gateway，" + gw_status + "）\n"
+        "#      或 https://noas-doh.199999510.workers.dev/dns-query（Worker，10 万/天，90% 熔断）\n"
         + ("# 注意：本次体检环境异常，以下为完整清单（未经在线验证），请自行试通\n" if fallback else "")
         + "# 顺序即优先级；均为国内直连，无调用额度\n"
-        + "".join("%s\n" % r["endpoint"] for r in doh), encoding="utf-8")
+    )
+    (OUTDIR / "doh.txt").write_text(
+        head + "".join("%s\n" % r["endpoint"] for r in doh), encoding="utf-8")
 
     # dot.txt
     dot = [r for r in alive_up if r["proto"] == "dot"]
@@ -91,7 +106,7 @@ def main():
         "# DoH 与 DoT 均带 7 条档位规则；额度按用户数计算，远高于 Worker 的 10 万/天\n"
         "# 标注「已实测」的才可信；未标注的需自行试通（本机代理会伪造响应）\n"
         + "".join("%s%s\n" % (r["endpoint"],
-                              "   # 已实测" if (health.get(r["name"]) or {}).get("status") == "ok" else "   # 待验证")
+                              "   # 已实测" if (verify.get("ok") or (health.get(r["name"]) or {}).get("status") == "ok") else "   # 待验证")
                   for r in gw), encoding="utf-8")
 
     # dot-preferred.txt：只留健康检查里最快的那条 DoT，安卓私人 DNS 直接抄

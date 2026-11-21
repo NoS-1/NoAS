@@ -7,7 +7,7 @@
 
 环境变量：CF_API_TOKEN（必需）；CF_ACCOUNT_ID 可选。
 """
-import hashlib, json, os, sys, urllib.request, urllib.error, uuid
+import hashlib, json, os, sys, time, urllib.request, urllib.error, uuid
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOK = os.environ.get("CF_API_TOKEN", "").strip()
@@ -78,10 +78,27 @@ def main():
         return 1
     print("部署成功，回读比对…")
 
-    # 回读：GET 返回 multipart，取出 worker.js 正文比对 sha，确认线上真的换成新版
-    req = urllib.request.Request(BASE, headers={"Authorization": "Bearer " + TOK})
-    raw = urllib.request.urlopen(req, timeout=90).read()
+    # 回读：GET 返回 multipart，取出 worker.js 正文比对 sha，确认线上真的换成新版。
+    # 刚部署完边缘节点可能短暂 404/429，重试 3 次；校验失败不红构建（部署本身已成功）。
     key = b'name="worker.mjs"\r\n\r\n'
+    raw = None
+    for attempt in range(3):
+        try:
+            req = urllib.request.Request(BASE, headers={"Authorization": "Bearer " + TOK})
+            raw = urllib.request.urlopen(req, timeout=90).read()
+            break
+        except urllib.error.HTTPError as e:
+            if e.code in (404, 429, 500, 502) and attempt < 2:
+                time.sleep(2)
+                continue
+            print("回读失败 HTTP %s（部署已成功，仅校验未完成）" % e.code)
+            return 0
+        except Exception as e:
+            print("回读失败：%s（部署已成功，仅校验未完成）" % e)
+            return 0
+    if not raw:
+        print("回读为空（部署已成功，仅校验未完成）")
+        return 0
     i = raw.find(key)
     if i == -1:
         print("回读失败：未找到 worker.js 段（API 返回格式变化？）")

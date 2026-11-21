@@ -6,6 +6,7 @@
 """
 import base64
 import gzip
+import hashlib
 import json
 import os
 import sys
@@ -72,8 +73,22 @@ def main():
     os.makedirs(os.path.join(ROOT, "doh"), exist_ok=True)
     p = os.path.join(ROOT, "doh", "worker.js")
     open(p, "w", encoding="utf-8").write(js)
-    print("已生成 doh/worker.js：lite %d ／mid %d ／白名单 %d ／%d KB ／版本 %s" % (
-        len(set(lite)), len(set(mid)), len(allow), len(js) // 1024, ver))
+
+    # 构建指纹：CF 侧 cron 只读这一份（KB 级）判断"线上规则是否落后于仓库"。
+    sha = hashlib.sha256(js.encode("utf-8")).hexdigest()[:16]
+    manifest = {
+        "version": ver,
+        "sha256": sha,
+        "bytes": len(js.encode("utf-8")),
+        "counts": {k: len(payload[k]) for k in ("t1", "t2", "allow", "wild", "ep")},
+        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    }
+    sm = os.path.join(ROOT, "state", "build_manifest.json")
+    os.makedirs(os.path.dirname(sm), exist_ok=True)
+    open(sm, "w", encoding="utf-8").write(json.dumps(manifest, ensure_ascii=False, indent=1) + "\n")
+
+    print("已生成 doh/worker.js：lite %d ／mid %d ／白名单 %d ／%d KB ／版本 %s ／sha %s" % (
+        len(set(lite)), len(set(mid)), len(allow), len(js) // 1024, ver, sha))
     return 0
 
 

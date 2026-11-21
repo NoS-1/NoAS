@@ -24,14 +24,29 @@ const UPSTREAM = [
   "https://dns.360.cn/dns-query",
 ];
 
+// 版本哨兵：CF 侧唯一"从仓库拿的东西"就是这一份构建指纹（几 KB）。
+// 拉不到就保持 null，绝不影响解析；规则本体已内嵌，运行期不依赖 GitHub。
+const MANIFEST_URL = "https://raw.githubusercontent.com/NoS-1/NoAS/main/state/build_manifest.json";
+const WILD_SUFFIX = new Set(WILD.map((w) => w.replace(/^\*\./, "")));
 
 // ── 额度熔断（防止免费额度被超）──────────────────────────────────────────
-// Workers Free：10 万请求/天（UTC 0 点＝北京 08:00 重置）。到 90% 主动熔断，
-// 把请求推回国内公共 DoH；计数只放 isolate 内存，绝不碰 D1/KV
-// （用 KV 计数反而会把 KV 的 1000 写/天额度瞬间打爆）。
+// Workers Free：10 万请求/天（北京 08:00 重置）。到 90% 进入"降级"：
+// 跳过规则匹配、直接转发上游，客户端不断服；恢复由 UTC 换日自动完成。
+// 计数只放 isolate 内存，绝不碰 KV/D1（用 KV 计数会把 1000 写/天瞬间打爆）。
 const FREE_DAILY = 100000;
 const SOFT_RATIO = 0.9;
-const PER_IP_PER_MIN = 120;
+const PER_IP_PER_MIN = 300;        // 共享出口 IP（校园网/运营商 NAT）友好，避免误伤整条链路
+const UPSTREAM_TIMEOUT_MS = 5000;
+
+let degraded = "";                 // 非空 = 正在降级；/health 可见
+let upstreamFails = 0;
+let lastUpstreamOk = 0;
+let rulesStale = null;             // null=还没校验过
+let canaryOk = null;               // cron 规则金丝雀：内置表还能不能拦住已知广告域
+let upOrder = null;                // 上游自适应顺序（最近成功的排前面），isolate 内有效
+
+// 金丝雀：只用内置规则判定（纯函数、零网络），断言"规则没被构建搞坏"
+const CANARY_DOMAINS = ["doubleclick.net", "googleadservices.com", "googletagmanager.com"];
 
 // ── Analytics Engine（可选绑定 AE）────────────────────────────────────────
 // 只写数据点，不碰 D1：D1 的行读额度（500 万行/天）留给配置与状态。
@@ -44,7 +59,7 @@ function logHit(env, kind, name, tier, extra) {
     ae.writeDataPoint({
       blobs: [kind, name, "t" + tier, extra || ""],
       doubles: [1],
-      indexes: [name],
+      indexes: [kind],          // 用 kind 而非域名：域名做 index 基数爆炸，白烧 AE 元数据
     });
   } catch (e) { /* 记录失败不影响 DNS 应答 */ }
 }
@@ -78,15 +93,8 @@ function ipBurst(ip) {
   return rec.n > PER_IP_PER_MIN;
 }
 
-function quotaStop(reason) {
-  return json({
-    error: reason,
-    action: "已熔断，保护 CF 免费额度",
-    fallback: ["https://dns.alidns.com/dns-query", "https://doh.pub/dns-query"],
-    note: "UTC 0 点（北京 08:00）自动恢复",
-    used: dayCount,
-    limit: FREE_DAILY,
-  }, 503);
+function degrade(reason) {
+  degraded = reason;
 }
 
 function json(obj, status = 200) {
@@ -110,12 +118,9 @@ function matchSet(set, name) {
   if (set.has(name)) return true;
   const parts = name.split(".");
   for (let i = 1; i < parts.length - 1; i++) {
-    if (set.has(parts.slice(i).join("."))) return true;
-  }
-  // 通配规则：*.example.com 命中其任意多级子域
-  for (const w of WILD) {
-    const suffix = w.slice(2);
-    if (name.endsWith("." + suffix) && name.length > suffix.length + 1) return true;
+    const parent = parts.slice(i).join(".");
+    if (set.has(parent)) return true;
+    if (WILD_SUFFIX.has(parent)) return true;   // *.parent 命中其任意（含多级）子域
   }
   return false;
 }
@@ -215,17 +220,14 @@ function b64urlToBytes(s) {
   return out;
 }
 
-/** 合成"拦截"应答：A→0.0.0.0，AAAA→::，其它类型→NXDOMAIN 风格空答 */
+/** 合成"拦截"应答：A→0.0.0.0，AAAA→::，其它类型→NOERROR 空答（NXDOMAIN 会误伤邮件/校验类客户端） */
 function blockedResponse(query, qtype, end) {
   const head = new Uint8Array(query.slice(0, end));   // 头部 + 问题区原样带回
   const answer = (qtype === 1 || qtype === 28) ? 1 : 0;
-  head[2] = 0x81; head[3] = 0x80;                     // QR=1 RD=1 RA=1
+  head[2] = 0x81; head[3] = 0x80;                     // QR=1 RD=1 RA=1 NOERROR
   head[6] = 0; head[7] = answer ? 1 : 0;
   head[8] = 0; head[9] = 0; head[10] = 0; head[11] = 0;
-  if (!answer) {
-    head[3] = 0x83;                                   // NXDOMAIN
-    return head;
-  }
+  if (!answer) return head;
   const out = new Uint8Array(head.length + 16);
   out.set(head, 0);
   const p = head.length;
@@ -238,17 +240,47 @@ function blockedResponse(query, qtype, end) {
 }
 
 async function upstream(bytes) {
-  for (const u of UPSTREAM) {
+  const list = upOrder || (upOrder = UPSTREAM.slice());
+  for (const u of list) {
     try {
+      let signal;
+      try { signal = AbortSignal.timeout(UPSTREAM_TIMEOUT_MS); } catch (e) { signal = undefined; }
       const r = await fetch(u, {
         method: "POST",
         headers: { "content-type": "application/dns-message", accept: "application/dns-message" },
         body: bytes,
+        signal,
       });
-      if (r.ok) return await r.arrayBuffer();
-    } catch (e) { /* 换下一个 */ }
+      if (r.ok) {
+        upstreamFails = 0;
+        lastUpstreamOk = Date.now();
+        if (list[0] !== u) {                  // 把当前可用上游提到第一位，下个请求直接命中
+          list.splice(list.indexOf(u), 1);
+          list.unshift(u);
+        }
+        return await r.arrayBuffer();
+      }
+    } catch (e) { /* 超时/被拒：换下一个上游 */ }
   }
+  upstreamFails += 1;
   return null;
+}
+
+/** 构造一条最小的 A 查询报文（cron 自检用，不经过自己的 DoH，避免自增计数） */
+function mkQuery(name) {
+  const labels = name.split(".");
+  const len = 12 + labels.reduce((a, l) => a + l.length + 1, 0) + 1 + 4;
+  const b = new Uint8Array(len);
+  const dv = new DataView(b.buffer);
+  dv.setUint16(0, 0x4e41); dv.setUint16(2, 0x0100); dv.setUint16(4, 1);
+  let off = 12;
+  for (const l of labels) {
+    b[off++] = l.length;
+    for (let i = 0; i < l.length; i++) b[off++] = l.charCodeAt(i);
+  }
+  b[off++] = 0;
+  dv.setUint16(off, 1); dv.setUint16(off + 2, 1);      // A / IN
+  return b;
 }
 
 async function handle(request, env, ctx) {
@@ -256,8 +288,14 @@ async function handle(request, env, ctx) {
 
   if (url.pathname === "/health") {
     return json({ ok: true, version: VERSION, tier1: TIER1.size, tier2: TIER2.size,
-                  allowlist: ALLOW.size, endpoints: ENDPOINTS.size, upstream: UPSTREAM.length,
+                  allowlist: ALLOW.size, endpoints: ENDPOINTS.size, wildcards: WILD_SUFFIX.size,
+                  upstream: UPSTREAM.length, upstream_fails: upstreamFails,
+                  last_upstream_ok: lastUpstreamOk,
                   ae: !!(env && env.AE),
+                  canary: canaryOk,
+                  degraded: degraded || null,
+                  rules_stale: rulesStale, rules_manifest: MANIFEST_URL,
+                  upstream_order: (upOrder || UPSTREAM),
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
                            soft_limit: Math.round(FREE_DAILY * SOFT_RATIO) } });
   }
@@ -275,10 +313,12 @@ async function handle(request, env, ctx) {
     });
   }
 
-  // 熔断优先：先卡额度，再解包，省 CPU（Free 每请求只有 10ms CPU）
+  // 熔断不返回 503：503 会让客户端直接断服。改为"降级直转"——
+  // 跳过规则匹配省 CPU，DNS 照常应答，恢复靠 UTC 换日 + cron 自检复位。
   const ip = request.headers.get("cf-connecting-ip") || "unknown";
-  if (ipBurst(ip)) return quotaStop("单 IP 每分钟超过 " + PER_IP_PER_MIN + " 次");
-  if (!takeQuota()) return quotaStop("当日请求达免费额度 90%");
+  if (ipBurst(ip)) degrade("ip-burst " + PER_IP_PER_MIN + "/min");
+  if (!takeQuota()) degrade("quota 90%");
+  const skipRules = !!degraded;
 
   let bytes;
   if (request.method === "POST") {
@@ -290,12 +330,13 @@ async function handle(request, env, ctx) {
   }
   if (bytes.byteLength < 17) return json({ error: "报文过短" }, 400);
 
-  const { name, qtype, end } = parseQuery(bytes);
+  let parsed;
+  try { parsed = parseQuery(bytes); } catch (e) { return json({ error: "报文无法解析" }, 400); }
+  const { name, qtype, end } = parsed;
   const tier = Number(url.searchParams.get("tier") || 2);   // 默认走 mid：lite 只是零误伤最小集
   if (!name) return new Response("bad query", { status: 400 });
 
-  if (blocked(name, tier)) {
-    if (ctx && ctx.waitUntil) ctx.waitUntil(Promise.resolve());
+  if (!skipRules && blocked(name, tier)) {
     logHit(env, "block", name, tier, "");
     return new Response(blockedResponse(bytes, qtype, end), {
       headers: { "content-type": "application/dns-message", "x-noas": "blocked", "x-noas-ver": VERSION },
@@ -303,28 +344,70 @@ async function handle(request, env, ctx) {
   }
   const buf = await upstream(bytes);
   if (!buf) {
+    degrade("upstream-down");
     return new Response("上游不可用", { status: 502, headers: { "x-noas": "upstream-fail" } });
   }
-  // CNAME 反隐蔽：第一方子域 CNAME 到追踪者时，按追踪者判定并直接拦掉
-  const chain = cnameTargets(buf);
-  for (const t of chain) {
-    if (blocked(t, tier)) {
-      logHit(env, "cname", name, tier, t);
-      return new Response(blockedResponse(bytes, qtype, end), {
-        headers: { "content-type": "application/dns-message", "x-noas": "blocked-cname",
-                   "x-noas-target": t, "x-noas-ver": VERSION },
-      });
+  if (!skipRules) {
+    // CNAME 反隐蔽：第一方子域 CNAME 到追踪者时，按追踪者判定并直接拦掉
+    const chain = cnameTargets(buf);
+    for (const t of chain) {
+      if (blocked(t, tier)) {
+        logHit(env, "cname", name, tier, t);
+        return new Response(blockedResponse(bytes, qtype, end), {
+          headers: { "content-type": "application/dns-message", "x-noas": "blocked-cname",
+                     "x-noas-target": t, "x-noas-ver": VERSION },
+        });
+      }
     }
+    if (Math.random() < 0.1) logHit(env, "pass", name, tier, "");   // 放行只留 10% 样本，省 AE 点数
   }
-  logHit(env, "pass", name, tier, "");
   return new Response(buf, {
-    headers: { "content-type": "application/dns-message", "x-noas": "pass", "x-noas-ver": VERSION },
+    headers: { "content-type": "application/dns-message",
+               "x-noas": skipRules ? "degraded" : "pass", "x-noas-ver": VERSION },
   });
 }
 
-// 免费 Cron Trigger（每账户 5 个额度）：云端自己留心跳，GitHub Actions 挂了也能看出 worker 是否活着。
+// 免费 Cron Trigger（每账户 5 个额度）：CF 侧自持的自治循环——
+// 心跳 + 规则新鲜度哨兵 + 上游自检复位，GitHub Actions 挂了也照样运转。
 async function scheduled(event, env, ctx) {
   logHit(env, "cron", "heartbeat", 0, "v" + VERSION);
+
+  // 规则金丝雀：纯本地判定（零网络），确认内置表真的还能拦住已知广告域。
+  const miss = CANARY_DOMAINS.filter((d) => !blocked(d, 2));
+  canaryOk = miss.length === 0;
+  if (!canaryOk) logHit(env, "canary", "miss", 0, miss.join(","));
+
+  // 规则新鲜度：只读仓库里的构建指纹（KB 级），不拉规则本体。
+  // 拉不到＝未知，保持 null，不制造假告警。
+  try {
+    const r = await fetch(MANIFEST_URL, { headers: { "cache-control": "no-cache" } });
+    if (r.ok) {
+      const m = await r.json();
+      const fresh = !!(m && m.version === VERSION);
+      rulesStale = !fresh;
+      if (!fresh) logHit(env, "stale", "manifest", 0, String((m && m.version) || ""));
+      // 漂移检测：版本相同但条数不符 = 构建/注入出过岔子
+      if (m && m.counts) {
+        const drift = [];
+        if (m.counts.t1 && m.counts.t1 !== TIER1.size) drift.push("t1");
+        if (m.counts.t2 && m.counts.t2 !== TIER2.size) drift.push("t2");
+        if (m.counts.allow && m.counts.allow !== ALLOW.size) drift.push("allow");
+        if (drift.length) logHit(env, "drift", "count-mismatch", 0, drift.join(","));
+      }
+    } else {
+      rulesStale = null;
+    }
+  } catch (e) { rulesStale = null; }
+
+  // 上游自检：内置最小报文直问上游，绕过自己的规则层（不占自身请求计数）
+  const probe = await upstream(mkQuery("example.com"));
+  if (probe) {
+    degraded = "";                        // 上游恢复＝解降级
+    logHit(env, "cron", "upstream-ok", 0, "");
+  } else {
+    degrade("upstream-down");
+    logHit(env, "cron", "upstream-dead", 0, "");
+  }
 }
 
 export default { fetch: handle, scheduled };

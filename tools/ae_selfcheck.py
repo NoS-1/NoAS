@@ -36,6 +36,47 @@ def dns_query(name, qtype=1):
     return out
 
 
+def parse_a(buf):
+    """极简 DNS 解析：只取应答里的 A 记录，用来断言"真拦成 0.0.0.0"。"""
+    if len(buf) < 12:
+        return []
+    qd, an = struct.unpack(">HH", buf[4:8])
+
+    def skip(o):
+        while o < len(buf):
+            ln = buf[o]
+            if ln == 0:
+                return o + 1
+            if ln & 0xC0 == 0xC0:
+                return o + 2
+            o += ln + 1
+        return o
+
+    off = 12
+    for _ in range(qd):
+        off = skip(off) + 4
+    ips = []
+    for _ in range(an):
+        off = skip(off)
+        rtype = struct.unpack(">H", buf[off:off + 2])[0]
+        off += 8
+        rdlen = struct.unpack(">H", buf[off:off + 2])[0]
+        off += 2
+        if rtype == 1 and rdlen == 4:
+            ips.append(".".join(str(b) for b in buf[off:off + 4]))
+        off += rdlen
+    return ips
+
+
+UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+      "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36")
+
+
+def get_health(host):
+    req = urllib.request.Request("https://%s/health" % host, headers={"user-agent": UA})
+    return json.loads(urllib.request.urlopen(req, timeout=25).read())
+
+
 def ae_sql(query):
     r = urllib.request.Request(
         "https://api.cloudflare.com/client/v4/accounts/%s/analytics_engine/sql" % ACC,
@@ -64,8 +105,12 @@ def main():
                                "Chrome/141.0 Safari/537.36"})
     try:
         resp = urllib.request.urlopen(req, timeout=25)
-        print("DoH 应答：HTTP %s ／ x-noas=%s ／ %d 字节" % (
-            resp.status, resp.headers.get("x-noas"), len(resp.read())))
+        raw = resp.read()
+        ips = parse_a(raw)
+        blocked_ok = bool(ips) and all(ip == "0.0.0.0" for ip in ips)
+        print("DoH 应答：HTTP %s ／ x-noas=%s ／ %d 字节 ／ A=%s ／ 拦截%s" % (
+            resp.status, resp.headers.get("x-noas"), len(raw), ", ".join(ips) or "-",
+            "生效" if blocked_ok else "未生效⚠️"))
     except urllib.error.HTTPError as e:
         snippet = ""
         try:
@@ -77,6 +122,18 @@ def main():
     except Exception as e:
         print("DoH 请求失败（不影响构建）：%s" % e)
         return 0
+
+    try:
+        h = get_health(host)
+        print("health：ver=%s degraded=%s rules_stale=%s upstream_fails=%s ae=%s" % (
+            h.get("version"), h.get("degraded"), h.get("rules_stale"),
+            h.get("upstream_fails"), h.get("ae")))
+        if h.get("degraded"):
+            print("⚠️ 线上处于降级：%s" % h.get("degraded"))
+        if h.get("rules_stale"):
+            print("⚠️ 线上规则落后于仓库，需要重新部署 worker")
+    except Exception as e:
+        print("health 读取失败（不影响构建）：%s" % e)
 
     try:
         d = ae_sql("SELECT count() AS n FROM %s WHERE timestamp > NOW() - INTERVAL '15' MINUTE" % DATASET)

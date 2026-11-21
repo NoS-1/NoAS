@@ -28,11 +28,29 @@ def token() -> str:
     return ""
 
 
+def lite_capacity() -> int:
+    """lite 硬上限 1 万：逼近时要显式告警，否则新增规则只能偷偷挤掉低分项。"""
+    p = pathlib.Path(__file__).resolve().parent.parent / "subs" / "lite" / "domains.txt"
+    if not p.exists():
+        return 0
+    cap = 10000
+    n = sum(1 for l in p.read_text(encoding="utf-8", errors="ignore").splitlines()
+            if l.strip() and not l.strip().startswith("#"))
+    print(f"· lite 容量：{n} / {cap}（余量 {cap - n}）")
+    if n >= cap:
+        print("✗ lite 已达上限：检查 compile 的淘汰逻辑是否在挤掉高分规则")
+        return 1
+    if cap - n < 100:
+        print(f"⚠️ lite 余量仅 {cap - n} 条，濒临上限")
+    return 0
+
+
 def main() -> int:
+    rc = lite_capacity()
     tok = token()
     if not tok:
-        print("· 无 CF_API_TOKEN，跳过额度检查")
-        return 0
+        print("· 无 CF_API_TOKEN，跳过 Pages 额度检查")
+        return rc
 
     month = datetime.now(timezone.utc).strftime("%Y-%m")
     used, page = 0, 1
@@ -61,7 +79,7 @@ def main() -> int:
     if used >= WARN:
         print(f"✗ 已用 {used} 次，逼近上限：检查是否有空部署，或把每日轮次调少")
         return 1
-    return 0
+    return rc
 
 
 if __name__ == "__main__":

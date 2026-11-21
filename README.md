@@ -103,15 +103,16 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 
 ## DNS 通道（国内主用 + 自建兜底）
 
-规则解决"拦什么"，通道解决"走哪条路"。默认全走国内公共 DNS，零调用额度：
+规则解决"拦什么"，通道解决"走哪条路"。**注意：国内公共 DNS 只解析、不拦广告**，真正能拦的只有两类：本地过滤、或带规则的云端端点。
 
-| 角色 | 通道 | 地址 |
-|---|---|---|
-| 主 | 阿里 DoH | `https://dns.alidns.com/dns-query` |
-| 备 | 腾讯 DoH | `https://doh.pub/dns-query` |
-| 备 | 阿里/腾讯 DoT | `tls://dns.alidns.com:853`、`tls://dot.pub:853` |
-| 本地 | aiodns | `127.0.0.1:5300`（国内分流 + 缓存，不做拦截） |
-| 兜底 | 自建 DoH | `https://noas-doh.199999510.workers.dev/dns-query`（10 万/天，90% 熔断） |
+| 场景 | 通道 | 地址 | 拦广告 | 额度 |
+|---|---|---|---|---|
+| 本地过滤（推荐） | AGH / sing-box + 国内上游 | 规则用 `subs/lite/adguard.txt`，上游填下面任一条 | 是 | 0 |
+| 手机直填 DoH | Gateway（带规则） | `https://oxyacq0a4t.cloudflare-gateway.com/dns-query` | 是（已实测） | 免费 50 seats，不占 Worker |
+| 手机直填 DoH | 自建 Worker（兜底） | `https://noas-doh.199999510.workers.dev/dns-query` | 是 | 10 万/天，90% 熔断 |
+| 纯解析 | 阿里 / 腾讯 DoH | `https://dns.alidns.com/dns-query`、`https://doh.pub/dns-query` | 否 | 0 |
+| 纯解析 | 阿里/腾讯 DoT | `tls://dns.alidns.com:853`、`tls://dot.pub:853` | 否 | 0 |
+| 本地分流 | aiodns | `127.0.0.1:5300`（国内分流 + 缓存） | 否 | 0 |
 
 产物在 `subs/channels/`：`doh.txt`、`dot.txt`、`aiodns.sh`、`adguardhome-upstream.yaml`、`aiodns.special.txt`、`health.json`。
 每轮构建先体检再生成；体检若判定环境被代理劫持（`env=suspect`），**沿用完整清单，绝不剔空**。

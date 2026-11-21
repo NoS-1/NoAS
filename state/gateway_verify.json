@@ -1,0 +1,30 @@
+{
+ "host": "oxyacq0a4t.cloudflare-gateway.com",
+ "ok": true,
+ "detail": {
+  "doubleclick.net": {
+   "rcode": 0,
+   "answer": [
+    "0.0.0.0"
+   ],
+   "blocked": true
+  },
+  "googleadservices.com": {
+   "rcode": 0,
+   "answer": [
+    "0.0.0.0"
+   ],
+   "blocked": true
+  },
+  "baidu.com": {
+   "rcode": 0,
+   "answer": [
+    "110.242.74.102",
+    "111.63.65.103",
+    "124.237.177.164",
+    "111.63.65.247"
+   ],
+   "passed": true
+  }
+ }
+}
