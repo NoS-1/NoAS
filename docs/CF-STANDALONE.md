@@ -13,6 +13,8 @@ CF 侧**运行期只依赖自身内嵌制品**（worker.js 里已编译进 lite+
 | 1 | `lists/` + `subs/{lite,mid,full}/domains.txt` | 规则唯一真源 | compile / build_doh / gateway_sync / gateway_prune | 每日 | 规则不再更新（线上照旧跑） | 否 |
 | 2 | `state/build_manifest.json` | 判断线上规则是否落后 | Worker `scheduled()` | 每 15 分钟 1 次（KB 级） | `rules_stale=null`（未知，不告警） | 是（清空常量） |
 | 2b | `subs/lite/domains.txt` | 热规则（不重部署也能换规则） | Worker `scheduled()` → KV | 仅版本变化时拉（约 140KB） | 继续用内嵌基线 | 是（不绑 KV 即关闭） |
+
+> 2 和 2b 都是**双源**：先拉自建 CDN `https://noas-cdn.pages.dev/...`（Pages，带宽不限、无匿名限流），失败再回落到 GitHub raw。原因是 GitHub 从 2025-05 起把匿名 `raw.githubusercontent.com` 压到约 60 次/小时/IP，单靠它做每 15 分钟轮询会被限流，且 CF 边缘访问 raw 实测不通。
 | 3 | `doh/worker.tpl.js` | 代码模板 | build_doh | 改代码时 | 无法重建制品 | 否 |
 | 4 | `doh/worker.js` | 部署输入 | deploy_doh | 每轮 | 线上停在旧版 | 可由模板重生成 |
 | 5 | `state/gateway_rules.bak.json` | Gateway 规则灾备 | 人工/回滚 | 变更时 | 无备份 | 否 |
@@ -51,7 +53,7 @@ CF AE / Logs / Cron ──► 只读观测（不进构建判定）
   - 上游自检：内置最小 A 报文直问上游（绕过自身规则层），成功则自动解除降级，失败写 `upstream-dead`。
 - **熔断不再断服**：额度到 90% 或单 IP 超 300/min 时，**跳过规则匹配直接转发**，响应头 `x-noas: degraded`，客户端无感；UTC 换日或 cron 自检成功后自动恢复。
 - **上游容错**：阿里 / 腾讯 / 360 三条 DoH，单条 5s 超时即切换。
-- **热规则自更新**（KV `RULES`）：cron 读 manifest 发现版本变化时，才拉 `subs/lite/domains.txt` → 条数/金丝雀双校验 → 存 KV；请求 isolate 冷启动读一次 KV，之后全走内存。**不重部署也能换规则**，校验不过就丢弃、继续用内嵌基线。
+- **热规则自更新**（KV `RULES`）：cron 读 manifest 发现版本变化时，才拉 `subs/lite/domains.txt` → 条数/金丝雀双校验 → 存 KV；请求 isolate 冷启动读一次 KV，之后全走内存。**不重部署也能换规则**，校验不过就丢弃、继续用内嵌基线。源是 Pages 优先、raw 兜底；解析用一次换行替换 + 计数，避免 Free cron 的 10ms CPU 被上万行 split/join 吃掉。
 - **上游断线兜底**（Cache API）：放行应答按 qname+qtype 缓存 60s；三条上游全挂时先回缓存再报错，客户端不至于彻底解析失败。Cache 免费且不计 Worker 请求额度。
 - **观测**：AE（绑定缺失静默）+ Workers Logs 1% 采样；pass 只采样 10%，block/cname/cron 全量。
 

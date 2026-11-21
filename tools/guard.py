@@ -110,7 +110,7 @@ def domains_of(tier, name):
         if not line or line[0] in "#!" or line.startswith("payload:"):
             continue
         for pat in (r"^\|\|(.+?)\^$", r"^0\.0\.0\.0\s+(\S+)$",
-                    r"^address=/(\S+)/0\.0\.0\.0$", r"^(?:- +)?DOMAIN-SUFFIX,(\S+)$", r"^host-suffix, (\S+), reject$",
+                    r"^address=/(\S+)/#$", r"^(?:- +)?DOMAIN-SUFFIX,(\S+)$", r"^host-suffix, (\S+), reject$",
                     r"^(\S+) CNAME \.$", r"^\*\.(\S+)$",
                     r'^local-zone: "(\S+)" always_nxdomain$'):
             m = re.match(pat, line)

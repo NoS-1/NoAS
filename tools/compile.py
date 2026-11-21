@@ -332,8 +332,10 @@ def write_formats(domains, wild, outdir, kind, stamp_fixed=None):
     files["domains.txt"] = "\n".join(doms) + "\n"
     files["hosts.txt"] = "\n".join(["# NoAS %s（%d 条）" % (ver, len(doms))] +
                                    ["0.0.0.0 %s" % d for d in doms]) + "\n"
+    # dnsmasq 的 # 表示 NULL 地址：同时回 0.0.0.0 与 ::，
+    # 否则只有 IPv4 被黑洞、IPv6 客户端会绕过拦截
     files["dnsmasq.conf"] = "\n".join(["# NoAS %s（%d 条）" % (ver, len(doms))] +
-                                     ["address=/%s/0.0.0.0" % d for d in doms]) + "\n"
+                                     ["address=/%s/#" % d for d in doms]) + "\n"
     files["clash.yaml"] = "\n".join(["# NoAS %s rule-provider payload" % ver, "payload:"] +
                                    ["  - DOMAIN-SUFFIX,%s" % d for d in doms]) + "\n"
     files["surge.list"] = "\n".join(["DOMAIN-SUFFIX,%s" % d for d in doms]) + "\n"

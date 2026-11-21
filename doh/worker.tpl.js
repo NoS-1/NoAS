@@ -25,19 +25,39 @@ const UPSTREAM = [
 ];
 
 // 版本哨兵：CF 侧唯一"从仓库拿的东西"就是这一份构建指纹（几 KB）。
+// 两个免费来源：自建 Pages 优先（不限带宽、无匿名限流），GitHub raw 兜底。
 // 拉不到就保持 null，绝不影响解析；规则本体已内嵌，运行期不依赖 GitHub。
-const MANIFEST_URL = "https://raw.githubusercontent.com/NoS-1/NoAS/main/state/build_manifest.json";
+const MANIFEST_URLS = [
+  "https://noas-cdn.pages.dev/state/build_manifest.json",
+  "https://raw.githubusercontent.com/NoS-1/NoAS/main/state/build_manifest.json",
+];
 const WILD_SUFFIX = new Set(WILD.map((w) => w.replace(/^\*\./, "")));
 
 // ── 热规则（CF 独立运行的核心）──────────────────────────────────────────
 // CF 侧唯一从仓库拿的"数据"就是这份 lite 文本。cron 拉取 → 校验（条数 + 金丝雀）→ 存 KV，
 // 请求路径按 isolate 内存缓存命中；拉不到/校验不过就丢弃，永远保留内嵌规则兜底。
 // 智能约束：热规则只做"增量补充"（union），绝不删除内嵌规则，也不越过白名单。
-const HOT_URL = "https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/domains.txt";
+const HOT_URLS = [
+  "https://noas-cdn.pages.dev/subs/lite/domains.txt",
+  "https://raw.githubusercontent.com/NoS-1/NoAS/main/subs/lite/domains.txt",
+];
 const HOT_MIN = 8000;            // 少于 8000 条＝上游残缺，拒收
 const HOT_MAX = 10500;           // 多于 10500 条＝超 lite 上限，拒收
 let hot = null;                  // { ver, count, compact }；compact 形如 |a.com|b.com|
 let lastManifest = null;
+
+// 顺序取第一个能用的源。raw.githubusercontent 从 2025-05 起对匿名请求
+// 压到约 60 次/小时/IP，不能当主源；Pages 是自己的，随时可拉。
+async function fetchFirst(urls, asJson) {
+  for (const u of urls) {
+    try {
+      const r = await fetch(u, { cache: "no-store" });
+      if (!r.ok) continue;
+      return asJson ? await r.json() : await r.text();
+    } catch (e) { /* 换下一个源 */ }
+  }
+  return null;
+}
 
 // ── 额度熔断（防止免费额度被超）──────────────────────────────────────────
 // Workers Free：10 万请求/天（北京 08:00 重置）。到 90% 进入"降级"：
@@ -46,6 +66,9 @@ let lastManifest = null;
 const FREE_DAILY = 100000;
 const SOFT_RATIO = 0.9;
 const PER_IP_PER_MIN = 300;        // 共享出口 IP（校园网/运营商 NAT）友好，避免误伤整条链路
+// 被拦应答的缓存时长：客户端 5 分钟内不再重复问同一域名，直接省下 Worker 请求额度。
+// 代价是解封/纠错最迟 5 分钟生效，对每天重建一次的规则表完全可接受。
+const BLOCK_TTL = 300;
 const UPSTREAM_TIMEOUT_MS = 5000;
 
 let degraded = "";                 // 非空 = 正在降级；/health 可见
@@ -66,9 +89,20 @@ const CACHE_BASE = "https://noas-cache.internal/";
 // 只写数据点，不碰 D1：D1 的行读额度（500 万行/天）留给配置与状态。
 // 免费额度 1 亿点/月，按当前量级（万级/天）约用掉 3% 以内。
 // 绑定缺失时静默跳过 —— 没绑 AE 也必须照常解析，绝不能让日志拖垮服务。
+// 免费额度实测（2026-11 官方）：Analytics Engine 10 万数据点/天 + 1 万读查询/天。
+// 不是"1 亿点/月"。高峰时 block 全量 + pass 采样足以打满日额度，所以自己再压一道：
+// 到 9 万点就静默丢弃，宁可少日志，也不能让写点失败拖慢 DNS 应答。
+const AE_DAILY_CAP = 90000;
+let aeDay = "";
+let aePoints = 0;
+
 function logHit(env, kind, name, tier, extra) {
   const ae = env && env.AE;
   if (!ae || !name) return;
+  const d = utcDay();
+  if (d !== aeDay) { aeDay = d; aePoints = 0; }
+  if (aePoints >= AE_DAILY_CAP) return;
+  aePoints += 1;
   try {
     ae.writeDataPoint({
       blobs: [kind, name, "t" + tier, extra || ""],
@@ -274,8 +308,8 @@ function blockedResponse(query, qtype, end) {
   out[p] = 0xc0; out[p + 1] = 0x0c;                    // 指向问题区的名字
   out[p + 2] = 0x00; out[p + 3] = qtype === 1 ? 0x01 : 0x1c;   // TYPE A=1 / AAAA=28
   out[p + 4] = 0x00; out[p + 5] = 0x01;                // CLASS IN=1（写 0 会被严格解析器丢弃）
-  out[p + 6] = 0x00; out[p + 7] = 0x00;                // TTL = 60
-  out[p + 8] = 0x00; out[p + 9] = 0x3c;
+  out[p + 6] = (BLOCK_TTL >>> 24) & 0xff; out[p + 7] = (BLOCK_TTL >>> 16) & 0xff;
+  out[p + 8] = (BLOCK_TTL >>> 8) & 0xff;  out[p + 9] = BLOCK_TTL & 0xff;   // TTL 大端
   out[p + 10] = 0x00; out[p + 11] = rdlen;             // RDLEN 必须与实际数据区一致
   return out;                                          // RDATA 全 0 → A=0.0.0.0 / AAAA=::
 }
@@ -335,8 +369,8 @@ async function handle(request, env, ctx) {
                   ae: !!(env && env.AE),
                   canary: canaryOk,
                   degraded: degraded || null,
-                  rules_stale: rulesStale, rules_manifest: MANIFEST_URL,
-                  hot: hot ? { ver: hot.ver, count: hot.count } : null, hot_url: HOT_URL,
+                  rules_stale: rulesStale, rules_manifest: MANIFEST_URLS[0],
+                  hot: hot ? { ver: hot.ver, count: hot.count } : null, hot_url: HOT_URLS[0],
                   cache: hasCache(),
                   upstream_order: (upOrder || UPSTREAM),
                   quota: { day: dayKey || utcDay(), used: dayCount, free_daily: FREE_DAILY,
@@ -469,9 +503,8 @@ async function scheduled(event, env, ctx) {
   // 规则新鲜度：只读仓库里的构建指纹（KB 级），不拉规则本体。
   // 拉不到＝未知，保持 null，不制造假告警。
   try {
-    const r = await fetch(MANIFEST_URL, { headers: { "cache-control": "no-cache" } });
-    if (r.ok) {
-      const m = await r.json();
+    const m = await fetchFirst(MANIFEST_URLS, true);
+    if (m) {
       lastManifest = m;
       const fresh = !!(m && m.version === VERSION);
       rulesStale = !fresh;
@@ -489,26 +522,29 @@ async function scheduled(event, env, ctx) {
     }
   } catch (e) { rulesStale = null; }
 
-  // 热规则自更新：只在版本变化或缺缓存时拉 lite 文本（每天约 96 次、每次 140KB）
+  // 热规则自更新：只在版本变化或缺缓存时才拉 lite 文本（约 140KB）
   if (env && env.RULES) {
     const need = !hot || (lastManifest && lastManifest.version && lastManifest.version !== hot.ver);
     if (need) {
       try {
-        const rr = await fetch(HOT_URL, { headers: { "cache-control": "no-cache" } });
-        if (rr.ok) {
-          const text = await rr.text();
-          const lines = text.trim().split("\n").filter((l) => l && l.charAt(0) !== "#");
-          const compact = "|" + lines.join("|") + "|";
-          const okCount = lines.length >= HOT_MIN && lines.length <= HOT_MAX;
+        const text = await fetchFirst(HOT_URLS, false);
+        if (text) {
+          // Free 计划的 cron 也只有 10ms CPU：不 split 成数组再 join，
+          // 一次正则替换 + 数换行就够，避免上万行的中间对象分配。
+          const raw = text.trim();
+          const compact = "|" + raw.replace(/\r/g, "").replace(/\n/g, "|") + "|";
+          let count = 1;
+          for (let i = raw.indexOf("\n"); i !== -1; i = raw.indexOf("\n", i + 1)) count += 1;
+          const okCount = count >= HOT_MIN && count <= HOT_MAX;
           const okCanary = CANARY_DOMAINS.every((d) => compact.includes("|" + d + "|"));
           if (okCount && okCanary) {
             hot = { ver: (lastManifest && lastManifest.version) || VERSION,
-                    count: lines.length, compact };
+                    count, compact };
             await env.RULES.put("lite_v1", JSON.stringify(hot));
-            logHit(env, "hot", "updated", 0, String(lines.length));
+            logHit(env, "hot", "updated", 0, String(count));
           } else {
             logHit(env, "hot", "rejected", 0,
-                   (okCount ? "" : "count=" + lines.length) + (okCanary ? "" : " canary"));
+                   (okCount ? "" : "count=" + count) + (okCanary ? "" : " canary"));
           }
         }
       } catch (e) { logHit(env, "hot", "fetch-fail", 0, ""); }

@@ -82,20 +82,24 @@ cd /home/user/NoAS && python3 tools/cf_rotate.py --doctor
 
 ## 八、免费额度地图（什么在花、花在哪）
 
-| 资源 | 免费额度 | 本项目用法 | 守门 |
+| 资源 | 免费额度（2026-11 官方实测口径） | 本项目用法 | 守门 |
 |---|---|---|---|
-| Workers 请求 | **10 万次/天**，UTC 0 点重置＝北京 08:00；单次 CPU 上限 10ms | DoH 判定 `/dns-query` | 到 90%（9 万）主动熔断，返回 503 让客户端回落国内 DoH |
-| Pages | 请求与带宽不限；**部署 500 次/月** | 规则包静态分发 | `tools/quota_check.py`，≥350 让构建红 |
-| Analytics Engine | 写 **1 亿点/月**、读 1000 万点/月 | 只记 DNS 判定（block / cname / pass） | 按万级/天，约用 3% 以内 |
-| D1 | 读 500 万行/天、写 10 万行/天 | 只放配置与状态 | 日志一律不进 D1 |
-| KV | 读 10 万/天、写 1000/天 | 只放低频状态 | 配额计数绝不写 KV |
+| Workers 请求 | **10 万次/天**（同账户所有脚本共享，UTC 0 点重置＝北京 08:00）；**准入另限 1,000 次/分钟**；CPU 10ms、内存 128MB、外部 subrequest 50、脚本 64MiB、启动 1s | DoH 判定 `/dns-query` | 到 90%（9 万）转**降级直转**（`x-noas=degraded`），客户端不断服；恢复由 UTC 换日自动完成 |
+| Pages | 请求与带宽不限；**部署 500 次/月**、单站 2 万文件、单文件 25MiB | 规则包静态分发，也是 Worker 热规则的主源 | `tools/quota_check.py`，≥350 让构建红 |
+| Analytics Engine | 写 **10 万点/天**、读 **1 万查询/天**（不是旧文档写的 1 亿/月） | 只记 DNS 判定（block / cname / pass 抽样 / cron） | 代码内 `AE_DAILY_CAP=90000` 硬上限，超了静默丢日志 |
+| Workers Logs | 现口径 20 万事件/天、保留 3 天；**2026-12-01 起改用 Observability 计价：免费 0.5GB/天摄取、保留 7 天** | 只开 1% 采样 | 采样率写死在部署配置里 |
+| D1 | 读 500 万行/天、写 10 万行/天、5GB | 只放配置与状态 | 日志一律不进 D1 |
+| KV | 读 10 万/天、写 1000/天、1GB | 只放低频状态（热规则 `lite_v1`） | 计数绝不写 KV；写入只在版本变化时 |
+| Gateway | Free 定价页有"50 用户"与"实际 10 user limit"两种表述；**DNS 查询按 seat 计：平均 5,000/seat/天（月均 15 万/seat）**；Lists 100 个、每表 1,000 条、List API 600 次/分；规则表达式上限 4,096 字符 | 小档 10 片列表 + 1 条 override | `gateway_align.py` 只读比对；列表数逼近 100 时告警 |
 
 分摊顺序（从最省到最贵）：
 
 1. **本地规则**：sing-box / AdGuard Home 直接吃 lite 表 → 0 请求、0 延迟；
-2. **Worker 判定**：只有需要云端拦截时才走；
-3. **国内 DoH 回落**：阿里 / 腾讯 / 360，额度不归我们；
-4. **CF Gateway DoH**（`https://oxyacq0a4t.cloudflare-gateway.com/dns-query`）：与 Worker 额度分开计。已实测拦截生效：doubleclick.net / googleadservices.com 返回 `0.0.0.0`，baidu.com 返回真实 IP。注意别写成 `oxyacq0a4t4`——多一个 4 会拿到「不过滤」的应答，看着通、其实没拦。
+2. **CF Gateway DoH**（`https://oxyacq0a4t.cloudflare-gateway.com/dns-query`）：**DNS 查询不计 Worker 请求**，额度按 seat 单独算。已实测拦截生效：doubleclick.net / googleadservices.com 返回 `0.0.0.0`，baidu.com 返回真实 IP。注意别写成 `oxyacq0a4t4`——多一个 4 会拿到「不过滤」的应答，看着通、其实没拦；
+3. **Worker 判定**：只有 Gateway 覆盖不到的长尾才走；
+4. **国内 DoH 回落**：阿里 / 腾讯 / 360，额度不归我们。
+
+按官方数字算，这套结构的天花板不是"无限"，而是 **约 15 万次/天**：Gateway 10 seats ≈ 5 万 + Worker 10 万，两者互不占用。再往上就只能靠 L0 本地过滤把请求消掉——这也正是 lite 表要一直维持在 1 万条以内的原因。
 
 关于“多开账户接近无限”：
 

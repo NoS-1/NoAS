@@ -16,7 +16,12 @@ import base64
 import hashlib
 import json
 import os
+import re
+import shutil
+import subprocess
 import sys
+import tempfile
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -65,6 +70,48 @@ def ctype(path):
     return "application/octet-stream"
 
 
+def verify(url):
+    """真的把文件取回来。deployment.files 只是 manifest 条目数，
+    资产没被服务端接收时它照样是满的 —— 2026-11-21 的整站 500 就是这么骗过去的。"""
+    for i in range(4):
+        try:
+            r = requests.get(url.rstrip("/") + "/subs/lite/domains.txt", timeout=60,
+                             proxies={"http": None, "https": None})
+            if r.status_code == 200 and len(r.content) > 1024:
+                print("线上取文验证：%d 字节 -> OK" % len(r.content))
+                return True
+            print("线上取文验证：HTTP %d / %d 字节" % (r.status_code, len(r.content)))
+        except Exception as e:
+            print("线上取文异常（%s）" % type(e).__name__)
+        if i < 3:
+            time.sleep(3)
+    return False
+
+
+def deploy_wrangler(stage):
+    """官方 CLI 是唯一被验证可行的 direct-upload 路径。
+    手写 /pages/assets/upload + manifest 提交会被接受但落成 0 文件（assets 键对不上），
+    所以这里不再自己拼协议。"""
+    env = dict(os.environ)
+    env["CLOUDFLARE_API_TOKEN"] = os.environ.get("CF_TOKEN") or os.environ.get("CF_API_TOKEN") or ""
+    env["CLOUDFLARE_ACCOUNT_ID"] = ACCT
+    env.setdefault("NO_COLOR", "1")
+    cmd = ["npx", "-y", "wrangler@4", "pages", "deploy", str(stage),
+           "--project-name", PROJECT, "--branch", "main", "--commit-dirty=true"]
+    print("执行：", " ".join(cmd))
+    try:
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=900, env=env)
+    except subprocess.TimeoutExpired:
+        print("wrangler 超时（900s）")
+        return None
+    out = (p.stdout or "") + (p.stderr or "")
+    print(out.strip()[-1500:])
+    if p.returncode != 0:
+        return None
+    m = re.search(r"https://([0-9a-z]{8})\.", out)
+    return ("https://%s.noas-cdn.pages.dev" % m.group(1)) if m else None
+
+
 def main():
     token = os.environ.get("CF_TOKEN") or ""
     if not token:
@@ -93,19 +140,19 @@ def main():
         print("  差异文件：", [p for p in todo][:12], "共 %d 个" % len(todo))
         return 0
 
-    # 1.5) 无变化就绝不发部署：Pages 每月 500 次部署是硬配额，空部署纯属浪费，
-    #      也让"真的部署了"这件事失去信号价值。跳过前回读线上文件数，避免把故障盖住。
+    # 1.5) 无变化就不发部署：Pages 每月 500 次是硬配额。
+    #      但"台账无变化"不等于"线上可用"——必须真的取一次文件再决定跳过。
     if not todo:
         try:
-            d = requests.get(f"{BASE}?per_page=1", headers=auth, timeout=60).json()
-            latest = (d.get("result") or [{}])[0]
-            if len(latest.get("files") or {}) == len(files):
-                print("无变化且线上一致（%d 个文件），跳过部署以节省配额" % len(files))
+            v = requests.get(f"https://{PROJECT}.pages.dev/subs/lite/domains.txt", timeout=60,
+                             proxies={"http": None, "https": None})
+            if v.status_code == 200 and len(v.content) > 1024:
+                print("无变化且线上可取文（%d 字节），跳过部署以节省配额" % len(v.content))
                 return 0
-            print("台账无变化但线上只有 %d 个文件（预期 %d），继续部署"
-                  % (len(latest.get("files") or {}), len(files)))
+            print("无变化但线上取文失败（HTTP %d / %d 字节），强制重发"
+                  % (v.status_code, len(v.content)))
         except Exception as e:
-            print("回读最新部署失败（%s），继续走正常部署" % type(e).__name__)
+            print("线上探测失败（%s），强制重发" % type(e).__name__)
 
     def flush(batch, jwt):
         if not batch:
@@ -164,36 +211,48 @@ def main():
             return None
 
         res = body.get("result") or {}
-        got = -1
-        try:
-            d = requests.get(f"{BASE}/{res.get('id') or ''}", headers=auth, timeout=60).json()
-            got = len((d.get("result") or {}).get("files") or {})
-        except Exception as e:
-            print("回读失败", e)
         print("部署地址：", res.get("url") or "")
-        print("内容校验：线上 %d 个文件 / 预期 %d 个 -> %s"
-              % (got, len(files), "OK" if got == len(files) else "FAIL"))
-        return res if got == len(files) else None
-
-    res = push(todo, "")
-    if res is None:
-        # 自愈：旧哈希在 Pages 侧失效时，只传变更必然落成空站点。全量重传一次。
-        print("增量部署校验未过，改走全量上传自愈…")
-        res = push(list(files), "-full")
-        if res is None:
+        # 关键：deployment.files 只是 manifest 的条目数，资产被服务端淘汰时它照样是满的。
+        # 只有真的把文件取回来，才能证明站点不是空的。
+        base = res.get("url") or f"https://{PROJECT}.pages.dev"
+        probe = "/subs/lite/domains.txt"
+        ok = False
+        for attempt in range(4):
             try:
-                d = requests.get(f"{BASE}?per_page=1", headers=auth, timeout=60).json()
-                latest = (d.get("result") or [{}])[0]
-                if len(latest.get("files") or {}) == len(files):
-                    print("全量重传回报失败，但线上已一致，按成功处理")
-                    res = latest
-            except Exception:
-                pass
-        if res is None:
-            print("全量自愈仍失败，需人工介入")
-            return 1
+                v = requests.get(base + probe, timeout=60)
+                if v.status_code == 200 and len(v.content) > 1024:
+                    ok = True
+                    print("线上取文验证：%d 字节 -> OK" % len(v.content))
+                    break
+                print("线上取文验证：HTTP %d / %d 字节" % (v.status_code, len(v.content)))
+            except Exception as e:
+                print("线上取文异常（%s）" % type(e).__name__)
+            if attempt < 3:
+                time.sleep(3)
+        return res if ok else None
 
-    url = res.get("url") or ""
+    # 官方 wrangler 是唯一被验证能真正写入文件的路径。
+    stage = Path(tempfile.mkdtemp(prefix="noas-pages-"))
+    try:
+        for p, b in files.items():
+            f = stage / p.lstrip("/")
+            f.parent.mkdir(parents=True, exist_ok=True)
+            f.write_bytes(b)
+        url = deploy_wrangler(stage) or ""
+    finally:
+        shutil.rmtree(stage, ignore_errors=True)
+
+    ok = bool(url) and verify(url)
+    if not ok and verify(f"https://{PROJECT}.pages.dev"):
+        url = url or f"https://{PROJECT}.pages.dev"
+        ok = True
+    if not ok:
+        print("wrangler 部署未生效，回退到直连 API 全量重试…")
+        res = push(list(files), "-fallback") or {}
+        url = res.get("url") or ""
+        if not url or not verify(url if url.startswith("https://") else f"https://{PROJECT}.pages.dev"):
+            print("Pages 两条部署路径都失败，需人工介入")
+            return 1
 
     # 4) 台账：资产哈希 + 部署信息
     STATE.parent.mkdir(parents=True, exist_ok=True)
