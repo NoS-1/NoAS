@@ -75,6 +75,7 @@ let degraded = "";                 // 非空 = 正在降级；/health 可见
 let upstreamFails = 0;
 let lastUpstreamOk = 0;
 let rulesStale = null;             // null=还没校验过
+let manifestCheckedAt = 0;         // 上次新鲜度校验时间，避免 /health 被刷时反复拉
 let canaryOk = null;               // cron 规则金丝雀：内置表还能不能拦住已知广告域
 let upOrder = null;                // 上游自适应顺序（最近成功的排前面），isolate 内有效
 
@@ -379,6 +380,11 @@ async function handle(request, env, ctx) {
   const url = new URL(request.url);
 
   if (url.pathname === "/health") {
+    // 新 isolate 首次访问时 rules_stale 还是 null：补一次校验（60s 节流），
+    // 让 /health 一次就能回答"线上规则到底新不新"，不必等 cron。
+    if (rulesStale === null && Date.now() - manifestCheckedAt > 60000) {
+      try { await checkManifest(env); } catch (e) {}
+    }
     return json({ ok: true, version: VERSION, tier1: TIER1.size, tier2: TIER2.size,
                   allowlist: ALLOW.size, endpoints: ENDPOINTS.size, wildcards: WILD_SUFFIX.size,
                   upstream: UPSTREAM.length, upstream_fails: upstreamFails,
@@ -509,18 +515,10 @@ async function cachePut(name, qtype, buf) {
   } catch (e) { /* Cache API 不可用就放弃兜底，不影响正常应答 */ }
 }
 
-// 免费 Cron Trigger（每账户 5 个额度）：CF 侧自持的自治循环——
-// 心跳 + 规则新鲜度哨兵 + 上游自检复位，GitHub Actions 挂了也照样运转。
-async function scheduled(event, env, ctx) {
-  logHit(env, "cron", "heartbeat", 0, "v" + VERSION);
-
-  // 规则金丝雀：纯本地判定（零网络），确认内置表真的还能拦住已知广告域。
-  const miss = CANARY_DOMAINS.filter((d) => !blocked(d, 2));
-  canaryOk = miss.length === 0;
-  if (!canaryOk) logHit(env, "canary", "miss", 0, miss.join(","));
-
-  // 规则新鲜度：只读仓库里的构建指纹（KB 级），不拉规则本体。
-  // 拉不到＝未知，保持 null，不制造假告警。
+// 规则新鲜度：只读构建指纹（KB 级），不拉规则本体。
+// 拉不到＝未知，保持 null，不制造假告警。cron 与 /health 首次访问共用。
+async function checkManifest(env) {
+  manifestCheckedAt = Date.now();
   try {
     const m = await fetchFirst(MANIFEST_URLS, true);
     if (m) {
@@ -540,6 +538,21 @@ async function scheduled(event, env, ctx) {
       rulesStale = null;
     }
   } catch (e) { rulesStale = null; }
+}
+
+// 免费 Cron Trigger（每账户 5 个额度）：CF 侧自持的自治循环——
+// 心跳 + 规则新鲜度哨兵 + 上游自检复位，GitHub Actions 挂了也照样运转。
+async function scheduled(event, env, ctx) {
+  logHit(env, "cron", "heartbeat", 0, "v" + VERSION);
+
+  // 规则金丝雀：纯本地判定（零网络），确认内置表真的还能拦住已知广告域。
+  const miss = CANARY_DOMAINS.filter((d) => !blocked(d, 2));
+  canaryOk = miss.length === 0;
+  if (!canaryOk) logHit(env, "canary", "miss", 0, miss.join(","));
+
+  // 规则新鲜度：只读仓库里的构建指纹（KB 级），不拉规则本体。
+  // 拉不到＝未知，保持 null，不制造假告警。
+  await checkManifest(env);
 
   // 热规则自更新：只在版本变化或缺缓存时才拉 lite 文本（约 140KB）
   if (env && env.RULES) {
