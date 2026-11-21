@@ -11,6 +11,11 @@
    "note": "未配置 DEEPSEEK_API_KEY"
   },
   {
+   "name": "阿里云百炼",
+   "status": "missing",
+   "note": "未配置 DASHSCOPE_API_KEY（阿里云百炼）"
+  },
+  {
    "name": "豆包 Ark",
    "status": "missing",
    "note": "未配置 ARK_API_KEY"

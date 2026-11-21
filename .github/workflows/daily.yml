@@ -126,6 +126,7 @@ jobs:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           ARK_API_KEY: ${{ secrets.ARK_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
         run: python3 tools/ai_doctor.py
 
       - name: 2.85 · AI 直判（观察池 → 三档表，自动落盘）
@@ -138,6 +139,7 @@ jobs:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           ARK_API_KEY: ${{ secrets.ARK_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
         run: |
           python3 tools/identify.py --pool --verify
           python3 tools/identify.py --promote

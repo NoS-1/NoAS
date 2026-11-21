@@ -44,6 +44,21 @@ def check_deepseek():
         return "fail", "%s: %s" % (type(e).__name__, str(e)[:80])
 
 
+def check_aliyun():
+    key = (os.environ.get("DASHSCOPE_API_KEY") or os.environ.get("ALIYUN_API_KEY") or "").strip()
+    if not key:
+        return "missing", "未配置 DASHSCOPE_API_KEY（阿里云百炼）"
+    base = os.environ.get("ALI_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1").rstrip("/")
+    model = os.environ.get("ALI_MODEL", "qwen3.5-turbo")
+    try:
+        txt = _post(base + "/chat/completions", {"model": model, "max_tokens": 16,
+                 "messages": [{"role": "user", "content": MC}]},
+                 {"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+        return "ok", "%s → %s" % (model, txt.strip()[:20])
+    except Exception as e:
+        return "fail", "%s: %s" % (type(e).__name__, str(e)[:80])
+
+
 def check_ark():
     key = (os.environ.get("ARK_API_KEY") or os.environ.get("DOUBAO_API_KEY") or "").strip()
     if not key:
@@ -76,7 +91,8 @@ def check_cf():
 
 def main():
     sources = [("主脑模型（会话内逐条判）", "ok", "无需凭据：--verdicts 传入即可，优先级最高"),
-               ("DeepSeek", *check_deepseek()), ("豆包 Ark", *check_ark()), ("Cloudflare AI", *check_cf())]
+               ("DeepSeek", *check_deepseek()), ("阿里云百炼", *check_aliyun()),
+               ("豆包 Ark", *check_ark()), ("Cloudflare AI", *check_cf())]
     print("%-26s %-8s %s" % ("判定源", "状态", "说明"))
     for name, st, msg in sources:
         print("%-26s %-8s %s" % (name, st, msg))
