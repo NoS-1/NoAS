@@ -100,13 +100,13 @@ jobs:
       - name: 2 · 自我体检（按本轮真实拉取结果淘汰坏源 / 吸收合格新源）
         run: python3 tools/evolve.py
 
+      - name: 2.5 · 自动晋级（单源但名字就是广告的域并入 lite）
+        # 必须排在编译前：promote 只依赖本轮抓取结果与 lists/，与 compile 产物无关。
+        # 老顺序是"编译 → 晋级 → 再全量编译一遍"，等于把最重的编译白跑两次。
+        run: python3 tools/promote.py
+
       - name: 3 · 编译三档（lite / mid / full）
         run: python3 tools/compile.py --force
-
-      - name: 3.5 · 自动晋级（单源但名字就是广告的域并入 lite）
-        run: |
-          python3 tools/promote.py
-          python3 tools/compile.py --force
 
       - name: 3.55 · 标签台账重建（必须紧跟 compile，否则 guard 会判"标签域不在档位"）
         run: |
@@ -158,7 +158,7 @@ jobs:
           NOAS_VER: ${{ github.run_id }}
         run: |
           if [ -z "$CF_TOKEN" ]; then echo "无 CF_API_TOKEN，跳过 CDN 同步"; exit 0; fi
-          pip install -q requests
+          python3 -c "import requests" 2>/dev/null || pip install -q requests
           python3 tools/cdn_deploy.py
 
       - name: 6.85 · 部署 DoH Worker 到 Cloudflare（回读比对 sha）
@@ -238,8 +238,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           rm -rf /tmp/noas-pkg && mkdir -p /tmp/noas-pkg
-          # worker.js 是 gitignore 产物，任何清理工作区的动作都可能带走它，打包前重新生成一次最稳
-          python3 tools/build_doh.py
+          # worker.js 是 gitignore 产物：前面没生成（或被清理）时才重建，避免重复打包
+          [ -f doh/worker.js ] || python3 tools/build_doh.py
           cp -r subs/* /tmp/noas-pkg/
           mkdir -p /tmp/noas-pkg/doh && cp doh/worker.js serve/standalone.mjs /tmp/noas-pkg/doh/
           cp README.md /tmp/noas-pkg/

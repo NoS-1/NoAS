@@ -25,6 +25,14 @@ FILES = ["adguard.txt", "domains.txt", "hosts.txt", "dnsmasq.conf",
          "clash.yaml", "surge.list", "singbox.json", "qx.list",
          "rpz.zone", "wildcard.txt", "unbound.conf"]
 
+# 七格式解析用的正则：提前编译。guard 要对 3 档 × 11 个文件逐行试匹配，
+# 若每次 re.match 传字符串，光是内部缓存查找就要跑上百万次。
+_FORM_PATTERNS = [re.compile(p) for p in (
+    r"^\|\|(.+?)\^$", r"^0\.0\.0\.0\s+(\S+)$",
+    r"^address=/(\S+)/#$", r"^(?:- +)?DOMAIN-SUFFIX,(\S+)$", r"^host-suffix, (\S+), reject$",
+    r"^(\S+) CNAME \.$", r"^\*\.(\S+)$",
+    r'^local-zone: "(\S+)" always_nxdomain$')]
+
 MUST_BLOCK_LITE = ["doubleclick.net", "googlesyndication.com", "applovin.com"]
 MUST_NOT_BLOCK = ["www.baidu.com", "github.com", "www.bilibili.com", "api.weixin.qq.com",
                   "www.taobao.com", "mp.weixin.qq.com", "www.zhihu.com"]
@@ -47,8 +55,7 @@ def check_ledger():
     rc = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "whitelist.py"), "check"],
                         capture_output=True, text=True)
     if rc.returncode != 0:
-        print(rc.stdout.strip())
-        return ["白名单台账校验失败（镜像漂移或条目非法）"]
+        return ["白名单台账校验失败（镜像漂移或条目非法）：%s" % rc.stdout.strip()[:400]]
     allow = load_allow()
 
     def read_set(rel):
@@ -71,10 +78,13 @@ def check_ledger():
     errs = ["核心广告域与白名单冲突：%s" % bad] if bad else []
 
     # 端点必须在 lite/mid/full 里真的生效（自身或其父域被拦即可）
+    # 三档文件各读一次即可：老写法在端点×档位双层循环里反复重读 50 万行文件，
+    # 光这一项就吃掉十几秒。
+    tier_sets = {t: read_set(os.path.join("subs", t, "domains.txt"))
+                 for t in ("lite", "mid", "full")}
     for d in sorted(endpoints):
-        for tier in ("lite", "mid", "full"):
-            sets = read_set(os.path.join("subs", tier, "domains.txt"))
-            parts = d.split(".")
+        parts = d.split(".")
+        for tier, sets in tier_sets.items():
             if not any(".".join(parts[i:]) in sets for i in range(len(parts) - 1)):
                 errs.append("广告端点 %s 在 %s 档未生效" % (d, tier))
     return errs
@@ -97,27 +107,36 @@ def protected(d, allow):
     return any(".".join(parts[i:]) in allow for i in range(len(parts) - 1))
 
 
+_DOM_CACHE = {}
+
+
 def domains_of(tier, name):
+    """解析某档某格式的域名列表。单次运行内文件不变，解析结果缓存复用——
+    guard 要对 3 档 × 7 格式各读一遍再比对，重复解析是纯浪费。"""
+    key = (tier, name)
+    if key in _DOM_CACHE:
+        return _DOM_CACHE[key]
     p = os.path.join(SUBS, tier, name)
     if not os.path.exists(p):
+        _DOM_CACHE[key] = None
         return None
     text = open(p, encoding="utf-8").read()
     if name == "singbox.json":
-        return json.loads(text)["rules"][0]["domain_suffix"]
+        out = json.loads(text)["rules"][0]["domain_suffix"]
+        _DOM_CACHE[key] = out
+        return out
     out = []
     for line in text.splitlines():
         line = line.strip()
         if not line or line[0] in "#!" or line.startswith("payload:"):
             continue
-        for pat in (r"^\|\|(.+?)\^$", r"^0\.0\.0\.0\s+(\S+)$",
-                    r"^address=/(\S+)/#$", r"^(?:- +)?DOMAIN-SUFFIX,(\S+)$", r"^host-suffix, (\S+), reject$",
-                    r"^(\S+) CNAME \.$", r"^\*\.(\S+)$",
-                    r'^local-zone: "(\S+)" always_nxdomain$'):
-            m = re.match(pat, line)
+        for pat in _FORM_PATTERNS:
+            m = pat.match(line)
             if m:
                 line = m.group(1)
                 break
         out.append(line.lower())
+    _DOM_CACHE[key] = out
     return out
 
 
@@ -523,75 +542,128 @@ def check_hierarchy():
     return fails
 
 
-def main():
-    fails = (check_ledger() + check_precision() + check_cooldown() + check_threat_isolation()
-             + check_tags() + check_channel_artifacts() + check_sdk_video()
-             + check_golden() + check_service_allow() + check_reputation() + check_shadow()
-             + check_dead() + check_hierarchy())
-    allow = load_allow()
-    summary = {}
+CHECK_GROUPS = (
+    ("check_ledger",),
+    ("check_precision", "check_cooldown", "check_threat_isolation"),
+    ("check_tags", "check_channel_artifacts", "check_sdk_video", "check_golden"),
+    ("check_service_allow", "check_reputation", "check_shadow", "check_dead", "check_hierarchy"),
+)
 
-    for tier in TIERS:
-        base = domains_of(tier, "domains.txt")
-        if base is None:
-            fails.append("%s：缺少 domains.txt" % tier)
-            continue
-        # adguard.txt 额外含 "||*.根域^" 通配行，条数应等于 domains + wildcards
+
+def _run_group(names):
+    g = globals()
+    fails = []
+    for n in names:
+        fails.extend(g[n]())
+    return fails
+
+
+def run_checks():
+    """13 项检查互不依赖，按组多进程并行：2 核 CI 上也能把这段压到几秒。"""
+    import concurrent.futures
+    workers = min(len(CHECK_GROUPS), os.cpu_count() or 2)
+    if workers <= 1:
+        return [f for grp in CHECK_GROUPS for f in _run_group(grp)]
+    out = []
+    with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as ex:
+        for r in ex.map(_run_group, CHECK_GROUPS):
+            out.extend(r)
+    return out
+
+
+def _check_tier(tier):
+    """单档校验：11 种格式条数一致 / 白名单冲突 / 非法域 / meta 与 sha256。
+    三档互相独立，交给进程池并行，这是发布硬校验里最重的一块。"""
+    allow = load_allow()
+    fails = []
+    base = domains_of(tier, "domains.txt")
+    if base is None:
+        return tier, ["%s：缺少 domains.txt" % tier], None
+    # adguard.txt 额外含 "||*.根域^" 通配行，条数应等于 domains + wildcards
+    wc = 0
+    try:
+        wc = int(json.load(open(os.path.join(SUBS, tier, "meta.json"), encoding="utf-8")).get("wildcards", 0))
+    except Exception:
         wc = 0
-        try:
-            wc = int(json.load(open(os.path.join(SUBS, tier, "meta.json"), encoding="utf-8")).get("wildcards", 0))
-        except Exception:
-            wc = 0
-        counts = {}
+    counts = {}
+    for f in FILES:
+        d = domains_of(tier, f)
+        if d is None:
+            fails.append("%s：缺少 %s" % (tier, f))
+            continue
+        counts[f] = len(d)
+        if len(d) != len(set(d)):
+            fails.append("%s/%s 有重复 %d 条" % (tier, f, len(d) - len(set(d))))
+        if f == "qx.list":
+            # 通配与精确域可能重叠，去重后条数落在 [base, base+wc]
+            if not (len(base) <= len(d) <= len(base) + wc):
+                fails.append("%s/%s 条数 %d，应为 %d~%d" % (tier, f, len(d), len(base), len(base) + wc))
+            continue
+        want = len(base) + (wc if f in ("adguard.txt", "rpz.zone") else 0)
+        slack = 2 if f == "rpz.zone" else 0
+        if not (want <= len(d) <= want + slack):
+            fails.append("%s/%s 条数 %d，应为 %d" % (tier, f, len(d), want))
+    if len(base) < 100:
+        fails.append("%s：条数过少 %d" % (tier, len(base)))
+    ep_all = set()
+    epp = os.path.join(ROOT, "lists", "ad_endpoints.txt")
+    if os.path.exists(epp):
+        for line in open(epp, encoding="utf-8"):
+            x = line.split("#", 1)[0].strip().lower()
+            if x and "." in x:
+                ep_all.add(x)
+    hit = sorted({d for d in set(base) if protected(d, allow) and d not in ep_all})
+    if hit:
+        fails.append("%s：混入白名单域 %d 条：%s" % (tier, len(hit), ", ".join(hit[:5])))
+    bad = [d for d in set(base) if not re.match(r"^[a-z0-9][a-z0-9.\-]*$", d)]
+    if bad:
+        fails.append("%s：非法域名 %d 条：%s" % (tier, len(bad), ", ".join(bad[:5])))
+    mp = os.path.join(SUBS, tier, "meta.json")
+    if not os.path.exists(mp):
+        fails.append("%s：缺少 meta.json" % tier)
+    else:
+        meta = json.load(open(mp, encoding="utf-8"))
+        if meta.get("count") != len(base):
+            fails.append("%s：meta.count=%s 与实际 %d 不符" % (tier, meta.get("count"), len(base)))
         for f in FILES:
-            d = domains_of(tier, f)
-            if d is None:
-                fails.append("%s：缺少 %s" % (tier, f))
+            p = os.path.join(SUBS, tier, f)
+            if not os.path.exists(p):
                 continue
-            counts[f] = len(d)
-            if len(d) != len(set(d)):
-                fails.append("%s/%s 有重复 %d 条" % (tier, f, len(d) - len(set(d))))
-            if f == "qx.list":
-                # 通配与精确域可能重叠，去重后条数落在 [base, base+wc]
-                if not (len(base) <= len(d) <= len(base) + wc):
-                    fails.append("%s/%s 条数 %d，应为 %d~%d" % (tier, f, len(d), len(base), len(base) + wc))
-                continue
-            want = len(base) + (wc if f in ("adguard.txt", "rpz.zone") else 0)
-            slack = 2 if f == "rpz.zone" else 0
-            if not (want <= len(d) <= want + slack):
-                fails.append("%s/%s 条数 %d，应为 %d" % (tier, f, len(d), want))
-        if len(base) < 100:
-            fails.append("%s：条数过少 %d" % (tier, len(base)))
-        ep_all = set()
-        epp = os.path.join(ROOT, "lists", "ad_endpoints.txt")
-        if os.path.exists(epp):
-            for line in open(epp, encoding="utf-8"):
-                x = line.split("#", 1)[0].strip().lower()
-                if x and "." in x:
-                    ep_all.add(x)
-        hit = sorted({d for d in set(base) if protected(d, allow) and d not in ep_all})
-        if hit:
-            fails.append("%s：混入白名单域 %d 条：%s" % (tier, len(hit), ", ".join(hit[:5])))
-        bad = [d for d in set(base) if not re.match(r"^[a-z0-9][a-z0-9.\-]*$", d)]
-        if bad:
-            fails.append("%s：非法域名 %d 条：%s" % (tier, len(bad), ", ".join(bad[:5])))
-        mp = os.path.join(SUBS, tier, "meta.json")
-        if not os.path.exists(mp):
-            fails.append("%s：缺少 meta.json" % tier)
-        else:
-            meta = json.load(open(mp, encoding="utf-8"))
-            if meta.get("count") != len(base):
-                fails.append("%s：meta.count=%s 与实际 %d 不符" % (tier, meta.get("count"), len(base)))
-            for f in FILES:
-                p = os.path.join(SUBS, tier, f)
-                if not os.path.exists(p):
-                    continue
-                real = hashlib.sha256(open(p, "rb").read()).hexdigest()
-                if meta.get("files", {}).get(f, {}).get("sha256") != real:
-                    fails.append("%s/%s sha256 与 meta 不一致" % (tier, f))
-                if os.path.getsize(p) > 40 * 1024 * 1024:
-                    fails.append("%s/%s 超过 40MB" % (tier, f))
-        summary[tier] = len(base)
+            raw = open(p, "rb").read()
+            real = hashlib.sha256(raw).hexdigest()
+            if meta.get("files", {}).get(f, {}).get("sha256") != real:
+                fails.append("%s/%s sha256 与 meta 不一致" % (tier, f))
+            if len(raw) > 40 * 1024 * 1024:
+                fails.append("%s/%s 超过 40MB" % (tier, f))
+    return tier, fails, len(base)
+
+
+def _task(arg):
+    kind, val = arg
+    if kind == "tier":
+        t, f, n = _check_tier(val)
+        return ("tier", t, f, n)
+    return ("group", None, _run_group(val), None)
+
+
+def main():
+    # 13 项检查 + 3 档格式校验互不依赖，合成一个任务池一次并行：
+    # 分两阶段串行会白等一轮，合成后 2 核 CI 上也能压在 10s 内。
+    import concurrent.futures
+    jobs = [("group", g) for g in CHECK_GROUPS] + [("tier", t) for t in TIERS]
+    workers = min(len(jobs), max(os.cpu_count() or 2, 2))
+    if workers <= 1:
+        results = [_task(j) for j in jobs]
+    else:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as ex:
+            results = list(ex.map(_task, jobs))
+    fails = []
+    summary = {}
+    for kind, tier, f, n in results:
+        fails.extend(f)
+        if kind == "tier" and n is not None:
+            summary[tier] = n
+
 
     lite = set(domains_of("lite", "domains.txt") or [])
     for d in MUST_BLOCK_LITE:

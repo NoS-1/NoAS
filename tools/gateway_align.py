@@ -48,17 +48,21 @@ def root_of(d):
 
 
 def gateway_items(lists, prefixes):
+    """并发拉取各分片条目：10 片串行要 10s+，API 本来允许 600 次/分。"""
     if isinstance(prefixes, str):
         prefixes = (prefixes,)
+    targets = [x for x in lists if x["name"].startswith(tuple(prefixes))]
     items = set()
-    for x in lists:
-        if not x["name"].startswith(tuple(prefixes)):
-            continue
-        d = get("/gateway/lists/%s/items?limit=2000" % x["id"])
-        for i in (d.get("result") or []):
-            v = (i.get("value") or "").strip().lower()
-            if v:
-                items.add(v)
+    if not targets:
+        return items
+    import concurrent.futures
+    paths = ["/gateway/lists/%s/items?limit=2000" % x["id"] for x in targets]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(8, len(paths))) as ex:
+        for d in ex.map(get, paths):
+            for i in (d.get("result") or []):
+                v = (i.get("value") or "").strip().lower()
+                if v:
+                    items.add(v)
     return items
 
 
