@@ -1,28 +1,28 @@
 {
- "checked_at": "2026-11-21T05:52:44Z",
+ "checked_at": "2026-11-21T06:48:32Z",
  "probe": "www.baidu.com",
- "elapsed_ms": 15004,
+ "elapsed_ms": 9754,
  "env": "suspect",
  "channels": {
   "ali-doh": {
    "status": "unknown",
    "proto": "ndoh",
    "endpoint": "https://dns.alidns.com/dns-query",
-   "rtt_ms": 421,
+   "rtt_ms": 431,
    "detail": "疑似本机代理劫持，未计入通道死亡：HTTPError: HTTP Error 500: Internal Server Error"
   },
   "tencent-doh": {
    "status": "unknown",
    "proto": "ndoh",
    "endpoint": "https://doh.pub/dns-query",
-   "rtt_ms": 1151,
-   "detail": "疑似本机代理劫持，未计入通道死亡：HTTPError: HTTP Error 502: Bad Gateway"
+   "rtt_ms": 9751,
+   "detail": "疑似本机代理劫持，未计入通道死亡：URLError: <urlopen error _ssl.c:1129: The handshake operation timed out>"
   },
   "ali-dot": {
    "status": "unknown",
    "proto": "dot",
    "endpoint": "tls://dns.alidns.com:853",
-   "rtt_ms": 525,
+   "rtt_ms": 596,
    "rcode": -5,
    "detail": "疑似本机代理劫持，未计入通道死亡：解析未通过（rcode=-5）"
   },
@@ -30,8 +30,8 @@
    "status": "unknown",
    "proto": "dot",
    "endpoint": "tls://dot.pub:853",
-   "rtt_ms": 15004,
-   "detail": "疑似本机代理劫持，未计入通道死亡：探测超时（15s 总预算用尽）"
+   "rtt_ms": 6694,
+   "detail": "疑似本机代理劫持，未计入通道死亡：TimeoutError: _ssl.c:1129: The handshake operation timed out"
   },
   "aiodns-local": {
    "status": "absent",
@@ -44,14 +44,14 @@
    "status": "unknown",
    "proto": "doh",
    "endpoint": "https://noas-doh.199999510.workers.dev/dns-query",
-   "rtt_ms": 101,
+   "rtt_ms": 105,
    "detail": "疑似本机代理劫持，未计入通道死亡：HTTPError: HTTP Error 400: Bad Request"
   },
   "gateway-doh": {
    "status": "ok",
    "proto": "doh",
    "endpoint": "https://oxyacq0a4t.cloudflare-gateway.com/dns-query",
-   "rtt_ms": 103,
+   "rtt_ms": 72,
    "rcode": 4,
    "detail": "verify：拦广告→0.0.0.0 / 正常域→真实 IP（oxyacq0a4t.cloudflare-gateway.com）"
   },
@@ -59,7 +59,7 @@
    "status": "ok",
    "proto": "dot",
    "endpoint": "tls://oxyacq0a4t.cloudflare-gateway.com:853",
-   "rtt_ms": 145,
+   "rtt_ms": 111,
    "rcode": 4,
    "detail": "verify：拦广告→0.0.0.0 / 正常域→真实 IP（oxyacq0a4t.cloudflare-gateway.com）"
   }
