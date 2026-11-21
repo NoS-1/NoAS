@@ -249,7 +249,9 @@ async function loadHot(env) {
   // 冷启动只读一次 KV（10 万读/天额度足够），之后全走 isolate 内存
   if (hot || !env || !env.RULES) return;
   try {
-    const rec = await env.RULES.get("lite_v1", "json");
+    // cacheTtl 300s：KV 免费只有 10 万读/天，默认 60s 边缘缓存太短，
+    // 每个新 isolate 都会真读一次。规则一天只更新两次，5 分钟可见完全够。
+    const rec = await env.RULES.get("lite_v1", { type: "json", cacheTtl: 300 });
     if (rec && rec.compact && rec.count >= HOT_MIN && rec.count <= HOT_MAX
         && CANARY_DOMAINS.every((d) => rec.compact.includes("|" + d + "|"))) {
       hot = rec;

@@ -114,6 +114,8 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 | 纯解析 | 阿里/腾讯 DoT | `tls://dns.alidns.com:853`、`tls://dot.pub:853` | 否 | 0 |
 | 本地分流 | aiodns | `127.0.0.1:5300`（国内分流 + 缓存） | 否 | 0 |
 
+> AdGuard Home 记得勾选 **Parallel requests**（多上游并发、取最快应答），Bootstrap 填 `1.1.1.1 8.8.8.8`，否则 DoH 上游可能因解析不到自己而整体失效。这样本地过滤既零请求又低延迟。
+
 产物在 `subs/channels/`：`doh.txt`、`dot.txt`、`aiodns.sh`、`adguardhome-upstream.yaml`、`aiodns.special.txt`、`health.json`。
 每轮构建先体检再生成；体检若判定环境被代理劫持（`env=suspect`），**沿用完整清单，绝不剔空**。
 
