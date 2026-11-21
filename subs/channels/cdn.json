@@ -1,19 +1,11 @@
 {
  "project": "noas-cdn",
  "production": "https://noas-cdn.pages.dev",
-<<<<<<< HEAD
- "latest_deployment": "https://93f1b6d6.noas-cdn.pages.dev",
- "files": 77,
- "bytes": 21262015,
- "uploaded_this_run": 10,
- "updated_at": "2026-11-21T05:37:18Z",
-=======
- "latest_deployment": "https://2db03bae.noas-cdn.pages.dev",
+ "latest_deployment": "https://caf2aca8.noas-cdn.pages.dev",
  "files": 78,
- "bytes": 21263010,
- "uploaded_this_run": 2,
- "updated_at": "2026-11-21T05:39:12Z",
->>>>>>> c8fc9f6 (Pages 侧对齐 Worker：GET 转发改 POST、真实客户端 IP 透传、缓存按子网分段、新增 /why 自查端点)
+ "bytes": 21263393,
+ "uploaded_this_run": 12,
+ "updated_at": "2026-11-21T05:40:44Z",
  "entry": {
   "lite": "https://noas-cdn.pages.dev/subs/lite/adguard.txt",
   "mid": "https://noas-cdn.pages.dev/subs/mid/adguard.txt",

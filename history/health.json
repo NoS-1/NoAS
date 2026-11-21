@@ -1,111 +1,111 @@
 {
- "ts": "2026-11-21T05:36:19Z",
- "round": 62,
+ "ts": "2026-11-21T05:40:01Z",
+ "round": 63,
  "sources": [
   {
    "name": "StevenBlack-all",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "antiAD-cn",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "KADhosts",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "AdGuard-CN-adservers",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "AdGuard-tracking",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "DandelionSprout-malware",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "1Hosts-Lite",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "notracking",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "AdAway",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "urlhaus",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "PhishingArmy",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "Spam404",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "AdGuardDNS-filter",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "AdGuard-CNAME-disguised",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "AdGuard-CNAME-original",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "OISD-Big",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "HaGeZi-Pro",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "HaGeZi-ProPlus",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "EasyList",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "NoS-antiAD",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   },
   {
    "name": "ACL4SSR-BanProgramAD",
    "fails": 0,
-   "seen_days": 2
+   "seen_days": 1
   }
  ],
  "adopted": 0,
