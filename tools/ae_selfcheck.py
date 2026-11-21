@@ -125,9 +125,15 @@ def main():
 
     try:
         h = get_health(host)
-        print("health：ver=%s degraded=%s rules_stale=%s upstream_fails=%s ae=%s" % (
+        hh = h.get("hot") or {}
+        print("health：ver=%s degraded=%s rules_stale=%s upstream_fails=%s ae=%s limiter=%s cache=%s hot=%s" % (
             h.get("version"), h.get("degraded"), h.get("rules_stale"),
-            h.get("upstream_fails"), h.get("ae")))
+            h.get("upstream_fails"), h.get("ae"), h.get("limiter"),
+            h.get("cache"), ("%s/%s" % (hh.get("ver"), hh.get("count"))) if hh else None))
+        if h.get("limiter") is not True:
+            print("⚠️ 原生限流未绑定，已退回 isolate 内存计数（多 isolate 合计会偏松）")
+        if h.get("cache") is not True:
+            print("⚠️ Cache API 不可用，上游全挂时没有兜底缓存")
         if h.get("degraded"):
             print("⚠️ 线上处于降级：%s" % h.get("degraded"))
         if h.get("rules_stale"):
