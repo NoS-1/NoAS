@@ -449,7 +449,7 @@ async function handle(request, env, ctx) {
         });
       }
     }
-    if (Math.random() < 0.1) logHit(env, "pass", name, tier, "");   // 放行只留 10% 样本，省 AE 点数
+    if (Math.random() < 0.05) logHit(env, "pass", name, tier, "");   // 放行只留 5% 样本，省 AE 点数
   }
   if (ctx && ctx.waitUntil && !skipRules) ctx.waitUntil(cachePut(name, qtype, buf.slice(0)));
   return new Response(buf, {
@@ -559,6 +559,16 @@ async function scheduled(event, env, ctx) {
   } else {
     degrade("upstream-down");
     logHit(env, "cron", "upstream-dead", 0, "");
+  }
+
+  // 每天 0 点这一轮做一次内存自检：只读本 isolate 状态，不发任何外部请求。
+  // 一条 diag 就能在 AE 里回答"线上到底装的是哪个版本、规则条数对不对、有没有在降级"。
+  const now = new Date();
+  if (now.getUTCHours() === 0 && now.getUTCMinutes() < 15) {
+    logHit(env, "diag", "selfcheck", 0,
+           ["t1=" + TIER1.size, "t2=" + TIER2.size, "allow=" + ALLOW.size,
+            "hot=" + (hot ? hot.count : 0), "ver=" + VERSION,
+            "fails=" + upstreamFails, "degraded=" + (degraded || "-")].join(" "));
   }
 }
 
