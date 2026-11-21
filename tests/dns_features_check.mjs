@@ -242,6 +242,26 @@ recMock(() => answer('p.example.com', 1, 300));
      '/resolve 解析 A 记录与 TTL');
   globalThis.fetch = origFetch; }
 
+
+// 12) ?stats=off 不得影响应答
+{ recMock(() => answer('www.qq.com', 1, 300));
+  const r = await handler(new Request('https://x.dev/dns-query?name=www.qq.com&type=A&stats=off'), ENV, ctx);
+  ok(r.status === 200, '?stats=off 仍正常应答');
+  globalThis.fetch = origFetch; }
+
+// 13) 隐私分级：拦截记明文、放行记每日盐哈希（直接调 logHit，不依赖请求路径与 5% 采样）
+{ const pts = [];
+  const env2 = { ...ENV, AE: { writeDataPoint: (d) => pts.push(d) } };
+  await mod.__logHit(env2, 'pass', 'www.qq.com', 2, '');
+  await mod.__logHit(env2, 'pass', 'www.qq.com', 2, '');          // 同域同盐 → 同 hash
+  await mod.__logHit(env2, 'pass', 'www.example.org', 2, '');
+  await mod.__logHit(env2, 'block', 'doubleclick.net', 2, '');
+  const pass = pts.filter((p) => p.blobs[0] === 'pass');
+  ok(pass.length === 3 && pass.every((p) => String(p.blobs[1]).startsWith('h:')), '放行侧只记 hash');
+  ok(!pass.some((p) => /qq\.com|example\.org/.test(String(p.blobs[1]))), '放行侧不含明文域名');
+  ok(pass[0].blobs[1] === pass[1].blobs[1] && pass[0].blobs[1] !== pass[2].blobs[1], '同域同盐稳定、异域不同');
+  const blk = pts.find((p) => p.blobs[0] === 'block');
+  ok(blk && blk.blobs[1] === 'doubleclick.net', '拦截侧保留明文域名（公开黑名单）'); }
 globalThis.fetch = origFetch;
 console.log(`${pass} 项通过｜失败 ${fail.length}`);
 if (fail.length) { console.log('FAIL: ' + fail.join(' / ')); process.exit(1); }

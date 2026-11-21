@@ -96,6 +96,7 @@ const CACHE_BASE = "https://noas-cache.internal/";
 // 放行应答缓存双层：fresh 300s 内直接命中；stale 24h 内先返旧值、后台刷新。
 // 缓存命中不写 AE（否则额度会被高频命中打爆），只在 /health 里给个内存计数。
 const CACHE_FRESH_S = 600;
+const PASS_SAMPLE = 0.05;   // 放行样本比例（测试可用 env.PASS_SAMPLE 覆盖为 1 验证匿名化）
 const CACHE_STALE_S = 86400;
 
 // ── Analytics Engine（可选绑定 AE）────────────────────────────────────────
@@ -109,9 +110,41 @@ const AE_DAILY_CAP = 90000;
 let aeDay = "";
 let aePoints = 0;
 
-function logHit(env, kind, name, tier, extra) {
+// ── 隐私分级（PRIVACY 二阶）：
+//   · 拦截命中（block/cname）记明文域名：该域名本来就在公开订阅里，记它不泄露用户行为；
+//   · 放行（pass）只记 HMAC(域名, 每日盐) 前 12 位：放行才是"用户真的访问了什么"，
+//     盐每日轮换且只存本账号 KV，跨天不可关联、离线算不出字典；
+//   · 客户端可用 ?stats=off 完全退出统计（拦截与放行都不写）。
+let saltDay = "", saltVal = "";
+async function anonName(env, name) {
+  try {
+    const day = utcDay();
+    if (saltDay !== day || !saltVal) {
+      const kv = env && env.RULES;
+      let cur = null;
+      if (kv) { try { cur = await kv.get("stats_salt:" + day); } catch (e) { cur = null; } }
+      if (cur) {
+        saltVal = String(cur).slice(0, 32);
+      } else {
+        const rnd = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+          .map((b) => b.toString(16).padStart(2, "0")).join("");
+        saltVal = rnd;
+        if (kv) { try { await kv.put("stats_salt:" + day, rnd, { expirationTtl: 172800 }); } catch (e) {} }
+      }
+      saltDay = day;
+      if (!saltVal) return "h:na";
+    }
+    const enc = new TextEncoder().encode(name + "|" + saltDay + "|" + saltVal);
+    const dig = await crypto.subtle.digest("SHA-256", enc);
+    const hex = Array.from(new Uint8Array(dig)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    return "h:" + hex.slice(0, 12);
+  } catch (e) { return "h:na"; }
+}
+
+async function logHit(env, kind, name, tier, extra) {
   const ae = env && env.AE;
   if (!ae || !name) return;
+  if (kind === "pass") name = await anonName(env, name);
   const d = utcDay();
   if (d !== aeDay) { aeDay = d; aePoints = 0; }
   if (aePoints >= AE_DAILY_CAP) return;
@@ -986,6 +1019,7 @@ async function handle(request, env, ctx) {
   if (await ipLimited(env, ip)) degrade("ip-burst " + PER_IP_PER_MIN + "/min");
   if (!takeQuota()) degrade("quota 90%", 3600000);
   const skipRules = isDegraded();
+  const statsOff = url.searchParams.get("stats") === "off";   // 用户主动退出统计
 
   let bytes;
   if (request.method === "POST") {
@@ -1053,7 +1087,7 @@ async function handle(request, env, ctx) {
   if (!skipRules) await loadHot(env);
   if (!skipRules) await loadTier(env, tier);   // mid/full 走 KV，冷启动只读一次
   if (!skipRules && blocked(name, tier)) {
-    logHit(env, "block", name, tier, "");
+    if (!statsOff) await logHit(env, "block", name, tier, "");
     return new Response(blockedResponse(bytes, qtype, end, mode), {
       headers: { "content-type": "application/dns-message", "x-noas": "blocked", "x-noas-ver": VERSION },
     });
@@ -1093,13 +1127,15 @@ async function handle(request, env, ctx) {
     const t = await cnameDeep(buf, name, qtype, tier, ip, edns,
       url.searchParams.get("deep") === "1" ? 4 : 3);
     if (t) {
-      logHit(env, "cname", name, tier, t);
+      if (!statsOff) await logHit(env, "cname", name, tier, t);
       return new Response(blockedResponse(bytes, qtype, end, mode), {
         headers: { "content-type": "application/dns-message", "x-noas": "blocked-cname",
                    "x-noas-target": t, "x-noas-ver": VERSION },
       });
     }
-    if (Math.random() < 0.05) logHit(env, "pass", name, tier, "");   // 放行只留 5% 样本，省 AE 点数
+    if (!statsOff && Math.random() < (env && env.PASS_SAMPLE ? env.PASS_SAMPLE : PASS_SAMPLE)) {
+      await logHit(env, "pass", name, tier, "");
+    }   // 放行只留 5% 样本，省 AE 点数
   }
   // TTL 钳制（60s ~ 3600s）：压掉 5s 的缓存风暴与 7 天的 IP 漂移
   const rc = rcodeOf(buf);
@@ -1193,14 +1229,14 @@ async function checkManifest(env) {
       lastManifest = m;
       const fresh = !!(m && m.version === VERSION);
       rulesStale = !fresh;
-      if (!fresh) logHit(env, "stale", "manifest", 0, String((m && m.version) || ""));
+      if (!fresh) await logHit(env, "stale", "manifest", 0, String((m && m.version) || ""));
       // 漂移检测：版本相同但条数不符 = 构建/注入出过岔子
       if (m && m.counts) {
         const drift = [];
         if (m.counts.t1 && m.counts.t1 !== TIER1.size) drift.push("t1");
         if (m.counts.t2 && m.counts.t2 !== TIER2.size) drift.push("t2");
         if (m.counts.allow && m.counts.allow !== ALLOW.size) drift.push("allow");
-        if (drift.length) logHit(env, "drift", "count-mismatch", 0, drift.join(","));
+        if (drift.length) await logHit(env, "drift", "count-mismatch", 0, drift.join(","));
       }
     } else {
       rulesStale = null;
@@ -1211,12 +1247,12 @@ async function checkManifest(env) {
 // 免费 Cron Trigger（每账户 5 个额度）：CF 侧自持的自治循环——
 // 心跳 + 规则新鲜度哨兵 + 上游自检复位，GitHub Actions 挂了也照样运转。
 async function scheduled(event, env, ctx) {
-  logHit(env, "cron", "heartbeat", 0, "v" + VERSION);
+  await logHit(env, "cron", "heartbeat", 0, "v" + VERSION);
 
   // 规则金丝雀：纯本地判定（零网络），确认内置表真的还能拦住已知广告域。
   const miss = CANARY_DOMAINS.filter((d) => !blocked(d, 1));
   canaryOk = miss.length === 0;
-  if (!canaryOk) logHit(env, "canary", "miss", 0, miss.join(","));
+  if (!canaryOk) await logHit(env, "canary", "miss", 0, miss.join(","));
 
   // 规则新鲜度：只读仓库里的构建指纹（KB 级），不拉规则本体。
   // 拉不到＝未知，保持 null，不制造假告警。
@@ -1241,13 +1277,13 @@ async function scheduled(event, env, ctx) {
             hot = { ver: (lastManifest && lastManifest.version) || VERSION,
                     count, compact };
             await env.RULES.put("lite_v1", JSON.stringify(hot));
-            logHit(env, "hot", "updated", 0, String(count));
+            await logHit(env, "hot", "updated", 0, String(count));
           } else {
-            logHit(env, "hot", "rejected", 0,
+            await logHit(env, "hot", "rejected", 0,
                    (okCount ? "" : "count=" + count) + (okCanary ? "" : " canary"));
           }
         }
-      } catch (e) { logHit(env, "hot", "fetch-fail", 0, ""); }
+      } catch (e) { await logHit(env, "hot", "fetch-fail", 0, ""); }
     }
   }
 
@@ -1255,17 +1291,17 @@ async function scheduled(event, env, ctx) {
   const probe = await upstream(mkQuery("example.com"));
   if (probe) {
     degraded = "";                        // 上游恢复＝解降级
-    logHit(env, "cron", "upstream-ok", 0, "");
+    await logHit(env, "cron", "upstream-ok", 0, "");
   } else {
     degrade("upstream-down");
-    logHit(env, "cron", "upstream-dead", 0, "");
+    await logHit(env, "cron", "upstream-dead", 0, "");
   }
 
   // 每天 0 点这一轮做一次内存自检：只读本 isolate 状态，不发任何外部请求。
   // 一条 diag 就能在 AE 里回答"线上到底装的是哪个版本、规则条数对不对、有没有在降级"。
   const now = new Date();
   if (now.getUTCHours() === 0 && now.getUTCMinutes() < 15) {
-    logHit(env, "diag", "selfcheck", 0,
+    await logHit(env, "diag", "selfcheck", 0,
            ["t1=" + TIER1.size, "t2=" + TIER2.size, "allow=" + ALLOW.size,
             "hot=" + (hot ? hot.count : 0), "ver=" + VERSION,
             "fails=" + upstreamFails, "degraded=" + (isDegraded() ? degraded : "-")].join(" "));
@@ -1287,5 +1323,8 @@ async function guarded(request, env, ctx) {
       { status: isBadReq ? 400 : 500, headers: isBadReq ? { ...h, "x-noas": "bad-request" } : h });
   }
 }
+
+// 仅测试用导出（不影响 Worker 运行）：隐私分级行为需要能直接断言
+export const __logHit = logHit;
 
 export default { fetch: guarded, scheduled };
