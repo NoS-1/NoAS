@@ -95,7 +95,7 @@ cd /home/user/NoAS && python3 tools/cf_rotate.py --doctor
 1. **本地规则**：sing-box / AdGuard Home 直接吃 lite 表 → 0 请求、0 延迟；
 2. **Worker 判定**：只有需要云端拦截时才走；
 3. **国内 DoH 回落**：阿里 / 腾讯 / 360，额度不归我们；
-4. **CF Gateway DoH**（`oxyacq0a4t4.cloudflare-gateway.com`）：与 Worker 额度分开计。
+4. **CF Gateway DoH**（`https://oxyacq0a4t.cloudflare-gateway.com/dns-query`）：与 Worker 额度分开计。已实测拦截生效：doubleclick.net / googleadservices.com 返回 `0.0.0.0`，baidu.com 返回真实 IP。注意别写成 `oxyacq0a4t4`——多一个 4 会拿到「不过滤」的应答，看着通、其实没拦。
 
 关于“多开账户接近无限”：
 
