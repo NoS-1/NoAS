@@ -28,23 +28,21 @@ jobs:
           python3 - <<'PY'
           import struct, urllib.request, statistics, time, json, random
 
-          URL = "https://noas-doh.199999510.workers.dev/dns-query"
-          # workers.dev 对非浏览器 UA 直接 403（实测 Python-urllib 默认 UA 就被拦），
-          # 旧版预热因此一直静默失败、根本没起到保温作用。
           UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
                 "(KHTML, like Gecko) Chrome/124.0 Safari/537.36 NoAS-warm")
 
-          def query(name):
+          def query(url, name):
               labels = [l for l in name.split(".") if l]
               b = struct.pack(">HHHHHH", random.randint(1, 65535), 0x0100, 1, 0, 0, 0)
               b += b"".join(struct.pack(">B", len(l)) + l.encode() for l in labels)
+              b += b"\x00"     # 根标签终止符：漏了它上游一律回 400，预热等于白发
               b += struct.pack(">HH", 1, 1)
-              req = urllib.request.Request(URL, data=b, method="POST",
+              req = urllib.request.Request(url, data=b, method="POST",
                   headers={"Content-Type": "application/dns-message",
                            "Accept": "application/dns-message",
                            "User-Agent": UA})
               t = time.perf_counter()
-              urllib.request.urlopen(req, timeout=10).read(16)
+              urllib.request.urlopen(req, timeout=12).read(16)
               return (time.perf_counter() - t) * 1000
 
           def sample(fn, n):
@@ -56,37 +54,40 @@ jobs:
                       print("采样失败（不阻塞）：%s" % e)
               return out
 
-          # 随机子域 → 必然未命中缓存，测的是"上游往返 + 规则匹配"的真实耗时
+          # 三条真实入口：pages.dev（国内唯一可达的自建口）、workers.dev（境外）、Gateway（就近边缘）
+          PAGES = "https://noas-cdn.pages.dev/dns-query"
+          WORKER = "https://noas-doh.199999510.workers.dev/dns-query"
+          GW = "https://oxyacq0a4t.cloudflare-gateway.com/dns-query"
           stamp = int(time.time() * 1000) % 100000
-          up = sample(lambda: query("w%d-%d.example.com" % (random.randint(1, 999), stamp)), 4)
-          # 同名连查 → 第一次走上游，后面走缓存，测的是"纯本地应答"耗时
-          hit = sample(lambda: query("example.com"), 5)
 
-          if up:
-              print("上游路径 ms：%s ／ P50=%.0f" % ([round(x) for x in up], statistics.median(up)))
-          if hit:
-              warm = hit[1:] or hit
-              print("缓存路径 ms：%s ／ P50=%.0f" % ([round(x) for x in hit], statistics.median(warm)))
-          if up and statistics.median(up) > 300:
-              print("⚠ 上游 P50 超过 300ms，检查三家 DoH 是否被限流")
-          if hit and statistics.median(hit[1:] or hit) > 60:
-              print("⚠ 缓存 P50 超过 60ms，检查 Cache API 是否失效")
+          for tag, url in (("pages", PAGES), ("worker", WORKER), ("gateway", GW)):
+              # 随机子域 → 必然未命中缓存，测"规则匹配 + 上游往返"；同名连查 → 测纯缓存应答
+              up = sample(lambda: query(url, "w%d-%d.example.com" % (random.randint(1, 999), stamp)), 3)
+              hit = sample(lambda: query(url, "example.com"), 4)
+              if up:
+                  print("%-8s 上游 ms=%s P50=%.0f" % (tag, [round(x) for x in up], statistics.median(up)))
+              if hit:
+                  warm = hit[1:] or hit
+                  print("%-8s 缓存 ms=%s P50=%.0f" % (tag, [round(x) for x in hit], statistics.median(warm)))
+              if up and statistics.median(up) > 300:
+                  print("⚠ %s 上游 P50 > 300ms，查限流或边缘位置" % tag)
+              if hit and statistics.median(hit[1:] or hit) > 60:
+                  print("⚠ %s 缓存 P50 > 60ms，查 Cache API 是否失效" % tag)
 
-          # 关键一步：?probe=1 让 Worker 从它所在的边缘节点直接量每家上游的耗时。
-          # 上面的"上游路径 ms"含客户端→CF 的网络（runner 常常几百 ms 到几秒），
-          # 这一组才是我们真正能优化的那段。
-          try:
-              hreq = urllib.request.Request(
-                  "https://noas-doh.199999510.workers.dev/health?probe=1",
-                  headers={"User-Agent": UA})
-              h = json.loads(urllib.request.urlopen(hreq, timeout=15).read())
-              for p in (h.get("probe") or []):
-                  host = p["url"].split("//")[1].split("/")[0]
-                  print("边缘→上游 %-28s %5dms %s" % (
-                      host, p["ms"], "ok" if p.get("ok") else "fail " + (p.get("why") or "")))
-              print("边缘内状态：order=%s fails=%s cache_hits=%s limiter=%s" % (
-                  "→".join(x.split("//")[1].split("/")[0] for x in (h.get("upstream_order") or [])),
-                  h.get("upstream_fails"), h.get("cache_hits"), h.get("limiter")))
-          except Exception as e:
-              print("health 探测失败（不阻塞）：%s" % e)
+          # ?probe=1 让 Worker 从它所在边缘直接量每家上游的耗时——这段才是我们能优化的。
+          # 走 pages.dev 读，因为 workers.dev 在国内不可达，pages 才是真实用户路径。
+          for tag, hurl in (("pages", PAGES + "?probe=1"), ("worker", WORKER.replace("/dns-query", "/health") + "?probe=1")):
+              try:
+                  hreq = urllib.request.Request(hurl, headers={"User-Agent": UA})
+                  h = json.loads(urllib.request.urlopen(hreq, timeout=15).read())
+                  for pr in (h.get("probe") or []):
+                      host = pr["url"].split("//")[1].split("/")[0]
+                      print("%-8s 边缘→上游 %-26s %5dms %s" % (
+                          tag, host, pr["ms"], "ok" if pr.get("ok") else "fail " + (pr.get("why") or "")))
+                  print("%-8s 边缘内状态：order=%s fails=%s cache_hits=%s limiter=%s degraded=%s" % (
+                      tag,
+                      "→".join(x.split("//")[1].split("/")[0] for x in (h.get("upstream_order") or [])),
+                      h.get("upstream_fails"), h.get("cache_hits"), h.get("limiter"), h.get("degraded")))
+              except Exception as e:
+                  print("%-8s health 探测失败（不阻塞）：%s" % (tag, e))
           PY
