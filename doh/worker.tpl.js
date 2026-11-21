@@ -18,10 +18,14 @@ const ALLOW = new Set(splitLines(ALLOW_TEXT));
 const ENDPOINTS = new Set(splitLines(EP_TEXT));
 const WILD = splitLines(WILD_TEXT);
 
+// 上游顺序＝"正确性优先、尾部兜底快"：
+//   alidns  / doh.pub  国内直连最准（10-30ms），但 CF 边缘在海外时跨境可能 3-5s 甚至 502；
+//   cloudflare-dns.com 是 CF 自家 DoH，从任何边缘访问都在同网内（通常 <10ms），
+//   300ms 时并发发出，专门接住"国内上游跨境失败/慢"的尾部。
 const UPSTREAM = [
   "https://dns.alidns.com/dns-query",
+  "https://cloudflare-dns.com/dns-query",
   "https://doh.pub/dns-query",
-  "https://dns.360.cn/dns-query",
 ];
 
 // 版本哨兵：CF 侧唯一"从仓库拿的东西"就是这一份构建指纹（几 KB）。
@@ -341,7 +345,7 @@ function blockedResponse(query, qtype, end) {
 // 一旦主上游抽风，用户要等满 5 秒。改为错峰并发：
 //   0ms 发 A，300ms 未回再发 B，800ms 未回再发 C；先回来且 HTTP 200 的那份胜出，
 //   其余立刻 abort。常态仍然只打 1 个上游，尾部延迟从 5000ms 压到 ~800ms。
-const HEDGE_MS = [0, 300, 800];
+const HEDGE_MS = [0, 300, 900];
 
 function fetchUpstream(u, bytes, ctrl) {
   return fetch(u, {
