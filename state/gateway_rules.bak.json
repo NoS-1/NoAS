@@ -30,11 +30,11 @@
    "dns"
   ],
   "created_at": "2026-11-18T09:45:37Z",
-  "updated_at": "2026-11-21T02:18:42Z",
+  "updated_at": "2026-11-21T02:27:30Z",
   "deleted_at": null,
   "identity": "",
   "device_posture": "",
-  "version": 145,
+  "version": 146,
   "sharable": true,
   "traffic": "any(dns.domains[*] in $52bedf76-d1b1-49ca-b3cb-a443c23e49c3) or any(dns.domains[*] in $de7cbc33-56c3-47ec-ab6c-e9b51cd2b8dc) or any(dns.domains[*] in $8d82c4ee-c8ab-4dc9-afdb-d6bfcdeb81a6) or any(dns.domains[*] in $4db71ba1-0874-43e5-88f0-652cc7e370aa) or any(dns.domains[*] in $226fd2ff-e5fb-4740-b5f8-4db40659e4a4) or any(dns.domains[*] in $9f3f5653-fe1c-4cd4-8222-a73109f94572) or any(dns.domains[*] in $bd55d285-3708-4751-a2c5-ba59e4282a34) or any(dns.domains[*] in $b18373f3-8242-41dc-9788-588a1b165b7e) or any(dns.domains[*] in $73a00906-38b4-4bf8-97c0-a8311f5f2f94) or any(dns.domains[*] in $147650fb-619c-49d3-9c58-5897057be352)",
   "rule_settings": {
