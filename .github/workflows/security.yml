@@ -10,12 +10,15 @@ on:
       - "tools/**"
       - "serve/**"
       - "doh/worker.tpl.js"
-      - "tests/**"
   workflow_dispatch: {}
 
 permissions:
   contents: read
   security-events: write
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:

@@ -20,6 +20,7 @@ on:
       - "docs/**"
       - "**/*.md"
       - "history/**"
+      - "state/**"   # 只忽略本流程自己写的状态台账；lists/ tools/ doh/ sources.tsv 必须触发
 
 permissions:
   contents: write
@@ -27,8 +28,10 @@ permissions:
   id-token: write
 
 concurrency:
-  group: daily
-  cancel-in-progress: false
+  # push 与定时分开排：同一 commit 被连推几次时，push 组只保留最新一轮；
+  # 定时组绝不取消，避免"构建推到一半被砍"导致产物与线上版本不一致。
+  group: daily-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 
 jobs:
   build:
@@ -43,6 +46,8 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: "3.15"
+          cache: pip
+          cache-dependency-path: requirements.txt
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1  # v7.1.0
         with:
@@ -176,14 +181,23 @@ jobs:
           python3 tools/build_doh.py
           node --check doh/worker.js
 
-      - name: 6 · 真产物回归
+      - name: 6 · 真产物回归（6 项并行，门禁一项不少）
+        # 6 个测试互不依赖、都只读产物，串行 84s → 并行约 38s（2 核 runner 实测在 CI 上是 40s 级）。
+        # 任何一项失败都让本步红：用标记文件汇总，避免子 shell 里的变量传不出来。
         run: |
-          node tests/worker_check.mjs
-          node tests/standalone_check.mjs
-          node tests/dns_features_check.mjs     # ECS/TTL/负缓存/v4only/CNAME 多跳/why
-          python3 tests/benign_fp.py            # 4444 条业务主域大样本，lite 误伤必须为 0
-          node tests/fuzz_check.mjs             # 500 个畸形/截断报文：不得出现未捕获异常
-          node tests/cache_iso_check.mjs        # 不同客户端子网不得共用同一条缓存应答
+          D=$(mktemp -d)
+          ( node tests/worker_check.mjs       || touch "$D/worker_check" ) &
+          ( node tests/standalone_check.mjs   || touch "$D/standalone" ) &
+          ( node tests/dns_features_check.mjs || touch "$D/dns_features" ) &   # ECS/TTL/负缓存/v4only/CNAME
+          ( node tests/fuzz_check.mjs         || touch "$D/fuzz" ) &           # 500 个畸形报文
+          ( node tests/cache_iso_check.mjs    || touch "$D/cache_iso" ) &      # 子网隔离
+          ( python3 tests/benign_fp.py        || touch "$D/benign_fp" ) &      # 4444 样本三档 0 误伤
+          wait
+          if [ -n "$(ls -A "$D")" ]; then
+            echo "::error::回归失败：$(ls -A "$D" | tr '\n' ' ')"
+            exit 1
+          fi
+          echo "六项回归全绿"
 
       - name: 6.8 · 同步规则到 CF Pages
         env:
@@ -261,7 +275,7 @@ jobs:
             echo "无变化，跳过提交"
             exit 0
           fi
-          git commit -m "build: 每日重建 $(date -u +%Y%m%d-%H%M)"
+          git commit -m "build: 每日重建 $(date -u +%Y%m%d-%H%M) [skip ci]"
           # 兜底：本地还有未暂存改动时 rebase 会直接拒绝（"cannot pull with rebase: You have unstaged changes"），
           # 先 stash 掉。已提交的产物不受影响，这一步只是清场。
           git stash -q || true
