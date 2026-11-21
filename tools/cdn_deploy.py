@@ -42,7 +42,7 @@ def collect():
     files = {}
     for f in sorted((ROOT / "docs").glob("*.html")):
         files[f"/{f.name}"] = f.read_bytes()
-    for tier in ("lite", "mid"):
+    for tier in ("lite", "mid", "full"):   # 三档都要发：full 是路由器/桌面档，缺了等于没这档
         d = ROOT / "subs" / tier
         for f in sorted(d.iterdir()):
             if f.is_file():
@@ -59,9 +59,14 @@ def collect():
         files["/state/build_manifest.json"] = mf.read_bytes()
     # Pages Function：/dns-query 代理到 Worker。workers.dev 国内不可达、pages.dev 可达，
     # 这是让国内用户真正能用上自建 DoH 的唯一免费通道。
+    # 一个函数文件同时吃 /dns-query 与 /dns-query/{lite|mid|full|auto}：
+    # [[tier]] 是 Pages 的「可选捕获段」，两种路径都能命中，不再需要多文件分发。
     fn = ROOT / "pages" / "dns-query.js"
     if fn.exists():
-        files["/functions/dns-query.js"] = fn.read_bytes()
+        files["/functions/dns-query/[[tier]].js"] = fn.read_bytes()
+    tf = ROOT / "pages" / "tier.js"
+    if tf.exists():
+        files["/functions/tier.js"] = tf.read_bytes()
     return files
 
 

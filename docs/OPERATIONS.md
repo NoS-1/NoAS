@@ -99,6 +99,22 @@ cd /home/user/NoAS && python3 tools/cf_rotate.py --doctor
 3. **Worker 判定**：只有 Gateway 覆盖不到的长尾才走；
 4. **国内 DoH 回落**：阿里 / 腾讯 / 360，额度不归我们。
 
+### 分档端点（DoH 客户端「知道自己用哪一档」）
+
+Pages 的 DoH 端点按档位服务，客户端在配置 URL 里写档位即声明：
+
+| 路径 | 条数 | 适用 |
+|---|---|---|
+| `/dns-query/lite` | 1 万 | 低配设备、只要零误伤最小集 |
+| `/dns-query/mid` | 2 万 | 手机默认（Android 私人 DNS 只能填主机名 → 靠 UA 自动判 mid） |
+| `/dns-query/full` | 3 万 | 路由器 / AGH / 桌面 |
+| `/dns-query` | 自动 | UA 判定：AGH·sing-box·clash·openwrt → full；手机·桌面 → mid；其余 → lite |
+
+显式覆盖：`?tier=full` 或请求头 `x-noas-tier: full` —— 会写入 STATS KV（`t:<ipHash>:<uaHash>`，同 IP 同 UA 只写一次，避免共享出口串档）。
+响应头 `x-noas-tier` / `x-noas-tier-count` 回显实际档与条数；`GET /tier` 返回同一份 JSON，客户端可自查。
+每次请求只加载自己那一档：lite 196KB / mid 360KB / full 572KB，isolate 内存缓存 10 分钟，命中直接回 0.0.0.0，不跳 Worker。
+不达标（条数低于阈值）一律整条退回 Worker 兜底，绝不误拦。
+
 ### 规则定档（2026-11-21）
 
 三档硬上限：**lite 10,000 / mid 20,000 / full 30,000**。裁剪口径国内优先：

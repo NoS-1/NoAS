@@ -1,25 +1,36 @@
-// Pages Function：/dns-query 的 DoH 端点。
+// Pages Function：DoH 端点，按「档位」服务。
 //
-// 为什么需要这一层：workers.dev 子域在国内被阻断（实测 curl 000/超时 6.2s），
-// 而 pages.dev 可达（200）。用 Pages 这个"可达域名"做前端。
+// 为什么要有档位：客户端配置里写死一条 URL 最省事，但设备能力和需求差别很大——
+// 路由器/AGH 能吞 3 万条，手机 Private DNS 只需要 2 万，低配设备只想 1 万。
+// 所以把档位做成端点属性，客户端「说自己用哪档」，服务端就只按那档判定：
 //
-// 两级处理，为的是把最常见的那类请求（查广告域）彻底留在边缘：
-//   ① lite 命中 → 这里直接回 0.0.0.0，不跳 Worker。广告域占查询量的多数，
-//      而 lite 是零误伤最小集，命中即拦与 Worker 判定结果一致，省掉一整跳。
-//   ② lite 未命中 → 转发 Worker，走全量规则（mid 21 万条）+ 缓存 + 上游竞速。
+//   /dns-query            → 自动（UA / 记忆 / 请求头推断）
+//   /dns-query/lite       → 1 万条，零误伤最小集
+//   /dns-query/mid        → 2 万条，手机默认档
+//   /dns-query/full       → 3 万条，路由器 / 桌面
+//   /dns-query/auto       → 同自动
+//   任意档 + ?tier=full   → 显式覆盖并记住
+//   任意档 + x-noas-tier  → 同上（客户端可在请求头里声明）
 //
-// lite 列表走同 zone 静态文件（CDN 缓存 + isolate 内存 10 分钟），冷启动一次 ~30ms，
-// 之后命中判定 0ms。白名单已在构建期排除，lite 与本域白名单无直接交集（16 条白名单
-// 父域下的纯广告端点是端点例外语义，本就应该拦），因此这里不需要再查白名单。
-const LITE_URL = "https://noas-cdn.pages.dev/subs/lite/domains.txt";
+// 「记住」用 STATS KV（noas-logkv，与 Worker 的热规则 KV 隔离，避免写爆影响热更新）。
+// 写入只在该客户端第一次出现或显式改档时发生，之后只读 —— 免费 1000 写/天足够。
+//
+// 响应头 x-noas-tier / x-noas-tier-count 会回显实际用的档与条数，
+// GET /tier 返回同一份 JSON，客户端和人都能自查「我现在走的是哪一档」。
+const BASE = "https://noas-cdn.pages.dev";
 const WORKER_URL = "https://noas-doh.199999510.workers.dev";
-const LITE_TTL_MS = 600000;
+const TIERS = ["lite", "mid", "full"];
+const MIN = { lite: 9000, mid: 17000, full: 25000 };   // 低于这个数说明没拉到，整条退 Worker
+const LABEL = { lite: "1万", mid: "2万", full: "3万" };
+const TIER_NUM = { lite: 1, mid: 2, full: 3 };   // Worker 内嵌档位用 1/2/3
+const TTL_MS = 600000;
 
-let LITE = null;
-let LITE_AT = 0;
+const SETS = new Map();      // tier → { s, at, count }
+let LAST_ERR = "";
+function setErr(m) { LAST_ERR = m; }
+const TIER_MEM = new Map();  // ipHash → { tier, at }
+const TIER_MEM_TTL = 600000;
 
-// isolate 内结果缓存：手机端高频域名（同一个 App 反复查同一域）第二次直接命中，
-// 完全不再跳 Worker。只在 isolate 存活期内有效，30 秒过期 —— 宁可多回源，不吃旧 IP。
 const MEM_MAX = 800;
 const MEM_TTL_MS = 30000;
 const MEM = new Map();
@@ -39,23 +50,108 @@ function memPut(key, buf) {
   MEM.set(key, { buf, exp: Date.now() + MEM_TTL_MS });
 }
 
-async function liteSet() {
-  if (LITE && Date.now() - LITE_AT < LITE_TTL_MS) return LITE;
-  try {
-    const r = await fetch(LITE_URL, { cf: { cacheTtl: 600, cacheEverything: true } });
-    if (!r.ok) return LITE;
-    const txt = await r.text();
-    const s = new Set();
+async function tierSet(tier, env) {
+  const e = SETS.get(tier);
+  if (e && Date.now() - e.at < TTL_MS) return e.s;
+
+  const parse = (txt) => {
+    if (!txt) return null;
+    const set = new Set();
     for (const line of txt.split("\n")) {
       const d = line.trim();
-      if (d && d[0] !== "#") s.add(d);
+      if (d && d[0] !== "#") set.add(d);
     }
-    if (s.size > 9000) {          // 规模异常就当没拿到，整条退回 Worker 判定，绝不误拦
-      LITE = s;
-      LITE_AT = Date.now();
-    }
-  } catch (e) { /* 拉不到就整条透传 Worker */ }
-  return LITE;
+    return set.size > MIN[tier] ? set : null;
+  };
+  const adopt = (set) => {
+    SETS.set(tier, { s: set, at: Date.now(), count: set.size });
+    return set;
+  };
+
+  // ① lite 优先吃 Worker cron 写进 KV 的热规则（更新更快，不用等部署）
+  if (tier === "lite" && env && env.RULES) {
+    try {
+      const kv = await env.RULES.get("lite_v1", { type: "text" });
+      const set = parse(kv);
+      if (set) return adopt(set);
+      if (kv) setErr("kv lite_v1 不可用（" + kv.length + " 字节）");
+    } catch (x) { setErr("kv " + (x && x.message ? x.message : String(x))); }
+  }
+
+  // ② 回源同 zone 静态文件（KV 没拿到或不达标时不放弃，必须再试这一条）
+  try {
+    const r = await fetch(BASE + "/subs/" + tier + "/domains.txt");
+    if (!r.ok) { setErr("http " + r.status + " " + tier); return e ? e.s : null; }
+    const txt = await r.text();
+    const set = parse(txt);
+    if (set) return adopt(set);
+    const lines = txt.split("\n").length;
+    setErr("size 不足 " + tier + "：" + lines + " 行（阈值 " + MIN[tier] + "）");
+  } catch (x) {
+    setErr("fetch " + tier + ": " + (x && x.message ? x.message : String(x)));
+  }
+  return e ? e.s : null;
+}
+
+function ipHash(request) {
+  const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-real-ip") || "0.0.0.0";
+  let h = 0x811c9dc5;
+  for (let i = 0; i < ip.length; i++) { h ^= ip.charCodeAt(i); h = (h * 0x01000193) >>> 0; }
+  return h.toString(36);
+}
+
+function uaHash(request) {
+  const ua = request.headers.get("user-agent") || "";
+  let h = 0x811c9dc5;
+  for (let i = 0; i < ua.length; i++) { h ^= ua.charCodeAt(i); h = (h * 0x01000193) >>> 0; }
+  return h.toString(36);
+}
+
+function uaTier(ua) {
+  const s = (ua || "").toLowerCase();
+  if (/adguard|sing-box|clash|mihomo|surge|quantumult|openwrt|router|dnsmasq|unbound|stubby/.test(s)) return "full";
+  if (/android|iphone|ipad|ios|darwin|macintosh|windows/.test(s)) return "mid";
+  return "lite";
+}
+
+// 返回 { tier, how }：显式（路径/头/参数）> KV 记忆 > UA 推断
+async function pickTier(request, url, pathTier, env) {
+  const explicit = (pathTier || url.searchParams.get("tier") ||
+                    request.headers.get("x-noas-tier") || "").toLowerCase();
+  if (TIERS.includes(explicit)) return { tier: explicit, how: "explicit", persist: true };
+
+  const key = "t:" + ipHash(request) + ":" + uaHash(request);
+  const mc = TIER_MEM.get(key);
+  if (mc && Date.now() - mc.at < TIER_MEM_TTL) return { tier: mc.tier, how: "mem", persist: false };
+
+  if (env && env.STATS) {
+    try {
+      const v = await env.STATS.get("tier:" + key, { type: "text" });
+      if (v && TIERS.includes(v)) {
+        TIER_MEM.set(key, { tier: v, at: Date.now() });
+        return { tier: v, how: "kv", persist: false };
+      }
+    } catch (x) { /* KV 读失败就当没记忆 */ }
+  }
+
+  const t = uaTier(request.headers.get("user-agent"));
+  // UA 推断不落盘：同一个出口 IP 下 Android 手机和路由器 UA 不同，落盘会互相串档
+  TIER_MEM.set(key, { tier: t, at: Date.now() });
+  return { tier: t, how: "ua", persist: false };
+}
+
+async function persistTier(request, tier, env) {
+  if (!env || !env.STATS) return;
+  const key = "t:" + ipHash(request) + ":" + uaHash(request);
+  if (TIER_MEM.get(key) && TIER_MEM.get(key).tier === tier) {
+    // isolate 内已记，只有首次或改档才写
+    if (TIER_MEM.get(key).written) return;
+  }
+  try {
+    await env.STATS.put("tier:" + key, tier, { expirationTtl: 259200 });
+    const e = TIER_MEM.get(key) || {};
+    TIER_MEM.set(key, { ...e, tier, at: Date.now(), written: true });
+  } catch (x) { /* 写失败不影响本次判定 */ }
 }
 
 function parseQuery(bytes) {
@@ -76,8 +172,8 @@ function parseQuery(bytes) {
   return { name: labels.join(".").toLowerCase(), qtype, end: off + 4 };
 }
 
-// lite 是"域后缀"语义：a.b.tracker.com 命中 tracker.com 也算拦
-function hitLite(set, name) {
+// 后缀语义：a.b.tracker.com 命中 tracker.com 也算拦
+function hitSet(set, name) {
   if (!name) return false;
   let d = name;
   for (let i = 0; i < 6; i++) {
@@ -94,42 +190,92 @@ function blockedResponse(bytes, qtype, end) {
   const withA = qtype === 1 || qtype === 28;
   const out = new Uint8Array(head.length + (withA ? 16 : 0));
   out.set(head, 0);
-  const flags = 0x8180;                       // QR | RD | RA，NOERROR
+  const flags = 0x8180;
   out[2] = (flags >> 8) & 0xff; out[3] = flags & 0xff;
-  out[6] = 0; out[7] = withA ? 1 : 0;         // ANCOUNT
+  out[6] = 0; out[7] = withA ? 1 : 0;
   out[8] = 0; out[9] = 0; out[10] = 0; out[11] = 0;
   if (withA) {
     const o = head.length;
-    out[o] = 0xc0; out[o + 1] = 0x0c;         // 指回 question 的名字
+    out[o] = 0xc0; out[o + 1] = 0x0c;
     out[o + 2] = 0; out[o + 3] = qtype === 1 ? 1 : 28;
-    out[o + 4] = 0; out[o + 5] = 1;           // IN
-    out[o + 6] = 0; out[o + 7] = 0; out[o + 8] = 0; out[o + 9] = 60;   // TTL 60s
+    out[o + 4] = 0; out[o + 5] = 1;
+    out[o + 6] = 0; out[o + 7] = 0; out[o + 8] = 0; out[o + 9] = 60;
     out[o + 10] = 0;
-    out[o + 11] = qtype === 1 ? 4 : 16;       // rdlength
-    // A 记录全 0 = 0.0.0.0；AAAA 记录全 0 = ::，两者都是"黑洞"语义，客户端会直接失败
+    out[o + 11] = qtype === 1 ? 4 : 16;
   }
   return out;
 }
 
+function pickHeaders(res) {
+  const out = new Headers();
+  for (const [k, v] of res.headers) {
+    if (k === "content-type" || k.toLowerCase().startsWith("x-noas")) out.set(k, v);
+  }
+  if (!out.has("content-type")) out.set("content-type", "application/dns-message");
+  if (!out.has("x-noas-path")) out.set("x-noas-path", "pages");
+  return out;
+}
+
+function withPath(res, path, tier, count) {
+  const h = new Headers(res.headers);
+  h.set("x-noas-path", path);
+  if (tier) h.set("x-noas-tier", tier);
+  if (count) h.set("x-noas-tier-count", String(count));
+  return new Response(res.body, { status: res.status, headers: h });
+}
+
+function proxied(res, tier, count) {
+  const h = pickHeaders(res);
+  if (tier) h.set("x-noas-tier", tier);
+  if (count) h.set("x-noas-tier-count", String(count));
+  return new Response(res.body, { status: res.status, headers: h });
+}
+
+const TIER_JSON_H = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" };
+
 export async function onRequest(context) {
-  const { request, next } = context;
+  const { request, params, env, next, waitUntil } = context;
   const url = new URL(request.url);
-  if (url.pathname !== "/dns-query") return next();
+  // [[tier]] 在 Pages 里可能是字符串，也可能被解析成数组/含斜杠的 catch-all 值，
+  // 统一收敛成单段小写字符串，避免 toLowerCase 打在数组上变成 500。
+  let pathTier = params && params.tier;
+  if (Array.isArray(pathTier)) pathTier = pathTier[0];
+  pathTier = String(pathTier == null ? "" : pathTier).split("/")[0].trim().toLowerCase();
+
+  // 自查端点：/tier 或 /dns-query/...?info=1
+  if (url.pathname === "/tier" || url.searchParams.get("info") === "1") {
+    const p = await pickTier(request, url, pathTier, env);
+    const set = await tierSet(p.tier, env);
+    return new Response(JSON.stringify({
+      tier: p.tier, label: LABEL[p.tier], count: set ? set.size : 0,
+      set_loaded: !!set, err: LAST_ERR,
+      source: p.how, tiers: TIERS.map(t => ({ tier: t, label: LABEL[t], path: "/dns-query/" + t })),
+      ua: request.headers.get("user-agent") || "",
+      hint: "配置 URL 里带上 /dns-query/<档位> 即可固定档位；不带则由 UA 自动判定",
+    }, null, 1), { headers: TIER_JSON_H });
+  }
+
+  if (!url.pathname.startsWith("/dns-query")) return next();
 
   const pr = url.searchParams.get("probe");
-  if (pr) {                                   // 诊断通道：读 Worker 的边缘视角
+  if (pr) {
     const res = await fetch(WORKER_URL + "/health?probe=" + encodeURIComponent(pr), {
       headers: { "user-agent": "NoAS-pages" }, cache: "no-store",
     });
     return proxied(res);
   }
 
-  const ck = request.method === "GET" ? request.url : null;
+  const p = await pickTier(request, url, pathTier, env);
+  if (p.persist && waitUntil) {
+    try { waitUntil(persistTier(request, p.tier, env).catch(() => {})); } catch (x) {}
+  }
+
+  const ck = request.method === "GET" ? request.url + "#" + p.tier : null;
   if (ck && typeof caches !== "undefined" && caches.default) {
     try {
       const hit = await caches.default.match(ck);
-      if (hit) return withPath(hit, "pages-cache");
-    } catch (e) { /* 缓存不可用就当没命中 */ }
+      if (hit) return withPath(hit, "pages-cache", p.tier);
+    } catch (e) { /* 缓存不可用 */ }
   }
 
   let bytes;
@@ -148,23 +294,32 @@ export async function onRequest(context) {
 
   const q = parseQuery(bytes);
   if (q) {
-    const mem = memGet(q.name + "|" + q.qtype);
+    const mem = memGet(p.tier + "|" + q.name + "|" + q.qtype);
     if (mem) return new Response(mem, {
       headers: { "content-type": "application/dns-message", "x-noas": "cache-hit",
-                 "x-noas-path": "pages-mem", "x-noas-ver": "lite" },
+                 "x-noas-path": "pages-mem", "x-noas-ver": "lite", "x-noas-tier": p.tier },
     });
   }
-  const set = await liteSet();
-  if (q && set && hitLite(set, q.name)) {
+
+  const set = await tierSet(p.tier, env);
+  if (q && set && hitSet(set, q.name)) {
     return new Response(blockedResponse(bytes, q.qtype, q.end), {
       headers: {
         "content-type": "application/dns-message",
-        "x-noas": "blocked", "x-noas-path": "pages-local", "x-noas-ver": "lite",
+        "x-noas": "blocked", "x-noas-path": "pages-local", "x-noas-ver": p.tier,
+        "x-noas-tier": p.tier, "x-noas-tier-count": String(set.size),
       },
     });
   }
 
-  const res = await fetch(WORKER_URL + "/dns-query" + url.search, {
+  // 未命中本档 → 透传 Worker（Worker 内嵌 mid 兜底 + 上游竞速 + 缓存）
+  const fwd = new URL(WORKER_URL + "/dns-query");
+  for (const [k, v] of url.searchParams) {
+    if (k === "tier") continue;
+    fwd.searchParams.set(k, v);
+  }
+  fwd.searchParams.set("tier", "2");
+  const res = await fetch(fwd.toString(), {
     method: request.method,
     headers: {
       "content-type": request.headers.get("content-type") || "application/dns-message",
@@ -177,35 +332,14 @@ export async function onRequest(context) {
   const headers = pickHeaders(res);
   const buf = await res.arrayBuffer();
   const ok = res.status === 200 && buf.byteLength > 17;
-  if (ok && q) memPut(q.name + "|" + q.qtype, buf);
+  if (ok && q) memPut(p.tier + "|" + q.name + "|" + q.qtype, buf);
   const out = new Response(buf, { status: res.status, headers });
-  if (ok && ck && typeof caches !== "undefined" && caches.default && context.waitUntil) {
+  if (ok && ck && typeof caches !== "undefined" && caches.default && waitUntil) {
     try {
-      const ch = new Headers(headers);          // Headers 不能展开成对象，必须显式 copy
+      const ch = new Headers(headers);
       ch.set("cache-control", "max-age=60");
-      const copy = new Response(buf, { headers: ch });
-      context.waitUntil(caches.default.put(ck, copy));
+      waitUntil(caches.default.put(ck, new Response(buf, { headers: ch })));
     } catch (e) { /* 写缓存失败不影响应答 */ }
   }
   return out;
-}
-
-function pickHeaders(res) {
-  const out = new Headers();
-  for (const [k, v] of res.headers) {
-    if (k === "content-type" || k.toLowerCase().startsWith("x-noas")) out.set(k, v);
-  }
-  if (!out.has("content-type")) out.set("content-type", "application/dns-message");
-  if (!out.has("x-noas-path")) out.set("x-noas-path", "pages");   // 标记经过 Pages 层
-  return out;
-}
-
-function withPath(res, path) {
-  const h = new Headers(res.headers);
-  h.set("x-noas-path", path);
-  return new Response(res.body, { status: res.status, headers: h });
-}
-
-async function proxied(res) {
-  return new Response(res.body, { status: res.status, headers: pickHeaders(res) });
 }

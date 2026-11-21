@@ -109,7 +109,7 @@ curl 'http://127.0.0.1:8053/check?q=doubleclick.net&tier=1'   # blocked: true
 |---|---|---|---|---|
 | 本地过滤（推荐） | AGH / sing-box + 国内上游 | 规则用 `subs/lite/adguard.txt`，上游填下面任一条 | 是 | 0 |
 | 手机直填 DoH | **首选**：Gateway（已装全三档 60 片 6 万条，首包 382ms） | `https://oxyacq0a4t.cloudflare-gateway.com/dns-query` | 是（已实测） | 免费 10 seats ≈ 5,000/seat/天，不占 Worker 请求额度 |
-| 手机直填 DoH | 全规则档：Pages 承载自建 Worker | `https://noas-cdn.pages.dev/dns-query` | 是（已实测） | 10 万/天，90% 自动降级直转 |
+| 手机直填 DoH | **分档（Pages 端点）**：`/dns-query/lite` 1 万 · `/dns-query/mid` 2 万 · `/dns-query/full` 3 万 · `/dns-query` 按 UA 自动选档 | `https://noas-cdn.pages.dev/dns-query/full` | 是（已实测） | 10 万/天，90% 自动降级直转；`GET /tier` 自查当前档 |
 | 手机直填 DoH | 自建 Worker 原生域名（**国内不可达**，仅境外） | `https://noas-doh.199999510.workers.dev/dns-query` | 是 | 同上 |
 | 纯解析 | 阿里 / 腾讯 DoH | `https://dns.alidns.com/dns-query`、`https://doh.pub/dns-query` | 否 | 0 |
 | 纯解析 | 阿里/腾讯 DoT | `tls://dns.alidns.com:853`、`tls://dot.pub:853` | 否 | 0 |
